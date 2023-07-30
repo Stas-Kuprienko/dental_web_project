@@ -1,4 +1,3 @@
-java version "18.0.2" 2022-07-19
 /*
         *author*
     Stanislav Kuprienko.
