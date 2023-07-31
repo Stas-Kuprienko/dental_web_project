@@ -2,6 +2,8 @@ package dental.app.records;
 
 import dental.app.Account;
 
+import java.time.LocalDate;
+
 public class RecordManager {
 
     private RecordManager() {}
@@ -41,6 +43,37 @@ public class RecordManager {
         //TODO
         return account.getWorkTypes().containsValue
                (account.getWorkTypes().remove(title));
+    }
+
+    /**
+     *
+     * @param account
+     * @param patient
+     * @param clinic
+     * @param works
+     * @param complete
+     * @return
+     */
+    public static RecordItem createRecord(Account account, String patient, String clinic, Work[] works, LocalDate complete) {
+        if ((patient == null||patient.isEmpty())||(clinic == null||clinic.isEmpty())||(complete == null)) {
+            return null;
+        }
+        RecordItem record = new RecordItem(patient, clinic, works, complete);
+        account.getRecords().add(record);
+        return record;
+    }
+
+    /**
+     *
+     * @param account
+     * @param record
+     * @return
+     */
+    public static boolean editWorkInRecord(Account account, RecordItem record) {
+
+        //TODO
+
+        return true;
     }
 
 
