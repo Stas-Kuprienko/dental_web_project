@@ -3,19 +3,17 @@ package dental.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
- * The class for working with the database by SQL queries. All methods are statics.
+ * The class for working with the database by SQL queries.
  */
 public class DBManager {
     private DBManager() {}
 
-    private static final Properties PROP = new Properties();
-
     /**
      * Generate the {@link Connection} object.
-     * @return The {@link Connection} object with the {@linkplain DBConfig#DB_URL URL}, {@linkplain DBManager#PROP user and password}.
+     * @return The {@link Connection} object with the {@linkplain DBConfig#DB_URL URL},
+     *         {@linkplain DBConfig#DB_LOGIN user} and {@linkplain DBConfig#DB_PASSWORD password}.
      * @throws SQLException If something goes wrong.
      */
     private Connection doConnection() throws SQLException {

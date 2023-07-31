@@ -22,7 +22,8 @@ public class RecordManager {
      * @param quantity The quantity of the work items.
      * @return The {@link Work} object.
      */
-    public static Work createWork(Account account, String title, byte quantity) {
+    public static Work createWork(Account account, String title, byte quantity)
+                                                throws IllegalArgumentException {
         if ((account == null) || ((title == null) || title.isEmpty())) {
             throw new IllegalArgumentException();
         } else {
@@ -41,5 +42,7 @@ public class RecordManager {
         return account.getWorkTypes().containsValue
                (account.getWorkTypes().remove(title));
     }
+
+
 
 }
