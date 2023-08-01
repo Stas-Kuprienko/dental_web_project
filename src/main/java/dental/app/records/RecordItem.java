@@ -4,6 +4,7 @@ import dental.app.TableReport;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -11,7 +12,7 @@ import java.util.Objects;
  * The RecordItem class represent object of a record, containing data about certain work.
  * Implements {@link java.io.Serializable} because it is an object of information,
  *  and instances must be stored in memory.
- * Has fields {@code patient,clinic,acceptDate,complete,} {@link Work} array with a types of the work.
+ * Has fields {@code patient,clinic,acceptDate,complete,} {@link Work} list with a types of the work.
  * Also can to add {@code images} array with an images of the work.
  */
 public class RecordItem implements Serializable {
@@ -29,7 +30,7 @@ public class RecordItem implements Serializable {
     /**
      * The {@link Work} objects containing type, price and number of the items
      */
-    private Work[] works;
+    private ArrayList<Work> works;
 
     /**
      * The completion date of the work
@@ -54,10 +55,19 @@ public class RecordItem implements Serializable {
      * @param works    The array of the {@link Work} objects of this record.
      * @param complete The completion date of the work
      */
-    RecordItem(String patient, String clinic, Work[] works, LocalDate complete) {
+    RecordItem(String patient, String clinic, ArrayList<Work> works, LocalDate complete) {
         this.patient = patient;
         this.clinic = clinic;
         this.works = works;
+        this.complete = complete;
+        this.accepted = LocalDate.now();
+    }
+
+    RecordItem(String patient, String clinic, Work work, LocalDate complete) {
+        this.patient = patient;
+        this.clinic = clinic;
+        this.works = new ArrayList<>(5);
+        works.add(work);
         this.complete = complete;
         this.accepted = LocalDate.now();
     }
@@ -81,7 +91,7 @@ public class RecordItem implements Serializable {
     public String toString() {
         return "RecordItem{" + "patient='" + patient + '\'' +
                 ", clinic='" + clinic + '\'' +
-                ", works=" + Arrays.toString(works) +
+                ", works=" + works +
                 '}';
     }
 
@@ -105,11 +115,11 @@ public class RecordItem implements Serializable {
         this.clinic = clinic;
     }
 
-    public Work[] getWorks() {
+    public ArrayList<Work> getWorks() {
         return works;
     }
 
-    public void setWorks(Work[] works) {
+    public void setWorks(ArrayList<Work> works) {
         this.works = works;
     }
 
