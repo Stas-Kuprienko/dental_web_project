@@ -5,7 +5,6 @@ import dental.app.TableReport;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -55,10 +54,10 @@ public class RecordItem implements Serializable {
      * @param works    The array of the {@link Work} objects of this record.
      * @param complete The completion date of the work
      */
-    RecordItem(String patient, String clinic, ArrayList<Work> works, LocalDate complete) {
+    RecordItem(String patient, String clinic, LocalDate complete) {
         this.patient = patient;
         this.clinic = clinic;
-        this.works = works;
+        this.works = new ArrayList<>(5);
         this.complete = complete;
         this.accepted = LocalDate.now();
     }

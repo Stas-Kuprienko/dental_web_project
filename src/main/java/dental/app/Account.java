@@ -1,12 +1,12 @@
 package dental.app;
 
 import dental.app.records.RecordItem;
+import dental.app.records.RecordManager;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -33,9 +33,9 @@ public class Account implements Serializable {
     private final LocalDate created;
 
     /**
-     * The {@link ArrayList list} of {@link RecordItem} objects for this account.
+     * The RecordManager object for manipulating {@link RecordItem records}.
      */
-    private ArrayList<RecordItem> records;
+    public final RecordManager recordManager;
 
     /**
      * The HashMap of the HashMap of the reports,
@@ -47,11 +47,6 @@ public class Account implements Serializable {
     private HashMap<String, HashMap<String, TableReport>> reports;
 
     /**
-     * The map of the work types and prices.
-     */
-    private HashMap<String, Integer> workTypes;
-
-    /**
      * Create a new Account object.
      * @param name     The user name.
      * @param login    Login for the user authorization.
@@ -59,6 +54,7 @@ public class Account implements Serializable {
      */
     public Account(String name, String login, String password) {
         this.created = LocalDate.now();
+        this.recordManager = new RecordManager();
         if ((name == null || name.isEmpty())
           || (login == null || login.isEmpty())
           || (password == null || password.isEmpty())) {
@@ -73,9 +69,7 @@ public class Account implements Serializable {
             e.printStackTrace();
             System.exit(1);
         }
-        this.records = new ArrayList<>();
         this.reports = new HashMap<>();
-        this.workTypes = new HashMap<>();
     }
 
     /**
@@ -139,15 +133,8 @@ public class Account implements Serializable {
         return created;
     }
 
-    public ArrayList<RecordItem> getRecords() {
-        return records;
-    }
-
     public HashMap<String, HashMap<String, TableReport>> getReports() {
         return reports;
     }
 
-    public HashMap<String, Integer> getWorkTypes() {
-        return workTypes;
-    }
 }
