@@ -9,74 +9,113 @@ import java.util.HashMap;
 public class RecordManager {
 
     /**
-     * The {@link ArrayList list} of {@link RecordItem} objects for account.
+     * The {@link ArrayList list} of {@link Record} objects for account.
      */
-    private final ArrayList<RecordItem> records;
+    private final ArrayList<Record> records;
 
     /**
-     * The object for manipulating {@link Work workTypes}.
+     * The {@link HashMap map} of the work types and prices.
      */
-    private final WorkTypeSetter workTypeSetter;
+    private final HashMap<String, Integer> workTypes;
 
 
     public RecordManager() {
         this.records = new ArrayList<>();
-        this.workTypeSetter = new WorkTypeSetter();
+        this.workTypes = new HashMap<>();
+    }
+
+
+    /**
+     * Enter the type of work in the HashMap.
+     * @param title The title of the work type.
+     * @param price The price of the work type.
+     */
+    public void putWorkType(String title, int price) {
+        if ((title == null || title.isEmpty()) || (price < 1)) {
+            return;
+        }
+        workTypes.put(title, price);
     }
 
     /**
-     * Create a new {@link RecordItem} object and add it in user's list.
+     * Make a new {@link Work} object for entry a record.
+     * @param title  The title of the work type.
+     * @param quantity The quantity of the work items.
+     * @return The {@link Work} object.
+     */
+    public Work createWorkObject(String title, byte quantity)
+            throws IllegalArgumentException {
+        if (((title == null) || title.isEmpty())) {
+            throw new IllegalArgumentException();
+        } else {
+            return new Work(title, quantity, workTypes.get(title));
+        }
+    }
+
+    /**
+     * Remove the type of work from the {@linkplain RecordManager#workTypes works}
+     *  by a {@linkplain java.util.HashMap#get(Object) key}.
+     * @param title The title of the work type as a Key
+     * @return True if the Key of the work type removed
+     * or false if no such element
+     */
+    public boolean removeWorkType(String title) {
+        return workTypes.remove(title) != null;
+    }
+
+    /**
+     * Create a new {@link Record} object and add it in user's list.
      * @param patient  The patient name/surname.
      * @param clinic   The clinic title.
      * @param complete The completion {@link LocalDate date}.
-     * @return  {@link RecordItem} object.
+     * @return  {@link Record} object.
      */
-    public RecordItem createRecord(String patient, String clinic, LocalDate complete) {
+    public Record createRecord(String patient, String clinic, LocalDate complete) {
         if ((patient == null||patient.isEmpty())||(clinic == null||clinic.isEmpty())||(complete == null)) {
             return null;
         }
-        RecordItem record = new RecordItem(patient, clinic, complete);
+        Record record = new Record(patient, clinic, complete);
         //TODO
         this.records.add(record);
         return record;
     }
 
     /**
-     * Create a new {@link RecordItem} object and add it in user's list.
+     * Create a new {@link Record} object and add it in user's list.
      * @param patient  The patient name/surname.
      * @param clinic   The clinic title.
      * @param workType The title of the work type.
      * @param quantity The quantity of the work items.
      * @param complete The completion {@link LocalDate date}.
-     * @return  {@link RecordItem} object.
+     * @return  {@link Record} object.
      */
-    public RecordItem createRecord(String patient, String clinic, String workType, byte quantity, LocalDate complete) {
+    public Record createRecord(String patient, String clinic, String workType, byte quantity, LocalDate complete) {
         if ((patient == null||patient.isEmpty())||(clinic == null||clinic.isEmpty())||(workType == null||workType.isEmpty())) {
             return null;
         }
         Work work;
         try {
-            work = workTypeSetter.createWorkObject(workType, quantity);
+            work = createWorkObject(workType, quantity);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return null;
         }
-        RecordItem record = new RecordItem(patient, clinic, work, complete);
+        Record record = new Record(patient, clinic, work, complete);
         this.records.add(record);
         return record;
     }
 
     /**
-     * Add a new {@link Work} object in works list of the {@link RecordItem record}.
+     * Add a new {@link Work} object in works list of the {@link Record record}.
      * @param record   The record to add.
      * @param title    The title of the work to add.
      * @param quantity The quantity of the work items.
      * @return  True if it was successful.
      */
-    public boolean addWorkInRecord(RecordItem record, String title, byte quantity) {
+    public boolean addWorkInRecord(Record record, String title, byte quantity) {
         Work work;
         try {
-            work = workTypeSetter.createWorkObject(title, quantity);
+            work = createWorkObject(title, quantity);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return false;
@@ -85,13 +124,13 @@ public class RecordManager {
     }
 
     /**
-     * Edit a {@link Work} values in the {@link RecordItem} object.
-     * @param record   The {@link RecordItem} object that needed to edit.
+     * Edit a {@link Work} values in the {@link Record} object.
+     * @param record   The {@link Record} object that needed to edit.
      * @param title    The work type title to edit.
      * @param quantity The quantity of work items.
      * @return True if it was successful.
      */
-    public boolean editWorkInRecord(RecordItem record, String title, byte quantity) {
+    public boolean editWorkInRecord(Record record, String title, byte quantity) {
         //TODO
         if (removeWorkOfRecord(record, title)) {
             return addWorkInRecord(record, title, quantity);
@@ -99,9 +138,9 @@ public class RecordManager {
         return false;
     }
 
-    public boolean removeWorkOfRecord(RecordItem record, String title) {
+    public boolean removeWorkOfRecord(Record record, String title) {
         for (Work w : record.getWorks()) {
-            if (w.getTitle().equalsIgnoreCase(title)) {
+            if (w.title().equalsIgnoreCase(title)) {
                 return record.getWorks().remove(w);
             }
         }
@@ -113,10 +152,10 @@ public class RecordManager {
      *  by patient and clinic.
      * @param name    The patient name of the wanted record.
      * @param clinic  The wanted clinic title.
-     * @return The found {@link RecordItem record} object, if any, or null.
+     * @return The found {@link Record record} object, if any, or null.
      */
-    public RecordItem searchOpenRecords(String name, String clinic) {
-        for (RecordItem r : this.records) {
+    public Record searchOpenRecords(String name, String clinic) {
+        for (Record r : this.records) {
             if (r.getPatient().equalsIgnoreCase(name) && (r.getClinic().equalsIgnoreCase(clinic))) {
                 return r;
             }
@@ -124,7 +163,7 @@ public class RecordManager {
         return null;
     }
 
-    public ArrayList<RecordItem> searchArchiveRecord(Account account, String name) {
+    public ArrayList<Record> searchArchiveRecord(Account account, String name) {
 
         //TODO
 
@@ -132,11 +171,11 @@ public class RecordManager {
     }
 
 
-    public ArrayList<RecordItem> getRecords() {
-        return records;
+    public ArrayList<Record> getRecords() {
+        return this.records;
     }
 
     public HashMap<String, Integer> getWorkTypes() {
-        return workTypeSetter.getWorkTypes();
+        return this.workTypes;
     }
 }
