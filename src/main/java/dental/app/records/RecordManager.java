@@ -147,29 +147,6 @@ public class RecordManager {
         return false;
     }
 
-    /**
-     * Search a record in {@linkplain RecordManager#records records list}
-     *  by patient and clinic.
-     * @param name    The patient name of the wanted record.
-     * @param clinic  The wanted clinic title.
-     * @return The found {@link Record record} object, if any, or null.
-     */
-    public Record searchOpenRecords(String name, String clinic) {
-        for (Record r : this.records) {
-            if (r.getPatient().equalsIgnoreCase(name) && (r.getClinic().equalsIgnoreCase(clinic))) {
-                return r;
-            }
-        }
-        return null;
-    }
-
-    public ArrayList<Record> searchArchiveRecord(Account account, String name) {
-
-        //TODO
-
-        return null;
-    }
-
 
     public ArrayList<Record> getRecords() {
         return this.records;
