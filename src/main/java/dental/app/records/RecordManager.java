@@ -123,30 +123,6 @@ public class RecordManager {
         return record.getWorks().add(work);
     }
 
-    /**
-     * Edit a {@link Work} values in the {@link Record} object.
-     * @param record   The {@link Record} object that needed to edit.
-     * @param title    The work type title to edit.
-     * @param quantity The quantity of work items.
-     * @return True if it was successful.
-     */
-    public boolean editWorkInRecord(Record record, String title, byte quantity) {
-        //TODO
-        if (removeWorkOfRecord(record, title)) {
-            return addWorkInRecord(record, title, quantity);
-        }
-        return false;
-    }
-
-    public boolean removeWorkOfRecord(Record record, String title) {
-        for (Work w : record.getWorks()) {
-            if (w.title().equalsIgnoreCase(title)) {
-                return record.getWorks().remove(w);
-            }
-        }
-        return false;
-    }
-
 
     public ArrayList<Record> getRecords() {
         return this.records;
