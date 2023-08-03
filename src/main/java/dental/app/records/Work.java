@@ -4,39 +4,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Class of a type of work. Contains entries of type, price and number of items.
+ * The class represent the work type object and contains entries of type title, price and quantity of work items.
  */
-public class Work implements Serializable {
-
-    /**
-     * The title of the work type.
-     */
-    private String title;
-
-    /**
-     * The quantity of the work items.
-     */
-    private byte quantity;
-
-    /**
-     * The price of the work.
-     */
-    private int price;
-
-    /**
-     * Create a new Work object
-     * @param title   The title of type of the work
-     * @param price  The price of the work
-     * @param quantity The number of the work items
-     */
-    Work(String title, byte quantity, int price) {
-        if (title == null || title.isEmpty()) {
-            return;
-        }
-        this.title = title;
-        this.quantity = quantity;
-        this.price = price;
-    }
+public record Work (String title, byte quantity, int price) implements Serializable {
 
     /**
      * Count total amount of the work price.
@@ -67,33 +37,4 @@ public class Work implements Serializable {
                 ", price=" + price +
                 '}';
     }
-
-    /*                           ||
-            Getters and setters  \/
-    */
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public byte getNumber() {
-        return quantity;
-    }
-
-    public void setNumber(byte quantity) {
-        this.quantity = quantity;
-    }
-
 }
