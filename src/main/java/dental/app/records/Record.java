@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * The RecordItem class represent object of a record, containing data about certain work.
+ * The Record class represent object of a record, containing data about certain work.
  * Implements {@link java.io.Serializable} because it is an object of information,
  *  and instances must be stored in memory.
  * Has fields {@code patient,clinic,acceptDate,complete,} {@link Work} list with a types of the work.
  * Also can to add {@code images} array with an images of the work.
  */
-public class RecordItem implements Serializable {
+public class Record implements Serializable {
 
     /**
      * The name or surname of the patient
@@ -27,7 +27,7 @@ public class RecordItem implements Serializable {
     private String clinic;
 
     /**
-     * The {@link Work} objects containing type, price and number of the items
+     * The {@link Work} objects containing type, price and number of the items.
      */
     private ArrayList<Work> works;
 
@@ -37,7 +37,7 @@ public class RecordItem implements Serializable {
     private LocalDate complete;
 
     /**
-     * The acceptance date of the work
+     * The acceptance date of the record.
      */
     private final LocalDate accepted;
 
@@ -48,13 +48,12 @@ public class RecordItem implements Serializable {
 
 
     /**
-     * Create the RecordItem object.
-     * @param patient  The patient name or surname
-     * @param clinic   The clinic is a consumer this RecordPoint
-     * @param works    The array of the {@link Work} objects of this record.
-     * @param complete The completion date of the work
+     * Create the Record object.
+     * @param patient  The patient name or surname.
+     * @param clinic   The clinic is a consumer this record.
+     * @param complete The completion date of the work.
      */
-    RecordItem(String patient, String clinic, LocalDate complete) {
+    Record(String patient, String clinic, LocalDate complete) {
         this.patient = patient;
         this.clinic = clinic;
         this.works = new ArrayList<>(5);
@@ -62,7 +61,14 @@ public class RecordItem implements Serializable {
         this.accepted = LocalDate.now();
     }
 
-    RecordItem(String patient, String clinic, Work work, LocalDate complete) {
+    /**
+     * Create the Record object.
+     * @param patient  The patient name or surname.
+     * @param clinic   The clinic is a consumer this record.
+     * @param work     The {@link Work} object containing type, price and number of the items.
+     * @param complete The completion date of the work.
+     */
+    Record(String patient, String clinic, Work work, LocalDate complete) {
         this.patient = patient;
         this.clinic = clinic;
         this.works = new ArrayList<>(5);
@@ -75,7 +81,7 @@ public class RecordItem implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RecordItem that = (RecordItem) o;
+        Record that = (Record) o;
         return Objects.equals(patient, that.patient)
                 && Objects.equals(clinic, that.clinic)
                 && Objects.equals(accepted, that.accepted);
@@ -88,7 +94,7 @@ public class RecordItem implements Serializable {
 
     @Override
     public String toString() {
-        return "RecordItem{" + "patient='" + patient + '\'' +
+        return "Record{" + "patient='" + patient + '\'' +
                 ", clinic='" + clinic + '\'' +
                 ", works=" + works +
                 '}';

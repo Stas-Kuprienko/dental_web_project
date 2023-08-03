@@ -1,6 +1,6 @@
 package dental.app;
 
-import dental.app.records.RecordItem;
+import dental.app.records.Record;
 import dental.app.records.RecordManager;
 
 import java.io.Serializable;
@@ -33,7 +33,7 @@ public class Account implements Serializable {
     private final LocalDate created;
 
     /**
-     * The RecordManager object for manipulating {@link RecordItem records}.
+     * The RecordManager object for manipulating {@link Record records}.
      */
     public final RecordManager recordManager;
 
