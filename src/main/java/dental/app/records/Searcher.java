@@ -37,7 +37,7 @@ public class Searcher {
 
     /**
      * Search a {@link Record records} in {@linkplain RecordManager#getRecords() records list}
-     *  by patient and clinic and add them to {@link Searcher#relevant}.
+     *  by patient and clinic then add them to {@link Searcher#relevant}.
      * @param patient    The patient name of the wanted record.
      * @param clinic  The wanted clinic title.
      */

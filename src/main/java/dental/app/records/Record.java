@@ -42,9 +42,9 @@ public class Record implements Serializable {
     private final LocalDate accepted;
 
     /**
-     * Is the work completed? If so, this record will be added to a {@link TableReport report}.
+     * Is the work closed? If so, this record will be added to a {@link TableReport report}.
      */
-    private boolean isCompleted;
+    private boolean closed;
 
 
     /**
@@ -59,6 +59,7 @@ public class Record implements Serializable {
         this.works = new ArrayList<>(5);
         this.complete = complete;
         this.accepted = LocalDate.now();
+        this.closed = false;
     }
 
     /**
@@ -75,6 +76,7 @@ public class Record implements Serializable {
         works.add(work);
         this.complete = complete;
         this.accepted = LocalDate.now();
+        this.closed = false;
     }
 
     @Override
@@ -140,11 +142,11 @@ public class Record implements Serializable {
         return accepted;
     }
 
-    public boolean isCompleted() {
-        return isCompleted;
+    public boolean isClosed() {
+        return closed;
     }
 
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
+    public void setClosed(boolean closed) {
+        closed = closed;
     }
 }
