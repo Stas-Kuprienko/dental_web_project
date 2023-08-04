@@ -1,7 +1,5 @@
 package dental.app.records;
 
-import dental.app.Account;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,6 +119,27 @@ public class RecordManager {
             return false;
         }
         return record.getWorks().add(work);
+    }
+
+    /**
+     *
+     * @param record
+     * @param title
+     * @param quantity
+     * @return
+     */
+    public boolean editWorkQuantity(Record record, String title, byte quantity) {
+        return new WorkTool(this, record).editWorkQuantity(title, quantity);
+    }
+
+    /**
+     *
+     * @param record
+     * @param title
+     * @return
+     */
+    public boolean removeWorkFromRecord(Record record, String title) {
+        return new WorkTool(this, record).removeWork(title);
     }
 
 
