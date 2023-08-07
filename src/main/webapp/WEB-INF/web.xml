@@ -1,0 +1,18 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>dental-mechanic</display-name>
+
+  <servlet>
+    <servlet-name>ServerApp</servlet-name>
+    <servlet-class>dental.server.ServerApp</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ServerApp</servlet-name>
+    <url-pattern>/start</url-pattern>
+  </servlet-mapping>
+
+</web-app>
