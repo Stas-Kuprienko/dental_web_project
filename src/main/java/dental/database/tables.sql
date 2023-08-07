@@ -1,7 +1,12 @@
+DROP TABLE IF EXISTS mydb.accounts;
 DROP TABLE IF EXISTS mydb.work_types;
 DROP TABLE IF EXISTS mydb.work_objects;
 DROP TABLE IF EXISTS mydb.records;
 
+CREATE TABLE `mydb`.`accounts` (
+  `login` VARCHAR(25) NOT NULL,
+  `name` VARCHAR(45) NULL,
+  PRIMARY KEY (`login`));
 
 CREATE TABLE mydb.work_types (
     title VARCHAR(30) NOT NULL,
