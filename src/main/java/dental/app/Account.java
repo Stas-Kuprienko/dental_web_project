@@ -2,6 +2,7 @@ package dental.app;
 
 import dental.app.records.Record;
 import dental.app.records.RecordManager;
+import dental.filetools.Extractable;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class Account implements Serializable {
+public class Account implements Serializable, Extractable {
 
     /**
      * The name of the user.
