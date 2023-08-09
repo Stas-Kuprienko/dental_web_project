@@ -1,7 +1,5 @@
 package dental.app.records;
 
-import dental.app.TableReport;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,7 +40,7 @@ public class Record implements Serializable {
     private final LocalDate accepted;
 
     /**
-     * Is the work closed? If so, this record will be added to a {@link TableReport report}.
+     * Is the work closed? If so, this record will be added to a report.
      */
     private boolean closed;
 
