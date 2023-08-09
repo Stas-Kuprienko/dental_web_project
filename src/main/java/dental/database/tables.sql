@@ -1,30 +1,42 @@
 DROP TABLE IF EXISTS mydb.accounts;
-DROP TABLE IF EXISTS mydb.work_types;
-DROP TABLE IF EXISTS mydb.work_objects;
 DROP TABLE IF EXISTS mydb.records;
+DROP TABLE IF EXISTS mydb.work_objects;
+DROP TABLE IF EXISTS mydb.reports;
 
-CREATE TABLE `mydb`.`accounts` (
-  `login` VARCHAR(25) NOT NULL,
-  `name` VARCHAR(45) NULL,
-  PRIMARY KEY (`login`));
+CREATE TABLE mydb.accounts (
+  id INT NOT NULL,
+  login VARCHAR(30) NOT NULL,
+  PRIMARY KEY (id)
+  );
 
-CREATE TABLE mydb.work_types (
-    title VARCHAR(30) NOT NULL,
-    price INT NOT NULL,
-    PRIMARY KEY (title));
+CREATE TABLE mydb.records (
+	account_id INT NOT NULL,
+	FOREIGN KEY(account_id) REFERENCES mydb.accounts(id) ON DELETE RESTRICT,
+	id INT NOT NULL,
+	patient VARCHAR(30),
+	clinic VARCHAR(30),
+	complete DATE,
+	accepted DATE NOT NULL,
+	closed BOOLEAN,
+	PRIMARY KEY (id)
+    );
 
 CREATE TABLE mydb.work_objects (
-	id INT NOT NULL AUTO_INCREMENT,
+	record_id INT NOT NULL,
     title VARCHAR(30) NOT NULL,
     quantity SMALLINT,
     price INT NOT NULL,
-    PRIMARY KEY(id));
+    FOREIGN KEY(record_id) REFERENCES mydb.records(id) ON DELETE RESTRICT
+    );
 
-CREATE TABLE mydb.record (
-    patient VARCHAR(45),
-    clinic VARCHAR(30),
-    work INT NOT NULL,
-    FOREIGN KEY(work) REFERENCES mydb.work_objects(id) ON DELETE RESTRICT,
-    complete DATE,
-    accepted TIMESTAMP NOT NULL,
-    closed BOOLEAN);
+CREATE TABLE mydb.reports (
+	r_year YEAR(4) NOT NULL,
+	r_month ENUM('january', 'february', 'march',
+					'april', 'may', 'june', 'july',
+                    'august', 'september', 'october',
+                    'november', 'december') NOT NULL,
+	r_id INT NOT NULL AUTO_INCREMENT,
+	account_id INT NOT NULL,
+    FOREIGN KEY(account_id) REFERENCES mydb.accounts(id)  ON DELETE RESTRICT,
+	PRIMARY KEY (r_id, account_id)
+	);
