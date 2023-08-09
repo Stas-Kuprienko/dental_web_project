@@ -3,9 +3,10 @@ package dental.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
- * The class for working with the database by SQL queries.
+ * The class for creating a database {@link Connection connection}.
  */
 public class DBManager {
     private DBManager() {}
@@ -16,23 +17,24 @@ public class DBManager {
      *         {@linkplain DBConfig#DB_LOGIN user} and {@linkplain DBConfig#DB_PASSWORD password}.
      * @throws SQLException If something goes wrong.
      */
-    private Connection doConnection() throws SQLException {
-        return DriverManager.getConnection(DBConfig.getProp(DBConfig.DB_URL),
-                                           DBConfig.getProp(DBConfig.DB_LOGIN),
-                                           DBConfig.getProp(DBConfig.DB_PASSWORD));
+    private static Connection doConnection() {
+        try{
+            return DriverManager.getConnection(DBConfig.getProp(DBConfig.DB_URL),
+                    DBConfig.getProp(DBConfig.DB_LOGIN),
+                    DBConfig.getProp(DBConfig.DB_PASSWORD));
+        } catch (SQLException e) {
+            //TODO loggers
+            throw new RuntimeException(e);
+        }
     }
 
+    public static Statement getStatement() {
+        try (Statement statement = doConnection().createStatement()) {
+            return statement;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-
-    /*
-    Enums SQL syntax just for usable.
-     */
-    public enum dml
-    { SELECT, UPDATE, INSERT, DELETE }
-    public enum ddl
-    { CREATE, DROP, ALTER, TRUNCATE }
-    public enum sub
-    { WHERE, FROM, INTO,
-      ALL, AND, ANY, BETWEEN,
-      IN, NOT, OR, EXISTS, LIKE }
 }
