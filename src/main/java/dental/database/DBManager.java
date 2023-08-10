@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
 
 /**
  * The class for creating a database {@link Connection connection}.
@@ -11,11 +12,12 @@ import java.sql.Statement;
 public class DBManager {
     private DBManager() {}
 
+    public static final DateTimeFormatter SQL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-LL-dd");
+
     /**
      * Generate the {@link Connection} object.
      * @return The {@link Connection} object with the {@linkplain DBConfig#DB_URL URL},
      *         {@linkplain DBConfig#DB_LOGIN user} and {@linkplain DBConfig#DB_PASSWORD password}.
-     * @throws SQLException If something goes wrong.
      */
     private static Connection doConnection() {
         try{

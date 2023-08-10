@@ -1,9 +1,9 @@
 package dental.database.db_statements;
 
 import dental.app.records.Record;
+import dental.database.DBManager;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 public class RecordInsertOrder implements DBQuery {
 
@@ -12,12 +12,13 @@ public class RecordInsertOrder implements DBQuery {
     final int accountID;
     final String patient;
     final String clinic;
-    final LocalDate complete;
-    final LocalDate accepted;
+    final String complete;
+    final String accepted;
     final boolean closed;
     final int recordId;
 
-    //TODO INSERT by String.format()
+    final String SAMPLE = "INSERT INTO records (account_id, id, patient, clinic, complete, accepted, closed)" +
+            "VALUES (%s, %s, %s, %s, %s, %s, %s);";
     private final String query;
 
     public RecordInsertOrder(int accountID, Record record) {
@@ -25,12 +26,13 @@ public class RecordInsertOrder implements DBQuery {
         this.accountID = accountID;
         this.patient = record.getPatient();
         this.clinic = record.getClinic();
-        this.complete = record.getComplete();
-        this.accepted = record.getAccepted();
+        this.complete = record.getComplete().format(DBManager.SQL_DATE_FORMAT);
+        this.accepted = record.getAccepted().format(DBManager.SQL_DATE_FORMAT);
         this.closed = record.isClosed();
         this.recordId = record.hashCode();
 
-        query = "";
+        query = String.format(SAMPLE,
+                this.accountID, this.recordId, this.patient, this.clinic, this.complete, this.accepted, this.closed);
     }
 
     //TODO WorkObjectsOrder
