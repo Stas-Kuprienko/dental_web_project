@@ -1,12 +1,11 @@
-package dental.app;
+package dental.app.userset;
 
 import dental.app.records.Record;
 import dental.app.records.RecordManager;
+import dental.app.records.TableReport;
 import dental.filetools.Extractable;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Objects;
@@ -24,7 +23,7 @@ public class Account implements Serializable, Extractable {
     private String login;
 
     /**
-     * {@link MessageDigest MD5 hash} of the user password.
+     * MessageDigest MD5 hash of the user password.
      */
     private byte[] password;
 
@@ -63,27 +62,8 @@ public class Account implements Serializable, Extractable {
         }
         this.name = name;
         this.login = login;
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            this.password = md.digest(password.getBytes());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        this.password = Authenticator.passwordHash(password);
         this.reports = new HashMap<>();
-    }
-
-    /**
-     * Verification the user's password when logging in.
-     * @param password The user's password.
-     * @return The {@link Account} object if verification was successful, or null if not.
-     */
-    public Account verifyPassword(byte[] password) {
-        if (MessageDigest.isEqual(this.password, password)) {
-            return this;
-        }else {
-            return null;
-        }
     }
 
     @Override
@@ -128,6 +108,10 @@ public class Account implements Serializable, Extractable {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public byte[] getPassword() {
+        return password;
     }
 
     public LocalDate getCreated() {
