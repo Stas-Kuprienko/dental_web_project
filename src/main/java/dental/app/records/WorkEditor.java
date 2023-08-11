@@ -1,6 +1,8 @@
 package dental.app.records;
 
-class WorkTool {
+import dental.app.userset.Account;
+
+class WorkEditor {
 
     /**
      * The {@link Record} object to manipulating.
@@ -8,16 +10,16 @@ class WorkTool {
     private final Record record;
 
     /**
-     * The current user {@link dental.app.Account account} {@link RecordManager} object.
+     * The current user {@link Account account} {@link RecordManager} object.
      */
     private final RecordManager recordManager;
 
     /**
      * Create WorkTool object.
-     * @param recordManager The current user {@link dental.app.Account account} {@link RecordManager} object.
+     * @param recordManager The current user {@link Account account} {@link RecordManager} object.
      * @param record        The {@link Record} object to manipulating.
      */
-    WorkTool(RecordManager recordManager, Record record) {
+    WorkEditor(RecordManager recordManager, Record record) {
         this.recordManager = recordManager;
         this.record = record;
     }

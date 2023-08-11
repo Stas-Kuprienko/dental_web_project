@@ -1,12 +1,14 @@
-package dental.app;
+package dental.app.records;
+
+import dental.app.userset.Account;
 
 /**
  * The ReportManager class is used to manage {@link TableReport report} objects.
  *  All methods of the class are static, so the class does not need to implement instances.
  */
-public class ReportManager {
+public class ArchiveManager {
 
-    private ReportManager() {
+    private ArchiveManager() {
     }
 
     /**
