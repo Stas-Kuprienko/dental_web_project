@@ -1,8 +1,9 @@
-package dental.database.db_statements;
+package dental.database.db_statements.insert;
 
 import dental.app.records.Record;
 import dental.app.records.Work;
 import dental.database.DBManager;
+import dental.database.db_statements.IQuery;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

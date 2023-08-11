@@ -5,16 +5,17 @@ import dental.database.DBManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-interface IQuery {
+public interface IQuery {
 
     Statement state = DBManager.getStatement();
 
-    default boolean doQuery(String query) {
+    default void doQuery(String query) {
         try {
-            return IQuery.state != null && IQuery.state.execute(query);
+            if (IQuery.state != null) {
+                IQuery.state.execute(query);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
     }
 }

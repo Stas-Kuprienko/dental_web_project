@@ -1,12 +1,7 @@
 package dental.database;
 
-import dental.app.userset.Account;
-import dental.database.db_statements.AccountInsertQuery;
-import dental.database.db_statements.RecordInsertQuery;
-
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 
 public class InitializerDB {
 
