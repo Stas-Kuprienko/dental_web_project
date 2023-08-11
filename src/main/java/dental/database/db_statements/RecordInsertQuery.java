@@ -1,11 +1,13 @@
 package dental.database.db_statements;
 
 import dental.app.records.Record;
+import dental.app.records.Work;
 import dental.database.DBManager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
-public class RecordInsertOrder implements DBQuery {
+public class RecordInsertQuery implements IQuery {
 
     final Record record;
 
@@ -17,11 +19,10 @@ public class RecordInsertOrder implements DBQuery {
     final boolean closed;
     final int recordId;
 
-    final String SAMPLE = "INSERT INTO records (account_id, id, patient, clinic, complete, accepted, closed)" +
-            "VALUES (%s, %s, %s, %s, %s, %s, %s);";
-    private final String query;
+    final String SAMPLE =
+      "INSERT INTO records (account_id, id, patient, clinic, complete, accepted, closed) VALUES (%s, %s, %s, %s, %s, %s, %s);";
 
-    public RecordInsertOrder(int accountID, Record record) {
+    public RecordInsertQuery(int accountID, Record record) throws SQLException {
         this.record = record;
         this.accountID = accountID;
         this.patient = record.getPatient();
@@ -31,19 +32,17 @@ public class RecordInsertOrder implements DBQuery {
         this.closed = record.isClosed();
         this.recordId = record.hashCode();
 
-        query = String.format(SAMPLE,
+        String query = String.format(SAMPLE,
                 this.accountID, this.recordId, this.patient, this.clinic, this.complete, this.accepted, this.closed);
-    }
 
-    //TODO WorkObjectsOrder
-
-    @Override
-    public boolean doQuery() {
-        try {
-            return DBQuery.state != null && DBQuery.state.execute(query);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        if (!doQuery(query)) {
+            throw new SQLException();
+        }
+        ArrayList<Work> works = record.getWorks();
+        if ((works != null) && (!works.isEmpty())) {
+            for (Work w : works) {
+                new WorkInsertQuery(recordId, w);
+            }
         }
     }
 }
