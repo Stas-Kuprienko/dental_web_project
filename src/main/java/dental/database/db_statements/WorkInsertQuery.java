@@ -13,7 +13,7 @@ public class WorkInsertQuery implements IQuery {
     final byte quantity;
     final int price;
 
-    final String SAMPLE = "INSERT INTO work_position (record_id, title, quantity, price) VALUES (%s, %s, %s, %s);";
+    final String SAMPLE = "INSERT INTO work_position (record_id, title, quantity, price) VALUES (%s, '%s', %s, %s);";
 
     public WorkInsertQuery(int recordID, Work work) throws SQLException {
         this.work = work;
@@ -24,9 +24,8 @@ public class WorkInsertQuery implements IQuery {
 
         String query = String.format(SAMPLE, this.recordID, this.title, this.quantity, this.price);
 
-        if (!doQuery(query)) {
-            throw new SQLException();
-        }
+        //TODO confirmation
+        doQuery(query);
     }
 
 }

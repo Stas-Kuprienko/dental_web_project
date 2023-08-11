@@ -20,7 +20,7 @@ public class RecordInsertQuery implements IQuery {
     final int recordId;
 
     final String SAMPLE =
-      "INSERT INTO records (account_id, id, patient, clinic, complete, accepted, closed) VALUES (%s, %s, %s, %s, %s, %s, %s);";
+      "INSERT INTO records (account_id, id, patient, clinic, complete, accepted, closed) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s);";
 
     public RecordInsertQuery(int accountID, Record record) throws SQLException {
         this.record = record;
@@ -35,9 +35,8 @@ public class RecordInsertQuery implements IQuery {
         String query = String.format(SAMPLE,
                 this.accountID, this.recordId, this.patient, this.clinic, this.complete, this.accepted, this.closed);
 
-        if (!doQuery(query)) {
-            throw new SQLException();
-        }
+        //TODO confirmation
+        doQuery(query);
         ArrayList<Work> works = record.getWorks();
         if ((works != null) && (!works.isEmpty())) {
             for (Work w : works) {

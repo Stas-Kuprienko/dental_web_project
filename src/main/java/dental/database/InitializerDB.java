@@ -1,7 +1,12 @@
 package dental.database;
 
+import dental.app.userset.Account;
+import dental.database.db_statements.AccountInsertQuery;
+import dental.database.db_statements.RecordInsertQuery;
+
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 
 public class InitializerDB {
 
@@ -54,7 +59,7 @@ public class InitializerDB {
         try {
             if (statement != null) {
                 statement.addBatch(DROPS + "reports");
-                statement.addBatch(DROPS + "work_objects");
+                statement.addBatch(DROPS + "work_position");
                 statement.addBatch(DROPS + "records");
                 statement.addBatch(DROPS + "accounts");
                 statement.addBatch(ACCOUNTS);

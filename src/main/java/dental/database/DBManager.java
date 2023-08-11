@@ -20,7 +20,7 @@ public class DBManager {
      *         {@linkplain DBConfig#DB_LOGIN user} and {@linkplain DBConfig#DB_PASSWORD password}.
      */
     private static Connection doConnection() {
-        try{
+        try {
             return DriverManager.getConnection(DBConfig.getProp(DBConfig.DB_URL),
                     DBConfig.getProp(DBConfig.DB_LOGIN),
                     DBConfig.getProp(DBConfig.DB_PASSWORD));
@@ -31,8 +31,8 @@ public class DBManager {
     }
 
     public static Statement getStatement() {
-        try (Statement statement = doConnection().createStatement()) {
-            return statement;
+        try {
+            return doConnection().createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
         }

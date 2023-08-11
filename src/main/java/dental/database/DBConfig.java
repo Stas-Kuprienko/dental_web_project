@@ -14,7 +14,7 @@ public class DBConfig {
     /**
      * The properties file with the url, user and password values.
      */
-    private static Properties prop;
+    private static Properties prop = new Properties();
     public static final String PROPERTIES_FILE = "connect.properties";
 
     /**
@@ -24,7 +24,7 @@ public class DBConfig {
      */
     public static String getProp(String name) {
         if (prop.isEmpty()) {
-            try (InputStream input = getInputStream()) {
+            try (InputStream input = DBConfig.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
                 prop.load(input);
             } catch (IOException e) {
                 //TODO to make loggers
