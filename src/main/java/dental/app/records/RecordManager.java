@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class RecordManager {
 
     /**
-     * The {@link ArrayList list} of {@link Record} objects for account.
+     * The {@link ArrayList list} of the unclosed {@link Record} objects for account.
      */
     private final ArrayList<Record> records;
 
@@ -28,7 +28,7 @@ public class RecordManager {
      * @param title The title of the work type.
      * @param price The price of the work type.
      */
-    public void putWorkType(String title, int price) {
+    public void addWorkType(String title, int price) {
         if ((title == null || title.isEmpty()) || (price < 1)) {
             return;
         }
@@ -41,10 +41,9 @@ public class RecordManager {
      * @param quantity The quantity of the work items.
      * @return The {@link Work} object.
      */
-    public Work createWorkObject(String title, byte quantity)
-            throws IllegalArgumentException {
+    public Work createWorkObject(String title, byte quantity) {
         if (((title == null) || title.isEmpty())) {
-            throw new IllegalArgumentException();
+            return null;
         } else {
             return new Work(title, quantity, workTypes.get(title));
         }
@@ -73,7 +72,6 @@ public class RecordManager {
             return null;
         }
         Record record = new Record(patient, clinic, complete);
-        //TODO
         this.records.add(record);
         return record;
     }
@@ -91,13 +89,7 @@ public class RecordManager {
         if ((patient == null||patient.isEmpty())||(clinic == null||clinic.isEmpty())||(workType == null||workType.isEmpty())) {
             return null;
         }
-        Work work;
-        try {
-            work = createWorkObject(workType, quantity);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Work work = createWorkObject(workType, quantity);
         Record record = new Record(patient, clinic, work, complete);
         this.records.add(record);
         return record;
@@ -111,11 +103,8 @@ public class RecordManager {
      * @return  True if it was successful.
      */
     public boolean addWorkInRecord(Record record, String title, byte quantity) {
-        Work work;
-        try {
-            work = createWorkObject(title, quantity);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        Work work = createWorkObject(title, quantity);
+        if (work == null) {
             return false;
         }
         return record.getWorks().add(work);
@@ -129,7 +118,7 @@ public class RecordManager {
      * @return
      */
     public boolean editWorkQuantity(Record record, String title, byte quantity) {
-        return new WorkTool(this, record).editWorkQuantity(title, quantity);
+        return new WorkEditor(this, record).editWorkQuantity(title, quantity);
     }
 
     /**
@@ -139,7 +128,7 @@ public class RecordManager {
      * @return
      */
     public boolean removeWorkFromRecord(Record record, String title) {
-        return new WorkTool(this, record).removeWork(title);
+        return new WorkEditor(this, record).removeWork(title);
     }
 
 
