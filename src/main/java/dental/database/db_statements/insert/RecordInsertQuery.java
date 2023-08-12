@@ -36,7 +36,6 @@ public class RecordInsertQuery implements IQuery {
         String query = String.format(SAMPLE,
                 this.accountID, this.recordId, this.patient, this.clinic, this.complete, this.accepted, this.closed);
 
-        //TODO confirmation
         doQuery(query);
         ArrayList<Work> works = record.getWorks();
         if ((works != null) && (!works.isEmpty())) {

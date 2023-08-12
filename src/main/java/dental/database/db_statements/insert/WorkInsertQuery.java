@@ -25,7 +25,6 @@ public class WorkInsertQuery implements IQuery {
 
         String query = String.format(SAMPLE, this.recordID, this.title, this.quantity, this.price);
 
-        //TODO confirmation
         doQuery(query);
     }
 

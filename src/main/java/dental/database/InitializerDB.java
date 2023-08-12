@@ -10,7 +10,7 @@ public class InitializerDB {
     public static final String ACCOUNTS = """
             CREATE TABLE mydb.accounts (
                 id INT NOT NULL,
-                login VARCHAR(30) NOT NULL,
+                login VARCHAR(15) NOT NULL,
                 PRIMARY KEY (id)
                 );""";
 
@@ -19,8 +19,8 @@ public class InitializerDB {
             	account_id INT NOT NULL,
             	FOREIGN KEY(account_id) REFERENCES mydb.accounts(id) ON DELETE CASCADE,
             	id INT NOT NULL,
-            	patient VARCHAR(30),
-            	clinic VARCHAR(30),
+            	patient VARCHAR(20),
+            	clinic VARCHAR(20),
             	complete DATE,
             	accepted DATE NOT NULL,
             	closed BOOLEAN,
@@ -30,7 +30,7 @@ public class InitializerDB {
     public static final String WORKS_OBJECTS = """
             CREATE TABLE mydb.work_position (
             	record_id INT NOT NULL,
-                title VARCHAR(30) NOT NULL,
+                title VARCHAR(15) NOT NULL,
                 quantity SMALLINT,
                 price INT NOT NULL,
                 FOREIGN KEY(record_id) REFERENCES mydb.records(id) ON DELETE CASCADE

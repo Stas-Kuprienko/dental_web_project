@@ -21,7 +21,6 @@ public class AccountInsertQuery implements IQuery {
 
         String query = String.format(SAMPLE, accountID, login);
 
-        //TODO confirmation
         doQuery(query);
     }
 }

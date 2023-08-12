@@ -9,13 +9,13 @@ public interface IQuery {
 
     Statement state = DBManager.getStatement();
 
-    default void doQuery(String query) {
-        try {
-            if (IQuery.state != null) {
-                IQuery.state.execute(query);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    default void doQuery(String query) throws SQLException {
+
+        if (IQuery.state != null) {
+
+            IQuery.state.execute(query);
         }
+        else throw new SQLException("Statement is null");
     }
+
 }
