@@ -44,9 +44,9 @@ public class Account implements Serializable, Extractable {
      *  in which the string month is used as the Key,
      *   and value is the Report object.
      */
-    private HashMap<String, HashMap<String, TableReport>> reports;
+    private HashMap<String, HashMap<String, TableReport>> reports; //TODO remove from here
 
-    private String reportTableTitle;
+    private HashMap<String, String> reportTableTitles;
 
     /**
      * Create a new Account object.
@@ -65,7 +65,7 @@ public class Account implements Serializable, Extractable {
         this.name = name;
         this.login = login;
         this.password = Authenticator.passwordHash(password);
-        this.reports = new HashMap<>();
+        this.reportTableTitles = new HashMap<>();
     }
 
     @Override
@@ -124,11 +124,11 @@ public class Account implements Serializable, Extractable {
         return reports;
     }
 
-    public String getReportTableTitle() {
-        return reportTableTitle;
+    public HashMap<String, String> getReportTableTitles() {
+        return reportTableTitles;
     }
 
-    public void setReportTableTitle(String reportTableTitle) {
-        this.reportTableTitle = reportTableTitle;
+    public void setReportTableTitle(String monthNYear, String reportTitle) {
+        this.reportTableTitles.put(monthNYear, reportTitle);
     }
 }
