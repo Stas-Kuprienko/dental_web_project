@@ -5,6 +5,9 @@ import dental.database.DBManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * The class for extending SQL query classes.
+ */
 public class IQuery {
 
     private final Statement state = DBManager.getStatement();
