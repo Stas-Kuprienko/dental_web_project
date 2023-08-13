@@ -5,7 +5,7 @@ import dental.database.db_statements.IQuery;
 
 import java.sql.SQLException;
 
-public class AccountInsertQuery implements IQuery {
+public class AccountInsertQuery extends IQuery {
 
     final Account account;
 

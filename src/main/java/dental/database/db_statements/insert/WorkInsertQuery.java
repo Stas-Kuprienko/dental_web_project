@@ -5,7 +5,7 @@ import dental.database.db_statements.IQuery;
 
 import java.sql.SQLException;
 
-public class WorkInsertQuery implements IQuery {
+public class WorkInsertQuery extends IQuery {
 
     final Work work;
 

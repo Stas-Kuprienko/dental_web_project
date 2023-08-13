@@ -2,13 +2,14 @@ package dental.database.db_statements.insert;
 
 import dental.app.records.Record;
 import dental.app.records.Work;
+import dental.app.userset.Account;
 import dental.database.DBManager;
 import dental.database.db_statements.IQuery;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class RecordInsertQuery implements IQuery {
+public class RecordInsertQuery extends IQuery {
 
     final Record record;
 
@@ -23,9 +24,9 @@ public class RecordInsertQuery implements IQuery {
     final String SAMPLE =
       "INSERT INTO records (account_id, id, patient, clinic, complete, accepted, closed) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s);";
 
-    public RecordInsertQuery(int accountID, Record record) throws SQLException {
+    public RecordInsertQuery(Account account, Record record) throws SQLException {
         this.record = record;
-        this.accountID = accountID;
+        this.accountID = account.hashCode();
         this.patient = record.getPatient();
         this.clinic = record.getClinic();
         this.complete = record.getComplete().format(DBManager.SQL_DATE_FORMAT);

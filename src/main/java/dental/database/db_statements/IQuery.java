@@ -5,15 +5,21 @@ import dental.database.DBManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public interface IQuery {
+public class IQuery {
 
-    Statement state = DBManager.getStatement();
+    private final Statement state = DBManager.getStatement();
 
-    default void doQuery(String query) throws SQLException {
+    /**
+     * Execute the given SQL statement to a DB.
+     * @param query The required query string.
+     * @throws SQLException If a database access error occurs or
+     * this method is called on a closed {@code Statement}.
+     */
+    protected void doQuery(String query) throws SQLException {
 
-        if (IQuery.state != null) {
+        if (state != null) {
 
-            IQuery.state.execute(query);
+            state.execute(query);
         }
         else throw new SQLException("Statement is null");
     }
