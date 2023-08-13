@@ -38,6 +38,7 @@ public class ReportTableCreator extends IQuery {
             resultQuery.append(String.format(",\n\t%s INT DEFAULT 0", s));
         } resultQuery.append("\n\t);");
 
+        account.setReportTableTitle(reportTitle);
         return resultQuery.toString();
     }
 

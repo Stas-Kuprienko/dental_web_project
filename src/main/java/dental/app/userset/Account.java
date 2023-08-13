@@ -46,6 +46,8 @@ public class Account implements Serializable, Extractable {
      */
     private HashMap<String, HashMap<String, TableReport>> reports;
 
+    private String reportTableTitle;
+
     /**
      * Create a new Account object.
      * @param name     The user name.
@@ -122,4 +124,11 @@ public class Account implements Serializable, Extractable {
         return reports;
     }
 
+    public String getReportTableTitle() {
+        return reportTableTitle;
+    }
+
+    public void setReportTableTitle(String reportTableTitle) {
+        this.reportTableTitle = reportTableTitle;
+    }
 }
