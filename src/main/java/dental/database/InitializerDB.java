@@ -50,19 +50,17 @@ public class InitializerDB {
             	);""";
 
     static {
-        Statement statement = DBManager.getStatement();
         try {
-            if (statement != null) {
-                statement.addBatch(DROPS + "reports");
-                statement.addBatch(DROPS + "work_position");
-                statement.addBatch(DROPS + "records");
-                statement.addBatch(DROPS + "accounts");
-                statement.addBatch(ACCOUNTS);
-                statement.addBatch(RECORDS);
-                statement.addBatch(WORKS_OBJECTS);
-                statement.addBatch(REPORTS);
-                statement.executeBatch();
-            } else throw new SQLException();
+            Statement statement = DBManager.getStatement();
+            statement.addBatch(DROPS + "reports");
+            statement.addBatch(DROPS + "work_position");
+            statement.addBatch(DROPS + "records");
+            statement.addBatch(DROPS + "accounts");
+            statement.addBatch(ACCOUNTS);
+            statement.addBatch(RECORDS);
+            statement.addBatch(WORKS_OBJECTS);
+            statement.addBatch(REPORTS);
+            statement.executeBatch();
         } catch (SQLException e) {
             //TODO loggers
             throw new RuntimeException(e);

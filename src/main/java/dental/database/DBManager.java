@@ -30,13 +30,8 @@ public class DBManager {
         }
     }
 
-    public static Statement getStatement() {
-        try {
-            return doConnection().createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static Statement getStatement() throws SQLException {
+        return doConnection().createStatement();
     }
 
 }
