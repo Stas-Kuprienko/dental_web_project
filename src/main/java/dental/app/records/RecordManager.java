@@ -24,6 +24,20 @@ public class RecordManager {
 
 
     /**
+     * Create a new {@link Work} object for entry a record.
+     * @param title  The title of the work type.
+     * @param quantity The quantity of the work items.
+     * @return The {@link Work} object.
+     */
+    private Work createWorkObject(String title, byte quantity) {
+        if (((title == null) || title.isEmpty())) {
+            return null;
+        } else {
+            return new Work(title, quantity, workTypes.get(title));
+        }
+    }
+
+    /**
      * Enter the type of work in the HashMap.
      * @param title The title of the work type.
      * @param price The price of the work type.
@@ -33,20 +47,6 @@ public class RecordManager {
             return;
         }
         workTypes.put(title, price);
-    }
-
-    /**
-     * Make a new {@link Work} object for entry a record.
-     * @param title  The title of the work type.
-     * @param quantity The quantity of the work items.
-     * @return The {@link Work} object.
-     */
-    public Work createWorkObject(String title, byte quantity) {
-        if (((title == null) || title.isEmpty())) {
-            return null;
-        } else {
-            return new Work(title, quantity, workTypes.get(title));
-        }
     }
 
     /**
@@ -102,7 +102,7 @@ public class RecordManager {
      * @param quantity The quantity of the work items.
      * @return  True if it was successful.
      */
-    public boolean addWorkInRecord(Record record, String title, byte quantity) {
+    public boolean addWorkPosition(Record record, String title, byte quantity) {
         Work work = createWorkObject(title, quantity);
         if (work == null) {
             return false;
@@ -111,24 +111,24 @@ public class RecordManager {
     }
 
     /**
-     *
-     * @param record
-     * @param title
-     * @param quantity
-     * @return
+     * Edit quantity of the {@link Work} object in the {@link Record}.
+     * @param record   The {@link Record} object to edit.
+     * @param title    The title of the work type to edit.
+     * @param quantity New quantity value.
+     * @return True if the edit was successful.
      */
     public boolean editWorkQuantity(Record record, String title, byte quantity) {
-        return new WorkEditor(this, record).editWorkQuantity(title, quantity);
+        return new WorkPositionEditor(this, record).editWorkQuantity(title, quantity);
     }
 
     /**
-     *
-     * @param record
-     * @param title
-     * @return
+     * Remove the {@link Work} object in the {@link Record}.
+     * @param record The {@link Record} objects to do.
+     * @param title  The title of the work type to remove.
+     * @return True if it was successful.
      */
     public boolean removeWorkFromRecord(Record record, String title) {
-        return new WorkEditor(this, record).removeWork(title);
+        return new WorkPositionEditor(this, record).removeWork(title);
     }
 
 

@@ -2,7 +2,7 @@ package dental.app.records;
 
 import dental.app.userset.Account;
 
-class WorkEditor {
+class WorkPositionEditor {
 
     /**
      * The {@link Record} object to manipulating.
@@ -19,37 +19,37 @@ class WorkEditor {
      * @param recordManager The current user {@link Account account} {@link RecordManager} object.
      * @param record        The {@link Record} object to manipulating.
      */
-    WorkEditor(RecordManager recordManager, Record record) {
+    WorkPositionEditor(RecordManager recordManager, Record record) {
         this.recordManager = recordManager;
         this.record = record;
     }
 
     /**
-     *
-     * @param title
-     * @param quantity
-     * @return
+     * Edit quantity of the {@link Work} object in the {@link Record}.
+     * @param title    The title of the work type to edit.
+     * @param quantity New quantity value.
+     * @return True if the edit was successful.
      */
     boolean editWorkQuantity(String title, byte quantity) {
         if (!(removeWork(title))) {
             return false;
         }
-        return recordManager.addWorkInRecord(record, title, quantity);
+        return recordManager.addWorkPosition(record, title, quantity);
     }
 
     /**
-     *
-     * @param title
-     * @return
+     * Remove the {@link Work} object in the {@link Record}.
+     * @param title  The title of the work type to remove.
+     * @return True if it was successful.
      */
     boolean removeWork(String title) {
         return record.getWorks().remove(getWork(title));
     }
 
     /**
-     *
-     * @param title
-     * @return
+     * Find the {@link Work} object in {@link Record} by title.
+     * @param title The title String of the required work position.
+     * @return The required {@link Work} object, if such exists, or null.
      */
     private Work getWork(String title) {
         for (Work w : record.getWorks()) {
