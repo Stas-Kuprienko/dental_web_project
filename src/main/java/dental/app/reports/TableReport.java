@@ -1,4 +1,6 @@
-package dental.app.records;
+package dental.app.reports;
+
+import dental.app.records.Record;
 
 import java.io.Serializable;
 import java.util.ArrayList;

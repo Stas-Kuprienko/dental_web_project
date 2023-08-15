@@ -2,7 +2,7 @@ package dental.app.userset;
 
 import dental.app.records.Record;
 import dental.app.records.RecordManager;
-import dental.app.records.TableReport;
+import dental.app.reports.TableReport;
 import dental.filetools.Extractable;
 
 import java.io.Serializable;
