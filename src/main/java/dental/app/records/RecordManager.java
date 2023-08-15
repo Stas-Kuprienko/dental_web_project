@@ -11,54 +11,14 @@ public class RecordManager {
      */
     private final ArrayList<Record> records;
 
-    /**
-     * The {@link HashMap map} of the work types and prices.
-     */
-    private final HashMap<String, Integer> workTypes;
+    public final WorkTypeTool workTool;
 
 
     public RecordManager() {
         this.records = new ArrayList<>();
-        this.workTypes = new HashMap<>();
+        this.workTool = new WorkTypeTool();
     }
 
-
-    /**
-     * Create a new {@link Work} object for entry a record.
-     * @param title  The title of the work type.
-     * @param quantity The quantity of the work items.
-     * @return The {@link Work} object.
-     */
-    private Work createWorkObject(String title, byte quantity) {
-        if (((title == null) || title.isEmpty())) {
-            return null;
-        } else {
-            return new Work(title, quantity, workTypes.get(title));
-        }
-    }
-
-    /**
-     * Enter the type of work in the HashMap.
-     * @param title The title of the work type.
-     * @param price The price of the work type.
-     */
-    public void addWorkType(String title, int price) {
-        if ((title == null || title.isEmpty()) || (price < 1)) {
-            return;
-        }
-        workTypes.put(title, price);
-    }
-
-    /**
-     * Remove the type of work from the {@linkplain RecordManager#workTypes works}
-     *  by a {@linkplain java.util.HashMap#get(Object) key}.
-     * @param title The title of the work type as a Key
-     * @return True if the Key of the work type removed
-     * or false if no such element
-     */
-    public boolean removeWorkType(String title) {
-        return workTypes.remove(title) != null;
-    }
 
     /**
      * Create a new {@link Record} object and add it in user's list.
@@ -89,7 +49,7 @@ public class RecordManager {
         if ((patient == null||patient.isEmpty())||(clinic == null||clinic.isEmpty())||(workType == null||workType.isEmpty())) {
             return null;
         }
-        Work work = createWorkObject(workType, quantity);
+        Work work = workTool.createWorkObject(workType, quantity);
         Record record = new Record(patient, clinic, work, complete);
         this.records.add(record);
         return record;
@@ -103,7 +63,7 @@ public class RecordManager {
      * @return  True if it was successful.
      */
     public boolean addWorkPosition(Record record, String title, byte quantity) {
-        Work work = createWorkObject(title, quantity);
+        Work work = workTool.createWorkObject(title, quantity);
         if (work == null) {
             return false;
         }
@@ -137,6 +97,6 @@ public class RecordManager {
     }
 
     public HashMap<String, Integer> getWorkTypes() {
-        return this.workTypes;
+        return workTool.getWorkTypes();
     }
 }
