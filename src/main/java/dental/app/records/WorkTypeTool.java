@@ -52,6 +52,21 @@ class WorkTypeTool {
     }
 
 
+    /**
+     * Find the {@link Work} object in {@link Record} by title.
+     * @param title The title String of the required work position.
+     * @return The required {@link Work} object, if such exists, or null.
+     */
+    protected Work getWork(Record record, String title) {
+        for (Work w : record.getWorks()) {
+            if (w.title().equalsIgnoreCase(title)) {
+                return w;
+            }
+        }
+        return null;
+    }
+
+
 
     public HashMap<String, Integer> getWorkTypes() {
         return workTypes;

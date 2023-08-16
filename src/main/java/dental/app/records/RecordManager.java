@@ -78,7 +78,8 @@ public class RecordManager {
      * @return True if the edit was successful.
      */
     public boolean editWorkQuantity(Record record, String title, byte quantity) {
-        return new WorkPositionEditor(this, record).editWorkQuantity(title, quantity);
+        removeWorkPosition(record, title);
+        return record.getWorks().add(workTool.createWorkObject(title, quantity));
     }
 
     /**
@@ -87,8 +88,8 @@ public class RecordManager {
      * @param title  The title of the work type to remove.
      * @return True if it was successful.
      */
-    public boolean removeWorkFromRecord(Record record, String title) {
-        return new WorkPositionEditor(this, record).removeWork(title);
+    public boolean removeWorkPosition(Record record, String title) {
+        return record.getWorks().remove(workTool.getWork(record, title));
     }
 
 
