@@ -1,21 +1,20 @@
 package dental.app.records;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RecordManager {
 
     /**
-     * The {@link ArrayList list} of the unclosed {@link Record} objects for account.
+     * The {@link CollectRecords list} of the unclosed {@link Record} objects for account.
      */
-    private final ArrayList<Record> records;
+    public final CollectRecords records;
 
     public final WorkTypeTool workTool;
 
 
     public RecordManager() {
-        this.records = new ArrayList<>();
+        this.records = new CollectRecords();
         this.workTool = new WorkTypeTool();
     }
 
@@ -92,10 +91,6 @@ public class RecordManager {
         return record.getWorks().remove(workTool.getWork(record, title));
     }
 
-
-    public ArrayList<Record> getRecords() {
-        return this.records;
-    }
 
     public HashMap<String, Integer> getWorkTypes() {
         return workTool.getWorkTypes();
