@@ -1,5 +1,6 @@
 package dental.database.db_statements.insert;
 
+import dental.app.records.MyList;
 import dental.app.records.Record;
 import dental.app.records.Work;
 import dental.app.userset.Account;
@@ -38,7 +39,7 @@ public class RecordInsertQuery extends IQuery {
                 this.accountID, this.recordId, this.patient, this.clinic, this.complete, this.accepted, this.closed);
 
         doQuery(query);
-        ArrayList<Work> works = record.getWorks();
+        MyList<Work> works = record.getWorks();
         if ((works != null) && (!works.isEmpty())) {
             for (Work w : works) {
                 new WorkInsertQuery(recordId, w);

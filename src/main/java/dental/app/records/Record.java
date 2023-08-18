@@ -27,7 +27,7 @@ public class Record implements Serializable {
     /**
      * The {@link Work} objects containing type, price and number of the items.
      */
-    private ArrayList<Work> works;
+    private MyList<Work> works;
 
     /**
      * The completion date of the work
@@ -54,7 +54,7 @@ public class Record implements Serializable {
     Record(String patient, String clinic, LocalDate complete) {
         this.patient = patient;
         this.clinic = clinic;
-        this.works = new ArrayList<>(5);
+        this.works = new MyList<>(5);
         this.complete = complete;
         this.accepted = LocalDate.now();
         this.closed = false;
@@ -70,7 +70,7 @@ public class Record implements Serializable {
     Record(String patient, String clinic, Work work, LocalDate complete) {
         this.patient = patient;
         this.clinic = clinic;
-        this.works = new ArrayList<>(5);
+        this.works = new MyList<>(5);
         works.add(work);
         this.complete = complete;
         this.accepted = LocalDate.now();
@@ -120,11 +120,11 @@ public class Record implements Serializable {
         this.clinic = clinic;
     }
 
-    public ArrayList<Work> getWorks() {
+    public MyList<Work> getWorks() {
         return works;
     }
 
-    public void setWorks(ArrayList<Work> works) {
+    public void setWorks(MyList<Work> works) {
         this.works = works;
     }
 

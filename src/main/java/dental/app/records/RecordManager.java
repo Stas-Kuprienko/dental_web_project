@@ -3,18 +3,18 @@ package dental.app.records;
 import java.time.LocalDate;
 import java.util.HashMap;
 
-public class RecordManager {
+public final class RecordManager {
 
     /**
-     * The {@link CollectRecords list} of the unclosed {@link Record} objects for account.
+     * The {@link MyList list} of the unclosed {@link Record} objects for account.
      */
-    public final CollectRecords records;
+    public final MyList<Record> records;
 
     public final WorkTypeTool workTool;
 
 
     public RecordManager() {
-        this.records = new CollectRecords();
+        this.records = new MyList<>();
         this.workTool = new WorkTypeTool();
     }
 
