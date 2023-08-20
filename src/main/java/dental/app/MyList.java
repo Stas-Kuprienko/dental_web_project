@@ -1,6 +1,7 @@
 package dental.app;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -33,15 +34,12 @@ public class MyList<E> implements Collection<E>, Serializable {
         return size == 0;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean contains(Object o) {
-        try {
-            E e = (E) o;
-            return indexOf(e) >= 0;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return false;
-        }
+        E e = (E) o;
+        return indexOf(e) >= 0;
+
     }
 
     public int indexOf(E element) {
@@ -64,7 +62,7 @@ public class MyList<E> implements Collection<E>, Serializable {
         return Arrays.copyOf(elements, size);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     @Override
     public <T> T[] toArray(T[] a) {
         if (a.length < size) {
@@ -84,103 +82,65 @@ public class MyList<E> implements Collection<E>, Serializable {
         return true;
     }
 
-    private E[] grow(E[] arr) {
-        @SuppressWarnings("unchecked")
-        E[] result = (E[]) new Object[size << 1];
-        System.arraycopy(arr, 0, result, 0, arr.length);
-        return result;
-    }
-
     @Override
     public boolean remove(Object o) {
         if (o == null) {
-            new NullPointerException().printStackTrace();
-            return false;
+            throw new NullPointerException();
         }
-        try {
-            E e = (E) o;
-            for (int i = 0; i < size; i++)
-                if (e.equals(elements[i])) {
-                    fastRemove(i);
-                    break;
-                }
-            return true;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private void fastRemove(int i) {
-        size -= 1;
-        if (size > i) {
-            System.arraycopy(elements, i + 1, elements, i, size - i);
-        }
+        @SuppressWarnings("unchecked")
+        E e = (E) o;
+        for (int i = 0; i < size; i++)
+            if (e.equals(elements[i])) {
+                fastRemove(i);
+                break;
+            }
+        return true;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        try {
-            for (Object o : c) {
-                if (!(contains(o))) {
-                    return false;
-                }
-            } return true;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return false;
+        for (Object o : c) {
+            if (!(contains(o))) {
+                return false;
+            }
         }
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        try {
-            @SuppressWarnings("unchecked")
-            MyList<E> list = (MyList<E>) c;
-            for (E e : list) {
-                if (!(add(e))) {
-                    return false;
-                }
+        @SuppressWarnings("unchecked")
+        MyList<E> list = (MyList<E>) c;
+        for (E e : list) {
+            if (!(add(e))) {
+                return false;
             }
-            return true;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return false;
         }
+        return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        try {
-            @SuppressWarnings("unchecked")
-            MyList<E> list = (MyList<E>) c;
-            for (E e : list) {
-                if (!(remove(e))) {
-                    return false;
-                }
+        @SuppressWarnings("unchecked")
+        MyList<E> list = (MyList<E>) c;
+        for (E e : list) {
+            if (!(remove(e))) {
+                return false;
             }
-            return true;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return false;
         }
+        return true;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        try {
-            @SuppressWarnings("unchecked")
-            MyList<E> list = (MyList<E>) c;
-            for (E e : elements) {
-                if (!(list.contains(e))) {
-                    remove(e);
-                }
+        @SuppressWarnings("unchecked")
+        MyList<E> list = (MyList<E>) c;
+        for (E e : elements) {
+            if (!(list.contains(e))) {
+                remove(e);
             }
-            return true;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return false;
         }
+        return true;
     }
 
     @SuppressWarnings("unchecked")
@@ -195,11 +155,42 @@ public class MyList<E> implements Collection<E>, Serializable {
         return new MyIterator();
     }
 
+    /**
+     * Search for an object in {@link MyList} using the String comparing with a getter value.
+     * @param getter A getter method that returns String value of the searchable object.
+     * @param sample A sample String value for search.
+     * @param clas   A class of searchable object.
+     * @return  The {@link MyList list} of the relevant objects.
+     * @throws Exception If something goes wrong.
+     */
+    @SuppressWarnings("rawtypes")
+    public MyList<E> searchByString(Searchable getter, String sample, Class clas) throws Exception {
+        Searcher searcher = new Searcher(clas);
+        searcher.search(getter.toString(), sample);
+        return searcher.relevant;
+    }
+
     @Override
     public String toString() {
         Object[] arr = Arrays.copyOf(elements, size);
         return Arrays.toString(arr);
     }
+
+    private E[] grow(E[] arr) {
+        @SuppressWarnings("unchecked")
+        E[] result = (E[]) new Object[size << 1];
+        System.arraycopy(arr, 0, result, 0, arr.length);
+        return result;
+    }
+
+    private void fastRemove(int i) {
+        size -= 1;
+        if (size > i) {
+            System.arraycopy(elements, i + 1, elements, i, size - i);
+        }
+    }
+
+    public interface Searchable {}
 
     private class MyIterator implements Iterator<E> {
 
@@ -229,29 +220,37 @@ public class MyList<E> implements Collection<E>, Serializable {
         }
     }
 
-    class Searcher {
+    @SuppressWarnings("all")
+     // The class used by MyList.searchByString(String, String, Class) the search method.
+    private class Searcher {
 
         private final MyList<E> relevant;
 
-        Searcher() {
+        // the class type of the searchable object.
+        private final Class clas;
 
+        private Searcher(Class clas) {
             this.relevant = new MyList<>();
+            this.clas = (clas);
         }
 
-        public void search(String sequence) {
-            int i = 0, f = 0;
-            for (; i < size; i++) {
-                if (elements[i].toString().contains(sequence)) {
-                    this.relevant.add(elements[i]);
-                    f++;
+        private Method getMethod(String getter) throws NoSuchMethodException {
+            //get the method of the searched object used to get a comparable value.
+            return clas.getMethod(getter);
+        }
+
+        private void search(String getter, String sample) throws Exception {
+            for (E e : elements) {
+                if (e == null) {
+                    break;
+                }
+                //get string value of object getter method.
+                String s = (String)getMethod(getter).invoke(e, null);
+                if (s.equalsIgnoreCase(sample)) {
+                    this.relevant.add(e);
                 }
             }
         }
-
-        public MyList<E> getRelevant() {
-            return this.relevant;
-        }
-
     }
 
 }

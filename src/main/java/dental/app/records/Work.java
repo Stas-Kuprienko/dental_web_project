@@ -1,5 +1,7 @@
 package dental.app.records;
 
+import dental.app.MyList;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -16,7 +18,11 @@ public record Work (String title, byte quantity, int price) implements Serializa
         return quantity * price;
     }
 
-    @Override
+    public enum SearchBy implements MyList.Searchable {
+        title
+    }
+
+        @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

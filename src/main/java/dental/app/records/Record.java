@@ -78,6 +78,13 @@ public class Record implements Serializable {
         this.closed = false;
     }
 
+    /**
+     * Methods that using for {@linkplain MyList#searchByString(dental.app.MyList.Searchable, String, Class) searching} objects.
+     */
+    public enum SearchBy implements MyList.Searchable {
+        getPatient, getClinic
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
