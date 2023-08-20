@@ -1,34 +1,25 @@
 package dental.app.reports;
 
+import dental.app.MyList;
 import dental.app.records.Record;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * The Report class represent an object containing data about {@link Record records} for a certain month.
- * Has the fields {@code month,year} and {@link ArrayList} with a {@link Record records}.
+ * Has the fields {@code month,year} and {@link MyList} with a {@link Record records}.
  * Implements {@link java.io.Serializable} because it is an object of information,
  *  and instances must be storable in memory.
  * Has no methods except for getters and setters.
  */
 public class TableReport implements Serializable {
 
-    /**
-     * The month of the report
-     */
     private String month;
 
-    /**
-     * The year of the report
-     */
     private String year;
 
-    /**
-     * The list of {@link Record records} for a given month
-     */
-    private transient final ArrayList<Record> records;
+    private final MyList<Record> records;
 
     /**
      * Create a Report object for the given month and year
@@ -36,7 +27,7 @@ public class TableReport implements Serializable {
      * @param year    The year of this report
      * @param records The {@link Record recordItems} list for the given month
      */
-    TableReport(String month, String year, ArrayList<Record> records) {
+    TableReport(String month, String year, MyList<Record> records) {
         this.month = month;
         this.year = year;
         this.records = records;
@@ -84,7 +75,7 @@ public class TableReport implements Serializable {
         this.year = year;
     }
 
-    public ArrayList<Record> getRecords() {
+    public MyList<Record> getRecords() {
         return records;
     }
 }

@@ -3,7 +3,8 @@ package dental.database;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class InitializerDB {
+public final class InitializerDB {
+    private InitializerDB() {}
 
     public static final String DROPS = "DROP TABLE IF EXISTS mydb.";
 

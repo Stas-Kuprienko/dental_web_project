@@ -1,6 +1,5 @@
 package dental.app.userset;
 
-import dental.app.records.Record;
 import dental.app.records.RecordManager;
 import dental.app.reports.TableReport;
 import dental.filetools.Extractable;
@@ -12,29 +11,14 @@ import java.util.Objects;
 
 public class Account implements Serializable, Extractable {
 
-    /**
-     * The name of the user.
-     */
     private String name;
 
-    /**
-     * The login for the user access.
-     */
     private String login;
 
-    /**
-     * MessageDigest MD5 hash of the user password.
-     */
     private byte[] password;
 
-    /**
-     * The {@link LocalDate date} the account was created. Auto-generates.
-     */
     private final LocalDate created;
 
-    /**
-     * The RecordManager object for manipulating {@link Record records}.
-     */
     public final RecordManager recordManager;
 
     /**

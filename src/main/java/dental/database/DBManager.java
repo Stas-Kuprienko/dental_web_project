@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * The class for creating a database {@link Connection connection}.
  */
-public class DBManager {
+public final class DBManager {
     private DBManager() {}
 
     public static final DateTimeFormatter SQL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-LL-dd");

@@ -18,6 +18,9 @@ public record Work (String title, byte quantity, int price) implements Serializa
         return quantity * price;
     }
 
+    /**
+     * Methods that using for {@linkplain MyList#searchByString(dental.app.MyList.Searchable, String, Class) searching} objects.
+     */
     public enum SearchBy implements MyList.Searchable {
         title
     }

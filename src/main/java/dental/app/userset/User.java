@@ -1,6 +1,6 @@
 package dental.app.userset;
 
-public class User {
+public final class User {
 
     private User() {}
 

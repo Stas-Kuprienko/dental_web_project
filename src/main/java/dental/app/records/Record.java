@@ -15,34 +15,16 @@ import java.util.Objects;
  */
 public class Record implements Serializable {
 
-    /**
-     * The name or surname of the patient
-     */
     private String patient;
 
-    /**
-     * The clinic is consumer of the work
-     */
     private String clinic;
 
-    /**
-     * The {@link Work} objects containing type, price and number of the items.
-     */
     private MyList<Work> works;
 
-    /**
-     * The completion date of the work
-     */
     private LocalDate complete;
 
-    /**
-     * The acceptance date of the record.
-     */
     private final LocalDate accepted;
 
-    /**
-     * Is the work closed? If so, this record will be added to a report.
-     */
     private boolean closed;
 
 
@@ -153,6 +135,6 @@ public class Record implements Serializable {
     }
 
     public void setClosed(boolean closed) {
-        closed = closed;
+        this.closed = closed;
     }
 }

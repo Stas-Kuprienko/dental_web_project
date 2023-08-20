@@ -3,7 +3,7 @@ package dental.database;
 import java.io.*;
 import java.util.Properties;
 
-public class DBConfig {
+public final class DBConfig {
 
     private DBConfig() {}
 
@@ -14,7 +14,7 @@ public class DBConfig {
     /**
      * The properties file with the url, user and password values.
      */
-    private static Properties prop = new Properties();
+    private static final Properties prop = new Properties();
     public static final String PROPERTIES_FILE = "connect.properties";
 
     /**
