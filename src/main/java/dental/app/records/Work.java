@@ -34,7 +34,7 @@ public record Work (String title, byte quantity, int price) implements Serializa
         return "Work{" +
                 "title='" + title + '\'' +
                 ", quantity=" + quantity +
-                ", price=" + price +
+                ", price=" + countAmount() +
                 '}';
     }
 }

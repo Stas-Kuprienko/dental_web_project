@@ -1,5 +1,7 @@
 package dental.app.records;
 
+import dental.app.MyList;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -44,11 +46,11 @@ public final class RecordManager {
      * @param complete The completion {@link LocalDate date}.
      * @return  {@link Record} object.
      */
-    public Record createRecord(String patient, String clinic, String workType, byte quantity, LocalDate complete) {
+    public Record createRecord(String patient, String clinic, String workType, int quantity, LocalDate complete) {
         if ((patient == null||patient.isEmpty())||(clinic == null||clinic.isEmpty())||(workType == null||workType.isEmpty())) {
             return null;
         }
-        Work work = workTool.createWorkObject(workType, quantity);
+        Work work = workTool.createWorkObject(workType, (byte) quantity);
         Record record = new Record(patient, clinic, work, complete);
         this.records.add(record);
         return record;
@@ -61,8 +63,8 @@ public final class RecordManager {
      * @param quantity The quantity of the work items.
      * @return  True if it was successful.
      */
-    public boolean addWorkPosition(Record record, String title, byte quantity) {
-        Work work = workTool.createWorkObject(title, quantity);
+    public boolean addWorkPosition(Record record, String title, int quantity) {
+        Work work = workTool.createWorkObject(title, (byte) quantity);
         if (work == null) {
             return false;
         }
@@ -76,7 +78,7 @@ public final class RecordManager {
      * @param quantity New quantity value.
      * @return True if the edit was successful.
      */
-    public boolean editWorkQuantity(Record record, String title, byte quantity) {
+    public boolean editWorkQuantity(Record record, String title, int quantity) {
         removeWorkPosition(record, title);
         return record.getWorks().add(workTool.createWorkObject(title, quantity));
     }

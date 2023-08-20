@@ -1,6 +1,6 @@
 package dental.database.db_statements.insert;
 
-import dental.app.records.MyList;
+import dental.app.MyList;
 import dental.app.records.Record;
 import dental.app.records.Work;
 import dental.app.userset.Account;
@@ -8,7 +8,6 @@ import dental.database.DBManager;
 import dental.database.db_statements.IQuery;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class RecordInsertQuery extends IQuery {
 

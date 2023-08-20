@@ -2,7 +2,7 @@ package dental.app.records;
 
 import java.util.HashMap;
 
-class WorkTypeTool {
+public class WorkTypeTool {
 
     WorkTypeTool() {
         this.workTypes = new HashMap<>();
@@ -20,11 +20,11 @@ class WorkTypeTool {
      * @param quantity The quantity of the work items.
      * @return The {@link Work} object.
      */
-    protected Work createWorkObject(String title, byte quantity) {
+    protected Work createWorkObject(String title, int quantity) {
         if (((title == null) || title.isEmpty())) {
             return null;
         } else {
-            return new Work(title, quantity, workTypes.get(title));
+            return new Work(title,(byte) quantity, workTypes.get(title));
         }
     }
 

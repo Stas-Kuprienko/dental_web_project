@@ -1,6 +1,7 @@
-package dental.app.records;
+package dental.app;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -13,23 +14,23 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     private int size;
 
-    MyList() {
+    public MyList() {
         this(DEFAULT_CAPACITY);
     }
 
     @SuppressWarnings("unchecked")
-    MyList(int capacity) {
-        this.elements = (E[]) new Object[capacity];
+    public MyList(int capacity) {
+        elements = (E[]) new Object[capacity];
     }
 
     @Override
     public int size() {
-        return this.size;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return this.size == 0;
+        return size == 0;
     }
 
     @Override
@@ -43,10 +44,10 @@ public class MyList<E> implements Collection<E>, Serializable {
         }
     }
 
-    int indexOf(E element) {
+    public int indexOf(E element) {
         if (element != null) {
-            for (int i = 0; i < (this.elements.length - 1); i++) {
-                if (element.equals(this.elements[i])) {
+            for (int i = 0; i < (elements.length - 1); i++) {
+                if (element.equals(elements[i])) {
                     return i;
                 }
             }
@@ -54,37 +55,38 @@ public class MyList<E> implements Collection<E>, Serializable {
         return -1;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public E[] toArray() {
-        E[] result = (E[]) new Object[this.size - 1];
-        System.arraycopy(this.elements, 0, result, 0, this.size - 1);
-        return result;
+    public E get(int index) {
+        return elements[index];
     }
 
     @Override
-    @Deprecated
+    public E[] toArray() {
+        return Arrays.copyOf(elements, size);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public <T> T[] toArray(T[] a) {
-        if (a != null) {
-            int len = Math.min(a.length, this.size);
-            System.arraycopy(this.elements, 0, a, 0, len);
+        if (a.length < size) {
+            return (T[]) Arrays.copyOf(a, size, a.getClass());
         }
+        System.arraycopy(elements, 0, a, 0, size);
         return a;
     }
 
     @Override
     public boolean add(E element) {
-        if ((this.size - 1) == this.elements.length) {
-            this.elements = grow(this.elements);
+        if (size == elements.length) {
+            elements = grow(elements);
         }
-        this.elements[this.size] = element;
-        this.size += 1;
+        elements[size] = element;
+        size += 1;
         return true;
     }
 
     private E[] grow(E[] arr) {
         @SuppressWarnings("unchecked")
-        E[] result = (E[]) new Object[this.size << 1];
+        E[] result = (E[]) new Object[size << 1];
         System.arraycopy(arr, 0, result, 0, arr.length);
         return result;
     }
@@ -97,8 +99,8 @@ public class MyList<E> implements Collection<E>, Serializable {
         }
         try {
             E e = (E) o;
-            for (int i = 0; i < this.size; i++)
-                if (e.equals(this.elements[i])) {
+            for (int i = 0; i < size; i++)
+                if (e.equals(elements[i])) {
                     fastRemove(i);
                     break;
                 }
@@ -110,9 +112,9 @@ public class MyList<E> implements Collection<E>, Serializable {
     }
 
     private void fastRemove(int i) {
-        this.size -= 1;
-        if (this.size > i) {
-            System.arraycopy(this.elements, i + 1, this.elements, i, this.size - i);
+        size -= 1;
+        if (size > i) {
+            System.arraycopy(elements, i + 1, elements, i, size - i);
         }
     }
 
@@ -120,7 +122,7 @@ public class MyList<E> implements Collection<E>, Serializable {
     public boolean containsAll(Collection<?> c) {
         try {
             for (Object o : c) {
-                if (!(this.contains(o))) {
+                if (!(contains(o))) {
                     return false;
                 }
             } return true;
@@ -136,7 +138,7 @@ public class MyList<E> implements Collection<E>, Serializable {
             @SuppressWarnings("unchecked")
             MyList<E> list = (MyList<E>) c;
             for (E e : list) {
-                if (!(this.add(e))) {
+                if (!(add(e))) {
                     return false;
                 }
             }
@@ -153,7 +155,7 @@ public class MyList<E> implements Collection<E>, Serializable {
             @SuppressWarnings("unchecked")
             MyList<E> list = (MyList<E>) c;
             for (E e : list) {
-                if (!(this.remove(e))) {
+                if (!(remove(e))) {
                     return false;
                 }
             }
@@ -169,9 +171,9 @@ public class MyList<E> implements Collection<E>, Serializable {
         try {
             @SuppressWarnings("unchecked")
             MyList<E> list = (MyList<E>) c;
-            for (E e : this.elements) {
+            for (E e : elements) {
                 if (!(list.contains(e))) {
-                    this.remove(e);
+                    remove(e);
                 }
             }
             return true;
@@ -184,13 +186,19 @@ public class MyList<E> implements Collection<E>, Serializable {
     @SuppressWarnings("unchecked")
     @Override
     public void clear() {
-        this.size = 0;
-        this.elements = (E[]) new Object[DEFAULT_CAPACITY];
+        size = 0;
+        elements = (E[]) new Object[DEFAULT_CAPACITY];
     }
 
     @Override
     public Iterator<E> iterator() {
         return new MyIterator();
+    }
+
+    @Override
+    public String toString() {
+        Object[] arr = Arrays.copyOf(elements, size);
+        return Arrays.toString(arr);
     }
 
     private class MyIterator implements Iterator<E> {
@@ -247,7 +255,3 @@ public class MyList<E> implements Collection<E>, Serializable {
     }
 
 }
-
-
-
-
