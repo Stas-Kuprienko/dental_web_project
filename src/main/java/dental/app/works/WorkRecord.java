@@ -28,36 +28,17 @@ public class WorkRecord implements Serializable {
     private boolean closed;
 
 
-    /**
-     * Create the WorkRecord object.
-     * @param patient  The patient name or surname.
-     * @param clinic   The clinic is a consumer this record.
-     * @param complete The completion date of the work.
-     */
-    WorkRecord(String patient, String clinic, LocalDate complete) {
-        this.patient = patient;
-        this.clinic = clinic;
+    private WorkRecord() {
         this.products = new MyList<>(5);
-        this.complete = complete;
         this.accepted = LocalDate.now();
         this.closed = false;
     }
 
     /**
      * Create the WorkRecord object.
-     * @param patient  The patient name or surname.
-     * @param clinic   The clinic is a consumer this record.
-     * @param product     The {@link Product} object containing type, price and number of the items.
-     * @param complete The completion date of the product.
      */
-    WorkRecord(String patient, String clinic, Product product, LocalDate complete) {
-        this.patient = patient;
-        this.clinic = clinic;
-        this.products = new MyList<>(5);
-        products.add(product);
-        this.complete = complete;
-        this.accepted = LocalDate.now();
-        this.closed = false;
+    static Builder create() {
+        return new WorkRecord().new Builder();
     }
 
     /**
@@ -90,24 +71,42 @@ public class WorkRecord implements Serializable {
                 '}';
     }
 
-    /*                           ||
-            Getters and setters  \/
+    class Builder {
+
+        private Builder(){}
+
+        public Builder setPatient(String patient) {
+            WorkRecord.this.patient = patient == null||patient.isEmpty() ?
+                                      LocalDate.now().toString() : patient;
+            return this;
+        }
+
+        public Builder setClinic(String clinic) {
+            WorkRecord.this.clinic = clinic == null||clinic.isEmpty() ? "unknown" : clinic;
+            return this;
+        }
+
+        public Builder setComplete(LocalDate complete) {
+            WorkRecord.this.complete = complete;
+            return this;
+        }
+
+        public WorkRecord build() {
+            return WorkRecord.this;
+        }
+
+    }
+
+    /*               ||
+            Getters  \/
      */
 
     public String getPatient() {
         return patient;
     }
 
-    public void setPatient(String patient) {
-        this.patient = patient;
-    }
-
     public String getClinic() {
         return clinic;
-    }
-
-    public void setClinic(String clinic) {
-        this.clinic = clinic;
     }
 
     public MyList<Product> getProducts() {
@@ -118,15 +117,11 @@ public class WorkRecord implements Serializable {
         return complete;
     }
 
-    public void setComplete(LocalDate complete) {
-        this.complete = complete;
-    }
-
     public LocalDate getAccepted() {
         return accepted;
     }
 
-    public boolean isClosed() {
+    public boolean getClosed() {
         return closed;
     }
 

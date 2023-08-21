@@ -20,47 +20,30 @@ public final class RecordManager {
         this.produceTool = new ProduceTool();
     }
 
-
     /**
      * Create a new {@link WorkRecord} object and add it in user's list.
      * @param patient  The patient name/surname.
      * @param clinic   The clinic title.
+     * @param product The title of the product type.
+     * @param quantity The quantity of the product items.
      * @param complete The completion {@link LocalDate date}.
      * @return  {@link WorkRecord} object.
      */
-    public WorkRecord createRecord(String patient, String clinic, LocalDate complete) {
-        if ((patient == null||patient.isEmpty())||(clinic == null||clinic.isEmpty())||(complete == null)) {
-            return null;
-        }
-        WorkRecord workRecord = new WorkRecord(patient, clinic, complete);
-        this.workRecords.add(workRecord);
-        return workRecord;
-    }
+    public WorkRecord createRecord(String patient, String clinic, String product, int quantity, LocalDate complete) {
 
-    /**
-     * Create a new {@link WorkRecord} object and add it in user's list.
-     * @param patient  The patient name/surname.
-     * @param clinic   The clinic title.
-     * @param workType The title of the work type.
-     * @param quantity The quantity of the work items.
-     * @param complete The completion {@link LocalDate date}.
-     * @return  {@link WorkRecord} object.
-     */
-    public WorkRecord createRecord(String patient, String clinic, String workType, int quantity, LocalDate complete) {
-        if ((patient == null||patient.isEmpty())||(clinic == null||clinic.isEmpty())||(workType == null||workType.isEmpty())) {
-            return null;
-        }
-        Product product = produceTool.createProduct(workType, (byte) quantity);
-        WorkRecord workRecord = new WorkRecord(patient, clinic, product, complete);
+        WorkRecord workRecord = WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(complete).build();
+
+        addProductInWork(workRecord, product, (byte) quantity);
         this.workRecords.add(workRecord);
+
         return workRecord;
     }
 
     /**
      * Add a new {@link Product} object in works list of the {@link WorkRecord workRecord}.
      * @param workRecord   The workRecord to add.
-     * @param title    The title of the work to add.
-     * @param quantity The quantity of the work items.
+     * @param title    The title of the product to add.
+     * @param quantity The quantity of the product items.
      * @return  True if it was successful.
      */
     public boolean addProductInWork(WorkRecord workRecord, String title, int quantity) {
@@ -74,7 +57,7 @@ public final class RecordManager {
     /**
      * Edit quantity of the {@link Product} object in the {@link WorkRecord}.
      * @param workRecord   The {@link WorkRecord} object to edit.
-     * @param title    The title of the work type to edit.
+     * @param title    The title of the product to edit.
      * @param quantity New quantity value.
      * @return True if the edit was successful.
      */
@@ -86,7 +69,7 @@ public final class RecordManager {
     /**
      * Remove the {@link Product} object in the {@link WorkRecord}.
      * @param workRecord The {@link WorkRecord} objects to do.
-     * @param title  The title of the work type to remove.
+     * @param title  The title of the product to remove.
      * @return True if it was successful.
      */
     public boolean removeProduct(WorkRecord workRecord, String title) {

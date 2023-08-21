@@ -6,12 +6,12 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * The class represent the work type object and contains entries of type title, price and quantity of work items.
+ * The class represent the product object and contains entries title, price and quantity of product items.
  */
 public record Product(String title, byte quantity, int price) implements Serializable {
 
     /**
-     * Count total amount of the work price.
+     * Count total amount of the product price.
      * @return The value of the amount
      */
     public int countAmount() {

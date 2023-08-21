@@ -31,7 +31,7 @@ public class WorkRecordInsertQuery extends IQuery {
         this.clinic = workRecord.getClinic();
         this.complete = workRecord.getComplete().format(DBManager.SQL_DATE_FORMAT);
         this.accepted = workRecord.getAccepted().format(DBManager.SQL_DATE_FORMAT);
-        this.closed = workRecord.isClosed();
+        this.closed = workRecord.getClosed();
         this.workId = workRecord.hashCode();
 
         String query = String.format(SAMPLE,
