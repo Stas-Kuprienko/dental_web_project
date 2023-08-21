@@ -1,4 +1,4 @@
-package dental.filetools;
+package dental.app.filetools;
 
 import java.io.File;
 import java.io.FileOutputStream;
