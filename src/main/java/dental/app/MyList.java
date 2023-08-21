@@ -1,6 +1,7 @@
 package dental.app;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
@@ -235,9 +236,10 @@ public class MyList<E> implements Collection<E>, Serializable {
             this.clas = (clas);
         }
 
-        private Method getMethod(String getter) throws NoSuchMethodException {
-            //get the method of the searched object used to get a comparable value.
-            return clas.getMethod(getter);
+        private Object invokeMethod(String getter, E e) throws Exception {
+            //get the method of the searched object, used to get a comparable value,
+            // then invoke this method and return result.
+            return (String) clas.getMethod(getter).invoke(e, null);
         }
 
         private void search(String getter, String sample) throws Exception {
@@ -246,7 +248,7 @@ public class MyList<E> implements Collection<E>, Serializable {
                     break;
                 }
                 //get string value of object getter method.
-                String s = (String)getMethod(getter).invoke(e, null);
+                String s = (String) invokeMethod(getter, e);
                 if (s.equalsIgnoreCase(sample)) {
                     this.relevant.add(e);
                 }
