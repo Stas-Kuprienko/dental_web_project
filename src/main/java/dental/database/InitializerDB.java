@@ -15,8 +15,8 @@ public final class InitializerDB {
                 PRIMARY KEY (id)
                 );""";
 
-    public static final String RECORDS = """
-            CREATE TABLE mydb.records (
+    public static final String WORKS = """
+            CREATE TABLE mydb.work_records (
             	account_id INT NOT NULL,
             	FOREIGN KEY(account_id) REFERENCES mydb.accounts(id) ON DELETE CASCADE,
             	id INT NOT NULL,
@@ -28,13 +28,13 @@ public final class InitializerDB {
             	PRIMARY KEY (id)
                 );""";
 
-    public static final String WORKS_OBJECTS = """
-            CREATE TABLE mydb.work_position (
-            	record_id INT NOT NULL,
+    public static final String PRODUCTS = """
+            CREATE TABLE mydb.products (
+            	work_id INT NOT NULL,
                 title VARCHAR(15) NOT NULL,
                 quantity SMALLINT,
                 price INT NOT NULL,
-                FOREIGN KEY(record_id) REFERENCES mydb.records(id) ON DELETE CASCADE
+                FOREIGN KEY(work_id) REFERENCES mydb.work_records(id) ON DELETE CASCADE
                 );""";
 
     public static final String REPORTS = """
@@ -54,12 +54,12 @@ public final class InitializerDB {
         try {
             Statement statement = DBManager.getStatement();
             statement.addBatch(DROPS + "reports");
-            statement.addBatch(DROPS + "work_position");
-            statement.addBatch(DROPS + "records");
+            statement.addBatch(DROPS + "products");
+            statement.addBatch(DROPS + "work_records");
             statement.addBatch(DROPS + "accounts");
             statement.addBatch(ACCOUNTS);
-            statement.addBatch(RECORDS);
-            statement.addBatch(WORKS_OBJECTS);
+            statement.addBatch(WORKS);
+            statement.addBatch(PRODUCTS);
             statement.addBatch(REPORTS);
             statement.executeBatch();
         } catch (SQLException e) {

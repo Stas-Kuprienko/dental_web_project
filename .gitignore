@@ -39,3 +39,4 @@ build/
 /tomcat/
 /.idea/
 /localTomcat/
+/src/main/java/dental/Main.java

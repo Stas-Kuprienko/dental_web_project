@@ -1,6 +1,6 @@
 package dental.database.db_statements.reports;
 
-import dental.app.records.RecordManager;
+import dental.app.works.RecordManager;
 import dental.app.userset.Account;
 import dental.database.db_statements.IQuery;
 
@@ -9,9 +9,9 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 /**
- * Executing database queries to create report tables of monthly records.
+ * Executing database queries to create report tables of monthly workRecords.
  * Create SQL table with columns - patient, clinic and work types
- *  from the account's {@linkplain RecordManager#getWorkTypes() work types map}.
+ *  from the account's {@linkplain RecordManager#getProductMap() work types map}.
  */
 public class ReportTableCreator extends IQuery {
 
@@ -29,7 +29,7 @@ public class ReportTableCreator extends IQuery {
      * this method is called on a closed {@code Statement}.
      */
     public ReportTableCreator(Account account, String month, String year) throws SQLException {
-        String query = getQuery(account, month, year);
+        String query = buildQuery(account, month, year);
         doQuery(query);
     }
 
@@ -40,9 +40,9 @@ public class ReportTableCreator extends IQuery {
      * @param year    The year of the month for which the report is required.
      * @return The string with SQL query.
      */
-    private String getQuery(Account account, String month, String year) {
-            //get hashmap with the account's work types
-        HashMap<String, Integer> workTypes = account.recordManager.getWorkTypes();
+    private String buildQuery(Account account, String month, String year) {
+            //get hashmap with the account's product types
+        HashMap<String, Integer> productMap = account.recordManager.getProductMap();
 
             //create string title for the report title in database
             // (account login and the given month)
@@ -52,9 +52,9 @@ public class ReportTableCreator extends IQuery {
         StringBuilder resultQuery = new StringBuilder(String.format(SAMPLE, reportTitle));
 
             //bring the query to the end by loop
-        for (String s : workTypes.keySet()) {
+        for (String s : productMap.keySet()) {
 
-                //adding work types as a table columns for report sheet
+                //adding product types as a table columns for report sheet
             resultQuery.append(String.format(",\n\t%s INT DEFAULT 0", s));
         } resultQuery.append("\n\t);");
 

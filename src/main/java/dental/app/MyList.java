@@ -190,7 +190,7 @@ public class MyList<E> implements Collection<E>, Serializable {
         }
     }
 
-    //for enams of getters names
+    //for enums of getter names
     public interface Searchable {}
 
     private class MyIterator implements Iterator<E> {

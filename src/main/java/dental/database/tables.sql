@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS mydb.accounts;
-DROP TABLE IF EXISTS mydb.records;
-DROP TABLE IF EXISTS mydb.work_position;
 DROP TABLE IF EXISTS mydb.reports;
+DROP TABLE IF EXISTS mydb.products;
+DROP TABLE IF EXISTS mydb.work_records;
+DROP TABLE IF EXISTS mydb.accounts;
 
 CREATE TABLE mydb.accounts (
   id INT NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE mydb.accounts (
   PRIMARY KEY (id)
   );
 
-CREATE TABLE mydb.records (
+CREATE TABLE mydb.work_records (
 	account_id INT NOT NULL,
 	FOREIGN KEY(account_id) REFERENCES mydb.accounts(id) ON DELETE RESTRICT,
 	id INT NOT NULL,
@@ -21,12 +21,12 @@ CREATE TABLE mydb.records (
 	PRIMARY KEY (id)
     );
 
-CREATE TABLE mydb.work_position (
-	record_id INT NOT NULL,
+CREATE TABLE mydb.products (
+	work_id INT NOT NULL,
     title VARCHAR(15) NOT NULL,
     quantity SMALLINT,
     price INT NOT NULL,
-    FOREIGN KEY(record_id) REFERENCES mydb.records(id) ON DELETE RESTRICT
+    FOREIGN KEY(work_id) REFERENCES mydb.work_records(id) ON DELETE RESTRICT
     );
 
 CREATE TABLE mydb.reports (

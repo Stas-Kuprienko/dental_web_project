@@ -1,4 +1,4 @@
-package dental.app.records;
+package dental.app.works;
 
 import dental.app.MyList;
 
@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * The class represent the work type object and contains entries of type title, price and quantity of work items.
  */
-public record Work (String title, byte quantity, int price) implements Serializable {
+public record Product(String title, byte quantity, int price) implements Serializable {
 
     /**
      * Count total amount of the work price.
@@ -29,8 +29,8 @@ public record Work (String title, byte quantity, int price) implements Serializa
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Work work = (Work) o;
-        return quantity == work.quantity && price == work.price && Objects.equals(title, work.title);
+        Product product = (Product) o;
+        return quantity == product.quantity && price == product.price && Objects.equals(title, product.title);
     }
 
     @Override
@@ -40,7 +40,7 @@ public record Work (String title, byte quantity, int price) implements Serializa
 
     @Override
     public String toString() {
-        return "Work{" +
+        return "Product{" +
                 "title='" + title + '\'' +
                 ", quantity=" + quantity +
                 ", price=" + countAmount() +

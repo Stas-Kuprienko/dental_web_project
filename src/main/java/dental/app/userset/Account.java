@@ -1,8 +1,8 @@
 package dental.app.userset;
 
-import dental.app.records.RecordManager;
+import dental.app.works.RecordManager;
 import dental.app.reports.TableReport;
-import dental.filetools.Extractable;
+import dental.app.filetools.Extractable;
 
 import java.io.Serializable;
 import java.time.LocalDate;

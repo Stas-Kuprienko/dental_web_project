@@ -1,4 +1,4 @@
-package dental.app.records;
+package dental.app.works;
 
 import dental.app.MyList;
 
@@ -7,19 +7,19 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * The Record class represent object of a record, containing data about certain work.
+ * The WorkRecord class represent object of a record, containing data about certain work.
  * Implements {@link java.io.Serializable} because it is an object of information,
  *  and instances must be stored in memory.
- * Has fields {@code patient,clinic,acceptDate,complete,} {@link Work} list with a types of the work.
+ * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the work.
  * Also can to add {@code images} array with an images of the work.
  */
-public class Record implements Serializable {
+public class WorkRecord implements Serializable {
 
     private String patient;
 
     private String clinic;
 
-    private MyList<Work> works;
+    private final MyList<Product> products;
 
     private LocalDate complete;
 
@@ -29,32 +29,32 @@ public class Record implements Serializable {
 
 
     /**
-     * Create the Record object.
+     * Create the WorkRecord object.
      * @param patient  The patient name or surname.
      * @param clinic   The clinic is a consumer this record.
      * @param complete The completion date of the work.
      */
-    Record(String patient, String clinic, LocalDate complete) {
+    WorkRecord(String patient, String clinic, LocalDate complete) {
         this.patient = patient;
         this.clinic = clinic;
-        this.works = new MyList<>(5);
+        this.products = new MyList<>(5);
         this.complete = complete;
         this.accepted = LocalDate.now();
         this.closed = false;
     }
 
     /**
-     * Create the Record object.
+     * Create the WorkRecord object.
      * @param patient  The patient name or surname.
      * @param clinic   The clinic is a consumer this record.
-     * @param work     The {@link Work} object containing type, price and number of the items.
-     * @param complete The completion date of the work.
+     * @param product     The {@link Product} object containing type, price and number of the items.
+     * @param complete The completion date of the product.
      */
-    Record(String patient, String clinic, Work work, LocalDate complete) {
+    WorkRecord(String patient, String clinic, Product product, LocalDate complete) {
         this.patient = patient;
         this.clinic = clinic;
-        this.works = new MyList<>(5);
-        works.add(work);
+        this.products = new MyList<>(5);
+        products.add(product);
         this.complete = complete;
         this.accepted = LocalDate.now();
         this.closed = false;
@@ -71,7 +71,7 @@ public class Record implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Record that = (Record) o;
+        WorkRecord that = (WorkRecord) o;
         return Objects.equals(patient, that.patient)
                 && Objects.equals(clinic, that.clinic)
                 && Objects.equals(accepted, that.accepted);
@@ -84,9 +84,9 @@ public class Record implements Serializable {
 
     @Override
     public String toString() {
-        return "Record{" + "patient='" + patient + '\'' +
+        return "WorkRecord{" + "patient='" + patient + '\'' +
                 ", clinic='" + clinic + '\'' +
-                ", works=" + works +
+                ", products=" + products +
                 '}';
     }
 
@@ -110,12 +110,8 @@ public class Record implements Serializable {
         this.clinic = clinic;
     }
 
-    public MyList<Work> getWorks() {
-        return works;
-    }
-
-    public void setWorks(MyList<Work> works) {
-        this.works = works;
+    public MyList<Product> getProducts() {
+        return products;
     }
 
     public LocalDate getComplete() {
