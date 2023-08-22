@@ -9,8 +9,8 @@ import java.util.Objects;
 /**
  * The WorkRecord class represent object of a record, containing data about certain work.
  * Implements {@link java.io.Serializable} because it is an object of information,
- *  and instances must be stored in memory.
- * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the work.
+ *  and instances may be stored in memory.
+ * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the products.
  * Also can to add {@code images} array with an images of the work.
  */
 public class WorkRecord implements Serializable {
@@ -53,6 +53,7 @@ public class WorkRecord implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WorkRecord that = (WorkRecord) o;
+        //TODO
         return Objects.equals(patient, that.patient)
                 && Objects.equals(clinic, that.clinic)
                 && Objects.equals(accepted, that.accepted);
@@ -76,18 +77,17 @@ public class WorkRecord implements Serializable {
         private Builder(){}
 
         public Builder setPatient(String patient) {
-            WorkRecord.this.patient = patient == null||patient.isEmpty() ?
-                                      LocalDate.now().toString() : patient;
+            WorkRecord.this.setPatient(patient);
             return this;
         }
 
         public Builder setClinic(String clinic) {
-            WorkRecord.this.clinic = clinic == null||clinic.isEmpty() ? "unknown" : clinic;
+            WorkRecord.this.setClinic(clinic);
             return this;
         }
 
         public Builder setComplete(LocalDate complete) {
-            WorkRecord.this.complete = complete;
+            WorkRecord.this.setComplete(complete);
             return this;
         }
 
@@ -97,16 +97,25 @@ public class WorkRecord implements Serializable {
 
     }
 
-    /*               ||
-            Getters  \/
+    /*                            ||
+            Getters and setters   \/
      */
 
     public String getPatient() {
         return patient;
     }
 
+    public void setPatient(String patient) {
+        this.patient = patient == null||patient.isEmpty() ?
+                LocalDate.now().toString() : patient;
+    }
+
     public String getClinic() {
         return clinic;
+    }
+
+    public void setClinic(String clinic) {
+        this.clinic = clinic == null||clinic.isEmpty() ? "unknown" : clinic;
     }
 
     public MyList<Product> getProducts() {
@@ -115,6 +124,10 @@ public class WorkRecord implements Serializable {
 
     public LocalDate getComplete() {
         return complete;
+    }
+
+    public void setComplete(LocalDate complete) {
+        this.complete = complete;
     }
 
     public LocalDate getAccepted() {
