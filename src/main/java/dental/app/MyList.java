@@ -1,13 +1,16 @@
 package dental.app;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * The data structure class. The dynamic resizable array. Implements {@link Collection} and {@link Serializable}.
+ * It has the ability to {@linkplain MyList#searchByString(Searchable, String, Class) search} by a sample string in the desired field specified by the getter method.
+ * @param <E> The type of elements in this list.
+ */
 public class MyList<E> implements Collection<E>, Serializable {
 
     private E[] elements;
@@ -223,7 +226,7 @@ public class MyList<E> implements Collection<E>, Serializable {
     }
 
     @SuppressWarnings("all")
-     // The class used by MyList.searchByString(String, String, Class) the search method.
+     // The class used by MyList.searchByString(Searchable, String, Class) the search method.
     private class Searcher {
 
         private final MyList<E> relevant;
