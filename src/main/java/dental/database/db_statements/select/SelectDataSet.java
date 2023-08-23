@@ -4,19 +4,35 @@ import dental.database.db_statements.SelectQuery;
 
 import java.sql.SQLException;
 
-public abstract class SelectDataSet<T> extends RecordSelectQuery {
+/**
+ * The abstract class to create objects by database values.
+ * @param <T> The type of creatable object.
+ */
+public abstract class SelectDataSet<T> extends SelectQuery {
 
     private final T object;
 
-    public SelectDataSet(String selectable, String from, String whereField, String whereValue, T object) throws SQLException {
-        super(selectable, from, whereField, whereValue);
-        this.object = object;
+    final String SAMPLE1 = "SELECT %s FROM %s";
+
+    final String SAMPLE2 = " WHERE %s = '%s';";
+
+    public SelectDataSet(String selectable, String from, String whereField, String whereValue) throws SQLException {
+        String query = SAMPLE1 + SAMPLE2;
+        query = String.format(query, selectable, from, whereField, whereValue);
+
+        selectData(query);
+        this.object = build();
     }
 
-    public SelectDataSet(String selectable, String from, T object) throws SQLException {
-        super(selectable, from);
-        this.object = object;
+    public SelectDataSet(String selectable, String from) throws SQLException {
+        String query = SAMPLE1 + ";";
+        query = String.format(query, selectable, from);
+
+        selectData(query);
+        this.object = build();
     }
+
+    abstract T build();
 
     public T getObject() {
         return object;
