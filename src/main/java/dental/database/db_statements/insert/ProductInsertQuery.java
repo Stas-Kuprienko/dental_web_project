@@ -1,11 +1,11 @@
 package dental.database.db_statements.insert;
 
 import dental.app.works.Product;
-import dental.database.db_statements.IQuery;
+import dental.database.db_statements.PushQuery;
 
 import java.sql.SQLException;
 
-public class ProductInsertQuery extends IQuery {
+public class ProductInsertQuery extends PushQuery {
 
     final Product product;
 

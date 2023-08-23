@@ -8,7 +8,7 @@ import java.sql.Statement;
 /**
  * The class for extending SQL query classes.
  */
-public class IQuery {
+public class PushQuery {
 
     /**
      * Execute the given SQL statement to a DB.

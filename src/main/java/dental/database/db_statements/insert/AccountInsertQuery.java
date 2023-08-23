@@ -1,11 +1,11 @@
 package dental.database.db_statements.insert;
 
 import dental.app.userset.Account;
-import dental.database.db_statements.IQuery;
+import dental.database.db_statements.PushQuery;
 
 import java.sql.SQLException;
 
-public class AccountInsertQuery extends IQuery {
+public class AccountInsertQuery extends PushQuery {
 
     final Account account;
 

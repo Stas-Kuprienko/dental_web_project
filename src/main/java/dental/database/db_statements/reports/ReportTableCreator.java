@@ -2,7 +2,7 @@ package dental.database.db_statements.reports;
 
 import dental.app.works.RecordManager;
 import dental.app.userset.Account;
-import dental.database.db_statements.IQuery;
+import dental.database.db_statements.PushQuery;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,7 +13,7 @@ import java.util.HashMap;
  * Create SQL table with columns - patient, clinic and work types
  *  from the account's {@linkplain RecordManager#getProductMap() work types map}.
  */
-public class ReportTableCreator extends IQuery {
+public class ReportTableCreator extends PushQuery {
 
     final String SAMPLE = """
             CREATE TABLE mydb.%s (
@@ -21,7 +21,7 @@ public class ReportTableCreator extends IQuery {
                 clinic VARCHAR(20)""";
 
     /**
-     * Create ReportTableCreator object. Constructor executes {@linkplain IQuery#doQuery(String query)} method.
+     * Create ReportTableCreator object. Constructor executes {@linkplain PushQuery#doQuery(String query)} method.
      * @param account The {@link Account} object of the logged-in user.
      * @param month   The month for which the report is required.
      * @param year    The year of the month for which the report is required.

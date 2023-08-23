@@ -3,7 +3,7 @@ package dental.database.db_statements.reports;
 import dental.app.works.WorkRecord;
 import dental.app.works.Product;
 import dental.app.userset.Account;
-import dental.database.db_statements.IQuery;
+import dental.database.db_statements.PushQuery;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,7 +11,7 @@ import java.sql.Statement;
 /**
  * Executing an SQL query "INSERT" values into database's report table, created by {@link ReportTableCreator}.
  */
-public class InsertToReportTable extends IQuery {
+public class InsertToReportTable extends PushQuery {
 
 
     /**
@@ -29,7 +29,7 @@ public class InsertToReportTable extends IQuery {
     final WorkRecord workRecord;
 
     /**
-     * Create ReportTableCreator object. Constructor executes {@linkplain IQuery#doQuery(String query)} method.
+     * Create ReportTableCreator object. Constructor executes {@linkplain PushQuery#doQuery(String query)} method.
      * @param account    The {@link Account} object of the logged-in user.
      * @param workRecord     The {@link WorkRecord} object to insert in the report table.
      * @param monthNYear The month and year to find the report table.

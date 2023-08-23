@@ -1,11 +1,11 @@
 package dental.database.db_statements.update;
 
-import dental.database.db_statements.IQuery;
+import dental.database.db_statements.PushQuery;
 
 import java.sql.SQLException;
 
 
-public class RecordUpdateQuery extends IQuery {
+public class RecordUpdateQuery extends PushQuery {
 
     final String SAMPLE = "UPDATE %s SET %s = '%s' WHERE %s = %s;";
 

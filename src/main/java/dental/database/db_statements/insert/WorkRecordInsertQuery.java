@@ -5,11 +5,11 @@ import dental.app.works.Product;
 import dental.app.works.WorkRecord;
 import dental.app.userset.Account;
 import dental.database.DBManager;
-import dental.database.db_statements.IQuery;
+import dental.database.db_statements.PushQuery;
 
 import java.sql.SQLException;
 
-public class WorkRecordInsertQuery extends IQuery {
+public class WorkRecordInsertQuery extends PushQuery {
 
     final WorkRecord workRecord;
 
