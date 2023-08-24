@@ -10,7 +10,7 @@ public class SelectQuery {
 
     private ResultSet result;
 
-    protected void selectData(String query) throws SQLException {
+    protected void doQuery(String query) throws SQLException {
         Statement state = DBManager.getStatement();
         this.result = state.executeQuery(query);
     }

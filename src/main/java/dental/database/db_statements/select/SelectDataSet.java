@@ -20,7 +20,7 @@ public abstract class SelectDataSet<T> extends SelectQuery {
         String query = SAMPLE1 + SAMPLE2;
         query = String.format(query, selectable, from, whereField, whereValue);
 
-        selectData(query);
+        doQuery(query);
         this.object = build();
     }
 
@@ -28,11 +28,11 @@ public abstract class SelectDataSet<T> extends SelectQuery {
         String query = SAMPLE1 + ";";
         query = String.format(query, selectable, from);
 
-        selectData(query);
+        doQuery(query);
         this.object = build();
     }
 
-    abstract T build();
+    protected abstract T build();
 
     public T getObject() {
         return object;
