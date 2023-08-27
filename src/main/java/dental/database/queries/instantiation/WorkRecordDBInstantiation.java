@@ -25,6 +25,10 @@ public class WorkRecordDBInstantiation extends ObjectDBPrototype<WorkRecord> {
     private static final String PRODUCTS = "products";
 
 
+    public WorkRecordDBInstantiation(String whereField, String whereValue) throws SQLException {
+        super(SELECTABLE, FROM, whereField, whereValue);
+    }
+
     public WorkRecordDBInstantiation() throws SQLException {
         super(SELECTABLE, FROM);
     }
