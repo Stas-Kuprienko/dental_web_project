@@ -8,14 +8,11 @@ import java.sql.Statement;
 
 public class SelectQuery {
 
-    private ResultSet result;
+    protected ResultSet result;
 
     protected void doQuery(String query) throws SQLException {
         Statement state = DBManager.getStatement();
         this.result = state.executeQuery(query);
     }
 
-    public ResultSet getResult() {
-        return result;
-    }
 }
