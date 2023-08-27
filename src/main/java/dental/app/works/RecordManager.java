@@ -24,16 +24,13 @@ public final class RecordManager {
      * Create a new {@link WorkRecord} object and add it in user's list.
      * @param patient  The patient name/surname.
      * @param clinic   The clinic title.
-     * @param product The title of the product type.
-     * @param quantity The quantity of the product items.
      * @param complete The completion {@link LocalDate date}.
      * @return  {@link WorkRecord} object.
      */
-    public WorkRecord createRecord(String patient, String clinic, String product, int quantity, LocalDate complete) {
+    public WorkRecord createRecord(String patient, String clinic, LocalDate complete) {
 
         WorkRecord workRecord = WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(complete).build();
 
-        addProductInWork(workRecord, product, (byte) quantity);
         this.workRecords.add(workRecord);
 
         return workRecord;
@@ -44,14 +41,10 @@ public final class RecordManager {
      * @param workRecord   The workRecord to add.
      * @param title    The title of the product to add.
      * @param quantity The quantity of the product items.
-     * @return  True if it was successful.
      */
-    public boolean addProductInWork(WorkRecord workRecord, String title, int quantity) {
+    public void addProductInWork(WorkRecord workRecord, String title, int quantity) {
         Product product = produceTool.createProduct(title, (byte) quantity);
-        if (product == null) {
-            return false;
-        }
-        return workRecord.getProducts().add(product);
+        workRecord.getProducts().add(product);
     }
 
     /**
