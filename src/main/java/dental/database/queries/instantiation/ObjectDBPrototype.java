@@ -1,7 +1,7 @@
-package dental.database.db_statements.select;
+package dental.database.queries.instantiation;
 
 import dental.app.MyList;
-import dental.database.db_statements.SelectQuery;
+import dental.database.queries.SelectQuery;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

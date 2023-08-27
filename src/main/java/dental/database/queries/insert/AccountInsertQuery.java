@@ -1,7 +1,7 @@
-package dental.database.db_statements.insert;
+package dental.database.queries.insert;
 
 import dental.app.userset.Account;
-import dental.database.db_statements.PushQuery;
+import dental.database.queries.PushQuery;
 
 import java.sql.SQLException;
 

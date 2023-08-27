@@ -1,4 +1,4 @@
-package dental.database.db_statements.select;
+package dental.database.queries.instantiation;
 
 import dental.app.works.Product;
 

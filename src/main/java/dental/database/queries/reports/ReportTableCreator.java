@@ -1,8 +1,8 @@
-package dental.database.db_statements.reports;
+package dental.database.queries.reports;
 
 import dental.app.works.RecordManager;
 import dental.app.userset.Account;
-import dental.database.db_statements.PushQuery;
+import dental.database.queries.PushQuery;
 
 import java.sql.SQLException;
 import java.sql.Statement;

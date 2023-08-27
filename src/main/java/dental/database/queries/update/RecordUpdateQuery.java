@@ -1,6 +1,6 @@
-package dental.database.db_statements.update;
+package dental.database.queries.update;
 
-import dental.database.db_statements.PushQuery;
+import dental.database.queries.PushQuery;
 
 import java.sql.SQLException;
 

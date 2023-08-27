@@ -1,11 +1,11 @@
-package dental.database.db_statements.insert;
+package dental.database.queries.insert;
 
 import dental.app.MyList;
 import dental.app.works.Product;
 import dental.app.works.WorkRecord;
 import dental.app.userset.Account;
 import dental.database.DBManager;
-import dental.database.db_statements.PushQuery;
+import dental.database.queries.PushQuery;
 
 import java.sql.SQLException;
 

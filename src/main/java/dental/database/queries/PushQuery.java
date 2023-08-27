@@ -1,4 +1,4 @@
-package dental.database.db_statements;
+package dental.database.queries;
 
 import dental.database.DBManager;
 
