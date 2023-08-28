@@ -121,11 +121,9 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        @SuppressWarnings("unchecked")
-        MyList<E> list = (MyList<E>) c;
-        for (E e : list) {
-            if (!(add(e))) {
-                return false;
+        for (E e : c) {
+            if (!(contains(e))) {
+                add(e);
             }
         }
         return true;
@@ -158,7 +156,7 @@ public class MyList<E> implements Collection<E>, Serializable {
     @Override
     public void clear() {
         size = 0;
-        elements = (E[]) new Object[DEFAULT_CAPACITY];
+        elements = (E[]) new Object[elements.length];
     }
 
     @Override
@@ -232,8 +230,10 @@ public class MyList<E> implements Collection<E>, Serializable {
         }
     }
 
+    /**
+     *  The class used by the {@linkplain MyList#searchByString(Searchable, String, Class) search method}.
+     */
     @SuppressWarnings("all")
-     // The class used by MyList.searchByString(Searchable, String, Class) the search method.
     private class Searcher {
 
         private final MyList<E> relevant;
