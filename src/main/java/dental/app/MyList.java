@@ -78,6 +78,9 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     @Override
     public boolean add(E element) {
+        if (element == null) {
+            return false;
+        }
         if (size == elements.length) {
             elements = grow(elements);
         }
@@ -98,6 +101,11 @@ public class MyList<E> implements Collection<E>, Serializable {
                 fastRemove(i);
                 break;
             }
+        return true;
+    }
+
+    public boolean remove(int index) {
+        fastRemove(index);
         return true;
     }
 
@@ -125,11 +133,10 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        @SuppressWarnings("unchecked")
-        MyList<E> list = (MyList<E>) c;
-        for (E e : list) {
-            if (!(remove(e))) {
-                return false;
+        for (int i = 0; i < size; i++) {
+            E e = elements[i];
+            if (c.contains(e)) {
+                remove(e);
             }
         }
         return true;
@@ -137,11 +144,11 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        @SuppressWarnings("unchecked")
-        MyList<E> list = (MyList<E>) c;
-        for (E e : elements) {
-            if (!(list.contains(e))) {
+        for (int i = 0; i < size; i++) {
+            E e = elements[i];
+            if (!(c.contains(e))) {
                 remove(e);
+                i--;
             }
         }
         return true;
