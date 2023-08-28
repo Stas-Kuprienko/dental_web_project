@@ -46,16 +46,16 @@ public class WorkRecordDBInstantiation extends ObjectDBPrototype<WorkRecord> {
             LocalDate accepted = result.getDate(ACCEPTED).toLocalDate();
             boolean closed = result.getBoolean(CLOSED);
             int id = result.getInt(ID);
-            WorkRecord record = workRecordConstructor.newInstance();
-            Field[] fields = record.getClass().getDeclaredFields();
-            setObjectPrivateField(record, fields, PATIENT, patient);
-            setObjectPrivateField(record, fields, CLINIC, clinic);
-            setObjectPrivateField(record, fields, COMPLETE, complete);
-            setObjectPrivateField(record, fields, ACCEPTED, accepted);
-            record.setClosed(closed);
+            WorkRecord workRecord = workRecordConstructor.newInstance();
+            Field[] fields = workRecord.getClass().getDeclaredFields();
+            workRecord.setPatient(patient);
+            workRecord.setClinic(clinic);
+            workRecord.setComplete(complete);
+            workRecord.setClosed(closed);
+            setObjectPrivateField(workRecord, fields, ACCEPTED, accepted);
             MyList<Product> products = new ProductDBInstantiation(WORK_ID, String.valueOf(id)).build().getList();
-            setObjectPrivateField(record, fields, PRODUCTS, products);
-            list.add(record);
+            setObjectPrivateField(workRecord, fields, PRODUCTS, products);
+            list.add(workRecord);
         }
         workRecordConstructor.setAccessible(false);
         return this;
