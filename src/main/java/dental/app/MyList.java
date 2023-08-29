@@ -160,7 +160,7 @@ public class MyList<E> implements Collection<E>, Serializable {
     }
 
     @Override
-    public Iterator<E> iterator() {
+    public MyIterator iterator() {
         return new MyIterator();
     }
 

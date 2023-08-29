@@ -24,6 +24,7 @@ public class ProduceTool {
         if (((title == null) || title.isEmpty())) {
             return null;
         } else {
+            title = title.toLowerCase();
             return new Product(title,(byte) quantity, productMap.get(title));
         }
     }
@@ -37,6 +38,7 @@ public class ProduceTool {
         if ((title == null || title.isEmpty()) || (price < 1)) {
             return;
         }
+        title = title.toLowerCase();
         productMap.put(title, price);
     }
 
@@ -48,7 +50,7 @@ public class ProduceTool {
      * or false if no such element
      */
     public boolean removeFromProductMap(String title) {
-        return productMap.remove(title) != null;
+        return productMap.remove(title.toLowerCase()) != null;
     }
 
 
