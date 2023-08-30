@@ -9,8 +9,10 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 
 /**
@@ -22,10 +24,21 @@ public final class ReportManager {
     private ReportManager() {
     }
 
-    public static final String PATH_FOR_REPORTS = "";
 
-    public static void makeReport(Account account) {
+    public static final String PATH_FOR_REPORTS = "src/main/resources/";
 
+    public static void createReport(Account account) {
+        MyList<WorkRecord> workRecords = selectClosedWork(account.recordManager.workRecords);
+        String month = LocalDate.now().getMonth().toString();
+        String year = String.valueOf(LocalDate.now().getYear());
+        TableReport report = new TableReport(month, year, workRecords);
+        if (account.getReports().get(year) != null) {
+            account.getReports().get(year).put(month, report);
+        } else {
+            HashMap<String, TableReport> reportMap = new HashMap<>();
+            reportMap.put(month, report);
+            account.getReports().put(year, reportMap);
+        }
     }
 
     /**
@@ -47,8 +60,8 @@ public final class ReportManager {
         for (int i = 0; i < reportData.length; i++) {
             row = sheet.createRow(i);
             //iterate each row and set it to the table
-            for (int j = 0; j < reportData[i].length; i++) {
-                Cell cell = row.createCell(i);
+            for (int j = 0; j < reportData[i].length; j++) {
+                Cell cell = row.createCell(j);
                 cell.setCellValue(reportData[i][j]);
             }
         }
@@ -56,7 +69,8 @@ public final class ReportManager {
     }
 
     public static void writeReportFile(XSSFWorkbook workbook) {
-        try(FileOutputStream fileOutput = new FileOutputStream(PATH_FOR_REPORTS)) {
+        File file = new File(PATH_FOR_REPORTS + workbook.getSheetName(0) + ".xlsx");
+        try(FileOutputStream fileOutput = new FileOutputStream(file)) {
             workbook.write(fileOutput);
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,9 +81,10 @@ public final class ReportManager {
      * To search a {@link TableReport report} object for a given month.
      * @param account The {@link Account} object that requires.
      * @param month The month for which the report is required.
+     * @param year The year of the month.
      * @return The {@link TableReport} object.
      */
-    public static TableReport searchReport(Account account, String month) {
+    public static TableReport searchReport(Account account, String month, String year) {
 
         return null;
     }
@@ -110,7 +125,8 @@ public final class ReportManager {
 
                             //write quantity of the product items
                             row[i] = String.valueOf(p.quantity());
-                            break;
+                        } else {
+                            row[i] = "";
                         }
                     }
                 }
@@ -124,7 +140,7 @@ public final class ReportManager {
     private static MyList<WorkRecord> selectClosedWork(MyList<WorkRecord> workRecords) {
         MyList<WorkRecord> result = new MyList<>();
         for (WorkRecord wr : workRecords) {
-            if (wr.getClosed()) {
+            if ((wr.getClosed())||(LocalDate.now().isAfter(wr.getComplete()))) {
                 result.add(wr);
             }
         } return result;

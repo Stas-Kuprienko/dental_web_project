@@ -49,6 +49,7 @@ public class Account implements Serializable, Extractable {
         this.name = name;
         this.login = login;
         this.password = Authenticator.passwordHash(password);
+        this.reports = new HashMap<>();
         this.reportTableTitles = new HashMap<>();
     }
 
