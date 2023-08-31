@@ -30,7 +30,7 @@ public class Account implements Serializable, Extractable {
      */
     private HashMap<String, HashMap<String, TableReport>> reports; //TODO remove from here
 
-    private HashMap<String, String> reportTableTitles;
+    private HashMap<String, String> reportTableTitles; //TODO rework by properties
 
     /**
      * Create a new Account object.

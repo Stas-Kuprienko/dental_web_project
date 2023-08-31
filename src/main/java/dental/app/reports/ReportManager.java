@@ -4,6 +4,7 @@ import dental.app.MyList;
 import dental.app.userset.Account;
 import dental.app.works.Product;
 import dental.app.works.WorkRecord;
+import dental.database.queries.SelectQuery;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -12,6 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -24,58 +27,8 @@ public final class ReportManager {
     private ReportManager() {
     }
 
-
     public static final String PATH_FOR_REPORTS = "src/main/resources/";
 
-    public static void createReport(Account account) {
-        MyList<WorkRecord> workRecords = selectClosedWork(account.recordManager.workRecords);
-        String month = LocalDate.now().getMonth().toString();
-        String year = String.valueOf(LocalDate.now().getYear());
-        TableReport report = new TableReport(month, year, workRecords);
-        if (account.getReports().get(year) != null) {
-            account.getReports().get(year).put(month, report);
-        } else {
-            HashMap<String, TableReport> reportMap = new HashMap<>();
-            reportMap.put(month, report);
-            account.getReports().put(year, reportMap);
-        }
-    }
-
-    /**
-     * Create the file(.xls) with monthly report table.
-     * @param account The {@link Account} object that requires.
-     * @param report The {@link TableReport} object which needs to convert to a file.
-     */
-    public static XSSFWorkbook createFileReport(Account account, TableReport report) {
-
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet(report.getMonth() + "_" + report.getYear());
-        XSSFRow row;
-
-        //create head for the table
-        String[] columns = buildTableColumns(account);
-
-        String[][] reportData = buildTableData(columns, report.getRecords());
-
-        for (int i = 0; i < reportData.length; i++) {
-            row = sheet.createRow(i);
-            //iterate each row and set it to the table
-            for (int j = 0; j < reportData[i].length; j++) {
-                Cell cell = row.createCell(j);
-                cell.setCellValue(reportData[i][j]);
-            }
-        }
-        return workbook;
-    }
-
-    public static void writeReportFile(XSSFWorkbook workbook) {
-        File file = new File(PATH_FOR_REPORTS + workbook.getSheetName(0) + ".xlsx");
-        try(FileOutputStream fileOutput = new FileOutputStream(file)) {
-            workbook.write(fileOutput);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * To search a {@link TableReport report} object for a given month.
@@ -87,6 +40,56 @@ public final class ReportManager {
     public static TableReport searchReport(Account account, String month, String year) {
 
         return null;
+    }
+
+    public static TableReport createTableReport(Account account) {
+        MyList<WorkRecord> workRecords = selectClosedWork(account.recordManager.workRecords);
+        String month = LocalDate.now().getMonth().toString();
+        String year = String.valueOf(LocalDate.now().getYear());
+        TableReport report = new TableReport(month, year, workRecords);
+        if (account.getReports().get(year) != null) {
+            account.getReports().get(year).put(month, report);
+        } else {
+            HashMap<String, TableReport> reportMap = new HashMap<>();
+            reportMap.put(month, report);
+            account.getReports().put(year, reportMap);
+        }
+        return report;
+    }
+
+    /**
+     * Create the file(.xls) with monthly report table.
+     * @param account The {@link Account} object that requires.
+     * @param report The {@link TableReport} object which needs to convert to a file.
+     */
+    public static XSSFWorkbook createFileReport(Account account, TableReport report) {
+        XSSFBox xssfBox = new XSSFBox(report);
+
+        //create head for the table
+        String[] columns = buildTableColumns(account);
+        String[][] reportData = buildTableData(columns, report.getRecords());
+
+        putDataInSheet(xssfBox, reportData);
+        return xssfBox.workbook;
+    }
+
+    public static XSSFWorkbook createFileReport(String tableName) throws SQLException {
+        XSSFBox xssfBox = new XSSFBox(tableName);
+
+        //build arrays of a report data by database values
+        String[][] reportData = new DBTableReport(tableName).buildTableData();
+
+        putDataInSheet(xssfBox, reportData);
+        return xssfBox.workbook;
+    }
+
+    public static void writeReportFile(XSSFWorkbook workbook) {
+        File file = new File(PATH_FOR_REPORTS + workbook.getSheetName(0) + ".xlsx");
+        try(FileOutputStream fileOutput = new FileOutputStream(file)) {
+            workbook.write(fileOutput);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static String[] buildTableColumns(Account account) {
@@ -126,7 +129,9 @@ public final class ReportManager {
                             //write quantity of the product items
                             row[i] = String.valueOf(p.quantity());
                         } else {
-                            row[i] = "";
+                            if (row[i] == null) {
+                                row[i] = "";
+                            }
                         }
                     }
                 }
@@ -137,13 +142,83 @@ public final class ReportManager {
         return result;
     }
 
+    private static void putDataInSheet(XSSFBox xssfBox, String[][] reportData) {
+
+        for (int i = 0; i < reportData.length; i++) {
+            xssfBox.row = xssfBox.sheet.createRow(i);
+            //iterate each row and set it to the table
+            for (int j = 0; j < reportData[i].length; j++) {
+                Cell cell = xssfBox.row.createCell(j);
+                cell.setCellValue(reportData[i][j]);
+            }
+        }
+    }
+
     private static MyList<WorkRecord> selectClosedWork(MyList<WorkRecord> workRecords) {
         MyList<WorkRecord> result = new MyList<>();
         for (WorkRecord wr : workRecords) {
+            //TODO selecting by date
             if ((wr.getClosed())||(LocalDate.now().isAfter(wr.getComplete()))) {
                 result.add(wr);
             }
         } return result;
+    }
+
+    private static class DBTableReport extends SelectQuery {
+
+        private static final String SAMPLE = "SELECT * FROM %s;";
+
+        private DBTableReport(String tableName) throws SQLException {
+            String query = String.format(SAMPLE, tableName);
+            doQuery(query);
+        }
+
+        private String[] buildTableColumns() throws SQLException {
+            ResultSetMetaData metaDataSet = this.result.getMetaData();
+            int columnCount = metaDataSet.getColumnCount();
+            String[] result = new String[columnCount];
+            for (int i = 1; i <= columnCount; i++) {
+                result[i-1] = metaDataSet.getColumnName(i);
+            }
+            return result;
+        }
+
+        private String[][] buildTableData() throws SQLException {
+            String[] columns = buildTableColumns();
+            MyList<String[]> tableData = new MyList<>();
+            int count = 0;
+            while (this.result.next()) {
+                tableData.add(new String[columns.length]);
+                String[] rowArray = tableData.get(count);
+                rowArray[0] = this.result.getString("patient");
+                rowArray[1] = this.result.getString("clinic");
+                for (int i = 2; i < columns.length; i++) {
+                    int valueOfColumn = result.getInt(columns[i]);
+                    if (valueOfColumn != 0) {
+                        rowArray[i] = String.valueOf(valueOfColumn);
+                    } else rowArray[i] = "";
+                }
+                count++;
+            }
+            return tableData.toArray(new String[tableData.size()][]);
+        }
+    }
+
+    private static class XSSFBox {
+
+        private final XSSFWorkbook workbook;
+        private final XSSFSheet sheet;
+        private XSSFRow row;
+
+        private XSSFBox(TableReport report) {
+            this.workbook = new XSSFWorkbook();
+            this.sheet = workbook.createSheet(report.getMonth() + "_" + report.getYear());
+        }
+
+        private XSSFBox(String tableName) {
+            this.workbook = new XSSFWorkbook();
+            this.sheet = workbook.createSheet(tableName);
+        }
     }
 
 }
