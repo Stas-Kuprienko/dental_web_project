@@ -61,7 +61,7 @@ public final class ReportService {
         MyList<WorkRecord> result = new MyList<>();
         for (WorkRecord wr : workRecords) {
             //TODO selecting by date
-            if ((wr.getClosed())||(LocalDate.now().isAfter(wr.getComplete()))) {
+            if ((wr.isClosed())||(LocalDate.now().isAfter(wr.getComplete()))) {
                 result.add(wr);
             }
         } return result;

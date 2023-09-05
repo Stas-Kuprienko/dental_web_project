@@ -2,9 +2,9 @@ package dental.app.works;
 
 import java.util.HashMap;
 
-public class ProduceTool {
+public class ProductHandler {
 
-    ProduceTool() {
+    ProductHandler() {
         this.productMap = new HashMap<>();
     }
 
@@ -43,7 +43,7 @@ public class ProduceTool {
     }
 
     /**
-     * Remove the type of product from the {@linkplain ProduceTool#productMap}
+     * Remove the type of product from the {@linkplain ProductHandler#productMap}
      *  by a {@linkplain java.util.HashMap#get(Object) key}.
      * @param title The title of the product type as a Key
      * @return True if the Key of the product type removed

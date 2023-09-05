@@ -1,7 +1,9 @@
 package dental.app.works;
 
 import dental.app.MyList;
+import dental.app.filetools.Extractable;
 
+import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -13,7 +15,7 @@ import java.util.Objects;
  * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the products.
  * Also can to add {@code images} array with an images of the work.
  */
-public class WorkRecord implements Serializable {
+public class WorkRecord implements Serializable, Extractable {
 
     private String patient;
 
@@ -26,6 +28,10 @@ public class WorkRecord implements Serializable {
     private final LocalDate accepted;
 
     private boolean closed;
+
+    private File photo;
+
+    private String comment;
 
 
     private WorkRecord() {
@@ -91,6 +97,18 @@ public class WorkRecord implements Serializable {
             return this;
         }
 
+        public Builder setPhoto(String file) {
+            //TODO
+            File photo = new File(file);
+            WorkRecord.this.setPhoto(photo);
+            return this;
+        }
+
+        public Builder setComment(String comment) {
+            WorkRecord.this.setComment(comment);
+            return this;
+        }
+
         public WorkRecord build() {
             return WorkRecord.this;
         }
@@ -134,11 +152,27 @@ public class WorkRecord implements Serializable {
         return accepted;
     }
 
-    public boolean getClosed() {
+    public boolean isClosed() {
         return closed;
     }
 
     public void setClosed(boolean closed) {
         this.closed = closed;
+    }
+
+    public File getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(File photo) {
+        this.photo = photo;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

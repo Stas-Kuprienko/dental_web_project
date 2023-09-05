@@ -12,12 +12,12 @@ public final class RecordManager {
      */
     public final MyList<WorkRecord> workRecords;
 
-    public final ProduceTool produceTool;
+    public final ProductHandler productHandler;
 
 
     public RecordManager() {
         this.workRecords = new MyList<>();
-        this.produceTool = new ProduceTool();
+        this.productHandler = new ProductHandler();
     }
 
     /**
@@ -43,7 +43,7 @@ public final class RecordManager {
      * @param quantity The quantity of the product items.
      */
     public void addProductInWork(WorkRecord workRecord, String title, int quantity) {
-        Product product = produceTool.createProduct(title, (byte) quantity);
+        Product product = productHandler.createProduct(title, (byte) quantity);
         workRecord.getProducts().add(product);
     }
 
@@ -56,7 +56,7 @@ public final class RecordManager {
      */
     public boolean editProductQuantity(WorkRecord workRecord, String title, int quantity) {
         removeProduct(workRecord, title);
-        return workRecord.getProducts().add(produceTool.createProduct(title, quantity));
+        return workRecord.getProducts().add(productHandler.createProduct(title, quantity));
     }
 
     /**
@@ -66,11 +66,11 @@ public final class RecordManager {
      * @return True if it was successful.
      */
     public boolean removeProduct(WorkRecord workRecord, String title) {
-        return workRecord.getProducts().remove(produceTool.findProduct(workRecord, title));
+        return workRecord.getProducts().remove(productHandler.findProduct(workRecord, title));
     }
 
 
     public HashMap<String, Integer> getProductMap() {
-        return produceTool.getProductMap();
+        return productHandler.getProductMap();
     }
 }
