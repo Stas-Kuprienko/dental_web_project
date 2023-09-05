@@ -1,11 +1,11 @@
-package dental.database.queries.insert;
+package dental.database.requests.insert;
 
 import dental.app.works.Product;
-import dental.database.queries.PushQuery;
+import dental.database.requests.PushRequest;
 
 import java.sql.SQLException;
 
-public class ProductInsertQuery extends PushQuery {
+public class ProductInsertRequest extends PushRequest {
 
     final Product product;
 
@@ -16,16 +16,16 @@ public class ProductInsertQuery extends PushQuery {
 
     final String SAMPLE = "INSERT INTO products (work_id, title, quantity, price) VALUES (%s, '%s', %s, %s);";
 
-    public ProductInsertQuery(int workID, Product product) throws SQLException {
+    public ProductInsertRequest(int workID, Product product) throws SQLException {
         this.product = product;
         this.workID = workID;
         this.title = product.title();
         this.quantity = product.quantity();
         this.price = product.price();
 
-        String query = String.format(SAMPLE, this.workID, this.title, this.quantity, this.price);
+        String request = String.format(SAMPLE, this.workID, this.title, this.quantity, this.price);
 
-        doQuery(query);
+        doRequest(request);
     }
 
 }

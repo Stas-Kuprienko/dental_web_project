@@ -1,4 +1,4 @@
-package dental.database.queries;
+package dental.database.requests;
 
 import dental.database.DBManager;
 
@@ -8,17 +8,17 @@ import java.sql.Statement;
 /**
  * The class for extending SQL query classes.
  */
-public class PushQuery {
+public class PushRequest {
 
     /**
-     * Execute the given SQL statement to a DB.
-     * @param query The query String.
+     * Execute the given SQL requests to a DB.
+     * @param request The request String.
      * @throws SQLException If a database access error occurs or
      * this method is called on a closed {@code Statement}.
      */
-    protected void doQuery(String query) throws SQLException {
+    protected void doRequest(String request) throws SQLException {
         Statement state = DBManager.getStatement();
-        state.execute(query);
+        state.execute(request);
     }
 
 }

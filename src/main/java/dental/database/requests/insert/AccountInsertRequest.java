@@ -1,11 +1,11 @@
-package dental.database.queries.insert;
+package dental.database.requests.insert;
 
 import dental.app.userset.Account;
-import dental.database.queries.PushQuery;
+import dental.database.requests.PushRequest;
 
 import java.sql.SQLException;
 
-public class AccountInsertQuery extends PushQuery {
+public class AccountInsertRequest extends PushRequest {
 
     final Account account;
 
@@ -14,13 +14,13 @@ public class AccountInsertQuery extends PushQuery {
 
     final String SAMPLE = "INSERT INTO accounts (id, login) VALUES (%s, '%s');";
 
-    public AccountInsertQuery(Account account) throws SQLException {
+    public AccountInsertRequest(Account account) throws SQLException {
         this.account = account;
         this.accountID = account.hashCode();
         this.login = account.getLogin();
 
-        String query = String.format(SAMPLE, accountID, login);
+        String request = String.format(SAMPLE, accountID, login);
 
-        doQuery(query);
+        doRequest(request);
     }
 }

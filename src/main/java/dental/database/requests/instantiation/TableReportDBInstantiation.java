@@ -1,18 +1,18 @@
-package dental.database.queries.instantiation;
+package dental.database.requests.instantiation;
 
 import dental.app.MyList;
-import dental.database.queries.SelectQuery;
+import dental.database.requests.PullRequest;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class TableReportDBInstantiation extends SelectQuery {
+public class TableReportDBInstantiation extends PullRequest {
 
     private static final String SAMPLE = "SELECT * FROM %s;";
 
     private TableReportDBInstantiation(String tableName) throws SQLException {
-        String query = String.format(SAMPLE, tableName);
-        doQuery(query);
+        String request = String.format(SAMPLE, tableName);
+        doRequest(request);
     }
 
     public static String[][] requireDataArrays(String tableName) throws SQLException {

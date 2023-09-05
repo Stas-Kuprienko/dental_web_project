@@ -1,4 +1,4 @@
-package dental.database.queries.instantiation;
+package dental.database.requests.instantiation;
 
 import dental.app.MyList;
 import dental.app.works.Product;

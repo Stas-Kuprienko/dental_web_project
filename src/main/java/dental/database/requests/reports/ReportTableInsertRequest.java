@@ -1,9 +1,9 @@
-package dental.database.queries.reports;
+package dental.database.requests.reports;
 
 import dental.app.works.WorkRecord;
 import dental.app.works.Product;
 import dental.app.userset.Account;
-import dental.database.queries.PushQuery;
+import dental.database.requests.PushRequest;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,7 +11,7 @@ import java.sql.Statement;
 /**
  * Executing an SQL query "INSERT" values into database's report table, created by {@link ReportTableCreator}.
  */
-public class InsertToReportTable extends PushQuery {
+public class ReportTableInsertRequest extends PushRequest {
 
 
     /**
@@ -29,14 +29,14 @@ public class InsertToReportTable extends PushQuery {
     final WorkRecord workRecord;
 
     /**
-     * Create ReportTableCreator object. Constructor executes {@linkplain PushQuery#doQuery(String query)} method.
+     * Create ReportTableCreator object. Constructor executes {@linkplain PushRequest#doRequest(String query)} method.
      * @param account    The {@link Account} object of the logged-in user.
      * @param workRecord     The {@link WorkRecord} object to insert in the report table.
      * @param monthNYear The month and year to find the report table.
      * @throws SQLException If a database access error occurs or
      * this method is called on a closed {@code Statement}.
      */
-    public InsertToReportTable(Account account, WorkRecord workRecord, String monthNYear) throws SQLException {
+    public ReportTableInsertRequest(Account account, WorkRecord workRecord, String monthNYear) throws SQLException {
         this.workRecord = workRecord;
 
         this.table = account.getReportTableTitles().get(monthNYear);
@@ -45,7 +45,7 @@ public class InsertToReportTable extends PushQuery {
         }
 
         String query = buildQuery(workRecord);
-        doQuery(query);
+        doRequest(query);
     }
 
     /**

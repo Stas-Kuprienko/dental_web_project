@@ -1,7 +1,7 @@
-package dental.database.queries.instantiation;
+package dental.database.requests.instantiation;
 
 import dental.app.MyList;
-import dental.database.queries.SelectQuery;
+import dental.database.requests.PullRequest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * The abstract class to create objects by database values.
  * @param <T> The type of creatable object.
  */
-public abstract class ObjectDBPrototype<T> extends SelectQuery {
+public abstract class ObjectDBPrototype<T> extends PullRequest {
 
     protected final MyList<T> list;
 
@@ -20,18 +20,18 @@ public abstract class ObjectDBPrototype<T> extends SelectQuery {
     final String SAMPLE2 = " WHERE %s = '%s';";
 
     public ObjectDBPrototype(String selectable, String from, String whereField, String whereValue) throws SQLException {
-        String query = SAMPLE1 + SAMPLE2;
-        query = String.format(query, selectable, from, whereField, whereValue);
+        String request = SAMPLE1 + SAMPLE2;
+        request = String.format(request, selectable, from, whereField, whereValue);
 
-        doQuery(query);
+        doRequest(request);
         this.list = new MyList<>();
     }
 
     public ObjectDBPrototype(String selectable, String from) throws SQLException {
-        String query = SAMPLE1 + ";";
-        query = String.format(query, selectable, from);
+        String request = SAMPLE1 + ";";
+        request = String.format(request, selectable, from);
 
-        doQuery(query);
+        doRequest(request);
         this.list = new MyList<>();
     }
 

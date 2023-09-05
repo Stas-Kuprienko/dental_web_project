@@ -1,15 +1,15 @@
-package dental.database.queries.insert;
+package dental.database.requests.insert;
 
 import dental.app.MyList;
 import dental.app.works.Product;
 import dental.app.works.WorkRecord;
 import dental.app.userset.Account;
 import dental.database.DBManager;
-import dental.database.queries.PushQuery;
+import dental.database.requests.PushRequest;
 
 import java.sql.SQLException;
 
-public class WorkRecordInsertQuery extends PushQuery {
+public class WorkRecordInsertRequest extends PushRequest {
 
     final WorkRecord workRecord;
 
@@ -24,7 +24,7 @@ public class WorkRecordInsertQuery extends PushQuery {
     final String SAMPLE =
       "INSERT INTO work_records (account_id, id, patient, clinic, complete, accepted, closed) VALUES (%s, %s, '%s', '%s', '%s', '%s', %s);";
 
-    public WorkRecordInsertQuery(Account account, WorkRecord workRecord) throws SQLException {
+    public WorkRecordInsertRequest(Account account, WorkRecord workRecord) throws SQLException {
         this.workRecord = workRecord;
         this.accountID = account.hashCode();
         this.patient = workRecord.getPatient();
@@ -34,14 +34,14 @@ public class WorkRecordInsertQuery extends PushQuery {
         this.closed = workRecord.isClosed();
         this.workId = workRecord.hashCode();
 
-        String query = String.format(SAMPLE,
+        String request = String.format(SAMPLE,
                 this.accountID, this.workId, this.patient, this.clinic, this.complete, this.accepted, this.closed);
 
-        doQuery(query);
+        doRequest(request);
         MyList<Product> products = workRecord.getProducts();
         if ((products != null) && (!products.isEmpty())) {
             for (Product p : products) {
-                new ProductInsertQuery(workId, p);
+                new ProductInsertRequest(workId, p);
             }
         }
     }
