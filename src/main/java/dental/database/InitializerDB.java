@@ -52,7 +52,7 @@ public final class InitializerDB {
 
     static {
         try {
-            Statement statement = DBManager.getStatement();
+            Statement statement = ConnectionPool.get();
             statement.addBatch(DROPS + "reports");
             statement.addBatch(DROPS + "products");
             statement.addBatch(DROPS + "work_records");

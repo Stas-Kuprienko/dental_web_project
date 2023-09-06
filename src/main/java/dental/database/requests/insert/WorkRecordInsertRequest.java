@@ -4,7 +4,7 @@ import dental.app.MyList;
 import dental.app.works.Product;
 import dental.app.works.WorkRecord;
 import dental.app.userset.Account;
-import dental.database.DBManager;
+import dental.database.ConnectionPool;
 import dental.database.requests.PushRequest;
 
 import java.sql.SQLException;
@@ -29,8 +29,8 @@ public class WorkRecordInsertRequest extends PushRequest {
         this.accountID = account.hashCode();
         this.patient = workRecord.getPatient();
         this.clinic = workRecord.getClinic();
-        this.complete = workRecord.getComplete().format(DBManager.SQL_DATE_FORMAT);
-        this.accepted = workRecord.getAccepted().format(DBManager.SQL_DATE_FORMAT);
+        this.complete = workRecord.getComplete().format(ConnectionPool.SQL_DATE_FORMAT);
+        this.accepted = workRecord.getAccepted().format(ConnectionPool.SQL_DATE_FORMAT);
         this.closed = workRecord.isClosed();
         this.workId = workRecord.hashCode();
 

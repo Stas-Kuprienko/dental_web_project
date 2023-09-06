@@ -1,7 +1,8 @@
 package dental.database.requests;
 
-import dental.database.DBManager;
+import dental.database.ConnectionPool;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -17,8 +18,9 @@ public class PushRequest {
      * this method is called on a closed {@code Statement}.
      */
     protected void doRequest(String request) throws SQLException {
-        Statement state = DBManager.getStatement();
-        state.execute(request);
+        Connection connection = ConnectionPool.get();
+        connection.createStatement().execute(request);
+        ConnectionPool.put(connection);
     }
 
 }
