@@ -35,14 +35,4 @@ public final class DBConfig {
         return prop.getProperty(name);
     }
 
-    /**
-     * Create the {@link FileInputStream inputstream} of the properties file.
-     * @return The InputStream object.
-     * @throws FileNotFoundException If the file do not exist.
-     */
-    private static InputStream getInputStream() throws FileNotFoundException {
-        File file = new File(PROPERTIES_FILE);
-        return new FileInputStream(file);
-    }
-
 }

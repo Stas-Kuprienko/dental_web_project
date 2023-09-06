@@ -4,7 +4,7 @@ import dental.app.MyList;
 import dental.app.userset.Account;
 import dental.app.works.Product;
 import dental.app.works.WorkRecord;
-import dental.database.requests.instantiation.TableReportDBInstantiation;
+import dental.database.requests.reports.TableReportDBInstantiation;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;

@@ -1,4 +1,4 @@
-package dental.database.requests.instantiation;
+package dental.database.requests.reports;
 
 import dental.app.MyList;
 import dental.database.requests.PullRequest;
