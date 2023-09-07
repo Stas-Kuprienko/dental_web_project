@@ -11,6 +11,8 @@ public final class DBConfig {
     public static final String DB_LOGIN = "db.login";
     public static final String DB_PASSWORD = "db.password";
 
+    public static final String DATA_BASE = "mydb";
+
     /**
      * The properties file with the url, user and password values.
      */
@@ -34,5 +36,4 @@ public final class DBConfig {
         }
         return prop.getProperty(name);
     }
-
 }
