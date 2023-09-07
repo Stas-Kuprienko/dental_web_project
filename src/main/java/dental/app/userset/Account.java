@@ -11,6 +11,8 @@ import java.util.Objects;
 
 public class Account implements Serializable, Extractable {
 
+    private int id;
+
     private String name;
 
     private String login;
@@ -51,6 +53,11 @@ public class Account implements Serializable, Extractable {
         this.password = Authenticator.passwordHash(password);
         this.reports = new HashMap<>();
         this.reportTableTitles = new HashMap<>();
+    }
+
+    private Account() {
+        this.created = null;
+        this.recordManager = null;
     }
 
     @Override
