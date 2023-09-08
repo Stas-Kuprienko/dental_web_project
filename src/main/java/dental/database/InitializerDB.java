@@ -1,5 +1,6 @@
 package dental.database;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -52,7 +53,8 @@ public final class InitializerDB {
 
     static {
         try {
-            Statement statement = ConnectionPool.get();
+            Connection connection = ConnectionPool.get();
+            Statement statement = connection.createStatement();
             statement.addBatch(DROPS + "reports");
             statement.addBatch(DROPS + "products");
             statement.addBatch(DROPS + "work_records");
@@ -62,6 +64,7 @@ public final class InitializerDB {
             statement.addBatch(PRODUCTS);
             statement.addBatch(REPORTS);
             statement.executeBatch();
+            ConnectionPool.put(connection);
         } catch (SQLException e) {
             //TODO loggers
             throw new RuntimeException(e);
