@@ -31,7 +31,7 @@ final class ReportFilesTool {
      * @param report The {@link TableReport} object which needs to convert to a file.
      */
     static XSSFWorkbook createFileReport(Account account, TableReport report) {
-        String tableName = account.getName().toUpperCase() + "_" + report.getMonth().toUpperCase() + "_" + report.getYear();
+        String tableName = account.getName() + "_" + report.getMonth() + "_" + report.getYear();
         XSSFBox xssfBox = new XSSFBox(tableName);
 
         //create head for the table
@@ -43,7 +43,7 @@ final class ReportFilesTool {
     }
 
     static XSSFWorkbook createFileReport(Account account, String tableName) throws SQLException {
-        tableName = account.getName().toUpperCase() + "_" + account.getReportTableTitles().get(tableName.toUpperCase());
+        //TODO verify table name
         XSSFBox xssfBox = new XSSFBox(tableName);
 
         //build arrays of a report data by database values
@@ -54,7 +54,7 @@ final class ReportFilesTool {
     }
 
     static void writeReportFile(XSSFWorkbook workbook) {
-        File file = new File(PATH_FOR_REPORTS + workbook.getSheetName(0) + fileFormat);
+        File file = new File(PATH_FOR_REPORTS + workbook.getSheetName(0).toLowerCase() + fileFormat);
         try(FileOutputStream fileOutput = new FileOutputStream(file)) {
             workbook.write(fileOutput);
         } catch (IOException e) {

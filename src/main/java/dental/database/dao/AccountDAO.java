@@ -16,7 +16,7 @@ public class AccountDAO implements DAO<Account> {
     }
 
     private static final AccountDAO instance;
-    private static final String TABLE_NAME = "accounts";
+    private static final String TABLE_NAME = "account";
 
 
     @Override
@@ -47,7 +47,7 @@ public class AccountDAO implements DAO<Account> {
         String query = String.format("SELECT * FROM %s.%s WHERE id = ?;", DBConfig.DATA_BASE, TABLE_NAME);
         DBRequest request = new DBRequest(query);
         request.getStatement().setInt(1, id);
-        ResultSet resultSet = request.getStatement().getResultSet();
+        ResultSet resultSet = request.getStatement().executeQuery();
         Account account = new AccountInstantiation(resultSet).getAccounts().get(0);
         request.close();
         //TODO
@@ -103,7 +103,7 @@ public class AccountDAO implements DAO<Account> {
                 Blob blobPassword = resultSet.getBlob(PASSWORD);
                 byte[] password = blobPassword.getBinaryStream().readAllBytes();
                 setObjectPrivateField(account, PASSWORD, password);
-                setObjectPrivateField(account, CREATED, resultSet.getDate(CREATED));
+                setObjectPrivateField(account, CREATED, resultSet.getDate(CREATED).toLocalDate());
                 setObjectPrivateField(account, ID, resultSet.getInt(ID));
                 accounts.add(account);
             }
