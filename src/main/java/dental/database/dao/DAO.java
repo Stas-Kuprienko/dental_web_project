@@ -11,12 +11,12 @@ public interface DAO<E> {
 
     void add(E e) throws SQLException;
 
-    MyList<E> getAll();
+    MyList<E> getAll() throws Exception;
 
     E get(int id) throws Exception;
 
-    void remove(int id);
-    void remove(E e);
+    void remove(int id) throws SQLException;
+    void remove(E e) throws SQLException;
 
 
     class DBRequest {

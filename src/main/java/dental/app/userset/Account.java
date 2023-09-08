@@ -40,7 +40,7 @@ public class Account implements Serializable, Extractable {
      * @param login    Login for the user authorization.
      * @param password The password for access to the Account
      */
-    public Account(String name, String login, String password) {
+    public Account(int id, String name, String login, String password) {
         this.created = LocalDate.now();
         this.recordManager = new RecordManager();
         if ((name == null || name.isEmpty())
@@ -48,6 +48,7 @@ public class Account implements Serializable, Extractable {
           || (password == null || password.isEmpty())) {
             return;
         }
+        this.id = id;
         this.name = name;
         this.login = login;
         this.password = Authenticator.passwordHash(password);
@@ -123,4 +124,9 @@ public class Account implements Serializable, Extractable {
     public void setReportTableTitle(String monthNYear, String reportTitle) {
         this.reportTableTitles.put(monthNYear, reportTitle);
     }
+
+    public int getId() {
+        return id;
+    }
+
 }

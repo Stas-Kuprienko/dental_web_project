@@ -5,25 +5,23 @@ import dental.app.userset.Account;
 import dental.database.DBConfig;
 
 import javax.sql.rowset.serial.SerialBlob;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 
 public class AccountDAO implements DAO<Account> {
 
     private AccountDAO() {}
-
     static {
         instance = new AccountDAO();
     }
 
     private static final AccountDAO instance;
+    private static final String TABLE_NAME = "accounts";
 
 
     @Override
     public void add(Account account) throws SQLException {
-        String query = "INSERT INTO " + DBConfig.DATA_BASE + ".account (name, login, password, created) VALUES (?, ?, ?, ?)";
+        String query = String.format("INSERT INTO %s.%s (name, login, password, created) VALUES (?, ?, ?, ?);", DBConfig.DATA_BASE, TABLE_NAME);
         DBRequest request = new DBRequest(query);
         PreparedStatement statement = request.getStatement();
         statement.setString(1, account.getName());
@@ -35,64 +33,71 @@ public class AccountDAO implements DAO<Account> {
     }
 
     @Override
-    public MyList<Account> getAll() {
-        return null;
+    public MyList<Account> getAll() throws Exception {
+        String query = String.format("SELECT * FROM %s.%s;", DBConfig.DATA_BASE, TABLE_NAME);
+        DBRequest request = new DBRequest(query);
+        ResultSet resultSet = request.getStatement().getResultSet();
+        MyList<Account> accounts = new AccountInstantiation(resultSet).getAccounts();
+        request.close();
+        return accounts;
     }
 
     @Override
     public Account get(int id) throws Exception {
-        String query = "SELECT * FROM " + DBConfig.DATA_BASE + ".account WHERE id = ?";
+        String query = String.format("SELECT * FROM %s.%s WHERE id = ?;", DBConfig.DATA_BASE, TABLE_NAME);
         DBRequest request = new DBRequest(query);
         request.getStatement().setInt(1, id);
         ResultSet resultSet = request.getStatement().getResultSet();
-        Account account = new AccountInstantiation(resultSet).getAccount();
+        Account account = new AccountInstantiation(resultSet).getAccounts().get(0);
         request.close();
         //TODO
         return account;
     }
 
     @Override
-    public void remove(int id) {
-
+    public void remove(int id) throws SQLException {
+        String query = String.format("DELETE FROM %s.%s WHERE id = ?;", DBConfig.DATA_BASE, TABLE_NAME);
+        DBRequest request = new DBRequest(query);
+        request.getStatement().setInt(1, id);
+        request.close();
     }
 
     @Override
-    public void remove(Account account) {
-
-    }
-
-    private Account instantiation() {
-        return null;
+    public void remove(Account account) throws SQLException {
+        remove(account.getId());
     }
 
     public static AccountDAO getInstance() {
         return instance;
     }
 
+    @SuppressWarnings("all")
     private class AccountInstantiation extends Instantiation<Account> {
 
-        private final String ID = "id";
-        private final String NAME = "name";
-        private final String LOGIN = "login";
-        private final String PASSWORD = "password";
-        private final String CREATED = "created";
         private final ResultSet resultSet;
-        private Account account;
+        private final MyList<Account> accounts;
+        private final Constructor<Account> constructor;
 
         private AccountInstantiation(ResultSet resultSet) throws Exception {
 
+            accounts = new MyList<>();
             this.resultSet = resultSet;
-            Constructor<Account> constructor = Account.class.getDeclaredConstructor();
+            constructor = Account.class.getDeclaredConstructor();
             constructor.setAccessible(true);
-            account = constructor.newInstance();
             build();
             constructor.setAccessible(false);
             resultSet.close();
         }
 
         @Override
-        protected void build() throws SQLException, IOException, NoSuchFieldException, IllegalAccessException {
+        protected void build() throws Exception {
+            String ID = "id";
+            String NAME = "name";
+            String LOGIN = "login";
+            String PASSWORD = "password";
+            String CREATED = "created";
             while (resultSet.next()) {
+                Account account = constructor.newInstance();
                 account.setName(resultSet.getString(NAME));
                 account.setLogin(resultSet.getString(LOGIN));
                 Blob blobPassword = resultSet.getBlob(PASSWORD);
@@ -100,12 +105,12 @@ public class AccountDAO implements DAO<Account> {
                 setObjectPrivateField(account, PASSWORD, password);
                 setObjectPrivateField(account, CREATED, resultSet.getDate(CREATED));
                 setObjectPrivateField(account, ID, resultSet.getInt(ID));
-                //TODO
+                accounts.add(account);
             }
         }
 
-        public Account getAccount() {
-            return account;
+        protected MyList<Account> getAccounts() {
+            return accounts;
         }
     }
 }
