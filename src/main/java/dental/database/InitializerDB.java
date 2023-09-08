@@ -4,19 +4,26 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public final class InitializerDB {
+public final class InitializerDB extends Thread {
+
+    private static final InitializerDB initializer;
     private InitializerDB() {}
 
-    public static final String DROPS = "DROP TABLE IF EXISTS mydb.";
+    static {
+        System.out.println("init");
+        initializer = new InitializerDB();
+    }
 
-    public static final String ACCOUNTS = """
+    public final String DROPS = "DROP TABLE IF EXISTS mydb.";
+
+    public final String ACCOUNTS = """
             CREATE TABLE mydb.accounts (
                 id INT NOT NULL,
                 login VARCHAR(15) NOT NULL,
                 PRIMARY KEY (id)
                 );""";
 
-    public static final String WORKS = """
+    public final String WORKS = """
             CREATE TABLE mydb.work_records (
             	account_id INT NOT NULL,
             	FOREIGN KEY(account_id) REFERENCES mydb.accounts(id) ON DELETE CASCADE,
@@ -29,7 +36,7 @@ public final class InitializerDB {
             	PRIMARY KEY (id)
                 );""";
 
-    public static final String PRODUCTS = """
+    public final String PRODUCTS = """
             CREATE TABLE mydb.products (
             	work_id INT NOT NULL,
                 title VARCHAR(15) NOT NULL,
@@ -38,7 +45,7 @@ public final class InitializerDB {
                 FOREIGN KEY(work_id) REFERENCES mydb.work_records(id) ON DELETE CASCADE
                 );""";
 
-    public static final String REPORTS = """
+    public final String REPORTS = """
             CREATE TABLE mydb.reports (
             	r_year YEAR NOT NULL,
             	r_month ENUM('january', 'february', 'march',
@@ -51,7 +58,9 @@ public final class InitializerDB {
             	PRIMARY KEY (r_id, account_id)
             	);""";
 
-    static {
+
+    @Override
+    public void run() {
         try {
             Connection connection = ConnectionPool.get();
             Statement statement = connection.createStatement();
@@ -69,5 +78,9 @@ public final class InitializerDB {
             //TODO loggers
             throw new RuntimeException(e);
         }
+    }
+
+    public static void initializeDataBase() {
+        initializer.start();
     }
 }
