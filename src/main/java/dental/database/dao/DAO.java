@@ -23,7 +23,7 @@ public interface DAO<E> {
         private Connection connection;
         private final PreparedStatement statement;
 
-        public DBRequest(String QUERY) throws SQLException {
+        protected DBRequest(String QUERY) throws SQLException {
             this.connection = ConnectionPool.get();
             this.statement = connection.prepareStatement(QUERY);
         }
