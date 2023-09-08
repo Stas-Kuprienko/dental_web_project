@@ -51,7 +51,7 @@ public final class ReportService {
             account.getReports().get(year).put(month, report);
         } else {
             HashMap<String, TableReport> reportMap = new HashMap<>();
-            reportMap.put(month, report);
+            reportMap.put(year, report);
             account.getReports().put(year, reportMap);
         }
         return report;
