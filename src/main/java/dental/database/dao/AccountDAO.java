@@ -67,7 +67,7 @@ public class AccountDAO implements DAO<Account> {
         remove(account.getId());
     }
 
-    public static AccountDAO getInstance() {
+    public static synchronized AccountDAO getInstance() {
         return instance;
     }
 

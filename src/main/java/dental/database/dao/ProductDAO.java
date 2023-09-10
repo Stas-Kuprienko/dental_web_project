@@ -43,7 +43,7 @@ public class ProductDAO implements DAO<Product> {
 
     }
 
-    public static ProductDAO getInstance() {
+    public static synchronized ProductDAO getInstance() {
         return instance;
     }
 

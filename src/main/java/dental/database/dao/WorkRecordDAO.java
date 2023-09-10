@@ -67,7 +67,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
 
     }
 
-    public static WorkRecordDAO getInstance() {
+    public static synchronized WorkRecordDAO getInstance() {
         return instance;
     }
 
