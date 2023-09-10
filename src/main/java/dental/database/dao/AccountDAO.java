@@ -16,11 +16,11 @@ public class AccountDAO implements DAO<Account> {
     }
 
     private static final AccountDAO instance;
-    private static final String TABLE_NAME = "account";
+    public static final String TABLE_NAME = "account";
 
 
     @Override
-    public void add(Account account) throws SQLException {
+    public void add(Account account) throws SQLException, NoSuchFieldException, IllegalAccessException {
         String query = String.format("INSERT INTO %s.%s (name, login, password, created) VALUES (?, ?, ?, ?);", DBConfig.DATA_BASE, TABLE_NAME);
         DBRequest request = new DBRequest(query);
         PreparedStatement statement = request.getStatement();
@@ -28,7 +28,8 @@ public class AccountDAO implements DAO<Account> {
         statement.setString(2, account.getLogin());
         statement.setBlob(3, new SerialBlob(account.getPassword()));
         statement.setDate(4, Date.valueOf(account.getCreated()));
-        statement.execute();
+        statement.executeUpdate();
+        DBRequest.setID(account, statement);
         request.close();
     }
 

@@ -11,39 +11,47 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class WorkRecordDAO implements DAO<WorkRecord>{
 
-    private WorkRecordDAO() {}
-    static {
-        instance = new WorkRecordDAO();
+    public WorkRecordDAO(int accountId) {
+        this.accountId = accountId;
     }
 
-    private static final WorkRecordDAO instance;
-    private static final String TABLE_NAME = "work_record";
+    private final int accountId;
+    public static final String TABLE_NAME = "work_record";
 
     @Override
-    public void add(WorkRecord workRecord) throws SQLException {
-        String query = String.format("INSERT INTO %s.%s (patient, clinic, complete, accepted, closed, photo, comment)" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?);", DBConfig.DATA_BASE, TABLE_NAME);
+    public void add(WorkRecord workRecord) throws SQLException, NoSuchFieldException, IllegalAccessException {
+        String query = String.format(
+                "INSERT INTO %s.%s (account_id, patient, clinic, complete, accepted, closed, photo, comment)" +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?);", DBConfig.DATA_BASE, TABLE_NAME);
         DBRequest request = new DBRequest(query);
         PreparedStatement statement = request.getStatement();
-        statement.setString(1, workRecord.getPatient());
-        statement.setString(2, workRecord.getClinic());
-        statement.setDate(3, Date.valueOf(workRecord.getComplete()));
-        statement.setDate(4, Date.valueOf(workRecord.getAccepted()));
-        statement.setBoolean(5, workRecord.isClosed());
-        statement.setString(7, workRecord.getComment());
-        try (FileInputStream fileIn = new FileInputStream(workRecord.getPhoto())) {
-            byte[] photoBytes = IOUtils.toByteArray(fileIn);
-            statement.setBlob(6, new SerialBlob(photoBytes));
-        } catch (IOException e) {
-            e.printStackTrace();
+        statement.setInt(1, accountId);
+        statement.setString(2, workRecord.getPatient());
+        statement.setString(3, workRecord.getClinic());
+        statement.setDate(4, Date.valueOf(workRecord.getComplete()));
+        statement.setDate(5, Date.valueOf(workRecord.getAccepted()));
+        statement.setBoolean(6, workRecord.isClosed());
+        if (workRecord.getPhoto() != null) {
+            try (FileInputStream fileIn = new FileInputStream(workRecord.getPhoto())) {
+                byte[] photoBytes = IOUtils.toByteArray(fileIn);
+                statement.setBlob(7, new SerialBlob(photoBytes));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            statement.setBinaryStream(7, null);
         }
-        statement.execute();
+        statement.setString(8, workRecord.getComment());
+        statement.executeUpdate();
+        DBRequest.setID(workRecord, statement);
         request.close();
         if (!(workRecord.getProducts().isEmpty())) {
-            ProductDAO.getInstance().addAll(workRecord.getProducts());
+            ProductDAO productDAO = new ProductDAO(workRecord.getId());
+            productDAO.add(workRecord.getProducts().get(0));
         }
     }
 
@@ -67,8 +75,8 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
 
     }
 
-    public static synchronized WorkRecordDAO getInstance() {
-        return instance;
+    public int getAccountId() {
+        return accountId;
     }
 
     private class WorkRecordInstantiation extends Instantiation<WorkRecord> {

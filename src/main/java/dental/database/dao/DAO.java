@@ -2,14 +2,14 @@ package dental.database.dao;
 
 import dental.app.MyList;
 import dental.database.ConnectionPool;
+import org.apache.poi.ss.formula.functions.T;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.lang.reflect.Field;
+import java.sql.*;
 
 public interface DAO<E> {
 
-    void add(E e) throws SQLException;
+    void add(E e) throws SQLException, NoSuchFieldException, IllegalAccessException;
 
     MyList<E> getAll() throws Exception;
 
@@ -25,12 +25,23 @@ public interface DAO<E> {
 
         protected DBRequest(String QUERY) throws SQLException {
             this.connection = ConnectionPool.get();
-            this.statement = connection.prepareStatement(QUERY);
+            this.statement = connection.prepareStatement(QUERY, Statement.RETURN_GENERATED_KEYS);
         }
 
         protected void close() {
             ConnectionPool.put(this.connection);
             connection = null;
+        }
+
+        protected static void setID(Object object, Statement statement) throws SQLException, NoSuchFieldException, IllegalAccessException {
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                Field id = object.getClass().getDeclaredField("id");
+                id.setAccessible(true);
+                id.set(object, (int) resultSet.getLong(1));
+                id.setAccessible(false);
+                resultSet.close();
+            }
         }
 
         public PreparedStatement getStatement() {
