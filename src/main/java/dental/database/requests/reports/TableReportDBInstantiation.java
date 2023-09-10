@@ -1,8 +1,11 @@
 package dental.database.requests.reports;
 
-import dental.app.MyList;
+import dental.database.ConnectionPool;
+import dental.database.DBConfig;
 import dental.database.requests.PullRequest;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
@@ -10,8 +13,11 @@ public class TableReportDBInstantiation extends PullRequest {
 
     private static final String SAMPLE = "SELECT * FROM %s;";
 
+    private final String tableName;
+
     private TableReportDBInstantiation(String tableName) throws SQLException {
         String request = String.format(SAMPLE, tableName);
+        this.tableName = tableName;
         doRequest(request);
     }
 
@@ -20,7 +26,7 @@ public class TableReportDBInstantiation extends PullRequest {
     }
 
     private String[] buildTableColumns() throws SQLException {
-        ResultSetMetaData metaDataSet = this.result.getMetaData();
+        ResultSetMetaData metaDataSet = this.resultSet.getMetaData();
         int columnCount = metaDataSet.getColumnCount();
         String[] result = new String[columnCount];
         for (int i = 1; i <= columnCount; i++) {
@@ -30,22 +36,43 @@ public class TableReportDBInstantiation extends PullRequest {
     }
 
     private String[][] buildTableData() throws SQLException {
+        //create string array of the table head
         String[] columns = buildTableColumns();
-        MyList<String[]> tableData = new MyList<>();
-        int count = 0;
-        while (this.result.next()) {
-            tableData.add(new String[columns.length]);
-            String[] rowArray = tableData.get(count);
-            rowArray[0] = this.result.getString("patient");
-            rowArray[1] = this.result.getString("clinic");
-            for (int i = 2; i < columns.length; i++) {
-                int valueOfColumn = result.getInt(columns[i]);
+        String[][] dataArray = new String[countRecords(tableName) + 1][];
+        //set head of the table
+        dataArray[0] = columns;
+        //rows counting
+        int count = 1;
+        while (resultSet.next()) {
+            dataArray[count] = new String[columns.length];
+            String[] rowArray = dataArray[count];
+            rowArray[0] = resultSet.getString("patient");
+            rowArray[1] = resultSet.getString("clinic");
+            //iterate products
+            for (int i = 2; i < rowArray.length; i++) {
+                int valueOfColumn = resultSet.getInt(columns[i]);
                 if (valueOfColumn != 0) {
                     rowArray[i] = String.valueOf(valueOfColumn);
                 } else rowArray[i] = "";
             }
             count++;
         }
-        return tableData.toArray(new String[tableData.size()][]);
+        return dataArray;
+    }
+
+    private int countRecords(String tableName) throws SQLException {
+        String query = String.format("SELECT COUNT(*) AS count_records FROM %s.%s;", DBConfig.DATA_BASE, tableName);
+        Connection connection = ConnectionPool.get();
+        ResultSet set = connection.createStatement().executeQuery(query);
+        ConnectionPool.put(connection);
+        connection = null;
+        if (set.next()) {
+            int count = set.getInt("count_records");
+            set.close();
+            return count;
+        } else {
+            set.close();
+            return -1;
+        }
     }
 }
