@@ -37,8 +37,8 @@ public class AccountDAO implements DAO<Account> {
     public MyList<Account> getAll() throws Exception {
         String query = String.format("SELECT * FROM %s.%s;", DBConfig.DATA_BASE, TABLE_NAME);
         DBRequest request = new DBRequest(query);
-        ResultSet resultSet = request.getStatement().getResultSet();
-        MyList<Account> accounts = new AccountInstantiation(resultSet).getAccounts();
+        ResultSet resultSet = request.getStatement().executeQuery();
+        MyList<Account> accounts = new AccountInstantiation(resultSet).accounts;
         request.close();
         return accounts;
     }
@@ -49,9 +49,8 @@ public class AccountDAO implements DAO<Account> {
         DBRequest request = new DBRequest(query);
         request.getStatement().setInt(1, id);
         ResultSet resultSet = request.getStatement().executeQuery();
-        Account account = new AccountInstantiation(resultSet).getAccounts().get(0);
+        Account account = new AccountInstantiation(resultSet).accounts.get(0);
         request.close();
-        //TODO
         return account;
     }
 
@@ -108,10 +107,6 @@ public class AccountDAO implements DAO<Account> {
                 setObjectPrivateField(account, ID, resultSet.getInt(ID));
                 accounts.add(account);
             }
-        }
-
-        protected MyList<Account> getAccounts() {
-            return accounts;
         }
     }
 }

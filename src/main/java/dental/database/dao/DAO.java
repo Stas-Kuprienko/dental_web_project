@@ -43,6 +43,10 @@ public interface DAO<E> {
             }
         }
 
+        protected Blob createBlob() throws SQLException {
+            return connection.createBlob();
+        }
+
         public PreparedStatement getStatement() {
             return statement;
         }
