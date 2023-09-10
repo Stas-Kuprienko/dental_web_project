@@ -17,6 +17,7 @@ import java.util.Objects;
  */
 public class WorkRecord implements Serializable, Extractable {
 
+    private int id;
     private String patient;
 
     private String clinic;
@@ -118,6 +119,10 @@ public class WorkRecord implements Serializable, Extractable {
     /*                            ||
             Getters and setters   \/
      */
+
+    public int getId() {
+        return id;
+    }
 
     public String getPatient() {
         return patient;
