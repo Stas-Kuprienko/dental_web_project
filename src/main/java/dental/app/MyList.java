@@ -79,13 +79,24 @@ public class MyList<E> implements Collection<E>, Serializable {
     @Override
     public boolean add(E element) {
         if (element == null) {
-            return false;
+            throw new NoSuchElementException();
         }
         if (size == elements.length) {
             elements = grow(elements);
         }
         elements[size] = element;
         size += 1;
+        return true;
+    }
+
+    public boolean add(int index, E element) {
+        if (index < 0 || index > size) {
+            throw new IllegalArgumentException();
+        }
+        if (element == null) {
+            throw new NullPointerException();
+        }
+        elements[index] = element;
         return true;
     }
 
