@@ -2,7 +2,6 @@ package dental.database.dao;
 
 import dental.app.MyList;
 import dental.app.works.Product;
-import dental.app.works.WorkRecord;
 import dental.database.DBConfig;
 
 import java.sql.PreparedStatement;
@@ -32,10 +31,6 @@ public class ProductDAO implements DAO<Product> {
         statement.setInt(4, product.price());
         statement.execute();
         request.close();
-    }
-
-    public void addAll(MyList<Product> products) {
-
     }
 
     @Override

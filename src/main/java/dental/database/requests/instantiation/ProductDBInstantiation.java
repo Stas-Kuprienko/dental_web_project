@@ -28,10 +28,10 @@ public class ProductDBInstantiation extends ObjectDBPrototype<Product> {
     @Override
     public ProductDBInstantiation build() throws SQLException, IllegalAccessException {
 
-        while (result.next()) {
-            String title = result.getString(TITLE);
-            byte quantity = result.getByte(QUANTITY);
-            int price = result.getInt(PRICE);
+        while (resultSet.next()) {
+            String title = resultSet.getString(TITLE);
+            byte quantity = resultSet.getByte(QUANTITY);
+            int price = resultSet.getInt(PRICE);
             try {
                 Product product = Product.class.getConstructor(String.class, byte.class, int.class).newInstance(title, quantity, price);
                 list.add(product);

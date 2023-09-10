@@ -39,13 +39,13 @@ public class WorkRecordDBInstantiation extends ObjectDBPrototype<WorkRecord> {
 
         Constructor<WorkRecord> workRecordConstructor = WorkRecord.class.getDeclaredConstructor();
         workRecordConstructor.setAccessible(true);
-        while (result.next()) {
-            String patient = result.getString(PATIENT);
-            String clinic = result.getString(CLINIC);
-            LocalDate complete = result.getDate(COMPLETE).toLocalDate();
-            LocalDate accepted = result.getDate(ACCEPTED).toLocalDate();
-            boolean closed = result.getBoolean(CLOSED);
-            int id = result.getInt(ID);
+        while (resultSet.next()) {
+            String patient = resultSet.getString(PATIENT);
+            String clinic = resultSet.getString(CLINIC);
+            LocalDate complete = resultSet.getDate(COMPLETE).toLocalDate();
+            LocalDate accepted = resultSet.getDate(ACCEPTED).toLocalDate();
+            boolean closed = resultSet.getBoolean(CLOSED);
+            int id = resultSet.getInt(ID);
             WorkRecord workRecord = workRecordConstructor.newInstance();
             Field[] fields = workRecord.getClass().getDeclaredFields();
             workRecord.setPatient(patient);
