@@ -13,9 +13,8 @@ CREATE TABLE mydb.account (
   );
 
 CREATE TABLE mydb.work_record (
+	id INT NOT NULL AUTO_INCREMENT,
 	account_id INT NOT NULL,
-	FOREIGN KEY(account_id) REFERENCES mydb.account(id) ON DELETE CASCAD,
-	id INT NOT NULL,
 	patient VARCHAR(20),
 	clinic VARCHAR(20),
 	complete DATE,
@@ -23,7 +22,8 @@ CREATE TABLE mydb.work_record (
 	closed BOOLEAN,
 	photo BLOB,
 	comment VARCHAR(45),
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	FOREIGN KEY(account_id) REFERENCES mydb.account(id) ON DELETE CASCADE
     );
 
 CREATE TABLE mydb.product (
@@ -31,7 +31,7 @@ CREATE TABLE mydb.product (
     title VARCHAR(15) NOT NULL,
     quantity SMALLINT,
     price INT NOT NULL,
-    FOREIGN KEY(work_id) REFERENCES mydb.work_record(id) ON DELETE CASCAD
+    FOREIGN KEY(work_id) REFERENCES mydb.work_record(id) ON DELETE CASCADE
     );
 
 CREATE TABLE mydb.reports (
@@ -42,6 +42,6 @@ CREATE TABLE mydb.reports (
                     'november', 'december') NOT NULL,
 	r_id INT NOT NULL AUTO_INCREMENT,
 	account_id INT NOT NULL,
-    FOREIGN KEY(account_id) REFERENCES mydb.account(id)  ON DELETE CASCAD,
+    FOREIGN KEY(account_id) REFERENCES mydb.account(id)  ON DELETE CASCADE,
 	PRIMARY KEY (r_id, account_id)
 	);

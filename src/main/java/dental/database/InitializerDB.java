@@ -1,5 +1,10 @@
 package dental.database;
 
+import dental.database.dao.AccountDAO;
+import dental.database.dao.ProductDAO;
+import dental.database.dao.ReportDAO;
+import dental.database.dao.WorkRecordDAO;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,23 +18,22 @@ public final class InitializerDB extends Thread {
         instance = new InitializerDB();
     }
 
-    public final String DROP = "DROP TABLE IF EXISTS mydb.";
+    public final String DROP = String.format("DROP TABLE IF EXISTS %s.", DBConfig.DATA_BASE);
 
-    public final String ACCOUNT = """
-            CREATE TABLE mydb.account (
+    public final String ACCOUNT = String.format("""
+            CREATE TABLE %s.%s (
                 id INT NOT NULL AUTO_INCREMENT,
                 name VARCHAR(25),
                 login VARCHAR(15) NOT NULL,
                 password BLOB NOT NULL,
                 created DATE NOT NULL,
                 PRIMARY KEY (id)
-            );""";
+            );""", DBConfig.DATA_BASE, AccountDAO.TABLE_NAME);
 
-    public final String WORK_RECORD = """
-            CREATE TABLE mydb.work_record (
+    public final String WORK_RECORD = String.format("""
+            CREATE TABLE %s.%s (
+                id INT NOT NULL AUTO_INCREMENT,
             	account_id INT NOT NULL,
-                FOREIGN KEY(account_id) REFERENCES mydb.account(id) ON DELETE CASCADE,
-                id INT NOT NULL,
             	patient VARCHAR(20),
                 clinic VARCHAR(20),
                 complete DATE,
@@ -37,20 +41,21 @@ public final class InitializerDB extends Thread {
                 closed BOOLEAN,
                 photo BLOB,
                 comment VARCHAR(45),
-                PRIMARY KEY (id)
-            );""";
+                PRIMARY KEY (id),
+                FOREIGN KEY(account_id) REFERENCES %s(id) ON DELETE CASCADE
+            );""", DBConfig.DATA_BASE, WorkRecordDAO.TABLE_NAME, AccountDAO.TABLE_NAME);
 
-    public final String PRODUCT = """
-            CREATE TABLE mydb.product (
+    public final String PRODUCT = String.format("""
+            CREATE TABLE %s.%s (
                 work_id INT NOT NULL,
                 title VARCHAR(15) NOT NULL,
                 quantity SMALLINT,
                 price INT NOT NULL,
-                FOREIGN KEY(work_id) REFERENCES mydb.work_record(id) ON DELETE CASCADE
-            );""";
+                FOREIGN KEY(work_id) REFERENCES %s(id) ON DELETE CASCADE
+            );""",DBConfig.DATA_BASE, ProductDAO.TABLE_NAME, WorkRecordDAO.TABLE_NAME);
 
-    public final String REPORT = """
-            CREATE TABLE mydb.report (
+    public final String REPORT = String.format("""
+            CREATE TABLE %s.%s (
                 r_year YEAR NOT NULL,
                 r_month ENUM('january', 'february', 'march',
             				'april', 'may', 'june', 'july',
@@ -58,9 +63,9 @@ public final class InitializerDB extends Thread {
                             'november', 'december') NOT NULL,
                 r_id INT NOT NULL AUTO_INCREMENT,
                 account_id INT NOT NULL,
-                FOREIGN KEY(account_id) REFERENCES mydb.account(id)  ON DELETE CASCADE,
+                FOREIGN KEY(account_id) REFERENCES %s(id) ON DELETE CASCADE,
                 PRIMARY KEY (r_id, account_id)
-            );""";
+            );""", DBConfig.DATA_BASE, ReportDAO.TABLE_NAME, AccountDAO.TABLE_NAME);
 
 
     @Override
@@ -68,10 +73,10 @@ public final class InitializerDB extends Thread {
         try {
             Connection connection = ConnectionPool.get();
             Statement statement = connection.createStatement();
-            statement.addBatch(DROP + "report");
-            statement.addBatch(DROP + "product");
-            statement.addBatch(DROP + "work_record");
-            statement.addBatch(DROP + "account");
+            statement.addBatch(DROP + ReportDAO.TABLE_NAME);
+            statement.addBatch(DROP + ProductDAO.TABLE_NAME);
+            statement.addBatch(DROP + WorkRecordDAO.TABLE_NAME);
+            statement.addBatch(DROP + AccountDAO.TABLE_NAME);
             statement.addBatch(ACCOUNT);
             statement.addBatch(WORK_RECORD);
             statement.addBatch(PRODUCT);
