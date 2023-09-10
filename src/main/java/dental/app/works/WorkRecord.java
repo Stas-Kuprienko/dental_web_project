@@ -3,6 +3,7 @@ package dental.app.works;
 import dental.app.MyList;
 import dental.app.filetools.Extractable;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -30,7 +31,7 @@ public class WorkRecord implements Serializable, Extractable {
 
     private boolean closed;
 
-    private File photo;
+    private BufferedImage photo;
 
     private String comment;
 
@@ -98,9 +99,8 @@ public class WorkRecord implements Serializable, Extractable {
             return this;
         }
 
-        public Builder setPhoto(String file) {
+        public Builder setPhoto(BufferedImage photo) {
             //TODO
-            File photo = new File(file);
             WorkRecord.this.setPhoto(photo);
             return this;
         }
@@ -165,11 +165,11 @@ public class WorkRecord implements Serializable, Extractable {
         this.closed = closed;
     }
 
-    public File getPhoto() {
+    public BufferedImage getPhoto() {
         return photo;
     }
 
-    public void setPhoto(File photo) {
+    public void setPhoto(BufferedImage photo) {
         this.photo = photo;
     }
 
