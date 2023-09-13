@@ -2,6 +2,7 @@ package dental.database.dao;
 
 import dental.app.MyList;
 import dental.app.userset.Account;
+import dental.app.userset.Authenticator;
 import dental.database.DBConfig;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -15,13 +16,18 @@ public class AccountDAO implements DAO<Account> {
         instance = new AccountDAO();
     }
 
-    private static final AccountDAO instance;
-    public static final String TABLE_NAME = "account";
+    //TODO
+    //TODO
+    //TODO
 
+    private static final AccountDAO instance;
+    public static final String TABLE_NAME = DBConfig.DATA_BASE + ".account";
+
+    private static final String ACCOUNT_FIELDS = "name, login, password, created";
 
     @Override
-    public void add(Account account) throws SQLException, NoSuchFieldException, IllegalAccessException {
-        String query = String.format("INSERT INTO %s.%s (name, login, password, created) VALUES (?, ?, ?, ?);", DBConfig.DATA_BASE, TABLE_NAME);
+    public boolean create(Account account) throws SQLException, NoSuchFieldException, IllegalAccessException {
+        String query = String.format(SQL_DAO.INSERT.QUERY, TABLE_NAME, ACCOUNT_FIELDS, "?".repeat(ACCOUNT_FIELDS.split(",").length));
         DBRequest request = new DBRequest(query);
         PreparedStatement statement = request.getStatement();
         statement.setString(1, account.getName());
@@ -29,13 +35,14 @@ public class AccountDAO implements DAO<Account> {
         statement.setBlob(3, new SerialBlob(account.getPassword()));
         statement.setDate(4, Date.valueOf(account.getCreated()));
         statement.executeUpdate();
-        DBRequest.setID(account, statement);
+        boolean isSuccess = DBRequest.setID(account, statement);
         request.close();
+        return isSuccess;
     }
 
     @Override
     public MyList<Account> getAll() throws Exception {
-        String query = String.format("SELECT * FROM %s.%s;", DBConfig.DATA_BASE, TABLE_NAME);
+        String query = String.format(SQL_DAO.SELECT_ALL.QUERY, "*", TABLE_NAME);
         DBRequest request = new DBRequest(query);
         ResultSet resultSet = request.getStatement().executeQuery();
         MyList<Account> accounts = new AccountInstantiation(resultSet).accounts;
@@ -43,11 +50,13 @@ public class AccountDAO implements DAO<Account> {
         return accounts;
     }
 
-    @Override
-    public Account get(int id) throws Exception {
-        String query = String.format("SELECT * FROM %s.%s WHERE id = ?;", DBConfig.DATA_BASE, TABLE_NAME);
+    public Account get(String login, String password) throws Exception {
+        String where = "login = ? AND password = ?";
+        byte[] passwordBytes = Authenticator.passwordHash(password);
+        String query = String.format(SQL_DAO.SELECT_WHERE.QUERY, "*", TABLE_NAME, where);
         DBRequest request = new DBRequest(query);
-        request.getStatement().setInt(1, id);
+        request.getStatement().setString(1, login);
+        request.getStatement().setBlob(2, new SerialBlob(passwordBytes));
         ResultSet resultSet = request.getStatement().executeQuery();
         Account account = new AccountInstantiation(resultSet).accounts.get(0);
         request.close();
@@ -55,16 +64,13 @@ public class AccountDAO implements DAO<Account> {
     }
 
     @Override
-    public void remove(int id) throws SQLException {
-        String query = String.format("DELETE FROM %s.%s WHERE id = ?;", DBConfig.DATA_BASE, TABLE_NAME);
+    public boolean remove(int id) throws SQLException {
+        String query = String.format(SQL_DAO.DELETE.QUERY, TABLE_NAME, "id = ?");
         DBRequest request = new DBRequest(query);
         request.getStatement().setInt(1, id);
+        boolean isSuccess = request.getStatement().execute();
         request.close();
-    }
-
-    @Override
-    public void remove(Account account) throws SQLException {
-        remove(account.getId());
+        return isSuccess;
     }
 
     public static synchronized AccountDAO getInstance() {
