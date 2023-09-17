@@ -1,6 +1,6 @@
 package dental.domain.reports;
 
-import dental.domain.MyList;
+import dental.domain.data_structures.MyList;
 import dental.domain.userset.Account;
 import dental.domain.works.Product;
 import dental.domain.works.WorkRecord;
@@ -63,12 +63,12 @@ final class ReportFilesTool {
     }
 
     private static String[] buildTableColumns(Account account) {
-        HashMap<String, Integer> productTypes = account.recordManager.getProductMap();
-        String[] columns = new String[productTypes.size() + 2];
+        String[] productTypes = account.recordManager.productMap.getAllTitles();
+        String[] columns = new String[productTypes.length + 2];
         columns[0] = "patient";
         columns[1] = "clinic";
         int i = 2;
-        for (String s : productTypes.keySet()) {
+        for (String s : productTypes) {
             columns[i] = s;
             i++;
         }

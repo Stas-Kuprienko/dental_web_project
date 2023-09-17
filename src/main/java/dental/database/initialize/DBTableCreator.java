@@ -1,11 +1,12 @@
-package dental.database;
+package dental.database.initialize;
 
+import dental.database.service.ConnectionPool;
+import dental.database.service.DBConfig;
 import dental.domain.userset.Account;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 
 public final class DBTableCreator {
 
@@ -41,26 +42,26 @@ public final class DBTableCreator {
 
 
     public boolean createProductMap(Account account) {
-        String tableName = DBConfig.DATA_BASE + ".product_map_" +account.getId();
+        String tableName = DBConfig.DATA_BASE + ".product_map_" + account.getId();
         String query = String.format(PRODUCT_MAP, tableName);
         return request(query);
     }
 
     public boolean createWorkRecords(Account account) {
-        HashMap<String, Integer> productMap =
-                account.recordManager != null ? account.recordManager.getProductMap() : null;
-        if ((productMap == null)||(productMap.isEmpty())) {
+        String[] productTypes =
+                account.recordManager != null ? account.recordManager.productMap.getAllTitles() : null;
+        if ((productTypes == null)||(productTypes.length == 0)) {
             throw new NullPointerException();
         }
-        String productColumns = concatProductColumns(productMap);
+        String productColumns = concatProductColumns(productTypes);
         String tableName = DBConfig.DATA_BASE + ".work_record_" + account.getId();
         String query = String.format(WORK_RECORD, tableName, productColumns);
         return request(query);
     }
 
-    private String concatProductColumns(HashMap<String, Integer> productMap) {
+    private String concatProductColumns(String[] types) {
         StringBuilder result = new StringBuilder();
-        for (String s : productMap.keySet()) {
+        for (String s : types) {
             result.append(String.format("%s INT DEFAULT 0,\t\n", s));
         }
         return result.toString();

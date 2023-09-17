@@ -1,6 +1,6 @@
 package dental.domain.reports;
 
-import dental.domain.MyList;
+import dental.domain.data_structures.MyList;
 import dental.domain.userset.Account;
 import dental.domain.works.WorkRecord;
 

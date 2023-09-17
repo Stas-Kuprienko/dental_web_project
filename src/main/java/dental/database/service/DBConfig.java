@@ -1,4 +1,4 @@
-package dental.database;
+package dental.database.service;
 
 import java.io.IOException;
 import java.io.InputStream;

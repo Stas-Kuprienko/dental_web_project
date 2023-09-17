@@ -1,4 +1,4 @@
-package dental.domain;
+package dental.domain.data_structures;
 
 import java.io.Serializable;
 import java.util.Arrays;

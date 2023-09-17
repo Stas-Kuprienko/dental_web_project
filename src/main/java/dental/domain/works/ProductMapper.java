@@ -1,6 +1,6 @@
 package dental.domain.works;
 
-import dental.domain.MyList;
+import dental.domain.data_structures.MyList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,6 +58,18 @@ public class ProductMapper {
             }
             return true;
         }
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public String[] getAllTitles() {
+        String[] result = new String[size];
+        for (int i = 0; i < size; i++) {
+            result[i] = table[i].title;
+        }
+        return result;
     }
 
     public Product buildProduct(String title, int quantity) {

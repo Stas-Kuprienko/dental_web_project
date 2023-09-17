@@ -128,4 +128,8 @@ public class Account implements Serializable, Extractable {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

@@ -1,7 +1,7 @@
 package dental.database.requests.reports;
 
-import dental.database.ConnectionPool;
-import dental.database.DBConfig;
+import dental.database.service.ConnectionPool;
+import dental.database.service.DBConfig;
 import dental.database.requests.PullRequest;
 
 import java.sql.Connection;

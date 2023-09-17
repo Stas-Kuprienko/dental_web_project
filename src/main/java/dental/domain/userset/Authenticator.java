@@ -1,26 +1,14 @@
 package dental.domain.userset;
 
+import dental.database.service.DBAgent;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 
 /**
  * Authenticate {@link Account} if such exists.
  */
 public class Authenticator {
-
-    static {
-
-        //TODO reading accounts from files.
-        accounts = new HashMap<>();
-
-    }
-
-    /**
-     * The map of all existent {@link Account} objects.
-     * The accounts' login used as the {@linkplain HashMap#get(Object) key}.
-     */
-    private static final HashMap<String, Account> accounts;
 
     private Account account;
 
@@ -40,7 +28,7 @@ public class Authenticator {
         if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
             return false;
         }
-        Account a = accounts.get(login);
+        Account a = DBAgent.authenticate(login, password);
         if (a == null) {
             return false;
         }
@@ -74,12 +62,8 @@ public class Authenticator {
         }
     }
 
-
     public Account getAccount() {
         return account;
     }
 
-    public static HashMap<String, Account> getAccounts() {
-        return accounts;
-    }
 }
