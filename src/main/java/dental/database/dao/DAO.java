@@ -1,14 +1,14 @@
 package dental.database.dao;
 
-import dental.domain.MyList;
-import dental.database.ConnectionPool;
+import dental.domain.data_structures.MyList;
+import dental.database.service.ConnectionPool;
 
 import java.lang.reflect.Field;
 import java.sql.*;
 
 public interface DAO<E> {
 
-    boolean insert(E e) throws SQLException, NoSuchFieldException, IllegalAccessException;
+    boolean insert(E e) throws Exception;
 
     MyList<E> getAll() throws Exception;
 
@@ -33,9 +33,9 @@ public interface DAO<E> {
 
     class DBRequest {
         private Connection connection;
-        private PreparedStatement statement;
+        private final PreparedStatement statement;
 
-        protected DBRequest(String QUERY) {
+        protected DBRequest(String QUERY) throws SQLException {
             try {
                 this.connection = ConnectionPool.get();
                 this.statement = connection.prepareStatement(QUERY, Statement.RETURN_GENERATED_KEYS);
@@ -43,25 +43,35 @@ public interface DAO<E> {
                 if (connection != null) {
                     ConnectionPool.put(connection);
                 }
+                throw new SQLException(e);
             }
         }
 
         protected void close() {
-            ConnectionPool.put(this.connection);
-            connection = null;
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                //TODO
+                e.printStackTrace();
+            } finally {
+                ConnectionPool.put(this.connection);
+                connection = null;
+            }
         }
 
-        protected static boolean setID(Object object, Statement statement) throws SQLException, NoSuchFieldException, IllegalAccessException {
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                Field id = object.getClass().getDeclaredField("id");
-                id.setAccessible(true);
-                id.set(object, (int) resultSet.getLong(1));
-                id.setAccessible(false);
-                resultSet.close();
-                return true;
-            } else {
-                return false;
+        protected static boolean setID(Object object, Statement statement) throws NoSuchFieldException, IllegalAccessException, SQLException {
+            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    Field id = object.getClass().getDeclaredField("id");
+                    id.setAccessible(true);
+                    id.set(object, (int) resultSet.getLong(1));
+                    id.setAccessible(false);
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (SQLException e) {
+                throw new SQLException(e);
             }
         }
 

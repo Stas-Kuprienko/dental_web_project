@@ -1,4 +1,4 @@
-package dental.database;
+package dental.database.service;
 
 public class DatabaseLayerException extends Exception {
 }

@@ -1,7 +1,6 @@
 package dental.domain.works;
 
-import dental.domain.MyList;
-import dental.app.filetools.Extractable;
+import dental.domain.data_structures.MyList;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -20,14 +19,14 @@ import java.util.Objects;
  * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the products.
  * Also can to add {@code images} array with an images of the work.
  */
-public class WorkRecord implements Serializable, Extractable {
+public class WorkRecord implements Serializable {
 
     private int id;
     private String patient;
 
     private String clinic;
 
-    private final MyList<Product> products;
+    private MyList<Product> products;
 
     private LocalDate complete;
 
@@ -176,6 +175,10 @@ public class WorkRecord implements Serializable, Extractable {
 
     public MyList<Product> getProducts() {
         return products;
+    }
+
+    public void setProducts(MyList<Product> products) {
+        this.products = products;
     }
 
     public LocalDate getComplete() {

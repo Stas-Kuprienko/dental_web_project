@@ -1,4 +1,4 @@
-package dental.database;
+package dental.database.service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

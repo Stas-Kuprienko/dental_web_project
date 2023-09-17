@@ -1,6 +1,6 @@
 package dental.domain.works;
 
-import dental.domain.MyList;
+import dental.domain.data_structures.MyList;
 
 import java.io.Serializable;
 import java.util.Objects;

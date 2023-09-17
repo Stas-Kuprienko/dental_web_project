@@ -1,6 +1,6 @@
 package dental.database.requests;
 
-import dental.database.ConnectionPool;
+import dental.database.service.ConnectionPool;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
