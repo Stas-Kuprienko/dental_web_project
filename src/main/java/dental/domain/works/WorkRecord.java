@@ -3,8 +3,13 @@ package dental.domain.works;
 import dental.domain.MyList;
 import dental.app.filetools.Extractable;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Blob;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -30,6 +35,8 @@ public class WorkRecord implements Serializable, Extractable {
 
     private boolean closed;
 
+    private boolean paid;
+
     private BufferedImage photo;
 
     private String comment;
@@ -39,6 +46,33 @@ public class WorkRecord implements Serializable, Extractable {
         this.products = new MyList<>(5);
         this.accepted = LocalDate.now();
         this.closed = false;
+        this.paid = false;
+    }
+
+    /**
+     * Constructor for the instantiation from database tables.
+     * @param resultSet the {@link ResultSet} with table values.
+     * @throws SQLException if a database access destroyed.
+     */
+    public WorkRecord(ResultSet resultSet) throws SQLException {
+        this.id = resultSet.getInt("id");
+        this.patient = resultSet.getString("patient");
+        this.clinic = resultSet.getString("clinic");
+        this.complete = resultSet.getDate("complete").toLocalDate();
+        this.accepted = resultSet.getDate("accepted").toLocalDate();
+        this.closed = resultSet.getBoolean("closed");
+        this.paid = resultSet.getBoolean("paid");
+        this.comment = resultSet.getString("comment");
+        try {
+            Blob photoBlob = resultSet.getBlob("photo");
+            BufferedImage photo;
+            photo = ImageIO.read(photoBlob.getBinaryStream());
+            this.setPhoto(photo);
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.photo = null;
+        }
+        this.products = new MyList<>();
     }
 
     /**
@@ -178,5 +212,13 @@ public class WorkRecord implements Serializable, Extractable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
     }
 }
