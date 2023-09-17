@@ -1,7 +1,7 @@
 package dental.database.requests.reports;
 
-import dental.app.works.RecordManager;
-import dental.app.userset.Account;
+import dental.domain.works.RecordManager;
+import dental.domain.userset.Account;
 import dental.database.requests.PushRequest;
 
 import java.sql.SQLException;

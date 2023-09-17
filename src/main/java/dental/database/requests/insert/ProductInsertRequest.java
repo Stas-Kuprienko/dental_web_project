@@ -1,6 +1,6 @@
 package dental.database.requests.insert;
 
-import dental.app.works.Product;
+import dental.domain.works.Product;
 import dental.database.requests.PushRequest;
 
 import java.sql.SQLException;

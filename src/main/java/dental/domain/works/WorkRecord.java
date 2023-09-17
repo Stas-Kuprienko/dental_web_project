@@ -1,10 +1,9 @@
-package dental.app.works;
+package dental.domain.works;
 
-import dental.app.MyList;
+import dental.domain.MyList;
 import dental.app.filetools.Extractable;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -50,7 +49,7 @@ public class WorkRecord implements Serializable, Extractable {
     }
 
     /**
-     * Methods that using for {@linkplain MyList#searchByString(dental.app.MyList.Searchable, String, Class) searching} objects.
+     * Methods that using for {@linkplain MyList#searchByString(MyList.Searchable, String, Class) searching} objects.
      */
     public enum SearchBy implements MyList.Searchable {
         getPatient, getClinic

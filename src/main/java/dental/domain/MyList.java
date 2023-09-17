@@ -1,4 +1,4 @@
-package dental.app;
+package dental.domain;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -205,6 +205,7 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     private void fastRemove(int i) {
         size -= 1;
+        elements[i] = null;
         if (size > i) {
             System.arraycopy(elements, i + 1, elements, i, size - i);
         }

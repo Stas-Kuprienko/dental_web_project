@@ -1,6 +1,6 @@
 package dental.database.requests.instantiation;
 
-import dental.app.MyList;
+import dental.domain.MyList;
 import dental.database.requests.PullRequest;
 
 import java.lang.reflect.Field;

@@ -1,6 +1,6 @@
 package dental.database.requests.instantiation;
 
-import dental.app.works.Product;
+import dental.domain.works.Product;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;

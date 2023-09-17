@@ -1,8 +1,8 @@
 package dental.database.requests.instantiation;
 
-import dental.app.MyList;
-import dental.app.works.Product;
-import dental.app.works.WorkRecord;
+import dental.domain.MyList;
+import dental.domain.works.Product;
+import dental.domain.works.WorkRecord;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

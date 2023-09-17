@@ -1,8 +1,8 @@
 package dental.database.dao;
 
-import dental.app.MyList;
-import dental.app.works.Product;
-import dental.app.works.WorkRecord;
+import dental.domain.MyList;
+import dental.domain.works.Product;
+import dental.domain.works.WorkRecord;
 import dental.database.DBConfig;
 
 import javax.imageio.ImageIO;
@@ -19,14 +19,14 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
     }
 
     private final int accountId;
-    public static final String TABLE_NAME = "work_record";
+    public static final String TABLE_NAME = DBConfig.DATA_BASE + ".work_record_";
     private static final String PHOTO_FORMAT = "jpg";
 
+    private static final String WORK_FIELDS = "patient, clinic, complete, accepted, closed, photo, comment";
+
     @Override
-    public void add(WorkRecord workRecord) throws SQLException, NoSuchFieldException, IllegalAccessException {
-        String query = String.format(
-                "INSERT INTO %s.%s (account_id, patient, clinic, complete, accepted, closed, photo, comment)" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?);", DBConfig.DATA_BASE, TABLE_NAME);
+    public boolean insert(WorkRecord workRecord) throws SQLException, NoSuchFieldException, IllegalAccessException {
+        String query = String.format(SQL_DAO.INSERT.QUERY, "account_id, " + TABLE_NAME, WORK_FIELDS, "?".repeat(WORK_FIELDS.split(",").length));
         DBRequest request = new DBRequest(query);
         PreparedStatement statement = request.getStatement();
         statement.setInt(1, accountId);
@@ -47,21 +47,23 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
             statement.setBinaryStream(7, null);
         }
         statement.setString(8, workRecord.getComment());
+
         statement.executeUpdate();
-        DBRequest.setID(workRecord, statement);
+        boolean isSuccess = DBRequest.setID(workRecord, statement);
         request.close();
         MyList<Product> products = workRecord.getProducts();
         if (!(products.isEmpty())) {
-            ProductDAO productDAO = new ProductDAO(workRecord.getId());
+            ProductDAO productDAO = new ProductDAO(accountId, workRecord.getId());
             for (Product p : products) {
-                productDAO.add(p);
+                isSuccess = productDAO.insert(p);
             }
         }
+        return isSuccess;
     }
 
     @Override
     public MyList<WorkRecord> getAll() throws Exception {
-        String query = String.format("SELECT * FROM %s.%s;", DBConfig.DATA_BASE, TABLE_NAME);
+        String query = String.format(SQL_DAO.SELECT_ALL.QUERY, "*", TABLE_NAME + accountId);
         DBRequest request = new DBRequest(query);
         ResultSet resultSet = request.getStatement().executeQuery();
         MyList<WorkRecord> workRecords = new WorkRecordInstantiation(resultSet).workRecords;
@@ -71,23 +73,17 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
 
     @Override
     public WorkRecord get(int id) throws Exception {
-        String query = String.format("SELECT * FROM %s.%s WHERE id = ?", DBConfig.DATA_BASE, TABLE_NAME);
+        return null;
+    }
+
+    @Override
+    public boolean remove(int id) throws SQLException {
+        String query = String.format(SQL_DAO.DELETE.QUERY, TABLE_NAME);
         DBRequest request = new DBRequest(query);
         request.getStatement().setInt(1, id);
-        ResultSet resultSet = request.getStatement().executeQuery();
-        WorkRecord workRecord = new WorkRecordInstantiation(resultSet).workRecords.get(0);
+        boolean isSuccess = request.getStatement().execute();
         request.close();
-        return workRecord;
-    }
-
-    @Override
-    public void remove(int id) throws SQLException {
-
-    }
-
-    @Override
-    public void remove(WorkRecord workRecord) throws SQLException {
-
+        return isSuccess;
     }
 
     @SuppressWarnings("all")
@@ -107,6 +103,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
             constructor.setAccessible(false);
             resultSet.close();
         }
+
         @Override
         protected void build() throws Exception {
             String ID = "id";
@@ -129,8 +126,14 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
                 workRecord.setComment(resultSet.getString(COMMENT));
                 setObjectPrivateField(workRecord, ID, resultSet.getInt(ID));
                 setObjectPrivateField(workRecord, ACCEPTED, resultSet.getDate(ACCEPTED).toLocalDate());
+                MyList<Product> products = new ProductDAO(accountId, workRecord.getId()).getAll();
+                setObjectPrivateField(workRecord, "products", products);
                 workRecords.add(workRecord);
             }
+        }
+
+        private MyList<Product> instantiateProductList(ResultSet resultSet) {
+            return null;
         }
     }
 
