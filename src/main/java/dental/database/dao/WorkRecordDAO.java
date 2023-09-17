@@ -1,7 +1,9 @@
 package dental.database.dao;
 
 import dental.domain.MyList;
+import dental.domain.userset.Account;
 import dental.domain.works.Product;
+import dental.domain.works.ProductMapper;
 import dental.domain.works.WorkRecord;
 import dental.database.DBConfig;
 
@@ -14,11 +16,11 @@ import java.sql.*;
 
 public class WorkRecordDAO implements DAO<WorkRecord>{
 
-    public WorkRecordDAO(int accountId) {
-        this.accountId = accountId;
+    public WorkRecordDAO(Account account) {
+        this.account = account;
     }
 
-    private final int accountId;
+    private final Account account;
     public static final String TABLE_NAME = DBConfig.DATA_BASE + ".work_record_";
     private static final String PHOTO_FORMAT = "jpg";
 
@@ -29,7 +31,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
         String query = String.format(SQL_DAO.INSERT.QUERY, "account_id, " + TABLE_NAME, WORK_FIELDS, "?".repeat(WORK_FIELDS.split(",").length));
         DBRequest request = new DBRequest(query);
         PreparedStatement statement = request.getStatement();
-        statement.setInt(1, accountId);
+        statement.setInt(1, account.getId());
         statement.setString(2, workRecord.getPatient());
         statement.setString(3, workRecord.getClinic());
         statement.setDate(4, Date.valueOf(workRecord.getComplete()));
@@ -53,7 +55,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
         request.close();
         MyList<Product> products = workRecord.getProducts();
         if (!(products.isEmpty())) {
-            ProductDAO productDAO = new ProductDAO(accountId, workRecord.getId());
+            ProductDAO productDAO = new ProductDAO(account.getId(), workRecord.getId());
             for (Product p : products) {
                 isSuccess = productDAO.insert(p);
             }
@@ -63,7 +65,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
 
     @Override
     public MyList<WorkRecord> getAll() throws Exception {
-        String query = String.format(SQL_DAO.SELECT_ALL.QUERY, "*", TABLE_NAME + accountId);
+        String query = String.format(SQL_DAO.SELECT_ALL.QUERY, "*", TABLE_NAME + account.getId());
         DBRequest request = new DBRequest(query);
         ResultSet resultSet = request.getStatement().executeQuery();
         MyList<WorkRecord> workRecords = new WorkRecordInstantiation(resultSet).workRecords;
@@ -106,34 +108,12 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
 
         @Override
         protected void build() throws Exception {
-            String ID = "id";
-            String PATIENT = "patient";
-            String CLINIC = "clinic";
-            String COMPLETE = "complete";
-            String ACCEPTED = "accepted";
-            String CLOSED = "closed";
-            String PHOTO = "photo";
-            String COMMENT = "comment";
-            while(resultSet.next()) {
-                WorkRecord workRecord = constructor.newInstance();
-                workRecord.setPatient(resultSet.getString(PATIENT));
-                workRecord.setClinic(resultSet.getString(CLINIC));
-                workRecord.setComplete(resultSet.getDate(COMPLETE).toLocalDate());
-                workRecord.setClosed(resultSet.getBoolean(CLOSED));
-                Blob photoBlob = resultSet.getBlob(PHOTO);
-                BufferedImage photo = ImageIO.read(photoBlob.getBinaryStream());
-                workRecord.setPhoto(photo);
-                workRecord.setComment(resultSet.getString(COMMENT));
-                setObjectPrivateField(workRecord, ID, resultSet.getInt(ID));
-                setObjectPrivateField(workRecord, ACCEPTED, resultSet.getDate(ACCEPTED).toLocalDate());
-                MyList<Product> products = new ProductDAO(accountId, workRecord.getId()).getAll();
-                setObjectPrivateField(workRecord, "products", products);
-                workRecords.add(workRecord);
+            while (resultSet.next()) {
+                WorkRecord record = new WorkRecord(resultSet);
+                MyList<Product> products = account.recordManager.productMap.instantiateFromDB(resultSet);
+                setObjectPrivateField(record, "products", products);
+                workRecords.add(record);
             }
-        }
-
-        private MyList<Product> instantiateProductList(ResultSet resultSet) {
-            return null;
         }
     }
 

@@ -12,15 +12,12 @@ public final class RecordManager {
      */
     public final MyList<WorkRecord> workRecords;
 
-    public final ProductHandler productHandler;
-
     public final ProductMapper productMap;
 
 
     public RecordManager() {
         this.workRecords = new MyList<>();
         this.productMap = new ProductMapper();
-        this.productHandler = new ProductHandler();
     }
 
     /**
@@ -59,7 +56,7 @@ public final class RecordManager {
      */
     public boolean editProductQuantity(WorkRecord workRecord, String title, int quantity) {
         removeProduct(workRecord, title);
-        return workRecord.getProducts().add(productHandler.createProduct(title, quantity));
+        return workRecord.getProducts().add(productMap.buildProduct(title, quantity));
     }
 
     /**
@@ -69,11 +66,20 @@ public final class RecordManager {
      * @return True if it was successful.
      */
     public boolean removeProduct(WorkRecord workRecord, String title) {
-        return workRecord.getProducts().remove(productHandler.findProduct(workRecord, title));
+        try {
+            return workRecord.getProducts().remove(findProduct(workRecord, title));
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
-
-    public HashMap<String, Integer> getProductMap() {
-        return productHandler.getProductMap();
+    private Product findProduct(WorkRecord workRecord, String title) {
+        title = title.toLowerCase();
+        for (Product p : workRecord.getProducts()) {
+            if (p.title().equals(title)) {
+                return p;
+            }
+        }
+        throw new NullPointerException("the type product is not found");
     }
 }
