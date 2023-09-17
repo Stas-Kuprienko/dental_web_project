@@ -1,7 +1,7 @@
-package dental.app.userset;
+package dental.domain.userset;
 
-import dental.app.works.RecordManager;
-import dental.app.reports.TableReport;
+import dental.domain.works.RecordManager;
+import dental.domain.reports.TableReport;
 import dental.app.filetools.Extractable;
 
 import java.io.Serializable;

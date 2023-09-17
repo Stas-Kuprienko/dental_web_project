@@ -1,4 +1,4 @@
-package dental.app.userset;
+package dental.domain.userset;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

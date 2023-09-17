@@ -1,4 +1,4 @@
-package dental.app.userset;
+package dental.domain.userset;
 
 public final class User {
 

@@ -1,7 +1,7 @@
 package dental.database.dao;
 
-import dental.app.MyList;
-import dental.app.works.Product;
+import dental.domain.MyList;
+import dental.domain.works.Product;
 import dental.database.DBConfig;
 
 import java.lang.reflect.Constructor;
@@ -28,7 +28,7 @@ public class ProductDAO implements DAO<Product> {
     private final int workRecordId;
 
     @Override
-    public boolean create(Product product) throws SQLException {
+    public boolean insert(Product product) throws SQLException {
         String IDs = "account_id, work_id, ";
         String query = String.format(
                 SQL_DAO.INSERT.QUERY, TABLE_NAME, IDs + PRODUCT_FIELDS, "?".repeat(PRODUCT_FIELDS.split(",").length) + 1);
@@ -54,6 +54,11 @@ public class ProductDAO implements DAO<Product> {
         MyList<Product> products = new ProductInstantiation(resultSet).products;
         request.close();
         return products;
+    }
+
+    @Override
+    public Product get(int id) throws Exception {
+        return null;
     }
 
     @Override

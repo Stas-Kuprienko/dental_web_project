@@ -1,8 +1,8 @@
-package dental.app.reports;
+package dental.domain.reports;
 
-import dental.app.MyList;
-import dental.app.userset.Account;
-import dental.app.works.WorkRecord;
+import dental.domain.MyList;
+import dental.domain.userset.Account;
+import dental.domain.works.WorkRecord;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

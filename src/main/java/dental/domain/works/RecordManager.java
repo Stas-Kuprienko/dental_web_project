@@ -1,6 +1,6 @@
-package dental.app.works;
+package dental.domain.works;
 
-import dental.app.MyList;
+import dental.domain.MyList;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -14,9 +14,12 @@ public final class RecordManager {
 
     public final ProductHandler productHandler;
 
+    public final ProductMapper productMap;
+
 
     public RecordManager() {
         this.workRecords = new MyList<>();
+        this.productMap = new ProductMapper();
         this.productHandler = new ProductHandler();
     }
 
@@ -43,7 +46,7 @@ public final class RecordManager {
      * @param quantity The quantity of the product items.
      */
     public void addProductInWork(WorkRecord workRecord, String title, int quantity) {
-        Product product = productHandler.createProduct(title, (byte) quantity);
+        Product product = productMap.buildProduct(title, quantity);
         workRecord.getProducts().add(product);
     }
 

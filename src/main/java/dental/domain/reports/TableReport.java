@@ -1,7 +1,7 @@
-package dental.app.reports;
+package dental.domain.reports;
 
-import dental.app.MyList;
-import dental.app.works.WorkRecord;
+import dental.domain.MyList;
+import dental.domain.works.WorkRecord;
 
 import java.io.Serializable;
 import java.util.Objects;

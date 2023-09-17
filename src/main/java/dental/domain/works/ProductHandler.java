@@ -1,4 +1,4 @@
-package dental.app.works;
+package dental.domain.works;
 
 import java.util.HashMap;
 

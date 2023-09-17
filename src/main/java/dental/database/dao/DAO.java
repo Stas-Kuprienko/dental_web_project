@@ -1,7 +1,6 @@
 package dental.database.dao;
 
-import dental.app.MyList;
-import dental.app.userset.Account;
+import dental.domain.MyList;
 import dental.database.ConnectionPool;
 
 import java.lang.reflect.Field;
@@ -9,13 +8,11 @@ import java.sql.*;
 
 public interface DAO<E> {
 
-    //TODO
-    //TODO
-    //TODO
-
-    boolean create(E e) throws SQLException, NoSuchFieldException, IllegalAccessException;
+    boolean insert(E e) throws SQLException, NoSuchFieldException, IllegalAccessException;
 
     MyList<E> getAll() throws Exception;
+
+    E get(int id) throws Exception;
 
     boolean remove(int id) throws SQLException;
 
@@ -36,11 +33,17 @@ public interface DAO<E> {
 
     class DBRequest {
         private Connection connection;
-        private final PreparedStatement statement;
+        private PreparedStatement statement;
 
-        protected DBRequest(String QUERY) throws SQLException {
-            this.connection = ConnectionPool.get();
-            this.statement = connection.prepareStatement(QUERY, Statement.RETURN_GENERATED_KEYS);
+        protected DBRequest(String QUERY) {
+            try {
+                this.connection = ConnectionPool.get();
+                this.statement = connection.prepareStatement(QUERY, Statement.RETURN_GENERATED_KEYS);
+            } catch (SQLException e) {
+                if (connection != null) {
+                    ConnectionPool.put(connection);
+                }
+            }
         }
 
         protected void close() {

@@ -1,8 +1,8 @@
 package dental.database.dao;
 
-import dental.app.MyList;
-import dental.app.userset.Account;
-import dental.app.userset.Authenticator;
+import dental.domain.MyList;
+import dental.domain.userset.Account;
+import dental.domain.userset.Authenticator;
 import dental.database.DBConfig;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -16,17 +16,13 @@ public class AccountDAO implements DAO<Account> {
         instance = new AccountDAO();
     }
 
-    //TODO
-    //TODO
-    //TODO
-
     private static final AccountDAO instance;
     public static final String TABLE_NAME = DBConfig.DATA_BASE + ".account";
 
     private static final String ACCOUNT_FIELDS = "name, login, password, created";
 
     @Override
-    public boolean create(Account account) throws SQLException, NoSuchFieldException, IllegalAccessException {
+    public boolean insert(Account account) throws SQLException, NoSuchFieldException, IllegalAccessException {
         String query = String.format(SQL_DAO.INSERT.QUERY, TABLE_NAME, ACCOUNT_FIELDS, "?".repeat(ACCOUNT_FIELDS.split(",").length));
         DBRequest request = new DBRequest(query);
         PreparedStatement statement = request.getStatement();
@@ -42,12 +38,12 @@ public class AccountDAO implements DAO<Account> {
 
     @Override
     public MyList<Account> getAll() throws Exception {
-        String query = String.format(SQL_DAO.SELECT_ALL.QUERY, "*", TABLE_NAME);
-        DBRequest request = new DBRequest(query);
-        ResultSet resultSet = request.getStatement().executeQuery();
-        MyList<Account> accounts = new AccountInstantiation(resultSet).accounts;
-        request.close();
-        return accounts;
+        return null;
+    }
+
+    @Override
+    public Account get(int id) throws Exception {
+        return null;
     }
 
     public Account get(String login, String password) throws Exception {

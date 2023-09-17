@@ -1,6 +1,6 @@
-package dental.app.works;
+package dental.domain.works;
 
-import dental.app.MyList;
+import dental.domain.MyList;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -19,7 +19,7 @@ public record Product(String title, byte quantity, int price) implements Seriali
     }
 
     /**
-     * Methods that using for {@linkplain MyList#searchByString(dental.app.MyList.Searchable, String, Class) searching} objects.
+     * Methods that using for {@linkplain MyList#searchByString(MyList.Searchable, String, Class) searching} objects.
      */
     public enum SearchBy implements MyList.Searchable {
         title

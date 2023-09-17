@@ -1,9 +1,9 @@
 package dental.database.requests.insert;
 
-import dental.app.MyList;
-import dental.app.works.Product;
-import dental.app.works.WorkRecord;
-import dental.app.userset.Account;
+import dental.domain.MyList;
+import dental.domain.works.Product;
+import dental.domain.works.WorkRecord;
+import dental.domain.userset.Account;
 import dental.database.ConnectionPool;
 import dental.database.requests.PushRequest;
 

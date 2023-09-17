@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS mydb.account;
+CREATE TABLE IF NOT EXISTS mydb.account;
 
 CREATE TABLE mydb.account (
   id INT NOT NULL AUTO_INCREMENT,
@@ -8,6 +8,14 @@ CREATE TABLE mydb.account (
   created DATE NOT NULL,
   PRIMARY KEY (id)
   );
+
+///user table of the products prices
+CREATE TABLE mydb.product_map (
+  id INT NOT NULL,
+  title VARCHAR(15) NOT NULL,
+  price INT NOT NULL,
+  PRIMARY KEY (id));
+
 
 ///user table of the work records
 CREATE TABLE mydb.work_record_? (
