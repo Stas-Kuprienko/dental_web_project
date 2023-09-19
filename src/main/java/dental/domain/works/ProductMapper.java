@@ -12,11 +12,11 @@ public class ProductMapper {
 
     private int size;
 
-    private TypeNode[] table;
+    private Entry[] entries;
 
 
     public ProductMapper() {
-        table = new TypeNode[DEFAULT_CAPACITY];
+        entries = new Entry[DEFAULT_CAPACITY];
         size = 0;
     }
 
@@ -24,14 +24,14 @@ public class ProductMapper {
         if (title == null) {
             throw new NullPointerException("key is empty");
         }
-        if (size == table.length) {
+        if (size == entries.length) {
             grow();
         }
         int i = find(title);
         if (i > -1) {
-            table[i].price = price;
+            entries[i].price = price;
         } else {
-            table[size] = new TypeNode(title.toLowerCase(), price);
+            entries[size] = new Entry(title.toLowerCase(), price);
             size++;
         }
         return true;
@@ -42,7 +42,7 @@ public class ProductMapper {
         if (i == -1) {
             throw new NullPointerException("value is not found");
         } else {
-            return table[i].price;
+            return entries[i].price;
         }
     }
 
@@ -52,9 +52,9 @@ public class ProductMapper {
             return false;
         } else {
             size -= 1;
-            table[i] = null;
+            entries[i] = null;
             if (size > i) {
-                System.arraycopy(table, i + 1, table, i, size - i);
+                System.arraycopy(entries, i + 1, entries, i, size - i);
             }
             return true;
         }
@@ -67,28 +67,28 @@ public class ProductMapper {
     public String[] getAllTitles() {
         String[] result = new String[size];
         for (int i = 0; i < size; i++) {
-            result[i] = table[i].title;
+            result[i] = entries[i].title;
         }
         return result;
     }
 
-    public Product buildProduct(String title, int quantity) {
+    public Product createProduct(String title, int quantity) {
         int i = find(title);
         if (i == -1) {
             throw new NoSuchElementException("type title is not found");
         } else {
-            TypeNode node = table[i];
+            Entry node = entries[i];
             return new Product(node.title, (byte) quantity, node.price);
         }
     }
 
     public MyList<Product> instantiateFromDB(ResultSet resultSet) {
         MyList<Product> list = new MyList<>();
-        for (TypeNode t : table) {
+        for (Entry t : entries) {
             try {
                 int q = resultSet.getInt(t.title);
                 if (q != 0) {
-                    list.add(buildProduct(t.title, q));
+                    list.add(createProduct(t.title, q));
                 }
             } catch (SQLException ignored) {}
         }
@@ -104,7 +104,7 @@ public class ProductMapper {
         }
         title = title.toLowerCase();
         for (int i = 0; i < size; i++) {
-            if (table[i].title.equals(title)) {
+            if (entries[i].title.equals(title)) {
                 return i;
             }
         }
@@ -112,15 +112,15 @@ public class ProductMapper {
     }
 
     private void grow() {
-        TypeNode[] result = new TypeNode[size << 1];
-        System.arraycopy(table, 0, result, 0, table.length);
-        this.table = result;
+        Entry[] result = new Entry[size << 1];
+        System.arraycopy(entries, 0, result, 0, entries.length);
+        this.entries = result;
     }
-    private static final class TypeNode {
+    private static final class Entry {
         final String title;
         int price;
 
-        TypeNode(String title, int price) {
+        Entry(String title, int price) {
             this.title = title;
             this.price = price;
         }

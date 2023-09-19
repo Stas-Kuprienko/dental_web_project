@@ -16,21 +16,6 @@ public interface DAO<E> {
 
     boolean remove(int id) throws SQLException;
 
-    enum SQL_DAO {
-        INSERT("INSERT INTO %s (%s) VALUES (%s);"),
-        SELECT_ALL("SELECT %s FROM %s;"),
-        SELECT_WHERE("SELECT %s FROM %s WHERE %s;"),
-        DELETE("DELETE FROM %s WHERE %s;"),
-        //TODO
-        UPDATE("UPDATE %s SET %s = %s WHERE %s;");
-
-        final String QUERY;
-
-        SQL_DAO(String QUERY) {
-            this.QUERY = QUERY;
-        }
-    }
-
     class DBRequest {
         private Connection connection;
         private final PreparedStatement statement;
@@ -84,4 +69,18 @@ public interface DAO<E> {
         }
     }
 
+    enum SQL_Sample {
+        INSERT("INSERT INTO %s (%s) VALUES (%s);"),
+        SELECT_ALL("SELECT %s FROM %s;"),
+        SELECT_WHERE("SELECT %s FROM %s WHERE %s;"),
+        DELETE("DELETE FROM %s WHERE %s;"),
+        //TODO
+        UPDATE("UPDATE %s SET %s = %s WHERE %s;");
+
+        public final String QUERY;
+
+        SQL_Sample(String QUERY) {
+            this.QUERY = QUERY;
+        }
+    }
 }

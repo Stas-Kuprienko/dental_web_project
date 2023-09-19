@@ -1,22 +1,17 @@
 package dental.domain.works;
 
 import dental.domain.data_structures.MyList;
+import dental.domain.userset.Account;
 
 import java.time.LocalDate;
 
 public final class RecordManager {
 
-    /**
-     * The {@link MyList list} of the unclosed {@link WorkRecord} objects for account.
-     */
-    public final MyList<WorkRecord> workRecords;
 
-    public final ProductMapper productMap;
+    private final Account account;
 
-
-    public RecordManager() {
-        this.workRecords = new MyList<>();
-        this.productMap = new ProductMapper();
+    public RecordManager(Account account) {
+        this.account = account;
     }
 
     /**
@@ -31,7 +26,17 @@ public final class RecordManager {
 
         WorkRecord workRecord = WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(complete).build();
 
-        this.workRecords.add(workRecord);
+        account.workRecords.add(workRecord);
+
+        return workRecord;
+    }
+
+    public WorkRecord createRecord(String patient, String clinic, String product, int quantity, LocalDate complete) {
+
+        WorkRecord workRecord = WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(complete).build();
+        addProductInWork(workRecord, product, quantity);
+
+        account.workRecords.add(workRecord);
 
         return workRecord;
     }
@@ -44,7 +49,7 @@ public final class RecordManager {
      * @param quantity   The quantity of the product items.
      */
     public void addProductInWork(WorkRecord workRecord, String title, int quantity) {
-        Product product = productMap.buildProduct(title, quantity);
+        Product product = account.productMap.createProduct(title, quantity);
         workRecord.getProducts().add(product);
     }
 
@@ -58,7 +63,7 @@ public final class RecordManager {
      */
     public boolean editProductQuantity(WorkRecord workRecord, String title, int quantity) {
         removeProduct(workRecord, title);
-        return workRecord.getProducts().add(productMap.buildProduct(title, quantity));
+        return workRecord.getProducts().add(account.productMap.createProduct(title, quantity));
     }
 
     /**
@@ -68,12 +73,12 @@ public final class RecordManager {
      * @param title      The title of the product to remove.
      * @return True if it was successful.
      */
-    public boolean removeProduct(WorkRecord workRecord, String title) {
+    public static boolean removeProduct(WorkRecord workRecord, String title) {
         Product p = findProduct(workRecord, title);
         return p != null && workRecord.getProducts().remove(p);
     }
 
-    public Product findProduct(WorkRecord workRecord, String title) {
+    public static Product findProduct(WorkRecord workRecord, String title) {
         title = title.toLowerCase();
         for (Product p : workRecord.getProducts()) {
             if (p.title().equals(title)) {

@@ -3,6 +3,7 @@ package dental.database.dao;
 import dental.domain.data_structures.MyList;
 import dental.domain.userset.Account;
 import dental.domain.works.Product;
+import dental.domain.works.RecordManager;
 import dental.domain.works.WorkRecord;
 import dental.database.service.DBConfig;
 
@@ -25,18 +26,13 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
 
     @Override
     public boolean insert(WorkRecord workRecord) throws Exception {
-        ResultSetMetaData metaData;
-        String workFields;
-        try {
-            metaData = pullMetaData();
-            workFields = metaDataFieldsToString(metaData);
-        } catch (SQLException e) {
-            throw new SQLException(e);
-        }
+        //get string of all fields of the object
+        String workFields = buildFieldToString();
+        String[] metaData = workFields.split(", ");
         //concatenate string of values (?) for prepared statement
         String injectionCounts = "?, ".repeat(workFields.split(",").length - 1);
-        injectionCounts = "DEFAULT, " + injectionCounts.substring(injectionCounts.length() - 2);
-        String query = String.format(SQL_DAO.INSERT.QUERY, TABLE_NAME + account.getId(), workFields, injectionCounts);
+        injectionCounts = "DEFAULT, " + injectionCounts.substring(0, injectionCounts.length() - 2);
+        String query = String.format(SQL_Sample.INSERT.QUERY, TABLE_NAME + account.getId(), workFields, injectionCounts);
         DBRequest request = null;
         boolean isSuccess;
         int i = 1;
@@ -46,11 +42,10 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
             statement.setString(i++, workRecord.getPatient());
             statement.setString(i++, workRecord.getClinic());
             //looping product columns and setting values
-            while (!metaData.getColumnName(i++).equals("complete")) {
-                Product p = account.recordManager != null ?
-                        account.recordManager.findProduct(workRecord, metaData.getColumnName(i)) : null;
+            while (!metaData[i].equals("complete")) {
+                Product p = RecordManager.findProduct(workRecord, metaData[i]);
                 int value = p == null ? 0 : p.quantity();
-                statement.setInt(i, value);
+                statement.setInt(i++, value);
             }
             statement.setDate(i++, Date.valueOf(workRecord.getComplete()));
             statement.setDate(i++, Date.valueOf(workRecord.getAccepted()));
@@ -82,7 +77,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
 
     @Override
     public MyList<WorkRecord> getAll() throws SQLException, NoSuchMethodException {
-        String query = String.format(SQL_DAO.SELECT_ALL.QUERY, "*", TABLE_NAME + account.getId());
+        String query = String.format(SQL_Sample.SELECT_ALL.QUERY, "*", TABLE_NAME + account.getId());
         DBRequest request = null;
         MyList<WorkRecord> workRecords;
         try {
@@ -108,7 +103,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
 
     @Override
     public boolean remove(int id) throws SQLException {
-        String query = String.format(SQL_DAO.DELETE.QUERY, TABLE_NAME);
+        String query = String.format(SQL_Sample.DELETE.QUERY, TABLE_NAME);
         boolean isSuccess;
         DBRequest request = null;
         try {
@@ -125,28 +120,22 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
         return isSuccess;
     }
 
-    private ResultSetMetaData pullMetaData() throws SQLException {
-        DBRequest request = null;
-        ResultSetMetaData metaData;
-        try {
-            request = new DBRequest(String.format(SQL_DAO.SELECT_ALL.QUERY, "*", TABLE_NAME + account.getId()));
-            ResultSet resultSet = request.getStatement().executeQuery();
-            metaData = resultSet.getMetaData();
-        } catch (SQLException e) {
-            throw new SQLException(e);
-        } finally {
-            if (request != null) {
-                request.close();
-            }
-        } return metaData;
-    }
-
-    private String metaDataFieldsToString(ResultSetMetaData metaData) throws SQLException {
+    private String buildFieldToString() {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < metaData.getColumnCount(); i++) {
-            result.append(metaData.getColumnName(i + 1)).append(", ");
+        result.append("id, ");
+        result.append("patient, ");
+        result.append("clinic, ");
+        String[] products = account.productMap.getAllTitles();
+        for (String p : products) {
+            result.append(p).append(", ");
         }
-        return result.substring(0, result.length() - 2);
+        result.append("complete, ");
+        result.append("accepted, ");
+        result.append("closed, ");
+        result.append("paid, ");
+        result.append("photo, ");
+        result.append("comment");
+        return result.toString();
     }
 
     @SuppressWarnings("all")
@@ -177,7 +166,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
         protected void build() throws SQLException {
             while (resultSet.next()) {
                 WorkRecord record = new WorkRecord(resultSet);
-                MyList<Product> products = account.recordManager.productMap.instantiateFromDB(resultSet);
+                MyList<Product> products = account.productMap.instantiateFromDB(resultSet);
                 record.setProducts(products);
                 workRecords.add(record);
             }

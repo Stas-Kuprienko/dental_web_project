@@ -1,6 +1,7 @@
 package dental.domain.data_structures;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -184,9 +185,9 @@ public class MyList<E> implements Collection<E>, Serializable {
      * @throws Exception If something goes wrong.
      */
     @SuppressWarnings("rawtypes")
-    public MyList<E> searchByString(Searchable getter, String sample, Class clas) throws Exception {
+    public MyList<E> searchByString(String field, String sample, Class clas) throws Exception {
         Searcher searcher = new Searcher(clas);
-        searcher.search(getter.toString(), sample);
+        searcher.search(field, sample);
         return searcher.relevant;
     }
 
@@ -211,8 +212,6 @@ public class MyList<E> implements Collection<E>, Serializable {
         }
     }
 
-    //for enums of getter names
-    public interface Searchable {}
 
     private class MyIterator implements Iterator<E> {
 
@@ -243,7 +242,7 @@ public class MyList<E> implements Collection<E>, Serializable {
     }
 
     /**
-     *  The class used by the {@linkplain MyList#searchByString(Searchable, String, Class) search method}.
+     *  The class used by the {@linkplain MyList#searchByString(String, String, Class) search method}.
      */
     @SuppressWarnings("all")
     private class Searcher {
@@ -258,19 +257,25 @@ public class MyList<E> implements Collection<E>, Serializable {
             this.clas = (clas);
         }
 
-        private Object invokeMethod(String getter, E e) throws Exception {
+        private Object invokeMethod(String field, E e) throws Exception {
+            char c = (char) (field.charAt(0) - ' ');
+            String getter = "get" + c + field.substring(1, field.length());
             //get the method of the searched object, used to get a comparable value,
             // then invoke this method and return result.
-            return (String) clas.getMethod(getter).invoke(e, null);
+            try {
+                return (String) clas.getMethod(getter).invoke(e, null);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException exception) {
+                throw new Exception(exception.getCause());
+            }
         }
 
-        private void search(String getter, String sample) throws Exception {
+        private void search(String field, String sample) throws Exception {
             for (E e : elements) {
                 if (e == null) {
                     break;
                 }
                 //get string value of object getter method.
-                String s = (String) invokeMethod(getter, e);
+                String s = (String) invokeMethod(field, e);
                 if (s.equalsIgnoreCase(sample)) {
                     this.relevant.add(e);
                 }
