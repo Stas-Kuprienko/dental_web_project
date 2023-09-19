@@ -1,4 +1,4 @@
-package dental.domain.reports;
+package dental.domain.repository;
 
 import dental.domain.data_structures.MyList;
 import dental.domain.userset.Account;
@@ -6,13 +6,12 @@ import dental.domain.works.WorkRecord;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashMap;
 
 /**
  * The ReportService class is used to manage reports.
  *  All methods of the class are static, so the class does not need to implement instances.
  */
-public final class ReportService {
+public class ReportService {
 
     private ReportService() {}
 
@@ -29,10 +28,10 @@ public final class ReportService {
         return null;
     }
 
-    public static void saveReportToFile(Account account) {
-        TableReport report = createTableReport(account);
-        ReportFilesTool.writeReportFile(ReportFilesTool.createFileReport(account, report));
-    }
+//    public static void saveReportToFile(Account account) {
+//        TableReport report = createTableReport(account);
+//        ReportFilesTool.writeReportFile(ReportFilesTool.createFileReport(account, report));
+//    }
 
     public static void saveReportToFile(Account account, String tableName) throws SQLException {
         ReportFilesTool.writeReportFile(ReportFilesTool.createFileReport(account, tableName));
@@ -42,20 +41,20 @@ public final class ReportService {
         ReportFilesTool.writeReportFile(ReportFilesTool.createFileReport(account, report));
     }
 
-    public static TableReport createTableReport(Account account) {
-        MyList<WorkRecord> workRecords = selectClosedWork(account.recordManager.workRecords);
-        String month = LocalDate.now().getMonth().toString();
-        String year = String.valueOf(LocalDate.now().getYear());
-        TableReport report = new TableReport(month, year, workRecords);
-        if (account.getReports().get(year) != null) {
-            account.getReports().get(year).put(month, report);
-        } else {
-            HashMap<String, TableReport> reportMap = new HashMap<>();
-            reportMap.put(year, report);
-            account.getReports().put(year, reportMap);
-        }
-        return report;
-    }
+//    public static TableReport createTableReport(Account account) {
+//        MyList<WorkRecord> workRecords = selectClosedWork(account.workRecords);
+//        String month = LocalDate.now().getMonth().toString();
+//        String year = String.valueOf(LocalDate.now().getYear());
+//        TableReport report = new TableReport(month, year, workRecords);
+//        if (account.getReports().get(year) != null) {
+//            account.getReports().get(year).put(month, report);
+//        } else {
+//            HashMap<String, TableReport> reportMap = new HashMap<>();
+//            reportMap.put(year, report);
+//            account.getReports().put(year, reportMap);
+//        }
+//        return report;
+//    }
 
     private static MyList<WorkRecord> selectClosedWork(MyList<WorkRecord> workRecords) {
         MyList<WorkRecord> result = new MyList<>();

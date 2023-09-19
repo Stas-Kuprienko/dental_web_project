@@ -1,4 +1,4 @@
-package dental.domain.reports;
+package dental.domain.repository;
 
 import dental.domain.data_structures.MyList;
 import dental.domain.works.WorkRecord;

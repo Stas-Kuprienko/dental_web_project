@@ -25,7 +25,7 @@ public class AccountDAO implements DAO<Account> {
     public boolean insert(Account account) throws Exception {
         String injectionCounts = "?, ".repeat(ACCOUNT_FIELDS.split(",").length);
         injectionCounts = injectionCounts.substring(0, injectionCounts.length() - 2);
-        String query = String.format(SQL_DAO.INSERT.QUERY, TABLE_NAME, ACCOUNT_FIELDS, injectionCounts);
+        String query = String.format(SQL_Sample.INSERT.QUERY, TABLE_NAME, ACCOUNT_FIELDS, injectionCounts);
         DBRequest request = null;
         boolean isSuccess;
         try {
@@ -60,7 +60,7 @@ public class AccountDAO implements DAO<Account> {
     public Account get(String login, String password) throws SQLException {
         String where = "login = ? AND password = ?";
         byte[] passwordBytes = Authenticator.passwordHash(password);
-        String query = String.format(SQL_DAO.SELECT_WHERE.QUERY, "*", TABLE_NAME, where);
+        String query = String.format(SQL_Sample.SELECT_WHERE.QUERY, "*", TABLE_NAME, where);
         DBRequest request = new DBRequest(query);
         ResultSet resultSet;
         Account account;
@@ -79,7 +79,7 @@ public class AccountDAO implements DAO<Account> {
 
     @Override
     public boolean remove(int id) throws SQLException {
-        String query = String.format(SQL_DAO.DELETE.QUERY, TABLE_NAME, "id = ?");
+        String query = String.format(SQL_Sample.DELETE.QUERY, TABLE_NAME, "id = ?");
         boolean isSuccess;
         DBRequest request = null;
         try {

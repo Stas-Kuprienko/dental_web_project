@@ -18,12 +18,6 @@ public record Product(String title, byte quantity, int price) implements Seriali
         return quantity * price;
     }
 
-    /**
-     * Methods that using for {@linkplain MyList#searchByString(MyList.Searchable, String, Class) searching} objects.
-     */
-    public enum SearchBy implements MyList.Searchable {
-        title
-    }
 
         @Override
     public boolean equals(Object o) {

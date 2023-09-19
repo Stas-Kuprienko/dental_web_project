@@ -43,7 +43,7 @@ public class ReportTableCreator extends PushRequest {
      */
     private String buildRequest(Account account, String month, String year) {
             //get string array with the account's product types
-        String[] productTypes = account.recordManager.productMap.getAllTitles();
+        String[] productTypes = account.productMap.getAllTitles();
 
             //create string title for the report title in database
             // (account login and the given month)
@@ -59,7 +59,6 @@ public class ReportTableCreator extends PushRequest {
             result.append(String.format(",\n\t%s INT DEFAULT 0", s));
         } result.append("\n\t);");
 
-        account.setReportTableTitle(month + "_" + year, reportTitle);
         return result.toString();
     }
 

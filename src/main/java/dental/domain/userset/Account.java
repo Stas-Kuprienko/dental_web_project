@@ -1,12 +1,12 @@
 package dental.domain.userset;
 
-import dental.domain.works.RecordManager;
-import dental.domain.reports.TableReport;
+import dental.domain.data_structures.MyList;
+import dental.domain.works.ProductMapper;
 import dental.app.filetools.Extractable;
+import dental.domain.works.WorkRecord;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class Account implements Serializable, Extractable {
@@ -21,18 +21,13 @@ public class Account implements Serializable, Extractable {
 
     private final LocalDate created;
 
-    public final RecordManager recordManager;
+    public final ProductMapper productMap;
 
     /**
-     * The HashMap of the HashMap of the reports,
-     *  the string year is used as the Key.
-     * Value is the HashMap of the monthly reports,
-     *  in which the string month is used as the Key,
-     *   and value is the Report object.
+     * The {@link MyList list} of the unclosed {@link WorkRecord} objects for account.
      */
-    private HashMap<String, HashMap<String, TableReport>> reports; //TODO remove from here
+    public final MyList<WorkRecord> workRecords;
 
-    private HashMap<String, String> reportTableTitles; //TODO rework by properties
 
     /**
      * Create a new Account object.
@@ -42,7 +37,8 @@ public class Account implements Serializable, Extractable {
      */
     public Account(String name, String login, String password) {
         this.created = LocalDate.now();
-        this.recordManager = new RecordManager();
+        this.productMap = new ProductMapper();
+        this.workRecords = new MyList<>();
         if ((name == null || name.isEmpty())
           || (login == null || login.isEmpty())
           || (password == null || password.isEmpty())) {
@@ -51,13 +47,6 @@ public class Account implements Serializable, Extractable {
         this.name = name;
         this.login = login;
         this.password = Authenticator.passwordHash(password);
-        this.reports = new HashMap<>();
-        this.reportTableTitles = new HashMap<>();
-    }
-
-    private Account() {
-        this.created = null;
-        this.recordManager = null;
     }
 
     @Override
@@ -72,7 +61,7 @@ public class Account implements Serializable, Extractable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(created);
+        return Objects.hash(id, created);
     }
 
     @Override
@@ -110,18 +99,6 @@ public class Account implements Serializable, Extractable {
 
     public LocalDate getCreated() {
         return created;
-    }
-
-    public HashMap<String, HashMap<String, TableReport>> getReports() {
-        return reports;
-    }
-
-    public HashMap<String, String> getReportTableTitles() {
-        return reportTableTitles;
-    }
-
-    public void setReportTableTitle(String monthNYear, String reportTitle) {
-        this.reportTableTitles.put(monthNYear, reportTitle);
     }
 
     public int getId() {

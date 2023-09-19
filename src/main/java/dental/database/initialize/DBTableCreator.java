@@ -48,8 +48,7 @@ public final class DBTableCreator {
     }
 
     public boolean createWorkRecords(Account account) {
-        String[] productTypes =
-                account.recordManager != null ? account.recordManager.productMap.getAllTitles() : null;
+        String[] productTypes = account.productMap.getAllTitles();
         if ((productTypes == null)||(productTypes.length == 0)) {
             throw new NullPointerException();
         }

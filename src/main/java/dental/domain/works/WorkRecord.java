@@ -81,12 +81,6 @@ public class WorkRecord implements Serializable {
         return new WorkRecord().new Builder();
     }
 
-    /**
-     * Methods that using for {@linkplain MyList#searchByString(MyList.Searchable, String, Class) searching} objects.
-     */
-    public enum SearchBy implements MyList.Searchable {
-        getPatient, getClinic
-    }
 
     @Override
     public boolean equals(Object o) {

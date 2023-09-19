@@ -14,11 +14,6 @@ import java.sql.Statement;
 public class ReportTableInsertRequest extends PushRequest {
 
 
-    /**
-     * The title of a table to insert.
-     */
-    private final String table;
-
     final String SAMPLE_1 = "INSERT INTO %s (patient, clinic";
 
     final String SAMPLE_2 = ") VALUES ('%s', '%s'";
@@ -36,15 +31,11 @@ public class ReportTableInsertRequest extends PushRequest {
      * @throws SQLException If a database access error occurs or
      * this method is called on a closed {@code Statement}.
      */
-    public ReportTableInsertRequest(Account account, WorkRecord workRecord, String monthNYear) throws SQLException {
+    public ReportTableInsertRequest(Account account, WorkRecord workRecord, String table) throws SQLException {
         this.workRecord = workRecord;
 
-        this.table = account.getReportTableTitles().get(monthNYear);
-        if (table == null || table.isEmpty()) {
-            throw new SQLException("The report table title is null or empty.");
-        }
-
-        String query = buildQuery(workRecord);
+        //TODO
+        String query = buildQuery(workRecord, table);
         doRequest(query);
     }
 
@@ -53,7 +44,7 @@ public class ReportTableInsertRequest extends PushRequest {
      * @param workRecord The {@link WorkRecord} object required to be saved into report table.
      * @return The string with SQL query.
      */
-    private String buildQuery(WorkRecord workRecord) {
+    private String buildQuery(WorkRecord workRecord, String table) {
 
             //create string builder with the query sample
         StringBuilder resultQuery = new StringBuilder(String.format(SAMPLE_1, table));

@@ -1,4 +1,4 @@
-package dental.domain.reports;
+package dental.domain.repository;
 
 import dental.domain.data_structures.MyList;
 import dental.domain.userset.Account;
@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
 
 final class ReportFilesTool {
 
@@ -63,7 +62,7 @@ final class ReportFilesTool {
     }
 
     private static String[] buildTableColumns(Account account) {
-        String[] productTypes = account.recordManager.productMap.getAllTitles();
+        String[] productTypes = account.productMap.getAllTitles();
         String[] columns = new String[productTypes.length + 2];
         columns[0] = "patient";
         columns[1] = "clinic";
