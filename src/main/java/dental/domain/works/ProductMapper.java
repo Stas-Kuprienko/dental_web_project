@@ -4,9 +4,9 @@ import dental.domain.data_structures.MyList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.NoSuchElementException;
+import java.util.*;
 
-public class ProductMapper {
+public class ProductMapper implements Map<String, Integer> {
 
     private static final byte DEFAULT_CAPACITY = 10;
 
@@ -20,25 +20,54 @@ public class ProductMapper {
         size = 0;
     }
 
-    public boolean put(String title, int price) {
-        if (title == null) {
+    @Override
+    public Integer put(String key, Integer price) {
+        if (key == null) {
             throw new NullPointerException("key is empty");
         }
         if (size == entries.length) {
             grow();
         }
-        int i = find(title);
+        int i = findIndex(key);
         if (i > -1) {
+            int previous = entries[i].price;
             entries[i].price = price;
+            return previous;
         } else {
-            entries[size] = new Entry(title.toLowerCase(), price);
+            entries[size] = new Entry(key.toLowerCase(), price);
             size++;
+            return null;
         }
-        return true;
     }
 
-    public int getPrice(String title) {
-        int i = find(title);
+    @Override
+    public int size() {
+        return size;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return findIndex((String) key) > -1;
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        int p = (int) value;
+        for (Entry e : entries) {
+            if (e.price == p) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Integer get(Object key) {
+        int i = findIndex((String) key);
         if (i == -1) {
             throw new NullPointerException("value is not found");
         } else {
@@ -46,25 +75,63 @@ public class ProductMapper {
         }
     }
 
-    public boolean removeType(String title) {
-        int i = find(title);
+    @Override
+    public Integer remove(Object key) {
+        int i = findIndex((String) key);
         if (i == -1) {
-            return false;
+            return null;
         } else {
             size -= 1;
+            int value = entries[i].price;
             entries[i] = null;
             if (size > i) {
                 System.arraycopy(entries, i + 1, entries, i, size - i);
             }
-            return true;
+            return value;
         }
     }
 
-    public boolean isEmpty() {
-        return size == 0;
+    @Override
+    public void putAll(Map<? extends String, ? extends Integer> m) {
+        if (entries == null) {
+            entries = new Entry[m.size()];
+        }
+        for (Map.Entry<? extends String, ? extends Integer> entry : m.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
-    public String[] getAllTitles() {
+    @Override
+    public void clear() {
+        if (size != 0) {
+            entries = new Entry[entries.length];
+            size = 0;
+        }
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return Set.of(keysToArray());
+    }
+
+    @Override
+    public Collection<Integer> values() {
+        if (size == 0) {
+            return List.of();
+        }
+        Integer[] prices = new Integer[size];
+        for (int i = 0; i < size; i++) {
+            prices[i] = entries[i].price;
+        }
+        return Arrays.asList(prices);
+    }
+
+    @Override
+    public Set<Map.Entry<String, Integer>> entrySet() {
+        return Set.of(entries);
+    }
+
+    public String[] keysToArray() {
         String[] result = new String[size];
         for (int i = 0; i < size; i++) {
             result[i] = entries[i].title;
@@ -73,7 +140,7 @@ public class ProductMapper {
     }
 
     public Product createProduct(String title, int quantity) {
-        int i = find(title);
+        int i = findIndex(title);
         if (i == -1) {
             throw new NoSuchElementException("type title is not found");
         } else {
@@ -95,7 +162,7 @@ public class ProductMapper {
         return list;
     }
 
-    private int find(String title) {
+    private int findIndex(String title) {
         if (title == null) {
             throw new NullPointerException("param is null");
         }
@@ -116,13 +183,32 @@ public class ProductMapper {
         System.arraycopy(entries, 0, result, 0, entries.length);
         this.entries = result;
     }
-    private static final class Entry {
-        final String title;
-        int price;
+
+
+    static final class Entry implements Map.Entry<String, Integer> {
+        private final String title;
+        private int price;
 
         Entry(String title, int price) {
             this.title = title;
             this.price = price;
+        }
+
+        @Override
+        public String getKey() {
+            return title;
+        }
+
+        @Override
+        public Integer getValue() {
+            return price;
+        }
+
+        @Override
+        public Integer setValue(Integer value) {
+            int previous = price;
+            this.price = value;
+            return previous;
         }
     }
 }

@@ -33,8 +33,8 @@ public class ReportService {
 //        ReportFilesTool.writeReportFile(ReportFilesTool.createFileReport(account, report));
 //    }
 
-    public static void saveReportToFile(Account account, String tableName) throws SQLException {
-        ReportFilesTool.writeReportFile(ReportFilesTool.createFileReport(account, tableName));
+    public static void saveReportToFile(String tableName) throws SQLException {
+        ReportFilesTool.writeReportFile(ReportFilesTool.createFileReport(tableName));
     }
 
     public static void saveReportToFile(Account account, TableReport report) {

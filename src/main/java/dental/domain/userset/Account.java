@@ -2,14 +2,13 @@ package dental.domain.userset;
 
 import dental.domain.data_structures.MyList;
 import dental.domain.works.ProductMapper;
-import dental.app.filetools.Extractable;
 import dental.domain.works.WorkRecord;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Account implements Serializable, Extractable {
+public class Account implements Serializable {
 
     private int id;
 
