@@ -16,7 +16,7 @@ public interface DAO<E> {
 
     boolean remove(int id) throws SQLException;
 
-    class DBRequest {
+    class DBRequest implements AutoCloseable {
         private Connection connection;
         private final PreparedStatement statement;
 
@@ -32,7 +32,7 @@ public interface DAO<E> {
             }
         }
 
-        protected void close() {
+        public void close() {
             try {
                 statement.close();
             } catch (SQLException e) {

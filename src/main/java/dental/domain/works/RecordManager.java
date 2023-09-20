@@ -1,6 +1,5 @@
 package dental.domain.works;
 
-import dental.domain.data_structures.MyList;
 import dental.domain.userset.Account;
 
 import java.time.LocalDate;
@@ -8,6 +7,7 @@ import java.time.LocalDate;
 public final class RecordManager {
 
 
+    //TODO
     private final Account account;
 
     public RecordManager(Account account) {

@@ -32,12 +32,11 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
         //concatenate string of values (?) for prepared statement
         String injectionCounts = "?, ".repeat(workFields.split(",").length - 1);
         injectionCounts = "DEFAULT, " + injectionCounts.substring(0, injectionCounts.length() - 2);
+
         String query = String.format(SQL_Sample.INSERT.QUERY, TABLE_NAME + account.getId(), workFields, injectionCounts);
-        DBRequest request = null;
         boolean isSuccess;
         int i = 1;
-        try {
-            request = new DBRequest(query);
+        try (DBRequest request =  new DBRequest(query)) {
             PreparedStatement statement = request.getStatement();
             statement.setString(i++, workRecord.getPatient());
             statement.setString(i++, workRecord.getClinic());
@@ -67,10 +66,6 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
             isSuccess = DBRequest.setID(workRecord, statement);
         } catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
             throw new Exception(e);
-        } finally {
-            if (request != null) {
-                request.close();
-            }
         }
         return isSuccess;
     }
@@ -78,20 +73,14 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
     @Override
     public MyList<WorkRecord> getAll() throws SQLException, NoSuchMethodException {
         String query = String.format(SQL_Sample.SELECT_ALL.QUERY, "*", TABLE_NAME + account.getId());
-        DBRequest request = null;
         MyList<WorkRecord> workRecords;
-        try {
-            request = new DBRequest(query);
+        try (DBRequest request = new DBRequest(query)) {
             ResultSet resultSet = request.getStatement().executeQuery();
             workRecords = new WorkRecordInstantiation(resultSet).workRecords;
         } catch (SQLException e) {
-            throw new SQLException(e);
+            throw new SQLException(e.getCause());
         } catch (NoSuchMethodException e) {
-            throw new NoSuchMethodException();
-        } finally {
-            if (request != null) {
-                request.close();
-            }
+            throw new NoSuchMethodException(e.getMessage());
         }
         return workRecords;
     }
@@ -105,17 +94,11 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
     public boolean remove(int id) throws SQLException {
         String query = String.format(SQL_Sample.DELETE.QUERY, TABLE_NAME);
         boolean isSuccess;
-        DBRequest request = null;
-        try {
-            request = new DBRequest(query);
+        try (DBRequest request = new DBRequest(query)) {
             request.getStatement().setInt(1, id);
             isSuccess = request.getStatement().execute();
         } catch (SQLException e) {
             throw new SQLException(e);
-        } finally {
-            if (request != null) {
-                request.close();
-            }
         }
         return isSuccess;
     }
@@ -125,7 +108,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
         result.append("id, ");
         result.append("patient, ");
         result.append("clinic, ");
-        String[] products = account.productMap.getAllTitles();
+        String[] products = account.productMap.keysToArray();
         for (String p : products) {
             result.append(p).append(", ");
         }
@@ -146,7 +129,7 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
         private final Constructor<WorkRecord> constructor;
 
         private WorkRecordInstantiation(ResultSet resultSet) throws SQLException, NoSuchMethodException {
-            try {
+            try (resultSet) {
                 this.resultSet = resultSet;
                 workRecords = new MyList<>();
                 constructor = WorkRecord.class.getDeclaredConstructor();
@@ -157,8 +140,6 @@ public class WorkRecordDAO implements DAO<WorkRecord>{
                 throw new SQLException(e);
             } catch (NoSuchMethodException e) {
                 throw new NoSuchMethodException(e.getMessage());
-            } finally {
-                resultSet.close();
             }
         }
 

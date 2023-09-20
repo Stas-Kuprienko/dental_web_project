@@ -20,6 +20,8 @@ final class ReportFilesTool {
 
     private ReportFilesTool() {}
 
+    //TODO abstraction
+
     private static final String fileFormat = ".xlsx";
 
     private static final String PATH_FOR_REPORTS = "src/main/resources/";
@@ -41,8 +43,7 @@ final class ReportFilesTool {
         return xssfBox.workbook;
     }
 
-    static XSSFWorkbook createFileReport(Account account, String tableName) throws SQLException {
-        //TODO verify table name
+    static XSSFWorkbook createFileReport(String tableName) throws SQLException {
         XSSFBox xssfBox = new XSSFBox(tableName);
 
         //build arrays of a report data by database values
@@ -62,7 +63,7 @@ final class ReportFilesTool {
     }
 
     private static String[] buildTableColumns(Account account) {
-        String[] productTypes = account.productMap.getAllTitles();
+        String[] productTypes = account.productMap.keysToArray();
         String[] columns = new String[productTypes.length + 2];
         columns[0] = "patient";
         columns[1] = "clinic";

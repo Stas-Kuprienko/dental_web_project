@@ -26,10 +26,8 @@ public class AccountDAO implements DAO<Account> {
         String injectionCounts = "?, ".repeat(ACCOUNT_FIELDS.split(",").length);
         injectionCounts = injectionCounts.substring(0, injectionCounts.length() - 2);
         String query = String.format(SQL_Sample.INSERT.QUERY, TABLE_NAME, ACCOUNT_FIELDS, injectionCounts);
-        DBRequest request = null;
         boolean isSuccess;
-        try {
-            request = new DBRequest(query);
+        try (DBRequest request = new DBRequest(query)) {
             PreparedStatement statement = request.getStatement();
             statement.setString(1, account.getName());
             statement.setString(2, account.getLogin());
@@ -39,10 +37,6 @@ public class AccountDAO implements DAO<Account> {
             isSuccess = DBRequest.setID(account, statement);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
-        } finally {
-            if (request != null) {
-                request.close();
-            }
         }
         return isSuccess;
     }
@@ -61,18 +55,15 @@ public class AccountDAO implements DAO<Account> {
         String where = "login = ? AND password = ?";
         byte[] passwordBytes = Authenticator.passwordHash(password);
         String query = String.format(SQL_Sample.SELECT_WHERE.QUERY, "*", TABLE_NAME, where);
-        DBRequest request = new DBRequest(query);
         ResultSet resultSet;
         Account account;
-        try {
+        try (DBRequest request = new DBRequest(query)) {
             request.getStatement().setString(1, login);
             request.getStatement().setBlob(2, new SerialBlob(passwordBytes));
             resultSet = request.getStatement().executeQuery();
             account = new AccountInstantiation(resultSet).accounts.get(0);
         } catch (Exception e) {
             throw new SQLException(e.getCause());
-        } finally {
-            request.close();
         }
         return account;
     }
@@ -81,17 +72,11 @@ public class AccountDAO implements DAO<Account> {
     public boolean remove(int id) throws SQLException {
         String query = String.format(SQL_Sample.DELETE.QUERY, TABLE_NAME, "id = ?");
         boolean isSuccess;
-        DBRequest request = null;
-        try {
-            request = new DBRequest(query);
+        try (DBRequest request = new DBRequest(query)) {
             request.getStatement().setInt(1, id);
             isSuccess = request.getStatement().execute();
         } catch (SQLException e) {
             throw new SQLException(e);
-        } finally {
-            if (request != null) {
-                request.close();
-            }
         }
         return isSuccess;
     }
@@ -108,7 +93,7 @@ public class AccountDAO implements DAO<Account> {
         private final Constructor<Account> constructor;
 
         private AccountInstantiation(ResultSet resultSet) throws Exception {
-            try {
+            try (resultSet) {
                 accounts = new MyList<>();
                 this.resultSet = resultSet;
                 constructor = Account.class.getDeclaredConstructor();
@@ -117,8 +102,6 @@ public class AccountDAO implements DAO<Account> {
                 constructor.setAccessible(false);
             } catch (Exception e) {
                 throw new Exception(e.getCause());
-            } finally {
-                resultSet.close();
             }
         }
 

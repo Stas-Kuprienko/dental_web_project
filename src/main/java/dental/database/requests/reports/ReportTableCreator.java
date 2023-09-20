@@ -1,18 +1,16 @@
 package dental.database.requests.reports;
 
 import dental.domain.works.ProductMapper;
-import dental.domain.works.RecordManager;
 import dental.domain.userset.Account;
 import dental.database.requests.PushRequest;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 
 /**
  * Executing database queries to create report tables of monthly workRecords.
  * Create SQL table with columns - patient, clinic and work types
- *  from the account's {@linkplain ProductMapper#getAllTitles() work types table}.
+ *  from the account's {@linkplain ProductMapper#keysToArray() work types table}.
  */
 public class ReportTableCreator extends PushRequest {
 
@@ -43,7 +41,7 @@ public class ReportTableCreator extends PushRequest {
      */
     private String buildRequest(Account account, String month, String year) {
             //get string array with the account's product types
-        String[] productTypes = account.productMap.getAllTitles();
+        String[] productTypes = account.productMap.keysToArray();
 
             //create string title for the report title in database
             // (account login and the given month)
