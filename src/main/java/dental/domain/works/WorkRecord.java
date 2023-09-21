@@ -22,6 +22,7 @@ import java.util.Objects;
 public class WorkRecord implements Serializable {
 
     private int id;
+
     private String patient;
 
     private String clinic;
