@@ -2,10 +2,7 @@ package edu.dental.utils.data_structures;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * The data structure class. The dynamic resizable array. Implements {@link Collection} and {@link Serializable}.
@@ -190,6 +187,27 @@ public class MyList<E> implements Collection<E>, Serializable {
         Searcher searcher = new Searcher(clas);
         searcher.search(field, sample);
         return searcher.relevant;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (size != ((MyList<?>) o).size) {
+            return false;
+        }
+        for (Object e : (MyList<?>)o) {
+            if (!(this.contains(e))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this);
     }
 
     @Override

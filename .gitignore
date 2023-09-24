@@ -40,3 +40,4 @@ build/
 /.idea/
 /localTomcat/
 /src/main/java/dental/Main.java
+/src/main/resources/
