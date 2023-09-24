@@ -1,7 +1,7 @@
 package edu.dental.domain.records;
 
-import dental.domain.data_structures.MyList;
 import edu.dental.domain.entities.Product;
+import edu.dental.utils.data_structures.MyList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
