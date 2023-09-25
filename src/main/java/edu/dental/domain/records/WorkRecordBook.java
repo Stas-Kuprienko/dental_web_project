@@ -1,66 +1,21 @@
 package edu.dental.domain.records;
 
-import edu.dental.database.dao.DAO;
 import edu.dental.domain.entities.WorkRecord;
-import edu.dental.utils.data_structures.MyList;
 
 import java.time.LocalDate;
-import java.util.Collection;
 
-public class WorkRecordBook extends Notebook<WorkRecord> {
+public interface WorkRecordBook {
 
-    public final MyList<WorkRecord> records;
+    WorkRecord createRecord(String patient, String clinic, String product, int quantity, LocalDate complete);
 
-    public final ProductMapper productMap;
+    WorkRecord createRecord(String patient, String clinic, LocalDate complete);
 
-    public WorkRecordBook(MyList<WorkRecord> records, ProductMapper productMap) {
-        this.records = records;
-        this.productMap = productMap;
-    }
+    WorkRecord addProductToRecord(WorkRecord workRecord, String product, int quantity);
 
-    public WorkRecordBook() {
-        this.records = new MyList<>();
-        this.productMap = new ProductMapper();
-    }
+    boolean deleteRecord(WorkRecord workRecord);
 
-    @Override
-    public WorkRecord createRecord(String patient, String clinic, String product, int quantity, LocalDate complete) {
+    WorkRecord searchRecord(String patient, String clinic);
 
-        return null;
-    }
-
-    @Override
-    public WorkRecord createRecord(String patient, String clinic, LocalDate complete) {
-        return null;
-    }
-
-    @Override
-    public WorkRecord addProductToRecord(WorkRecord workRecord, String product, int quantity) {
-        return null;
-    }
-
-    @Override
-    public boolean deleteRecord(WorkRecord workRecord) {
-        return false;
-    }
-
-    @Override
-    public WorkRecord searchRecord(String patient, String clinic) {
-        return null;
-    }
-
-    @Override
-    public WorkRecord getByID(int id) {
-        return null;
-    }
-
-
-    protected static class WorkRecordInstantiation implements DAO.Instantiating<WorkRecord> {
-
-        @Override
-        public Collection<WorkRecord> build() {
-            return null;
-        }
-    }
+    WorkRecord getByID(int id);
 
 }
