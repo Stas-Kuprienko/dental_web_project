@@ -7,13 +7,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public final class InitializerUserTable extends Thread {
+public final class InitializerTableUser extends Thread {
 
-    private static final InitializerUserTable instance;
-    private InitializerUserTable() {}
+    private static final InitializerTableUser instance;
+    private InitializerTableUser() {}
 
     static {
-        instance = new InitializerUserTable();
+        instance = new InitializerTableUser();
     }
 
     public final String DROP = "DROP TABLE IF EXISTS ";

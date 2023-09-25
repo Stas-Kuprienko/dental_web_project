@@ -41,3 +41,4 @@ build/
 /localTomcat/
 /src/main/java/dental/Main.java
 /src/main/resources/
+/src/main/java/edu/dental/Main.java

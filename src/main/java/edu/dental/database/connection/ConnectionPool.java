@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * The class for creating a database {@link Connection connection}.
  */
 public final class ConnectionPool {
+
     private ConnectionPool() {
         free = new ConcurrentLinkedQueue<>();
         using = new ConcurrentLinkedQueue<>();
