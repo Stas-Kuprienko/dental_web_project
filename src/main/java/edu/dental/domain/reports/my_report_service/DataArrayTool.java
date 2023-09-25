@@ -1,21 +1,25 @@
-package edu.dental.domain.reports;
+package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.ProductMapper;
 import edu.dental.utils.data_structures.MyList;
 
-class DataTablesTool {
+public class DataArrayTool {
 
-    private DataTablesTool() {}
+    private final ProductMapper productMap;
+    private final MyList<WorkRecord> recordList;
 
+    public DataArrayTool(ProductMapper productMap, MyList<WorkRecord> recordList) {
+        this.productMap = productMap;
+        this.recordList = recordList;
+    }
 
     /**
      * Create a table head by the product titles.
-     * @param productMap User's {@link ProductMapper}.
      * @return String array with column titles.
      */
-    static String[] buildTableColumns(ProductMapper productMap) {
+    private String[] buildTableColumns() {
         String[] productTypes = productMap.keysToArray();
         String[] columns = new String[productTypes.length + 2];
         columns[0] = "patient";
@@ -28,15 +32,16 @@ class DataTablesTool {
         return columns;
     }
 
-    static String[][] buildTableData(String[] columns, MyList<WorkRecord> workRecords) {
-        String[][] result = new String[workRecords.size() + 1][columns.length];
+    public String[][] buildTable() {
+        String[] columns = buildTableColumns();
+        String[][] result = new String[recordList.size() + 1][columns.length];
 
         //put head of the table
         result[0] = columns;
 
         //counting rows of the table
         int r = 1;
-        for (WorkRecord wr : workRecords) {
+        for (WorkRecord wr : recordList) {
             String[] tableRow = new String[columns.length];
             tableRow[0] = wr.getPatient();
             tableRow[1] = wr.getClinic();
@@ -64,6 +69,4 @@ class DataTablesTool {
         }
         return result;
     }
-
-
 }

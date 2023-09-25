@@ -1,6 +1,6 @@
-package edu.dental.domain.reports;
+package edu.dental.domain.reports.my_report_service;
 
-import edu.dental.domain.entities.User;
+import edu.dental.domain.reports.IFileTool;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -10,35 +10,47 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-class XLSFilesTool {
-
-    private XLSFilesTool() {}
+public class XLSXFilesTool implements IFileTool {
 
     private static final String fileFormat = ".xlsx";
 
     private static final String PATH_FOR_REPORTS = "src/main/resources/";
 
-    /**
-     * Create the file(.xls) with monthly report table.
-     * @param user The {@link User} object that requires.
-     * @param report The {@link MonthlyReport} object which needs to convert to a file.
-     */
-    static XSSFWorkbook createFileReport(String tableName, String[][] reportData) {
-        XSSFBox xssfBox = new XSSFBox(tableName);
-        putDataInSheet(xssfBox, reportData);
-        return xssfBox.workbook;
+
+    private final String tableName;
+    private final String[][] reportData;
+    private XSSFWorkbook workbook;
+
+    public XLSXFilesTool(String tableName, String[][] reportData) {
+        this.tableName = tableName;
+        this.reportData = reportData;
     }
 
-    static void writeReportFile(XSSFWorkbook workbook) {
+    @Override
+    public IFileTool createFile() {
+        XSSFBox xssfBox = new XSSFBox(tableName);
+        putDataInSheet(xssfBox, reportData);
+        this.workbook = xssfBox.workbook;
+        return this;
+    }
+
+    @Override
+    public boolean writeFile() {
+        if (this.workbook == null) {
+            throw new NullPointerException("XSSFWorkbook object is null");
+        }
         File file = new File(PATH_FOR_REPORTS + workbook.getSheetName(0).toLowerCase() + fileFormat);
         try(FileOutputStream fileOutput = new FileOutputStream(file)) {
             workbook.write(fileOutput);
+            return true;
         } catch (IOException e) {
+            //TODO logger
             e.printStackTrace();
+            return false;
         }
     }
 
-    private static void putDataInSheet(XSSFBox xssfBox, String[][] reportData) {
+    private void putDataInSheet(XSSFBox xssfBox, String[][] reportData) {
 
         for (int i = 0; i < reportData.length; i++) {
             xssfBox.row = xssfBox.sheet.createRow(i);
