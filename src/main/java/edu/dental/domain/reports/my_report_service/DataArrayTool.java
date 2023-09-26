@@ -10,7 +10,7 @@ public class DataArrayTool {
     private final ProductMapper productMap;
     private final MyList<WorkRecord> recordList;
 
-    public DataArrayTool(ProductMapper productMap, MyList<WorkRecord> recordList) {
+    DataArrayTool(ProductMapper productMap, MyList<WorkRecord> recordList) {
         this.productMap = productMap;
         this.recordList = recordList;
     }
