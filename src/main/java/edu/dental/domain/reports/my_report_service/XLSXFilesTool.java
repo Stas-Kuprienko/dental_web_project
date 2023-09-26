@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class XLSXFilesTool implements IFileTool {
+class XLSXFilesTool implements IFileTool {
 
     private static final String fileFormat = ".xlsx";
 
@@ -21,7 +21,7 @@ public class XLSXFilesTool implements IFileTool {
     private final String[][] reportData;
     private XSSFWorkbook workbook;
 
-    public XLSXFilesTool(String tableName, String[][] reportData) {
+    XLSXFilesTool(String tableName, String[][] reportData) {
         this.tableName = tableName;
         this.reportData = reportData;
     }

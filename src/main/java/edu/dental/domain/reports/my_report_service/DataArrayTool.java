@@ -5,7 +5,7 @@ import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.ProductMapper;
 import edu.dental.utils.data_structures.MyList;
 
-public class DataArrayTool {
+class DataArrayTool {
 
     private final ProductMapper productMap;
     private final MyList<WorkRecord> recordList;
