@@ -1,17 +1,18 @@
 package edu.dental.domain.authentication;
 
-import edu.dental.database.DBAgent;
+import edu.dental.database.mysql_api.MyDBService;
 import edu.dental.domain.entities.User;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Authenticate an account if such exists.
+ * Authenticate a user if such exists.
  */
-public class Authenticator {
+public final class Authenticator {
 
     private Authenticator() {}
+
 
     /**
      * The user logging in system.
@@ -19,16 +20,16 @@ public class Authenticator {
      * @param password The password to verify.
      * @return True if authentication was successful.
      */
-    private User authenticate(String login, String password) throws AuthenticationException {
+    private static synchronized User authenticate(String login, String password) throws AuthenticationException {
         if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
-            throw new AuthenticationException();
+            throw new AuthenticationException(AuthenticationException.Causes.NULL);
         }
-        User user = DBAgent.authenticate(login, password);
+        User user = MyDBService.getInstance().authenticate(login, password);
         if (user == null) {
-            throw new AuthenticationException();
+            throw new AuthenticationException(AuthenticationException.Causes.NO);
         }
         if (!(verification(user, password.getBytes()))) {
-            throw new AuthenticationException();
+            throw new AuthenticationException(AuthenticationException.Causes.PASS);
         }
         return user;
     }
@@ -38,7 +39,7 @@ public class Authenticator {
      * @param password The user's password.
      * @return The {@link User} object if verification was successful, or null if not.
      */
-    private boolean verification(User user, byte[] password) {
+    private static synchronized boolean verification(User user, byte[] password) {
         return MessageDigest.isEqual(user.getPassword(), password);
     }
 
@@ -47,7 +48,7 @@ public class Authenticator {
      * @param password The user's password string.
      * @return byte array of the password hash.
      */
-    public static byte[] passwordHash(String password) {
+    public static synchronized byte[] passwordHash(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             return md.digest(password.getBytes());
