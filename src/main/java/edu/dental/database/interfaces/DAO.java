@@ -1,4 +1,4 @@
-package edu.dental.database.dao;
+package edu.dental.database.interfaces;
 
 import edu.dental.database.connection.ConnectionPool;
 import edu.dental.domain.entities.IDHaving;
@@ -31,7 +31,7 @@ public interface DAO<T> {
 
         private final PreparedStatement statement;
 
-        protected Request(String query) throws SQLException {
+        public Request(String query) throws SQLException {
             this.connection = ConnectionPool.get();
             try {
                 this.statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);

@@ -1,6 +1,6 @@
 package edu.dental.domain.records.my_work_record_book;
 
-import edu.dental.database.dao.DAO;
+import edu.dental.database.interfaces.DAO;
 import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.ProductMapper;
 import edu.dental.domain.records.WorkRecordBook;

@@ -1,7 +1,7 @@
-package edu.dental.database.tables;
+package edu.dental.database;
 
 import edu.dental.database.connection.ConnectionPool;
-import edu.dental.database.dao.UserDAO;
+import edu.dental.database.mysql_api.dao.UserMySql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,13 +26,13 @@ public final class InitializerTableUser extends Thread {
               password BLOB NOT NULL,
               created DATE NOT NULL,
               PRIMARY KEY (id)
-              );""", UserDAO.TABLE);
+              );""", UserMySql.TABLE);
 
     @Override
     public void run() {
         Connection connection = ConnectionPool.get();
         try (Statement statement = connection.createStatement()) {
-            statement.addBatch(DROP + UserDAO.TABLE);
+            statement.addBatch(DROP + UserMySql.TABLE);
             statement.addBatch(ACCOUNT);
             statement.executeBatch();
         } catch (SQLException e) {

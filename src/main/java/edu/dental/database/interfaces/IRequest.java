@@ -1,4 +1,4 @@
-package edu.dental.database.dao;
+package edu.dental.database.interfaces;
 
 import edu.dental.domain.entities.IDHaving;
 

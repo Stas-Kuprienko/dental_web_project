@@ -1,6 +1,7 @@
-package edu.dental.database.dao;
+package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.connection.DBConfiguration;
+import edu.dental.database.interfaces.DAO;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.User;
 import edu.dental.utils.data_structures.MyList;
@@ -10,7 +11,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Collection;
 
-public class UserDAO implements DAO<User> {
+public class UserMySql implements DAO<User> {
 
     public static final String TABLE = DBConfiguration.DATA_BASE + ".user";
 

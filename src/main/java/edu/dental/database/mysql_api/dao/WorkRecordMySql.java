@@ -1,10 +1,11 @@
-package edu.dental.database.dao;
+package edu.dental.database.mysql_api.dao;
 
+import edu.dental.database.interfaces.DAO;
 import edu.dental.domain.entities.WorkRecord;
 
 import java.util.Collection;
 
-public class WorkRecordDAO implements DAO<WorkRecord> {
+public class WorkRecordMySql implements DAO<WorkRecord> {
     @Override
     public boolean put(WorkRecord object) {
         return false;
