@@ -10,6 +10,8 @@ public interface WorkRecordBook {
 
     WorkRecord addProductToRecord(WorkRecord workRecord, String product, int quantity) throws WorkRecordBookException;
 
+    WorkRecord removeProduct(WorkRecord workRecord, String product) throws WorkRecordBookException;
+
     boolean deleteRecord(WorkRecord workRecord);
 
     WorkRecord searchRecord(String patient, String clinic) throws WorkRecordBookException;

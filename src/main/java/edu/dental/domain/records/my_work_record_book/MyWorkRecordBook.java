@@ -80,6 +80,24 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
+    public WorkRecord removeProduct(WorkRecord workRecord, String product) throws WorkRecordBookException {
+        if ((workRecord == null)||(product == null || product.isEmpty())) {
+            throw new WorkRecordBookException("The given argument is null or empty.");
+        }
+        if (workRecord.getProducts().isEmpty()) {
+            return workRecord;
+        }
+        product = product.toLowerCase();
+        for (Product p : workRecord.getProducts()) {
+            if (p.title().equals(product)) {
+                workRecord.getProducts().remove(p);
+                break;
+            }
+        }
+        return workRecord;
+    }
+
+    @Override
     public boolean deleteRecord(WorkRecord workRecord) {
         if (workRecord == null) {
             return false;
