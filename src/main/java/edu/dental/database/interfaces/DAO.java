@@ -1,5 +1,6 @@
 package edu.dental.database.interfaces;
 
+import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.ConnectionPool;
 import edu.dental.domain.entities.IDHaving;
 
@@ -9,17 +10,17 @@ import java.util.Collection;
 
 public interface DAO<T> {
 
-    boolean put(T object) throws SQLException;
+    boolean put(T object) throws DatabaseException;
 
-    Collection<T> getAll() throws SQLException;
+    Collection<T> getAll() throws DatabaseException;
 
-    T get(int id) throws SQLException;
+    T get(int id) throws DatabaseException;
 
-    T search(Object value1, Object value2) throws SQLException;
+    T search(Object value1, Object value2) throws DatabaseException;
 
-    boolean edit(T object);
+    boolean edit(T object) throws DatabaseException;
 
-    boolean delete(int id) throws SQLException;
+    boolean delete(int id) throws DatabaseException;
 
 
     interface Queries {}
@@ -42,7 +43,7 @@ public interface DAO<T> {
         }
 
         @Override
-        public boolean setID(IDHaving object, Statement statement) throws SQLException {
+        public boolean setID(IDHaving object) throws SQLException {
             try (ResultSet resultSet = statement.getGeneratedKeys()) {
                 if (resultSet.next()) {
                     object.setId((int) resultSet.getLong(1));

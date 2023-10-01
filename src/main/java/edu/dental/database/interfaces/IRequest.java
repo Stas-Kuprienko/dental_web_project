@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public interface IRequest extends AutoCloseable {
 
-    boolean setID(IDHaving object, Statement statement) throws SQLException;
+    boolean setID(IDHaving object) throws SQLException;
 
     Blob createBlob() throws SQLException;
 
