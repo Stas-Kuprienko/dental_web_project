@@ -59,7 +59,7 @@ public class WorkRecord implements Serializable, IDHaving {
     }
 
 
-    class Builder {
+    public class Builder {
 
         private Builder(){}
 
