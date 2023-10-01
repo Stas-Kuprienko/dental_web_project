@@ -1,6 +1,8 @@
 package edu.dental.domain.authentication;
 
-import edu.dental.database.mysql_api.MyDBService;
+import edu.dental.database.DBServiceManager;
+import edu.dental.database.DatabaseException;
+import edu.dental.database.interfaces.DBService;
 import edu.dental.domain.entities.User;
 
 import java.security.MessageDigest;
@@ -15,16 +17,27 @@ public final class Authenticator {
 
 
     /**
-     * The user logging in system.
+     * The user authentication in system.
      * @param login    The user's account login.
      * @param password The password to verify.
-     * @return True if authentication was successful.
+     * @return The {@link User} object, if authentication was successful.
+     * @throws AuthenticationException Causes of throwing
+     *  - specified user is not found;
+     *  - Database exception;
+     *  - incorrect password;
+     *  - a given argument is null.
      */
-    private static synchronized User authenticate(String login, String password) throws AuthenticationException {
+    public static synchronized User authenticate(String login, String password) throws AuthenticationException {
         if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
             throw new AuthenticationException(AuthenticationException.Causes.NULL);
         }
-        User user = MyDBService.getInstance().authenticate(login, password);
+        User user;
+        try {
+            DBService dbService = DBServiceManager.getDBService();
+            user = dbService.authenticate(login, password);
+        } catch (DatabaseException e) {
+            throw new AuthenticationException(e.getMessage());
+        }
         if (user == null) {
             throw new AuthenticationException(AuthenticationException.Causes.NO);
         }
@@ -53,6 +66,7 @@ public final class Authenticator {
             MessageDigest md = MessageDigest.getInstance("MD5");
             return md.digest(password.getBytes());
         } catch (NoSuchAlgorithmException e) {
+            //TODO logger
             throw new RuntimeException(e);
         }
     }
