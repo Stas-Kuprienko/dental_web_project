@@ -1,12 +1,12 @@
 package edu.dental.utils.data_structures;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
  * The data structure class. The dynamic resizable array. Implements {@link Collection} and {@link Serializable}.
- * It has the ability to {@linkplain MyList#searchByString(String, String, Class) search}
+ * It has the ability to {@linkplain MyList#searchElement(String, String) search}
  *  by a sample string in the desired field specified by the getter method.
  * @param <E> The type of elements in this list.
  */
@@ -45,6 +45,13 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     }
 
+    /**
+     * Returns the index of the first occurrence of the specified element
+     * in this list, or -1 if this list does not contain the element.
+     * More formally, returns the lowest index {@code i} such that
+     * {@code Objects.equals(o, get(i))},
+     * or -1 if there is no such index.
+     */
     public int indexOf(E element) {
         if (element != null) {
             for (int i = 0; i < (elements.length - 1); i++) {
@@ -56,12 +63,25 @@ public class MyList<E> implements Collection<E>, Serializable {
         return -1;
     }
 
+    /**
+     * Returns the element at the specified position in this list.
+     * @param  index The index of the element to return.
+     * @return The element at the specified position in this list.
+     * @throws IndexOutOfBoundsException {@inheritDoc}
+     */
     public E get(int index) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("The index " + index +
+                    " is out of the array bounds - the size is " + size);
+        }
         return elements[index];
     }
 
     @Override
     public E[] toArray() {
+        if (size == 0) {
+            throw new NullPointerException("This collection object is empty.");
+        }
         return Arrays.copyOf(elements, size);
     }
 
@@ -78,7 +98,7 @@ public class MyList<E> implements Collection<E>, Serializable {
     @Override
     public boolean add(E element) {
         if (element == null) {
-            throw new NoSuchElementException();
+            throw new NullPointerException("The specified element is null.");
         }
         if (size == elements.length) {
             elements = grow(elements);
@@ -88,12 +108,19 @@ public class MyList<E> implements Collection<E>, Serializable {
         return true;
     }
 
+    /**
+     * Appends the specified element to the defined position of this list.
+     * @param index The wanted position for inserting an element.
+     * @param element Specified element to be appended to this list.
+     * @return {@code true} if it was successful.
+     */
     public boolean add(int index, E element) {
         if (index < 0 || index > size) {
-            throw new IllegalArgumentException();
+            throw new ArrayIndexOutOfBoundsException("The index " + index +
+                        " is out of the array bounds - the size is " + size);
         }
         if (element == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("The specified element is null.");
         }
         elements[index] = element;
         return true;
@@ -102,7 +129,7 @@ public class MyList<E> implements Collection<E>, Serializable {
     @Override
     public boolean remove(Object o) {
         if (o == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("The specified element is null.");
         }
         @SuppressWarnings("unchecked")
         E e = (E) o;
@@ -114,13 +141,28 @@ public class MyList<E> implements Collection<E>, Serializable {
         return true;
     }
 
+    /**
+     * Removes the element at the specified position in this list.
+     * Shifts any subsequent elements to the left (subtracts one from their
+     * indices).
+     * @param index The index of the element to be removed.
+     * @return True if it was successful.
+     * @throws IndexOutOfBoundsException If the given index is out of this list bounds.
+     */
     public boolean remove(int index) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("The index " + index +
+                    " is out of the array bounds - the size is " + size);
+        }
         fastRemove(index);
         return true;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
+        if (c == null) {
+            throw new NullPointerException("The specified object is null.");
+        }
         for (Object o : c) {
             if (!(contains(o))) {
                 return false;
@@ -131,6 +173,9 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
+        if (c == null) {
+            throw new NullPointerException("The specified object is null.");
+        }
         for (E e : c) {
             if (!(contains(e))) {
                 add(e);
@@ -141,6 +186,9 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     @Override
     public boolean removeAll(Collection<?> c) {
+        if (c == null) {
+            throw new NullPointerException("The specified object is null.");
+        }
         for (int i = 0; i < size; i++) {
             E e = elements[i];
             if (c.contains(e)) {
@@ -152,6 +200,9 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     @Override
     public boolean retainAll(Collection<?> c) {
+        if (c == null) {
+            throw new NullPointerException("The specified object is null.");
+        }
         for (int i = 0; i < size; i++) {
             E e = elements[i];
             if (!(c.contains(e))) {
@@ -175,17 +226,26 @@ public class MyList<E> implements Collection<E>, Serializable {
     }
 
     /**
-     * Search for an object in {@link MyList} using the String equaling with a given value.
+     * Search for an object in this {@link MyList} by specified field, using the string equaling with a given sample.
      * @param field Field of the searchable object for equaling.
-     * @param sample A sample String value for search.
-     * @param clas   A class of searchable object.
+     * @param sample A sample value to search the element.
      * @return  The {@link MyList list} of the relevant objects.
-     * @throws Exception If something goes wrong.
+     * @throws NoSuchElementException If something goes wrong.
+     * @throws IllegalAccessException If something goes wrong.
      */
-    @SuppressWarnings("rawtypes")
-    public MyList<E> searchByString(String field, String sample, Class clas) throws Exception {
-        Searcher searcher = new Searcher(clas);
+    @SuppressWarnings("unused")
+    public MyList<E> searchElement(String field, String sample) throws NoSuchFieldException, IllegalAccessException {
+        if (field == null || field.isEmpty()) {
+            throw new NullPointerException("The field argument is null or empty.");
+        }
+        if (sample == null || sample.isEmpty()) {
+            throw new NullPointerException("The sample argument is null or empty.");
+        }
+        Searcher searcher = new Searcher();
         searcher.search(field, sample);
+        if (searcher.relevant.isEmpty()) {
+            throw new NoSuchElementException("The specified elements is not found.");
+        }
         return searcher.relevant;
     }
 
@@ -203,11 +263,6 @@ public class MyList<E> implements Collection<E>, Serializable {
             }
         }
         return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this);
     }
 
     @Override
@@ -261,40 +316,31 @@ public class MyList<E> implements Collection<E>, Serializable {
     }
 
     /**
-     *  The class used by the {@linkplain MyList#searchByString(String, String, Class) search method}.
+     *  The class used by the {@linkplain MyList#searchElement(String, String) search method}.
      */
-    @SuppressWarnings("all")
     private class Searcher {
 
         private final MyList<E> relevant;
 
-        // the class type of the searchable object.
-        private final Class clas;
-
-        private Searcher(Class clas) {
+        private Searcher() {
             this.relevant = new MyList<>();
-            this.clas = (clas);
         }
 
-        private Object invokeMethod(String field, E e) throws Exception {
-            char c = (char) (field.charAt(0) - ' ');
-            String getter = "get" + c + field.substring(1, field.length());
-            //get the method of the searched object, used to get a comparable value,
-            // then invoke this method and return result.
-            try {
-                return String.valueOf(clas.getMethod(getter).invoke(e, null));
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException exception) {
-                throw new Exception(exception.getCause());
-            }
+        private Object getFieldValue(String field, E e) throws NoSuchFieldException, IllegalAccessException {
+            Field fieldOfElement = e.getClass().getDeclaredField(field);
+            fieldOfElement.setAccessible(true);
+            Object fieldValue = fieldOfElement.get(e);
+            fieldOfElement.setAccessible(false);
+            return fieldValue;
         }
 
-        private void search(String field, String sample) throws Exception {
+        private void search(String field, String sample) throws NoSuchFieldException, IllegalAccessException {
             for (E e : elements) {
                 if (e == null) {
                     break;
                 }
-                //get string value of object getter method.
-                String s = (String) invokeMethod(field, e);
+                //get string value of object field.
+                String s = String.valueOf(getFieldValue(field, e));
                 if (s.equalsIgnoreCase(sample)) {
                     this.relevant.add(e);
                 }
