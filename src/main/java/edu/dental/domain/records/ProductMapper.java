@@ -150,6 +150,12 @@ public class ProductMapper implements Map<String, Integer> {
         }
     }
 
+    /**
+     * Create {@link MyList list} of specified {@link Product} objects from database table.
+     * @param resultSet The {@link ResultSet} of database values.
+     * @return The {@link MyList list} of {@link Product} instances.
+     */
+    @SuppressWarnings("unused")
     public MyList<Product> instantiateFromDB(ResultSet resultSet) {
         MyList<Product> list = new MyList<>();
         for (Entry t : entries) {

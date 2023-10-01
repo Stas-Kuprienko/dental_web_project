@@ -2,13 +2,11 @@ package edu.dental.domain.records;
 
 import edu.dental.domain.entities.WorkRecord;
 
-import java.time.LocalDate;
-
 public interface WorkRecordBook {
 
-    WorkRecord createRecord(String patient, String clinic, String product, int quantity, LocalDate complete);
+    WorkRecord createRecord(String patient, String clinic, String product, int quantity, String complete);
 
-    WorkRecord createRecord(String patient, String clinic, LocalDate complete);
+    WorkRecord createRecord(String patient, String clinic, String complete);
 
     WorkRecord addProductToRecord(WorkRecord workRecord, String product, int quantity);
 
