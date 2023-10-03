@@ -33,7 +33,6 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
         injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE + user.getId(), FIELDS, injections);
-        boolean isDone;
         try (Request request = new Request(query)) {
             byte i = 2;
             PreparedStatement statement = request.getStatement();
@@ -51,12 +50,11 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
             statement.setString(i, object.getComment());
             //TODO products
             statement.executeUpdate();
-            isDone = request.setID(object);
+            return request.setID(object);
         } catch (SQLException | IOException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
-        return isDone;
     }
 
     @Override
@@ -77,43 +75,36 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
     public WorkRecord get(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE + user.getId(), "id = ?");
         ResultSet resultSet;
-        WorkRecord workRecord;
         try (Request request = new Request(query)) {
             request.getStatement().setInt(1, id);
             resultSet = request.getStatement().executeQuery();
             MyList<WorkRecord> list = (MyList<WorkRecord>) new WorkRecordInstantiation(resultSet).build();
-            workRecord = list.get(0);
+            return list.get(0);
         } catch (SQLException | IOException | NullPointerException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
-        return workRecord;
     }
 
     @Override
     public WorkRecord search(Object value1, Object value2) throws DatabaseException {
-        if (value1 == null || value2 == null) {
-            throw new DatabaseException("The given argument is null.", new NullPointerException().getCause());
-        }
         String where = "patient = ? AND clinic = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE + user.getId(), where);
         ResultSet resultSet;
-        WorkRecord workRecord;
         try (Request request = new Request(query)) {
             request.getStatement().setString(1, (String) value1);
             request.getStatement().setString(2, (String) value2);
             resultSet = request.getStatement().executeQuery();
             MyList<WorkRecord> list = (MyList<WorkRecord>) new WorkRecordInstantiation(resultSet).build();
-            workRecord = list.get(0);
+            return list.get(0);
         } catch (SQLException | IOException | NullPointerException | ClassCastException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
-        return workRecord;
     }
 
     @Override
-    public boolean edit(WorkRecord object) {
+    public boolean edit(WorkRecord object, Object... args) {
         String query;
         return false;
     }

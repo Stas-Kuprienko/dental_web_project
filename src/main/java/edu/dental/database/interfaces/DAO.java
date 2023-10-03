@@ -3,6 +3,7 @@ package edu.dental.database.interfaces;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.ConnectionPool;
 import edu.dental.domain.entities.IDHaving;
+import edu.dental.domain.entities.User;
 
 import java.io.IOException;
 import java.sql.*;
@@ -18,7 +19,7 @@ public interface DAO<T> {
 
     T search(Object value1, Object value2) throws DatabaseException;
 
-    boolean edit(T object) throws DatabaseException;
+    boolean edit(T object, Object... args) throws DatabaseException;
 
     boolean delete(int id) throws DatabaseException;
 

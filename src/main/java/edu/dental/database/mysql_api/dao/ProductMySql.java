@@ -27,7 +27,7 @@ public class ProductMySql implements DAO<Product> {
     }
 
     @Override
-    public boolean edit(Product object) {
+    public boolean edit(Product object, Object... args) {
         return false;
     }
 

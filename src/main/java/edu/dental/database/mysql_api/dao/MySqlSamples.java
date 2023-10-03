@@ -13,7 +13,7 @@ public enum MySqlSamples implements DAO.Queries {
     DELETE("DELETE FROM %s WHERE %s;"),
 
     //TODO
-    UPDATE("UPDATE %s SET %s = %s WHERE %s;");
+    UPDATE("UPDATE %s SET %s WHERE %s;");
 
     public final String QUERY;
 

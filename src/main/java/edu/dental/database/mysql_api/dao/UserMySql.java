@@ -23,7 +23,6 @@ public class UserMySql implements DAO<User> {
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
         injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
-        boolean isDone;
         try (Request request = new Request(query)) {
             byte i = 2;
             PreparedStatement statement = request.getStatement();
@@ -32,13 +31,11 @@ public class UserMySql implements DAO<User> {
             statement.setBlob(i++, new SerialBlob(object.getPassword()));
             statement.setDate(i, Date.valueOf(object.getCreated()));
             statement.executeUpdate();
-            isDone = request.setID(object);
+            return request.setID(object);
         } catch (SQLException e) {
             //TODO logger
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
-
-        return isDone;
     }
 
     @Override
@@ -59,28 +56,22 @@ public class UserMySql implements DAO<User> {
     public User get(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
         ResultSet resultSet;
-        User user;
         try (Request request = new Request(query)) {
             request.getStatement().setInt(1, id);
             resultSet = request.getStatement().executeQuery();
             MyList<User> list = (MyList<User>) new UserInstantiation(resultSet).build();
-            user = list.get(0);
+            return list.get(0);
         } catch (SQLException | NullPointerException | IOException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
-        return user;
     }
 
     @Override
     public User search(Object value1, Object value2) throws DatabaseException {
-        if (value1 == null || value2 == null) {
-            throw new DatabaseException("The given argument is null.", new NullPointerException().getCause());
-        }
         String where = "login = ? AND password = ?";
         byte[] password = Authenticator.passwordHash((String) value2);
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         ResultSet resultSet;
-        User user;
         try (Request request = new Request(query)) {
             request.getStatement().setString(1, (String) value1);
             request.getStatement().setBlob(2, new SerialBlob(password));
@@ -94,8 +85,7 @@ public class UserMySql implements DAO<User> {
     }
 
     @Override
-    public boolean edit(User object) {
-        String query;
+    public boolean edit(User object, Object... args) throws DatabaseException {
         return false;
     }
 
