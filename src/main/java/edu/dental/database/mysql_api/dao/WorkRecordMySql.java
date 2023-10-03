@@ -14,12 +14,12 @@ import java.util.Collection;
 public class WorkRecordMySql implements DAO<WorkRecord> {
 
     public final String TABLE;
+    private final User user;
 
     private static final String FIELDS = "id, patient, clinic, accepted, complete, closed, paid, photo, comment";
 
-    private static final String PHOTO_FORMAT = "png";
-
     public WorkRecordMySql(User user) {
+        this.user = user;
         this.TABLE = DBConfiguration.DATA_BASE + ".work_record_" + user.getId();
     }
 
@@ -41,10 +41,11 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
             photo.setBytes(1, object.getPhoto());
             statement.setBlob(i++, photo);
             statement.setString(i, object.getComment());
-            //TODO products
             statement.executeUpdate();
             photo.free();
-            return request.setID(object);
+            boolean result = request.setID(object);
+            new ProductMySql(user.getId(), object).putAll();
+            return result;
         } catch (SQLException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
