@@ -85,8 +85,24 @@ public class UserMySql implements DAO<User> {
     }
 
     @Override
-    public boolean edit(User object, Object... args) throws DatabaseException {
-        return false;
+    public boolean edit(User object) throws DatabaseException {
+        StringBuilder sets = new StringBuilder();
+        String[] fields = FIELDS.split(", ");
+        for (int i = 1; i < fields.length; i++) {
+            sets.append(fields[i]).append("=?,");
+        } sets.deleteCharAt(sets.length()-1);
+        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ?");
+        try (Request request = new Request(query)) {
+            byte i = 1;
+            request.getStatement().setString(i++, object.getName());
+            request.getStatement().setString(i++, object.getLogin());
+            request.getStatement().setBlob(i++, new SerialBlob(object.getPassword()));
+            request.getStatement().setDate(i++, Date.valueOf(object.getCreated()));
+            request.getStatement().setInt(i, object.getId());
+            return request.getStatement().execute();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override

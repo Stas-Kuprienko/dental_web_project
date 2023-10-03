@@ -19,7 +19,7 @@ public interface DAO<T> {
 
     T search(Object value1, Object value2) throws DatabaseException;
 
-    boolean edit(T object, Object... args) throws DatabaseException;
+    boolean edit(T object) throws DatabaseException;
 
     boolean delete(int id) throws DatabaseException;
 

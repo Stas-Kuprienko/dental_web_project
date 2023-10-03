@@ -16,23 +16,21 @@ import java.util.Collection;
 
 public class WorkRecordMySql implements DAO<WorkRecord> {
 
-    public static final String TABLE = DBConfiguration.DATA_BASE + ".work_record_";
+    public final String TABLE;
 
     private static final String FIELDS = "id, patient, clinic, accepted, complete, closed, paid, photo, comment";
 
     private static final String PHOTO_FORMAT = "png";
 
-    private final User user;
-
     public WorkRecordMySql(User user) {
-        this.user = user;
+        this.TABLE = DBConfiguration.DATA_BASE + ".work_record_" + user.getId();
     }
 
     @Override
     public boolean put(WorkRecord object) throws DatabaseException {
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
         injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
-        String query = String.format(MySqlSamples.INSERT.QUERY, TABLE + user.getId(), FIELDS, injections);
+        String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
         try (Request request = new Request(query)) {
             byte i = 2;
             PreparedStatement statement = request.getStatement();
@@ -59,7 +57,7 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
 
     @Override
     public Collection<WorkRecord> getAll() throws DatabaseException {
-        String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE + user.getId());
+        String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE);
         MyList<WorkRecord> workRecords;
         try (Request request = new Request(query)) {
             ResultSet resultSet = request.getStatement().executeQuery();
@@ -73,7 +71,7 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
 
     @Override
     public WorkRecord get(int id) throws DatabaseException {
-        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE + user.getId(), "id = ?");
+        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
         ResultSet resultSet;
         try (Request request = new Request(query)) {
             request.getStatement().setInt(1, id);
@@ -89,7 +87,7 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
     @Override
     public WorkRecord search(Object value1, Object value2) throws DatabaseException {
         String where = "patient = ? AND clinic = ?";
-        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE + user.getId(), where);
+        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         ResultSet resultSet;
         try (Request request = new Request(query)) {
             request.getStatement().setString(1, (String) value1);
@@ -104,14 +102,37 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
     }
 
     @Override
-    public boolean edit(WorkRecord object, Object... args) {
-        String query;
-        return false;
+    public boolean edit(WorkRecord object) throws DatabaseException {
+        StringBuilder sets = new StringBuilder();
+        String[] fields = FIELDS.split(", ");
+        for (int i = 1; i < fields.length; i++) {
+            sets.append(fields[i]).append("=?,");
+        } sets.deleteCharAt(sets.length()-1);
+        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ?");
+        try (Request request = new Request(query)) {
+            byte i = 1;
+            request.getStatement().setString(i++, object.getPatient());
+            request.getStatement().setString(i++, object.getClinic());
+            request.getStatement().setDate(i++, Date.valueOf(object.getAccepted()));
+            request.getStatement().setDate(i++, Date.valueOf(object.getComplete()));
+            request.getStatement().setBoolean(i++, object.isClosed());
+            request.getStatement().setBoolean(i++, object.isPaid());
+            Blob photo = request.createBlob();
+            OutputStream out = photo.setBinaryStream(1);
+            ImageIO.write(object.getPhoto(), PHOTO_FORMAT, out);
+            request.getStatement().setBlob(i++, photo);
+            request.getStatement().setString(i++, object.getComment());
+            request.getStatement().setInt(i, object.getId());
+            return request.getStatement().execute();
+        } catch (SQLException | IOException e) {
+            //TODO loggers
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override
     public boolean delete(int id) throws DatabaseException {
-        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE + user.getId(), "id = ?");
+        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ?");
         try (Request request = new Request(query)) {
             request.getStatement().setInt(1, id);
             return request.getStatement().execute();
