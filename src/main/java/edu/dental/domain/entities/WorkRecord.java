@@ -3,7 +3,6 @@ package edu.dental.domain.entities;
 
 import edu.dental.utils.data_structures.MyList;
 
-import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -33,7 +32,7 @@ public class WorkRecord implements Serializable, IDHaving {
 
     private boolean paid;
 
-    private BufferedImage photo;
+    private byte[] photo;
 
     private String comment;
 
@@ -83,7 +82,7 @@ public class WorkRecord implements Serializable, IDHaving {
             return this;
         }
 
-        public Builder setPhoto(BufferedImage photo) {
+        public Builder setPhoto(byte[] photo) {
             //TODO
             WorkRecord.this.setPhoto(photo);
             return this;
@@ -196,11 +195,11 @@ public class WorkRecord implements Serializable, IDHaving {
         this.paid = paid;
     }
 
-    public BufferedImage getPhoto() {
+    public byte[] getPhoto() {
         return photo;
     }
 
-    public void setPhoto(BufferedImage photo) {
+    public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 

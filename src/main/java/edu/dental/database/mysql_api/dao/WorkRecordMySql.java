@@ -7,10 +7,7 @@ import edu.dental.domain.entities.User;
 import edu.dental.domain.entities.WorkRecord;
 import edu.dental.utils.data_structures.MyList;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.*;
 import java.util.Collection;
 
@@ -40,16 +37,15 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
             statement.setDate(i++, Date.valueOf(object.getComplete()));
             statement.setBoolean(i++, object.isClosed());
             statement.setBoolean(i++, object.isPaid());
-            Blob photoBlob = request.createBlob();
-            OutputStream out = photoBlob.setBinaryStream(1);
-            ImageIO.write(object.getPhoto(), PHOTO_FORMAT, out);
-            statement.setBlob(i++, photoBlob);
-            out.close();
+            Blob photo = request.createBlob();
+            photo.setBytes(1, object.getPhoto());
+            statement.setBlob(i++, photo);
             statement.setString(i, object.getComment());
             //TODO products
             statement.executeUpdate();
+            photo.free();
             return request.setID(object);
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -118,13 +114,12 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
             request.getStatement().setBoolean(i++, object.isClosed());
             request.getStatement().setBoolean(i++, object.isPaid());
             Blob photo = request.createBlob();
-            OutputStream out = photo.setBinaryStream(1);
-            ImageIO.write(object.getPhoto(), PHOTO_FORMAT, out);
+            photo.setBytes(1, object.getPhoto());
             request.getStatement().setBlob(i++, photo);
             request.getStatement().setString(i++, object.getComment());
             request.getStatement().setInt(i, object.getId());
             return request.getStatement().execute();
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -168,8 +163,8 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
                     workRecord.setClosed(resultSet.getBoolean(i++));
                     workRecord.setPaid(resultSet.getBoolean(i++));
                     Blob blob = resultSet.getBlob(i++);
-                    BufferedImage photo = ImageIO.read(blob.getBinaryStream());
-                    workRecord.setPhoto(photo);
+                    workRecord.setPhoto(blob.getBytes(1, (int) blob.length()));
+                    blob.free();
                     workRecord.setComment(resultSet.getString(i));
                     //TODO products
                     recordsList.add(workRecord);
