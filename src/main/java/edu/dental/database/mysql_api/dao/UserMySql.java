@@ -67,7 +67,7 @@ public class UserMySql implements DAO<User> {
     }
 
     @Override
-    public User search(Object value1, Object value2) throws DatabaseException {
+    public MyList<User> search(Object value1, Object value2) throws DatabaseException {
         String where = "login = ? AND password = ?";
         byte[] password = Authenticator.passwordHash((String) value2);
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
@@ -76,8 +76,7 @@ public class UserMySql implements DAO<User> {
             request.getStatement().setString(1, (String) value1);
             request.getStatement().setBlob(2, new SerialBlob(password));
             resultSet = request.getStatement().executeQuery();
-            MyList<User> result = (MyList<User>) new UserInstantiation(resultSet).build();
-            return result.get(0);
+            return (MyList<User>) new UserInstantiation(resultSet).build();
         } catch (SQLException | IOException | NullPointerException | ClassCastException e) {
             //TODO logger
             throw new DatabaseException(e.getMessage(), e.getCause());
