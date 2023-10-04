@@ -3,6 +3,7 @@ package edu.dental.database.mysql_api.dao;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
 import edu.dental.database.interfaces.DAO;
+import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.entities.WorkRecord;
 import edu.dental.utils.data_structures.MyList;
@@ -43,9 +44,8 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
             statement.setString(i, object.getComment());
             statement.executeUpdate();
             photo.free();
-            boolean result = request.setID(object);
-            new ProductMySql(user.getId(), object).putAll();
-            return result;
+            request.setID(object);
+            return new ProductMySql(user.getId(), object.getId()).putAll(object.getProducts());
         } catch (SQLException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -69,10 +69,9 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
     @Override
     public WorkRecord get(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
-        ResultSet resultSet;
         try (Request request = new Request(query)) {
             request.getStatement().setInt(1, id);
-            resultSet = request.getStatement().executeQuery();
+            ResultSet resultSet = request.getStatement().executeQuery();
             MyList<WorkRecord> list = (MyList<WorkRecord>) new WorkRecordInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | IOException | NullPointerException e) {
@@ -82,16 +81,14 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
     }
 
     @Override
-    public WorkRecord search(Object value1, Object value2) throws DatabaseException {
+    public MyList<WorkRecord> search(Object value1, Object value2) throws DatabaseException {
         String where = "patient = ? AND clinic = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
-        ResultSet resultSet;
         try (Request request = new Request(query)) {
             request.getStatement().setString(1, (String) value1);
             request.getStatement().setString(2, (String) value2);
-            resultSet = request.getStatement().executeQuery();
-            MyList<WorkRecord> list = (MyList<WorkRecord>) new WorkRecordInstantiation(resultSet).build();
-            return list.get(0);
+            ResultSet resultSet = request.getStatement().executeQuery();
+            return (MyList<WorkRecord>) new WorkRecordInstantiation(resultSet).build();
         } catch (SQLException | IOException | NullPointerException | ClassCastException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -119,6 +116,7 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
             request.getStatement().setBlob(i++, photo);
             request.getStatement().setString(i++, object.getComment());
             request.getStatement().setInt(i, object.getId());
+            new ProductMySql(user.getId(), object.getId()).editAll(object.getProducts());
             return request.getStatement().execute();
         } catch (SQLException e) {
             //TODO loggers
@@ -139,7 +137,7 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
     }
 
 
-    protected static class WorkRecordInstantiation implements Instantiating<WorkRecord> {
+    protected class WorkRecordInstantiation implements Instantiating<WorkRecord> {
 
         private final MyList<WorkRecord> recordsList;
         private final ResultSet resultSet;
@@ -150,24 +148,26 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
         }
 
         @Override
-        public Collection<WorkRecord> build() throws SQLException, IOException {
+        public Collection<WorkRecord> build() throws SQLException, IOException, DatabaseException {
             try (resultSet) {
                 String[] fields = FIELDS.split(", ");
                 while (resultSet.next()) {
                     byte i = 0;
                     WorkRecord workRecord = new WorkRecord();
                     workRecord.setId(resultSet.getInt(fields[i++]));
-                    workRecord.setPatient(resultSet.getString(i++));
-                    workRecord.setClinic(resultSet.getString(i++));
-                    workRecord.setAccepted(resultSet.getDate(i++).toLocalDate());
-                    workRecord.setComplete(resultSet.getDate(i++).toLocalDate());
-                    workRecord.setClosed(resultSet.getBoolean(i++));
-                    workRecord.setPaid(resultSet.getBoolean(i++));
-                    Blob blob = resultSet.getBlob(i++);
+                    workRecord.setPatient(resultSet.getString(fields[i++]));
+                    workRecord.setClinic(resultSet.getString(fields[i++]));
+                    workRecord.setAccepted(resultSet.getDate(fields[i++]).toLocalDate());
+                    workRecord.setComplete(resultSet.getDate(fields[i++]).toLocalDate());
+                    workRecord.setClosed(resultSet.getBoolean(fields[i++]));
+                    workRecord.setPaid(resultSet.getBoolean(fields[i++]));
+                    Blob blob = resultSet.getBlob(fields[i++]);
                     workRecord.setPhoto(blob.getBytes(1, (int) blob.length()));
                     blob.free();
-                    workRecord.setComment(resultSet.getString(i));
-                    //TODO products
+                    workRecord.setComment(resultSet.getString(fields[i]));
+                    MyList<Product> products = (MyList<Product>)
+                            new ProductMySql(user.getId(), workRecord.getId()).getAll();
+                    workRecord.setProducts(products);
                     recordsList.add(workRecord);
                 }
             }
