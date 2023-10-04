@@ -192,7 +192,7 @@ public class ProductMapper implements Map<String, Integer> {
     }
 
 
-    static final class Entry implements Map.Entry<String, Integer> {
+    public static final class Entry implements Map.Entry<String, Integer> {
         private final String title;
         private int price;
 
