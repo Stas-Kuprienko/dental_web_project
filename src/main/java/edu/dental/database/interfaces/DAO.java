@@ -17,7 +17,7 @@ public interface DAO<T> {
 
     T get(int id) throws DatabaseException;
 
-    T search(Object value1, Object value2) throws DatabaseException;
+    Collection<T> search(Object value1, Object value2) throws DatabaseException;
 
     boolean edit(T object) throws DatabaseException;
 
@@ -38,6 +38,7 @@ public interface DAO<T> {
             try {
                 this.statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             } catch (SQLException e) {
+                //TODO loggers
                 ConnectionPool.put(connection);
                 throw e;
             }
@@ -48,12 +49,9 @@ public interface DAO<T> {
             try (ResultSet resultSet = statement.getGeneratedKeys()) {
                 if (resultSet.next()) {
                     object.setId((int) resultSet.getLong(1));
-                }
-            } catch (SQLException e) {
-                //TODO logger
-                throw e;
+                    return true;
+                } else return false;
             }
-            return false;
         }
 
         @Override
@@ -82,7 +80,7 @@ public interface DAO<T> {
 
     interface Instantiating<T> {
 
-        Collection<T> build() throws SQLException, IOException;
+        Collection<T> build() throws SQLException, IOException, DatabaseException;
 
     }
 
