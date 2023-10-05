@@ -85,8 +85,17 @@ public class ProductMySql implements DAO<Product> {
     }
 
     @Override
-    public MyList<Product> search(Object value1, Object value2) {
-        return null;
+    public MyList<Product> search(Object value1, Object value2) throws DatabaseException {
+        String where = "title = ? AND quantity = ?";
+        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
+        try (Request request = new Request(query)) {
+            request.getStatement().setString(1, (String) value1);
+            request.getStatement().setInt(2, (Integer) value2);
+            ResultSet resultSet = request.getStatement().executeQuery();
+            return (MyList<Product>) new ProductInstantiation(resultSet).build();
+        } catch (SQLException |ClassCastException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     public boolean editAll(MyList<Product> products) {
