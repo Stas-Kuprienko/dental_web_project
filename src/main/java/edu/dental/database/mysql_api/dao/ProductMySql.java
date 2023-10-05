@@ -6,7 +6,6 @@ import edu.dental.database.interfaces.DAO;
 import edu.dental.domain.entities.Product;
 import edu.dental.utils.data_structures.MyList;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -93,28 +92,64 @@ public class ProductMySql implements DAO<Product> {
             request.getStatement().setInt(2, (Integer) value2);
             ResultSet resultSet = request.getStatement().executeQuery();
             return (MyList<Product>) new ProductInstantiation(resultSet).build();
-        } catch (SQLException |ClassCastException e) {
+        } catch (SQLException | ClassCastException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
 
-    public boolean editAll(MyList<Product> products) {
-
-        return false;
+    public boolean editAll(MyList<Product> products) throws DatabaseException {
+        if (products == null || products.isEmpty()) {
+            throw new DatabaseException("The  given argument is null or empty.");
+        }
+        boolean result = false;
+        for (Product product : products) {
+            result = edit(product);
+        }
+        return result;
     }
 
     @Override
-    public boolean edit(Product object) {
-        return false;
+    public boolean edit(Product object) throws DatabaseException {
+        String sets = "quantity = ?, price = ?";
+        String where = "work_id = ? AND title = ?";
+        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets, where);
+        try (Request request = new Request(query)){
+            byte i = 1;
+            PreparedStatement statement = request.getStatement();
+            statement.setByte(i++, object.quantity());
+            statement.setInt(i++, object.price());
+            statement.setInt(i++, workId);
+            statement.setString(i, object.title());
+            return statement.execute();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
+    }
+
+    public boolean delete(int id, String title) throws DatabaseException {
+        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = ? AND title = ?");
+        try (Request request = new Request(query)) {
+            request.getStatement().setInt(1, id);
+            request.getStatement().setString(2,title);
+            return request.getStatement().execute();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override
-    public boolean delete(int id) {
-        return false;
+    public boolean delete(int id) throws DatabaseException {
+        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = ?");
+        try (Request request = new Request(query)) {
+            request.getStatement().setInt(1, id);
+            return request.getStatement().execute();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
 
-    protected class ProductInstantiation implements Instantiating<Product> {
+    protected static class ProductInstantiation implements Instantiating<Product> {
 
         private final MyList<Product> productsList;
         private final ResultSet resultSet;

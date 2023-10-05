@@ -116,8 +116,8 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
             request.getStatement().setBlob(i++, photo);
             request.getStatement().setString(i++, object.getComment());
             request.getStatement().setInt(i, object.getId());
-            new ProductMySql(user.getId(), object.getId()).editAll(object.getProducts());
-            return request.getStatement().execute();
+            return new ProductMySql(user.getId(), object.getId()).editAll(object.getProducts())
+                    && request.getStatement().execute();
         } catch (SQLException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -129,7 +129,8 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ?");
         try (Request request = new Request(query)) {
             request.getStatement().setInt(1, id);
-            return request.getStatement().execute();
+            int workId = request.getStatement().executeUpdate();
+            return new ProductMySql(user.getId(), workId).delete(workId);
         } catch (SQLException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
