@@ -21,6 +21,11 @@ public class ProductMapper implements Map<String, Integer> {
         size = 0;
     }
 
+    public ProductMapper(Entry[] entries) {
+        size = entries.length;
+        this.entries = entries;
+    }
+
     @Override
     public Integer put(String key, Integer price) {
         if (key == null) {

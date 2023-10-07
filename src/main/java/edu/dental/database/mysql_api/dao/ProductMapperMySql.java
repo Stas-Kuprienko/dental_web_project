@@ -5,8 +5,12 @@ import edu.dental.database.connection.DBConfiguration;
 import edu.dental.database.interfaces.DAO;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMapper;
+import edu.dental.utils.data_structures.MyList;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -41,12 +45,30 @@ public class ProductMapperMySql implements DAO<ProductMapper.Entry> {
 
     @Override
     public Collection<ProductMapper.Entry> getAll() throws DatabaseException {
-        return null;
+        String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE);
+        MyList<ProductMapper.Entry> list;
+        try (Request request = new Request(query)) {
+            ResultSet resultSet = request.getStatement().executeQuery();
+            list = (MyList<ProductMapper.Entry>) new ProductMapperInstantiation(resultSet).build();
+            return list;
+        } catch (SQLException e) {
+            //TODO loggers
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override
     public ProductMapper.Entry get(int id) throws DatabaseException {
-        return null;
+        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
+        MyList<ProductMapper.Entry> list;
+        try (Request request = new Request(query)) {
+            request.getStatement().setInt(1, id);
+            ResultSet resultSet = request.getStatement().executeQuery();
+            list = (MyList<ProductMapper.Entry>) new ProductMapperInstantiation(resultSet).build();
+            return list.get(0);
+        } catch (SQLException | NullPointerException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override
@@ -62,5 +84,34 @@ public class ProductMapperMySql implements DAO<ProductMapper.Entry> {
     @Override
     public boolean delete(int id) throws DatabaseException {
         return false;
+    }
+
+    protected class ProductMapperInstantiation implements Instantiating<ProductMapper.Entry> {
+
+        private final MyList<ProductMapper.Entry> entries;
+        private final ResultSet resultSet;
+
+        public ProductMapperInstantiation(ResultSet resultSet) {
+            this.resultSet = resultSet;
+            entries = new MyList<>();
+        }
+
+        @Override
+        public Collection<ProductMapper.Entry> build() throws SQLException, DatabaseException {
+            try (resultSet) {
+                Constructor<ProductMapper.Entry> constructor = ProductMapper.Entry
+                        .class.getDeclaredConstructor(String.class, int.class);
+                while (resultSet.next()) {
+                    ProductMapper.Entry entry = constructor.newInstance(resultSet.getString("title")
+                                                                        , resultSet.getInt("price"));
+                    entries.add(entry);
+                }
+                return entries;
+            } catch (NoSuchMethodException | IllegalAccessException
+                     | InvocationTargetException | InstantiationException e) {
+                //TODO loggers
+                throw new DatabaseException(e.getMessage(), e.getCause());
+            }
+        }
     }
 }
