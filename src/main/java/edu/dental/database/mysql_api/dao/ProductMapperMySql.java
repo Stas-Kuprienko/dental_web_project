@@ -3,6 +3,7 @@ package edu.dental.database.mysql_api.dao;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
 import edu.dental.database.interfaces.DAO;
+import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMapper;
 import edu.dental.utils.data_structures.MyList;
@@ -13,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Set;
 
 public class ProductMapperMySql implements DAO<ProductMapper.Entry> {
 
@@ -25,6 +27,23 @@ public class ProductMapperMySql implements DAO<ProductMapper.Entry> {
     public ProductMapperMySql(User user) {
         this.user = user;
         this.TABLE = DBConfiguration.DATA_BASE + ".product_map_" + user.getId();
+    }
+
+    public boolean putAll(Set<ProductMapper.Entry> entries) throws DatabaseException {
+        if (entries == null || entries.isEmpty()) {
+            throw new DatabaseException("The  given argument is null or empty.");
+        }
+        try (Request request = new Request()) {
+            PreparedStatement statement = request.getStatement();
+            for (ProductMapper.Entry entry : entries) {
+                String values = String.format("DEFAULT, %s, %s", entry.getKey(), entry.getValue());
+                String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, values);
+                statement.addBatch(query);
+            }
+            return statement.executeBatch().length == entries.size();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override

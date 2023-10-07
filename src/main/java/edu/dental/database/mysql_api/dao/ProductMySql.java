@@ -27,11 +27,17 @@ public class ProductMySql implements DAO<Product> {
         if (products == null || products.isEmpty()) {
             throw new DatabaseException("The  given argument is null or empty.");
         }
-        boolean result = false;
-        for (Product product : products) {
-            result = put(product);
+        try (Request request = new Request()) {
+            PreparedStatement statement = request.getStatement();
+            for (Product p : products) {
+                String values = String.format("%s, %s, %s, %s", workId, p.title(), p.quantity(), p.price());
+                String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, values);
+                statement.addBatch(query);
+            }
+            return statement.executeBatch().length == products.size();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
         }
-        return result;
     }
 
     @Override

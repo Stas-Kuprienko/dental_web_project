@@ -44,6 +44,17 @@ public interface DAO<T> {
             }
         }
 
+        public Request() throws SQLException {
+            this.connection = ConnectionPool.get();
+            try {
+                this.statement = (PreparedStatement) connection.createStatement();
+            } catch (SQLException e) {
+                //TODO loggers
+                ConnectionPool.put(connection);
+                throw e;
+            }
+        }
+
         @Override
         public boolean setID(IDHaving object) throws SQLException {
             try (ResultSet resultSet = statement.getGeneratedKeys()) {
