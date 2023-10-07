@@ -91,8 +91,17 @@ public class ProductMapperMySql implements DAO<ProductMapper.Entry> {
     }
 
     @Override
-    public Collection<ProductMapper.Entry> search(Object value1, Object value2) throws DatabaseException {
-        return null;
+    public Collection<ProductMapper.Entry> search(Object... args) throws DatabaseException {
+        String where = "title = ?";
+        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
+        try (Request request = new Request(query)) {
+            request.getStatement().setString(1, (String) args[0]);
+            ResultSet resultSet = request.getStatement().executeQuery();
+            return new ProductMapperInstantiation(resultSet).build();
+        } catch (SQLException | NullPointerException e) {
+            //TODO
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override
@@ -105,7 +114,7 @@ public class ProductMapperMySql implements DAO<ProductMapper.Entry> {
         return false;
     }
 
-    protected class ProductMapperInstantiation implements Instantiating<ProductMapper.Entry> {
+    protected static class ProductMapperInstantiation implements Instantiating<ProductMapper.Entry> {
 
         private final MyList<ProductMapper.Entry> entries;
         private final ResultSet resultSet;
