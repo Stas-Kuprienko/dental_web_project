@@ -77,7 +77,8 @@ public class UserMySql implements DAO<User> {
             request.getStatement().setBlob(2, new SerialBlob(password));
             resultSet = request.getStatement().executeQuery();
             return (MyList<User>) new UserInstantiation(resultSet).build();
-        } catch (SQLException | IOException | NullPointerException | ClassCastException e) {
+        } catch (SQLException | IOException |
+                 ArrayIndexOutOfBoundsException| NullPointerException | ClassCastException e) {
             //TODO logger
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -140,6 +141,9 @@ public class UserMySql implements DAO<User> {
                     user.setCreated(resultSet.getDate("created").toLocalDate());
                     usersList.add(user);
                 }
+            }
+            if (this.usersList.isEmpty()) {
+                throw new NullPointerException("The such object is not found.");
             }
             return this.usersList;
         }
