@@ -81,12 +81,12 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
     }
 
     @Override
-    public MyList<WorkRecord> search(Object value1, Object value2) throws DatabaseException {
+    public MyList<WorkRecord> search(Object... args) throws DatabaseException {
         String where = "patient = ? AND clinic = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         try (Request request = new Request(query)) {
-            request.getStatement().setString(1, (String) value1);
-            request.getStatement().setString(2, (String) value2);
+            request.getStatement().setString(1, (String) args[0]);
+            request.getStatement().setString(2, (String) args[1]);
             ResultSet resultSet = request.getStatement().executeQuery();
             return (MyList<WorkRecord>) new WorkRecordInstantiation(resultSet).build();
         } catch (SQLException | IOException | NullPointerException | ClassCastException e) {

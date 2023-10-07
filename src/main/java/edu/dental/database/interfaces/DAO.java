@@ -17,7 +17,7 @@ public interface DAO<T> {
 
     T get(int id) throws DatabaseException;
 
-    Collection<T> search(Object value1, Object value2) throws DatabaseException;
+    Collection<T> search(Object... args) throws DatabaseException;
 
     boolean edit(T object) throws DatabaseException;
 
