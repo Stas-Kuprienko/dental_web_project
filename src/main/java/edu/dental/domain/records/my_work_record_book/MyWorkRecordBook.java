@@ -9,6 +9,8 @@ import edu.dental.utils.StringToDateConverter;
 import edu.dental.utils.data_structures.MyList;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -16,9 +18,9 @@ import java.util.NoSuchElementException;
  */
 public class MyWorkRecordBook implements WorkRecordBook {
 
-    public final MyList<WorkRecord> records;
+    private final MyList<WorkRecord> records;
 
-    public final ProductMapper productMap;
+    private final ProductMapper productMap;
 
     private MyWorkRecordBook(MyList<WorkRecord> records, ProductMapper productMap) {
         this.records = records;
@@ -47,6 +49,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         }
         WorkRecord workRecord = WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(date).build();
         workRecord.getProducts().add(p);
+        records.add(workRecord);
         return workRecord;
     }
 
@@ -58,7 +61,9 @@ public class MyWorkRecordBook implements WorkRecordBook {
         } catch (NullPointerException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
-        return WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(date).build();
+        WorkRecord workRecord = WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(date).build();
+        records.add(workRecord);
+        return workRecord;
     }
 
     @Override
@@ -107,26 +112,14 @@ public class MyWorkRecordBook implements WorkRecordBook {
 
     @Override
     public WorkRecord searchRecord(String patient, String clinic) throws WorkRecordBookException {
-        if ((patient == null || patient.isEmpty())||(clinic == null || clinic.isEmpty())) {
-            throw new WorkRecordBookException("The given argument is null or empty.");
-        }
         try {
             MyList<WorkRecord> list = records.searchElement("patient", patient);
-            if (list.isEmpty()) {
-                throw new WorkRecordBookException("The specified element is not found.");
-            }
-            if (list.size() == 1) {
-                return list.get(0);
-            } else {
+            if (list.size() > 1) {
                 list = list.searchElement("clinic", clinic);
-                if (list.isEmpty()) {
-                    throw new WorkRecordBookException("The specified element is not found.");
-                } else {
-                    return list.get(0);
-                }
             }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new WorkRecordBookException("The required element could not be found.", e.getCause());
+            return list.get(0);
+        } catch (NoSuchFieldException | IllegalAccessException | NoSuchElementException | NullPointerException e) {
+            throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
     }
 
@@ -134,14 +127,19 @@ public class MyWorkRecordBook implements WorkRecordBook {
     public WorkRecord getByID(int id) throws WorkRecordBookException {
         try {
             MyList<WorkRecord> list = records.searchElement("id", String.valueOf(id));
-            if (list.isEmpty()) {
-                throw new WorkRecordBookException("The specified element is not found.");
-            } else {
-                return list.get(0);
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+            return list.get(0);
+        } catch (NoSuchFieldException | IllegalAccessException |NoSuchElementException | NullPointerException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
     }
 
+    @Override
+    public MyList<WorkRecord> getList() {
+        return records;
+    }
+
+    @Override
+    public ProductMapper getMap() {
+        return productMap;
+    }
 }

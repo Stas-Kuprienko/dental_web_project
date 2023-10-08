@@ -2,6 +2,9 @@ package edu.dental.domain.records;
 
 import edu.dental.domain.entities.WorkRecord;
 
+import java.util.Collection;
+import java.util.Map;
+
 public interface WorkRecordBook {
 
     WorkRecord createRecord(String patient, String clinic, String product, int quantity, String complete) throws WorkRecordBookException;
@@ -18,4 +21,7 @@ public interface WorkRecordBook {
 
     WorkRecord getByID(int id) throws WorkRecordBookException;
 
+    Collection<WorkRecord> getList();
+
+    Map<String, Integer> getMap();
 }
