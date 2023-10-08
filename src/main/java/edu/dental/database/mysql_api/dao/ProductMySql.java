@@ -25,18 +25,18 @@ public class ProductMySql implements DAO<Product> {
     }
 
     @Override
-    public boolean putAll(Collection<Product> products) throws DatabaseException{
-        if (products == null || products.isEmpty()) {
+    public boolean putAll(Collection<Product> list) throws DatabaseException{
+        if (list == null || list.isEmpty()) {
             throw new DatabaseException("The  given argument is null or empty.");
         }
         try (Request request = new Request()) {
             Statement statement = request.getStatement();
-            for (Product p : products) {
+            for (Product p : list) {
                 String values = String.format("%s, '%s', %s, %s", workId, p.title(), p.quantity(), p.price());
                 String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
                 statement.addBatch(query);
             }
-            return statement.executeBatch().length == products.size();
+            return statement.executeBatch().length == list.size();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }

@@ -10,6 +10,7 @@ import edu.dental.utils.data_structures.MyList;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class WorkRecordMySql implements DAO<WorkRecord> {
@@ -31,7 +32,19 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
 
     @Override
     public boolean putAll(Collection<WorkRecord> list) throws DatabaseException {
-        return false;
+        if (list == null || list.isEmpty()) {
+            throw new DatabaseException("The given argument is null or empty.");
+        }
+        try (Request request = new Request()){
+            Statement statement = request.getStatement();
+            for (WorkRecord wr : list) {
+                String query = buildQuery(wr);
+                statement.addBatch(query);
+            }
+            return statement.executeBatch().length == list.size();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override
@@ -149,6 +162,13 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
+    }
+
+    private String buildQuery(WorkRecord wr) {
+        String values = "DEFAULT, '%s', '%s', '%s', '%s', %s, %s, %s, %s";
+        values = String.format(values, wr.getPatient(), wr.getClinic(), wr.getAccepted(),
+                wr.getComplete(), wr.isClosed(), wr.isPaid(), Arrays.toString(wr.getPhoto()), wr.getComment());
+        return String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
     }
 
 
