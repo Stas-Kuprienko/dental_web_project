@@ -132,7 +132,9 @@ public class MyWorkRecordBook implements WorkRecordBook {
     @Override
     public MyList<WorkRecord> sorting() {
         MyList<WorkRecord> result = new MyList<>();
-        for (WorkRecord wr : records) {
+        WorkRecord[] arr = new WorkRecord[records.size()];
+        arr = records.toArray(arr);
+        for (WorkRecord wr : arr) {
             if ((wr.isClosed()) || wr.isPaid()) {
                 wr.setClosed(true);
                 result.add(wr);
