@@ -3,6 +3,7 @@ package edu.dental.domain.reports.my_report_service;
 import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.interfaces.DBService;
+import edu.dental.database.mysql_api.dao.WorkRecordMySql;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.ProductMapper;
@@ -22,12 +23,29 @@ public class MyReportService implements ReportService {
 
 
     @Override
-    public boolean saveTableToFile(ProductMapper productMap, MonthlyReport report) {
-        DataArrayTool dataArrayTool = new DataArrayTool(productMap, report.workRecordList());
-        String[][] reportData = dataArrayTool.buildTable();
-        String tableName = report.getYear() + "_" + report.getMonth() + "_" + user.getId();
-        IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
-        return fileTool.createFile().writeFile();
+    public boolean putReportToDB(MonthlyReport report) throws ReportServiceException {
+        try {
+            DBService db = DBServiceManager.getDBService();
+            String yearMonth = report.getYear() + report.getMonth();
+            WorkRecordMySql workRecordMySql = (WorkRecordMySql) db.getWorkRecordDAO(user, yearMonth);
+            workRecordMySql.putAll(report.getWorkRecordList());
+        } catch (DatabaseException e) {
+            throw new ReportServiceException(e.getMessage(), e.getCause());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean saveTableToFile(ProductMapper productMap, MonthlyReport report) throws ReportServiceException {
+        try {
+            DataArrayTool dataArrayTool = new DataArrayTool(productMap, report.getWorkRecordList());
+            String[][] reportData = dataArrayTool.buildTable();
+            String tableName = report.getYear() + "_" + report.getMonth() + "_" + user.getId();
+            IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
+            return fileTool.createFile().writeFile();
+        } catch (ClassCastException e) {
+            throw new ReportServiceException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override

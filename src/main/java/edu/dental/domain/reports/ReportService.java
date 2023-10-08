@@ -5,7 +5,9 @@ import edu.dental.domain.records.ProductMapper;
 
 public interface ReportService {
 
-    boolean saveTableToFile(ProductMapper productMap, MonthlyReport report);
+    boolean putReportToDB(MonthlyReport report) throws ReportServiceException;
+
+    boolean saveTableToFile(ProductMapper productMap, MonthlyReport report) throws ReportServiceException;
 
     MonthlyReport getReportFromDB(String month, String year) throws DatabaseException, ReportServiceException;
 
