@@ -134,7 +134,7 @@ public class ProductMapper implements Map<String, Integer> {
 
     @Override
     public Set<Map.Entry<String, Integer>> entrySet() {
-        return Set.of(entries);
+        return Set.of(toArray());
     }
 
     public String[] keysToArray() {
@@ -143,6 +143,15 @@ public class ProductMapper implements Map<String, Integer> {
             result[i] = entries[i].title;
         }
         return result;
+    }
+
+    public Entry[] toArray() {
+        if (size == 0) {
+            throw new NullPointerException("The array of entries is empty.");
+        }
+        Entry[] arr = new Entry[size];
+        System.arraycopy(entries, 0, arr, 0, size);
+        return arr;
     }
 
     public Product createProduct(String title, int quantity) {
