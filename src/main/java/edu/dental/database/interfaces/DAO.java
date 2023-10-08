@@ -3,13 +3,14 @@ package edu.dental.database.interfaces;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.ConnectionPool;
 import edu.dental.domain.entities.IDHaving;
-import edu.dental.domain.entities.User;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.Collection;
 
 public interface DAO<T> {
+
+    boolean putAll(Collection<T> list) throws DatabaseException;
 
     boolean put(T object) throws DatabaseException;
 
@@ -31,16 +32,15 @@ public interface DAO<T> {
 
         private Connection connection;
 
-        private final PreparedStatement statement;
+        private final PreparedStatement preparedStatement;
 
-        //TODO!!!!
-        private final Statement state;
+        private final Statement statement;
 
         public Request(String query) throws SQLException {
             this.connection = ConnectionPool.get();
             try {
-                this.statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-                this.state = null;
+                this.preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                this.statement = null;
             } catch (SQLException e) {
                 //TODO loggers
                 ConnectionPool.put(connection);
@@ -51,10 +51,10 @@ public interface DAO<T> {
         public Request() throws SQLException {
             this.connection = ConnectionPool.get();
             try {
-                this.state = connection.createStatement();
-                this.statement = null;
+                this.statement = connection.createStatement();
+                this.preparedStatement = null;
             } catch (SQLException e) {
-                //TODO !!!
+                //TODO loggers
                 ConnectionPool.put(connection);
                 throw e;
             }
@@ -62,7 +62,7 @@ public interface DAO<T> {
 
         @Override
         public boolean setID(IDHaving object) throws SQLException {
-            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+            try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
                 if (resultSet.next()) {
                     object.setId((int) resultSet.getLong(1));
                     return true;
@@ -76,21 +76,22 @@ public interface DAO<T> {
         }
 
         @Override
-        public PreparedStatement getStatement() {
-            return statement;
+        public PreparedStatement getPreparedStatement() {
+            return preparedStatement;
         }
 
-        public Statement getState() {
-            return state;
+        public Statement getStatement() {
+            return statement;
         }
 
         @Override
         public void close() {
             try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
                 if (statement != null) {
                     statement.close();
-                } else {
-                    state.close();
                 }
             } catch (SQLException e) {
                 //TODO logger

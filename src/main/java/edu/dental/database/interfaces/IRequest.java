@@ -12,7 +12,7 @@ public interface IRequest extends AutoCloseable {
 
     Blob createBlob() throws SQLException;
 
-    Statement getStatement();
+    Statement getPreparedStatement();
 
     @Override
     void close() ;
