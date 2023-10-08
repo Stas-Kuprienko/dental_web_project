@@ -13,6 +13,8 @@ import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.utils.data_structures.MyList;
 
+import java.util.Collection;
+
 public class MyReportService implements ReportService {
 
     private final User user;
@@ -21,6 +23,12 @@ public class MyReportService implements ReportService {
         this.user = user;
     }
 
+
+    @Override
+    public boolean putReportToDB(Collection<WorkRecord> records) throws ReportServiceException {
+        MonthlyReport report = new MonthlyReport(records);
+        return putReportToDB(report);
+    }
 
     @Override
     public boolean putReportToDB(MonthlyReport report) throws ReportServiceException {
