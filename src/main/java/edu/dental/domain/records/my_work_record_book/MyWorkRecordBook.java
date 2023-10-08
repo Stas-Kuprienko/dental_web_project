@@ -130,6 +130,23 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
+    public MyList<WorkRecord> sorting() {
+        MyList<WorkRecord> result = new MyList<>();
+        for (WorkRecord wr : records) {
+            if ((wr.isClosed()) || wr.isPaid()) {
+                wr.setClosed(true);
+                result.add(wr);
+                records.remove(wr);
+            } else if (DatesTool.isCurrentMonth(wr.getComplete(), PAY_DAY)) {
+                wr.setClosed(true);
+                result.add(wr);
+                records.remove(wr);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public MyList<WorkRecord> getList() {
         return records;
     }

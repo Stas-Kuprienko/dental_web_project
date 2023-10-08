@@ -7,6 +7,8 @@ import java.util.Map;
 
 public interface WorkRecordBook {
 
+    byte PAY_DAY = 10;
+
     WorkRecord createRecord(String patient, String clinic, String product, int quantity, String complete) throws WorkRecordBookException;
 
     WorkRecord createRecord(String patient, String clinic, String complete) throws WorkRecordBookException;
@@ -20,6 +22,8 @@ public interface WorkRecordBook {
     WorkRecord searchRecord(String patient, String clinic) throws WorkRecordBookException;
 
     WorkRecord getByID(int id) throws WorkRecordBookException;
+
+    Collection<WorkRecord> sorting();
 
     Collection<WorkRecord> getList();
 
