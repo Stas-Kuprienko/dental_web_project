@@ -1,5 +1,6 @@
 package edu.dental.domain.records;
 
+import edu.dental.domain.entities.IDHaving;
 import edu.dental.domain.entities.Product;
 import edu.dental.utils.data_structures.MyList;
 
@@ -206,7 +207,9 @@ public class ProductMapper implements Map<String, Integer> {
     }
 
 
-    public static final class Entry implements Map.Entry<String, Integer> {
+    public static final class Entry implements Map.Entry<String, Integer>, IDHaving {
+
+        private int id;
         private final String title;
         private int price;
 
@@ -230,6 +233,16 @@ public class ProductMapper implements Map<String, Integer> {
             int previous = price;
             this.price = value;
             return previous;
+        }
+
+        @Override
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public void setId(int id) {
+            this.id = id;
         }
     }
 }

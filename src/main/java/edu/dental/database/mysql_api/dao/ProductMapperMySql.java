@@ -57,7 +57,8 @@ public class ProductMapperMySql implements DAO<ProductMapper.Entry> {
             PreparedStatement statement = request.getStatement();
             statement.setString(i++, entry.getKey());
             statement.setInt(i, entry.getValue());
-            return statement.execute();
+            statement.executeUpdate();
+            return request.setID(entry);
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -107,13 +108,40 @@ public class ProductMapperMySql implements DAO<ProductMapper.Entry> {
 
     @Override
     public boolean edit(ProductMapper.Entry object) throws DatabaseException {
-        return false;
+        String sets = "price = ?";
+        String where = "title = ?";
+        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets, where);
+        try (Request request = new Request(query)) {
+            request.getStatement().setInt(1, object.getValue());
+            request.getStatement().setString(2, object.getKey());
+            return request.getStatement().execute();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override
     public boolean delete(int id) throws DatabaseException {
-        return false;
+        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ?");
+        try (Request request = new Request()) {
+            request.getStatement().setInt(1, id);
+            return request.getStatement().execute();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
+
+    public boolean delete(String title, int price) throws DatabaseException {
+        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "title = ? AND price = ?");
+        try (Request request = new Request()) {
+            request.getStatement().setString(1, title);
+            request.getStatement().setInt(2, price);
+            return request.getStatement().execute();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
+    }
+
 
     protected static class ProductMapperInstantiation implements Instantiating<ProductMapper.Entry> {
 
