@@ -1,7 +1,5 @@
 package edu.dental.utils;
 
-import edu.dental.domain.entities.WorkRecord;
-
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -17,7 +15,7 @@ public class DatesTool {
         }
         int day = Integer.parseInt(strings[0]);
         int month = Integer.parseInt(strings[1]);
-        int year = 0;
+        int year;
         if (strings.length >= 3) {
             year = Integer.parseInt(strings[2]);
         } else {
@@ -35,5 +33,27 @@ public class DatesTool {
             month = today.getMonth();
         }
         return date.getMonth().getValue() <= month.getValue();
+    }
+
+    public static String[] getYearAndMonth(int spitDay) {
+        LocalDate today = LocalDate.now();
+        Month month;
+        int year;
+        if (today.getDayOfMonth() > spitDay) {
+            month = today.getMonth();
+            year = today.getYear();
+        } else {
+            month = today.getMonth().minus(1);
+            if (month == Month.DECEMBER) {
+                year = today.getYear() - 1;
+            } else {
+                year = today.getYear();
+            }
+        }
+        String[] result = new String[2];
+        result[0] = String.valueOf(year);
+        result[1] = month.toString();
+        return result;
+
     }
 }
