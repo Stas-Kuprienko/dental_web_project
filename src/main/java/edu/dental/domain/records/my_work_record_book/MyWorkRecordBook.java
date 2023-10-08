@@ -42,9 +42,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             p = productMap.createProduct(product, quantity);
             date = StringToDateConverter.toLocalDate(complete);
-        } catch (NoSuchElementException e) {
-            throw new WorkRecordBookException("The specified product type is not found.", e.getCause());
-        } catch (NullPointerException e) {
+        } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
         WorkRecord workRecord = WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(date).build();
