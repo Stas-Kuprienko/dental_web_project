@@ -40,7 +40,11 @@ public class MyDBService implements DBService {
     @Override
     public DAO<?> getWorkRecordDAO(Object... args) throws DatabaseException {
         try {
-            return new WorkRecordMySql((User) args[0]);
+            if (args.length > 1) {
+                return new WorkRecordMySql((User) args[0], (String) args[1]);
+            } else {
+                return new WorkRecordMySql((User) args[0]);
+            }
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }

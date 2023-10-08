@@ -24,6 +24,11 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
         this.TABLE = DBConfiguration.DATA_BASE + ".work_record_" + user.getId();
     }
 
+    public WorkRecordMySql(User user, String yearMonth) {
+        this.user = user;
+        this.TABLE = DBConfiguration.DATA_BASE + ".work_record_" + user.getId() + "_" + yearMonth;
+    }
+
     @Override
     public boolean put(WorkRecord object) throws DatabaseException {
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
