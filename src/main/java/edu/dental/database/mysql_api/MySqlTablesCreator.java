@@ -62,17 +62,17 @@ public class MySqlTablesCreator implements TablesCreator {
         String table = DBConfiguration.DATA_BASE + ".work_record_" + userID;
         String query = String.format(WORK_RECORD, table);
         try (Request request = new Request(query)) {
-            return request.execute();
+            return request.execute() && createProductTable(userID);
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
 
-    public boolean createWorkRecordTable(int userID, String month) throws DatabaseException {
-        String table = DBConfiguration.DATA_BASE + ".work_record_" + month + "_" + userID;
+    public boolean createWorkRecordTable(int userID, String yearMonth) throws DatabaseException {
+        String table = DBConfiguration.DATA_BASE + ".work_record_" + userID + "_" + yearMonth;
         String query = String.format(WORK_RECORD, table);
         try (Request request = new Request(query)) {
-            return request.execute();
+            return request.execute() && createProductTable(userID, yearMonth);
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -89,9 +89,9 @@ public class MySqlTablesCreator implements TablesCreator {
         }
     }
 
-    public boolean createProductTable(int userID, String month) throws DatabaseException {
-        String table = DBConfiguration.DATA_BASE + ".product_" + month + "_" + userID;
-        String query = String.format(PRODUCT, table, month + "_" + userID);
+    public boolean createProductTable(int userID, String yearMonth) throws DatabaseException {
+        String table = DBConfiguration.DATA_BASE + ".product_" + userID + "_" + yearMonth;
+        String query = String.format(PRODUCT, table, userID + "_" + yearMonth);
         try (Request request = new Request(query)) {
             return request.execute();
         } catch (SQLException e) {

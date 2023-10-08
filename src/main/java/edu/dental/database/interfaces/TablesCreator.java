@@ -14,11 +14,11 @@ public interface TablesCreator {
 
     boolean createWorkRecordTable(int userID) throws DatabaseException;
 
-    boolean createWorkRecordTable(int userID, String month) throws DatabaseException;
+    boolean createWorkRecordTable(int userID, String yearMonth) throws DatabaseException;
 
     boolean createProductTable(int userID) throws DatabaseException;
 
-    boolean createProductTable(int userID, String month) throws DatabaseException;
+    boolean createProductTable(int userID, String yearMonth) throws DatabaseException;
 
     class Request implements AutoCloseable {
 
