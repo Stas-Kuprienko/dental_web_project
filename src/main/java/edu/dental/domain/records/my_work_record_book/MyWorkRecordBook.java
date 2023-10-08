@@ -5,12 +5,10 @@ import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.ProductMapper;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.utils.StringToDateConverter;
+import edu.dental.utils.DatesTool;
 import edu.dental.utils.data_structures.MyList;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -41,7 +39,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         LocalDate date;
         try {
             p = productMap.createProduct(product, quantity);
-            date = StringToDateConverter.toLocalDate(complete);
+            date = DatesTool.toLocalDate(complete);
         } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
@@ -55,7 +53,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     public WorkRecord createRecord(String patient, String clinic, String complete) throws WorkRecordBookException {
         LocalDate date;
         try {
-            date = StringToDateConverter.toLocalDate(complete);
+            date = DatesTool.toLocalDate(complete);
         } catch (NullPointerException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }

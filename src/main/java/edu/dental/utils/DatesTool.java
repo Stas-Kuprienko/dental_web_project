@@ -1,8 +1,11 @@
 package edu.dental.utils;
 
-import java.time.LocalDate;
+import edu.dental.domain.entities.WorkRecord;
 
-public class StringToDateConverter {
+import java.time.LocalDate;
+import java.time.Month;
+
+public class DatesTool {
 
     public static LocalDate toLocalDate(String date) {
         if (date == null || date.isEmpty()) {
@@ -21,5 +24,16 @@ public class StringToDateConverter {
             year = LocalDate.now().getYear();
         }
         return LocalDate.of(year, month, day);
+    }
+
+    public static boolean isCurrentMonth(LocalDate date, int splitDay) {
+        LocalDate today = LocalDate.now();
+        Month month;
+        if (today.getDayOfMonth() < splitDay) {
+            month = today.getMonth().minus(1);
+        } else {
+            month = today.getMonth();
+        }
+        return date.getMonth().getValue() <= month.getValue();
     }
 }
