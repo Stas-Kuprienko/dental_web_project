@@ -47,53 +47,57 @@ public class MySqlTablesCreator implements TablesCreator {
                 );""";
 
     @Override
-    public boolean createProductMapTable(int userID) throws DatabaseException {
+    public void createProductMapTable(int userID) throws DatabaseException {
         String table = DBConfiguration.DATA_BASE + ".product_map_" + userID;
         String query = String.format(PRODUCT_MAP, table);
         try (Request request = new Request(query)) {
-            return request.execute();
+            request.execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public boolean createWorkRecordTable(int userID) throws DatabaseException {
+    public void createWorkRecordTable(int userID) throws DatabaseException {
         String table = DBConfiguration.DATA_BASE + ".work_record_" + userID;
         String query = String.format(WORK_RECORD, table);
         try (Request request = new Request(query)) {
-            return request.execute() && createProductTable(userID);
+            if (request.execute()) {
+                createProductTable(userID);
+            }
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
 
-    public boolean createWorkRecordTable(int userID, String yearMonth) throws DatabaseException {
+    public void createWorkRecordTable(int userID, String yearMonth) throws DatabaseException {
         String table = DBConfiguration.DATA_BASE + ".work_record_" + userID + "_" + yearMonth;
         String query = String.format(WORK_RECORD, table);
         try (Request request = new Request(query)) {
-            return request.execute() && createProductTable(userID, yearMonth);
+            if (request.execute()) {
+                createProductTable(userID, yearMonth);
+            }
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public boolean createProductTable(int userID) throws DatabaseException {
+    public void createProductTable(int userID) throws DatabaseException {
         String table = DBConfiguration.DATA_BASE + ".product_" + userID;
         String query = String.format(PRODUCT, table, userID);
         try (Request request = new Request(query)) {
-            return request.execute();
+            request.execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
 
-    public boolean createProductTable(int userID, String yearMonth) throws DatabaseException {
+    public void createProductTable(int userID, String yearMonth) throws DatabaseException {
         String table = DBConfiguration.DATA_BASE + ".product_" + userID + "_" + yearMonth;
         String query = String.format(PRODUCT, table, userID + "_" + yearMonth);
         try (Request request = new Request(query)) {
-            return request.execute();
+            request.execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }

@@ -6,19 +6,18 @@ import edu.dental.database.connection.ConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public interface TablesCreator {
 
-    boolean createProductMapTable(int userID) throws DatabaseException;
+    void createProductMapTable(int userID) throws DatabaseException;
 
-    boolean createWorkRecordTable(int userID) throws DatabaseException;
+    void createWorkRecordTable(int userID) throws DatabaseException;
 
-    boolean createWorkRecordTable(int userID, String yearMonth) throws DatabaseException;
+    void createWorkRecordTable(int userID, String yearMonth) throws DatabaseException;
 
-    boolean createProductTable(int userID) throws DatabaseException;
+    void createProductTable(int userID) throws DatabaseException;
 
-    boolean createProductTable(int userID, String yearMonth) throws DatabaseException;
+    void createProductTable(int userID, String yearMonth) throws DatabaseException;
 
     class Request implements AutoCloseable {
 
