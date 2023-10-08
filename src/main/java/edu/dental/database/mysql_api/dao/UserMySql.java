@@ -19,13 +19,18 @@ public class UserMySql implements DAO<User> {
     public static final String FIELDS = "id, name, login, password, created";
 
     @Override
+    public boolean putAll(Collection<User> list) throws DatabaseException {
+        return false;
+    }
+
+    @Override
     public boolean put(User object) throws DatabaseException {
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
         injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
         try (Request request = new Request(query)) {
             byte i = 1;
-            PreparedStatement statement = request.getStatement();
+            PreparedStatement statement = request.getPreparedStatement();
             statement.setString(i++, object.getName());
             statement.setString(i++, object.getLogin());
             statement.setBlob(i++, new SerialBlob(object.getPassword()));
@@ -43,7 +48,7 @@ public class UserMySql implements DAO<User> {
         String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE);
         MyList<User> usersList;
         try (Request request = new Request(query)) {
-            ResultSet resultSet = request.getStatement().executeQuery();
+            ResultSet resultSet = request.getPreparedStatement().executeQuery();
             usersList = (MyList<User>) new UserInstantiation(resultSet).build();
         } catch (SQLException | IOException e) {
             //TODO logger
@@ -57,8 +62,8 @@ public class UserMySql implements DAO<User> {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
         ResultSet resultSet;
         try (Request request = new Request(query)) {
-            request.getStatement().setInt(1, id);
-            resultSet = request.getStatement().executeQuery();
+            request.getPreparedStatement().setInt(1, id);
+            resultSet = request.getPreparedStatement().executeQuery();
             MyList<User> list = (MyList<User>) new UserInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | NullPointerException | IOException e) {
@@ -73,9 +78,9 @@ public class UserMySql implements DAO<User> {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         ResultSet resultSet;
         try (Request request = new Request(query)) {
-            request.getStatement().setString(1, (String) args[0]);
-            request.getStatement().setBlob(2, new SerialBlob(password));
-            resultSet = request.getStatement().executeQuery();
+            request.getPreparedStatement().setString(1, (String) args[0]);
+            request.getPreparedStatement().setBlob(2, new SerialBlob(password));
+            resultSet = request.getPreparedStatement().executeQuery();
             return (MyList<User>) new UserInstantiation(resultSet).build();
         } catch (SQLException | IOException |
                  ArrayIndexOutOfBoundsException| NullPointerException | ClassCastException e) {
@@ -94,12 +99,12 @@ public class UserMySql implements DAO<User> {
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ?");
         try (Request request = new Request(query)) {
             byte i = 1;
-            request.getStatement().setString(i++, object.getName());
-            request.getStatement().setString(i++, object.getLogin());
-            request.getStatement().setBlob(i++, new SerialBlob(object.getPassword()));
-            request.getStatement().setDate(i++, Date.valueOf(object.getCreated()));
-            request.getStatement().setInt(i, object.getId());
-            return request.getStatement().execute();
+            request.getPreparedStatement().setString(i++, object.getName());
+            request.getPreparedStatement().setString(i++, object.getLogin());
+            request.getPreparedStatement().setBlob(i++, new SerialBlob(object.getPassword()));
+            request.getPreparedStatement().setDate(i++, Date.valueOf(object.getCreated()));
+            request.getPreparedStatement().setInt(i, object.getId());
+            return request.getPreparedStatement().execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -109,8 +114,8 @@ public class UserMySql implements DAO<User> {
     public boolean delete(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ?");
         try (Request request = new Request(query)) {
-            request.getStatement().setInt(1, id);
-            return request.getStatement().execute();
+            request.getPreparedStatement().setInt(1, id);
+            return request.getPreparedStatement().execute();
         } catch (SQLException e) {
             //TODO logger
             throw new DatabaseException(e.getMessage(), e.getCause());

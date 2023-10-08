@@ -24,12 +24,13 @@ public class ProductMySql implements DAO<Product> {
         this.workId = workId;
     }
 
-    public boolean putAll(MyList<Product> products) throws DatabaseException{
+    @Override
+    public boolean putAll(Collection<Product> products) throws DatabaseException{
         if (products == null || products.isEmpty()) {
             throw new DatabaseException("The  given argument is null or empty.");
         }
         try (Request request = new Request()) {
-            Statement statement = request.getState();
+            Statement statement = request.getStatement();
             for (Product p : products) {
                 String values = String.format("%s, '%s', %s, %s", workId, p.title(), p.quantity(), p.price());
                 String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
@@ -48,7 +49,7 @@ public class ProductMySql implements DAO<Product> {
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
         try (Request request = new Request(query)) {
             byte i = 1;
-            PreparedStatement statement = request.getStatement();
+            PreparedStatement statement = request.getPreparedStatement();
             statement.setInt(i++, workId);
             statement.setString(i++, object.title());
             statement.setByte(i++, object.quantity());
@@ -65,8 +66,8 @@ public class ProductMySql implements DAO<Product> {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "work_id = ?");
         MyList<Product> products;
         try (Request request = new Request(query)) {
-            request.getStatement().setInt(1, workId);
-            ResultSet resultSet = request.getStatement().executeQuery();
+            request.getPreparedStatement().setInt(1, workId);
+            ResultSet resultSet = request.getPreparedStatement().executeQuery();
             products = (MyList<Product>) new ProductInstantiation(resultSet).build();
         } catch (SQLException e) {
             //TODO loggers
@@ -80,8 +81,8 @@ public class ProductMySql implements DAO<Product> {
     public Product get(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "work_id = ?");
         try (Request request = new Request(query)) {
-            request.getStatement().setInt(1, id);
-            ResultSet resultSet = request.getStatement().executeQuery();
+            request.getPreparedStatement().setInt(1, id);
+            ResultSet resultSet = request.getPreparedStatement().executeQuery();
             MyList<Product> list = (MyList<Product>) new ProductInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | NullPointerException e) {
@@ -95,9 +96,9 @@ public class ProductMySql implements DAO<Product> {
         String where = "title = ? AND quantity = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         try (Request request = new Request(query)) {
-            request.getStatement().setString(1, (String) args[0]);
-            request.getStatement().setInt(2, (Integer) args[1]);
-            ResultSet resultSet = request.getStatement().executeQuery();
+            request.getPreparedStatement().setString(1, (String) args[0]);
+            request.getPreparedStatement().setInt(2, (Integer) args[1]);
+            ResultSet resultSet = request.getPreparedStatement().executeQuery();
             return new ProductInstantiation(resultSet).build();
         } catch (SQLException | NullPointerException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -122,7 +123,7 @@ public class ProductMySql implements DAO<Product> {
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets, where);
         try (Request request = new Request(query)){
             byte i = 1;
-            PreparedStatement statement = request.getStatement();
+            PreparedStatement statement = request.getPreparedStatement();
             statement.setByte(i++, object.quantity());
             statement.setInt(i++, object.price());
             statement.setInt(i++, workId);
@@ -136,9 +137,9 @@ public class ProductMySql implements DAO<Product> {
     public boolean delete(int id, String title) throws DatabaseException {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = ? AND title = ?");
         try (Request request = new Request(query)) {
-            request.getStatement().setInt(1, id);
-            request.getStatement().setString(2,title);
-            return request.getStatement().execute();
+            request.getPreparedStatement().setInt(1, id);
+            request.getPreparedStatement().setString(2,title);
+            return request.getPreparedStatement().execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -148,8 +149,8 @@ public class ProductMySql implements DAO<Product> {
     public boolean delete(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = ?");
         try (Request request = new Request(query)) {
-            request.getStatement().setInt(1, id);
-            return request.getStatement().execute();
+            request.getPreparedStatement().setInt(1, id);
+            return request.getPreparedStatement().execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
