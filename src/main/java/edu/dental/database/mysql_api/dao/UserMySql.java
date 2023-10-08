@@ -24,7 +24,7 @@ public class UserMySql implements DAO<User> {
         injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
         try (Request request = new Request(query)) {
-            byte i = 2;
+            byte i = 1;
             PreparedStatement statement = request.getStatement();
             statement.setString(i++, object.getName());
             statement.setString(i++, object.getLogin());

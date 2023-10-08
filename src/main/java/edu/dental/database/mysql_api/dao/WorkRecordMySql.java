@@ -39,8 +39,12 @@ public class WorkRecordMySql implements DAO<WorkRecord> {
             statement.setBoolean(i++, object.isClosed());
             statement.setBoolean(i++, object.isPaid());
             Blob photo = request.createBlob();
-            photo.setBytes(1, object.getPhoto());
-            statement.setBlob(i++, photo);
+            if (object.getPhoto() != null) {
+                photo.setBytes(1, object.getPhoto());
+                statement.setBlob(i++, photo);
+            } else {
+                statement.setNull(i++, Types.BLOB);
+            }
             statement.setString(i, object.getComment());
             statement.executeUpdate();
             photo.free();

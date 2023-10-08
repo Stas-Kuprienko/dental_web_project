@@ -4,6 +4,7 @@ import edu.dental.database.DatabaseException;
 import edu.dental.database.interfaces.DAO;
 import edu.dental.database.interfaces.DBService;
 import edu.dental.database.interfaces.TablesCreator;
+import edu.dental.database.mysql_api.dao.ProductMapperMySql;
 import edu.dental.database.mysql_api.dao.ProductMySql;
 import edu.dental.database.mysql_api.dao.UserMySql;
 import edu.dental.database.mysql_api.dao.WorkRecordMySql;
@@ -25,6 +26,15 @@ public class MyDBService implements DBService {
     @Override
     public DAO<?> getUserDAO() {
         return new UserMySql();
+    }
+
+    @Override
+    public DAO<?> getProductMapperDAO(Object... args) throws DatabaseException {
+        try {
+            return new ProductMapperMySql((User) args[0]);
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override

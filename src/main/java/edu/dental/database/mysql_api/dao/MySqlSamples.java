@@ -6,6 +6,8 @@ public enum MySqlSamples implements DAO.Queries {
 
     INSERT("INSERT INTO %s (%s) VALUES (%s);"),
 
+    INSERT_BATCH("INSERT INTO %s VALUES (%s);"),
+
     SELECT_ALL("SELECT %s FROM %s;"),
 
     SELECT_WHERE("SELECT %s FROM %s WHERE %s;"),

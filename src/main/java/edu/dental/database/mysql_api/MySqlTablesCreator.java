@@ -43,7 +43,7 @@ public class MySqlTablesCreator implements TablesCreator {
                 title VARCHAR(15) NOT NULL,
                 quantity SMALLINT DEFAULT 0,
                 price INT DEFAULT 0,
-                CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES work_record(id)
+                CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES work_record_%s(id)
                 );""";
 
     @Override
@@ -81,7 +81,7 @@ public class MySqlTablesCreator implements TablesCreator {
     @Override
     public boolean createProductTable(int userID) throws DatabaseException {
         String table = DBConfiguration.DATA_BASE + ".product_" + userID;
-        String query = String.format(PRODUCT, table);
+        String query = String.format(PRODUCT, table, userID);
         try (Request request = new Request(query)) {
             return request.execute();
         } catch (SQLException e) {
@@ -91,7 +91,7 @@ public class MySqlTablesCreator implements TablesCreator {
 
     public boolean createProductTable(int userID, String month) throws DatabaseException {
         String table = DBConfiguration.DATA_BASE + ".product_" + month + "_" + userID;
-        String query = String.format(PRODUCT, table);
+        String query = String.format(PRODUCT, table, month + "_" + userID);
         try (Request request = new Request(query)) {
             return request.execute();
         } catch (SQLException e) {

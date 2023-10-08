@@ -9,6 +9,7 @@ import edu.dental.utils.data_structures.MyList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 
 public class ProductMySql implements DAO<Product> {
@@ -28,10 +29,10 @@ public class ProductMySql implements DAO<Product> {
             throw new DatabaseException("The  given argument is null or empty.");
         }
         try (Request request = new Request()) {
-            PreparedStatement statement = request.getStatement();
+            Statement statement = request.getState();
             for (Product p : products) {
-                String values = String.format("%s, %s, %s, %s", workId, p.title(), p.quantity(), p.price());
-                String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, values);
+                String values = String.format("%s, '%s', %s, %s", workId, p.title(), p.quantity(), p.price());
+                String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
                 statement.addBatch(query);
             }
             return statement.executeBatch().length == products.size();
