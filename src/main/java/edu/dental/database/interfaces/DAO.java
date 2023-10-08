@@ -33,10 +33,14 @@ public interface DAO<T> {
 
         private final PreparedStatement statement;
 
+        //TODO!!!!
+        private final Statement state;
+
         public Request(String query) throws SQLException {
             this.connection = ConnectionPool.get();
             try {
                 this.statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                this.state = null;
             } catch (SQLException e) {
                 //TODO loggers
                 ConnectionPool.put(connection);
@@ -47,9 +51,10 @@ public interface DAO<T> {
         public Request() throws SQLException {
             this.connection = ConnectionPool.get();
             try {
-                this.statement = (PreparedStatement) connection.createStatement();
+                this.state = connection.createStatement();
+                this.statement = null;
             } catch (SQLException e) {
-                //TODO loggers
+                //TODO !!!
                 ConnectionPool.put(connection);
                 throw e;
             }
@@ -75,10 +80,18 @@ public interface DAO<T> {
             return statement;
         }
 
+        public Statement getState() {
+            return state;
+        }
+
         @Override
         public void close() {
             try {
-                statement.close();
+                if (statement != null) {
+                    statement.close();
+                } else {
+                    state.close();
+                }
             } catch (SQLException e) {
                 //TODO logger
                 e.printStackTrace();

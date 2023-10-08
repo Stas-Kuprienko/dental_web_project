@@ -9,6 +9,8 @@ public interface DBService {
 
     DAO<?> getUserDAO();
 
+    DAO<?> getProductMapperDAO(Object... args) throws DatabaseException;
+
     DAO<?> getWorkRecordDAO(Object... args) throws DatabaseException;
 
     DAO<?> getProductDAO(Object... args) throws DatabaseException;
