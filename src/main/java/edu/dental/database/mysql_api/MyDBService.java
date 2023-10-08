@@ -1,9 +1,7 @@
 package edu.dental.database.mysql_api;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.database.interfaces.DAO;
-import edu.dental.database.interfaces.DBService;
-import edu.dental.database.interfaces.TablesCreator;
+import edu.dental.database.interfaces.*;
 import edu.dental.database.mysql_api.dao.ProductMapperMySql;
 import edu.dental.database.mysql_api.dao.ProductMySql;
 import edu.dental.database.mysql_api.dao.UserMySql;
@@ -24,12 +22,12 @@ public class MyDBService implements DBService {
     }
 
     @Override
-    public DAO<?> getUserDAO() {
+    public UserDAO getUserDAO() {
         return new UserMySql();
     }
 
     @Override
-    public DAO<?> getProductMapperDAO(Object... args) throws DatabaseException {
+    public ProductMapperDAO getProductMapperDAO(Object... args) throws DatabaseException {
         try {
             return new ProductMapperMySql((User) args[0]);
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
@@ -38,7 +36,7 @@ public class MyDBService implements DBService {
     }
 
     @Override
-    public DAO<?> getWorkRecordDAO(Object... args) throws DatabaseException {
+    public WorkRecordDAO getWorkRecordDAO(Object... args) throws DatabaseException {
         try {
             if (args.length > 1) {
                 return new WorkRecordMySql((User) args[0], (String) args[1]);
@@ -51,7 +49,7 @@ public class MyDBService implements DBService {
     }
 
     @Override
-    public DAO<?> getProductDAO(Object... args) throws DatabaseException {
+    public ProductDAO getProductDAO(Object... args) throws DatabaseException {
         try {
             return new ProductMySql((Integer) args[0], (Integer) args[1]);
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {

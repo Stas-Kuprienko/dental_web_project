@@ -7,13 +7,13 @@ public interface DBService {
 
     User authenticate(String login, String password) throws DatabaseException;
 
-    DAO<?> getUserDAO();
+    UserDAO getUserDAO();
 
-    DAO<?> getProductMapperDAO(Object... args) throws DatabaseException;
+    ProductMapperDAO getProductMapperDAO(Object... args) throws DatabaseException;
 
-    DAO<?> getWorkRecordDAO(Object... args) throws DatabaseException;
+    WorkRecordDAO getWorkRecordDAO(Object... args) throws DatabaseException;
 
-    DAO<?> getProductDAO(Object... args) throws DatabaseException;
+    ProductDAO getProductDAO(Object... args) throws DatabaseException;
 
     TablesCreator getTablesCreator();
 

@@ -2,7 +2,7 @@ package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
-import edu.dental.database.interfaces.DAO;
+import edu.dental.database.interfaces.ProductDAO;
 import edu.dental.domain.entities.Product;
 import edu.dental.utils.data_structures.MyList;
 
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 
-public class ProductMySql implements DAO<Product> {
+public class ProductMySql implements ProductDAO {
 
     public final String TABLE;
     private final int workId;

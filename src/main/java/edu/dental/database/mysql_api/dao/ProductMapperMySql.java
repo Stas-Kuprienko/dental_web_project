@@ -2,7 +2,7 @@ package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
-import edu.dental.database.interfaces.DAO;
+import edu.dental.database.interfaces.ProductMapperDAO;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMapper;
 import edu.dental.utils.data_structures.MyList;
@@ -16,7 +16,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.Map;
 
-public class ProductMapperMySql implements DAO<ProductMapper.Entry> {
+public class ProductMapperMySql implements ProductMapperDAO {
 
     public static final String FIELDS = "id, title, price";
 
