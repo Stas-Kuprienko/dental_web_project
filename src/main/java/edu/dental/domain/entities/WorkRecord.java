@@ -12,7 +12,7 @@ import java.util.Objects;
  * Implements {@link java.io.Serializable} because it is an object of information,
  *  and instances may be stored in memory.
  * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the products.
- * Also can to add {@code images} array with an images of the work.
+ * Also containing {@code byte array} with an images of the work.
  */
 public class WorkRecord implements Serializable, IDHaving {
 
@@ -36,7 +36,9 @@ public class WorkRecord implements Serializable, IDHaving {
 
     private String comment;
 
-
+    /**
+     * Constructor for data access object.
+     */
     public WorkRecord() {}
 
     private WorkRecord(MyList<Product> products, LocalDate accepted, boolean closed, boolean paid) {
@@ -57,7 +59,9 @@ public class WorkRecord implements Serializable, IDHaving {
         return new WorkRecord(products, accepted, closed, paid).new Builder();
     }
 
-
+    /**
+     * The builder pattern class.
+     */
     public class Builder {
 
         private Builder(){}

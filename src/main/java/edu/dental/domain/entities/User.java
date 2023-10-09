@@ -1,11 +1,14 @@
 package edu.dental.domain.entities;
 
-import edu.dental.domain.authentication.*;
+import edu.dental.domain.authentication.Authenticator;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * The account class, containing user information and is used for authentication.
+ */
 public class User implements Serializable, IDHaving {
 
     private int id;
@@ -37,6 +40,9 @@ public class User implements Serializable, IDHaving {
         this.password = Authenticator.passwordHash(password);
     }
 
+    /**
+     * Constructor for data access object.
+     */
     public User() {}
 
 
