@@ -34,7 +34,7 @@ public final class RecordManager {
             constructor.setAccessible(false);
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
-                                        | InstantiationException | IllegalAccessException e) {
+                 | ClassCastException | InstantiationException | IllegalAccessException e) {
 
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
@@ -54,7 +54,7 @@ public final class RecordManager {
             constructor.setAccessible(false);
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
-                                        | InstantiationException | IllegalAccessException e) {
+                 | ClassCastException | InstantiationException | IllegalAccessException e) {
 
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
