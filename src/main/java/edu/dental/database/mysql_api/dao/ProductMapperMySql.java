@@ -2,7 +2,7 @@ package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
-import edu.dental.database.interfaces.ProductMapperDAO;
+import edu.dental.database.dao.ProductMapperDAO;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMapper;
 import edu.dental.utils.data_structures.MyList;

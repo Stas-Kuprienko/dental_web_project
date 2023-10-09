@@ -2,7 +2,7 @@ package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
-import edu.dental.database.interfaces.WorkRecordDAO;
+import edu.dental.database.dao.WorkRecordDAO;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.entities.WorkRecord;

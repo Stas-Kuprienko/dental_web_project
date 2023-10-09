@@ -2,8 +2,8 @@ package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
-import edu.dental.database.interfaces.DBService;
-import edu.dental.database.interfaces.WorkRecordDAO;
+import edu.dental.database.DBService;
+import edu.dental.database.dao.WorkRecordDAO;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.ProductMapper;
@@ -47,7 +47,7 @@ public class MyReportService implements ReportService {
         try {
             DataArrayTool dataArrayTool = new DataArrayTool(productMap, report.getWorkRecordList());
             String[][] reportData = dataArrayTool.buildTable();
-            String tableName = report.getYear() + "_" + report.getMonth() + "_" + user.getId();
+            String tableName = report.getYear() + "_" + report.getMonth() + "_" + user.getName();
             IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
             return fileTool.createFile().writeFile();
         } catch (ClassCastException e) {

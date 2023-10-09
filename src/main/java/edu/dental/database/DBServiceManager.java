@@ -1,7 +1,5 @@
 package edu.dental.database;
 
-import edu.dental.database.interfaces.DBService;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 

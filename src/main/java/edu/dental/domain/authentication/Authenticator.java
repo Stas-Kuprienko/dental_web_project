@@ -2,7 +2,7 @@ package edu.dental.domain.authentication;
 
 import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
-import edu.dental.database.interfaces.DBService;
+import edu.dental.database.DBService;
 import edu.dental.domain.entities.User;
 
 import java.security.MessageDigest;

@@ -1,4 +1,4 @@
-package edu.dental.database.interfaces;
+package edu.dental.database.dao;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.domain.entities.WorkRecord;

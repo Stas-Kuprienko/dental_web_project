@@ -2,7 +2,7 @@ package edu.dental.database.mysql_api;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
-import edu.dental.database.interfaces.TablesCreator;
+import edu.dental.database.TablesCreator;
 
 import java.sql.SQLException;
 

@@ -1,6 +1,6 @@
 package edu.dental.database.mysql_api.dao;
 
-import edu.dental.database.interfaces.DAO;
+import edu.dental.database.dao.DAO;
 
 public enum MySqlSamples implements DAO.Queries {
 

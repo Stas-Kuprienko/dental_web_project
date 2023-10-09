@@ -1,6 +1,6 @@
-package edu.dental.database.interfaces;
+package edu.dental.database;
 
-import edu.dental.database.DatabaseException;
+import edu.dental.database.dao.*;
 import edu.dental.domain.entities.User;
 
 public interface DBService {
