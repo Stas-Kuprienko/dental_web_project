@@ -1,47 +1,43 @@
 package edu.dental.domain.records;
 
 import edu.dental.domain.entities.IDHaving;
-import edu.dental.domain.entities.Product;
-import edu.dental.utils.data_structures.MyList;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
-public class ProductMapper implements Map<String, Integer> {
+public class Mapper implements Map<String, Integer> {
 
     private static final byte DEFAULT_CAPACITY = 10;
 
     private int size;
 
-    private Entry[] entries;
+    protected Entry[] entries;
 
 
-    public ProductMapper() {
+    public Mapper() {
         entries = new Entry[DEFAULT_CAPACITY];
         size = 0;
     }
 
-    public ProductMapper(Entry[] entries) {
+    public Mapper(Entry[] entries) {
         size = entries.length;
         this.entries = entries;
     }
 
     @Override
-    public Integer put(String key, Integer price) {
+    public Integer put(String key, Integer value) {
         if (key == null) {
-            throw new NullPointerException("key is empty");
+            throw new NullPointerException("the given key is empty");
         }
         if (size == entries.length) {
             grow();
         }
         int i = findIndex(key);
         if (i > -1) {
-            int previous = entries[i].price;
-            entries[i].price = price;
+            int previous = entries[i].getValue();
+            entries[i].setValue(value);
             return previous;
         } else {
-            entries[size] = new Entry(key.toLowerCase(), price);
+            entries[size] = new Entry(key.toLowerCase(), value);
             size++;
             return null;
         }
@@ -63,9 +59,9 @@ public class ProductMapper implements Map<String, Integer> {
 
     @Override
     public boolean containsValue(Object value) {
-        int p = (int) value;
+        int v = (int) value;
         for (Entry e : entries) {
-            if (e.price == p) {
+            if (e.getValue() == v) {
                 return true;
             }
         }
@@ -74,22 +70,24 @@ public class ProductMapper implements Map<String, Integer> {
 
     @Override
     public Integer get(Object key) {
-        int i = findIndex((String) key);
+        String strKey = (String) key;
+        int i = findIndex(strKey.toLowerCase());
         if (i == -1) {
-            throw new NullPointerException("value is not found");
+            throw new NullPointerException("the specified value is not found");
         } else {
-            return entries[i].price;
+            return entries[i].getValue();
         }
     }
 
     @Override
     public Integer remove(Object key) {
-        int i = findIndex((String) key);
+        String strKey = (String) key;
+        int i = findIndex(strKey.toLowerCase());
         if (i == -1) {
             return null;
         } else {
             size -= 1;
-            int value = entries[i].price;
+            int value = entries[i].getValue();
             entries[i] = null;
             if (size > i) {
                 System.arraycopy(entries, i + 1, entries, i, size - i);
@@ -128,7 +126,7 @@ public class ProductMapper implements Map<String, Integer> {
         }
         Integer[] prices = new Integer[size];
         for (int i = 0; i < size; i++) {
-            prices[i] = entries[i].price;
+            prices[i] = entries[i].getValue();
         }
         return Arrays.asList(prices);
     }
@@ -141,7 +139,7 @@ public class ProductMapper implements Map<String, Integer> {
     public String[] keysToArray() {
         String[] result = new String[size];
         for (int i = 0; i < size; i++) {
-            result[i] = entries[i].title;
+            result[i] = entries[i].getKey();
         }
         return result;
     }
@@ -155,45 +153,16 @@ public class ProductMapper implements Map<String, Integer> {
         return arr;
     }
 
-    public Product createProduct(String title, int quantity) {
-        int i = findIndex(title);
-        if (i == -1) {
-            throw new NoSuchElementException("type title is not found");
-        } else {
-            Entry node = entries[i];
-            return new Product(node.title, (byte) quantity, node.price);
-        }
-    }
-
-    /**
-     * Create {@link MyList list} of specified {@link Product} objects from database table.
-     * @param resultSet The {@link ResultSet} of database values.
-     * @return The {@link MyList list} of {@link Product} instances.
-     */
-    @SuppressWarnings("unused")
-    public MyList<Product> instantiateFromDB(ResultSet resultSet) {
-        MyList<Product> list = new MyList<>();
-        for (Entry t : entries) {
-            try {
-                int q = resultSet.getInt(t.title);
-                if (q != 0) {
-                    list.add(createProduct(t.title, q));
-                }
-            } catch (SQLException ignored) {}
-        }
-        return list;
-    }
-
-    private int findIndex(String title) {
-        if (title == null) {
-            throw new NullPointerException("param is null");
+    protected int findIndex(String key) {
+        if (key == null) {
+            throw new NullPointerException("the given argument is null");
         }
         if (size < 1) {
             return -1;
         }
-        title = title.toLowerCase();
+        key = key.toLowerCase();
         for (int i = 0; i < size; i++) {
-            if (entries[i].title.equals(title)) {
+            if (entries[i].getKey().equals(key)) {
                 return i;
             }
         }
@@ -207,7 +176,7 @@ public class ProductMapper implements Map<String, Integer> {
     }
 
 
-    public static final class Entry implements Map.Entry<String, Integer>, IDHaving {
+    public static class Entry implements Map.Entry<String, Integer>, IDHaving {
 
         private int id;
         private final String title;

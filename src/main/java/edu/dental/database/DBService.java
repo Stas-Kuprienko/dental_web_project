@@ -9,7 +9,7 @@ public interface DBService {
 
     UserDAO getUserDAO();
 
-    ProductMapperDAO getProductMapperDAO(Object... args) throws DatabaseException;
+    MapperDAO getProductMapperDAO(Object... args) throws DatabaseException;
 
     WorkRecordDAO getWorkRecordDAO(Object... args) throws DatabaseException;
 

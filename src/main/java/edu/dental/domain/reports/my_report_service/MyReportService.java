@@ -6,7 +6,7 @@ import edu.dental.database.DBService;
 import edu.dental.database.dao.WorkRecordDAO;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.entities.WorkRecord;
-import edu.dental.domain.records.ProductMapper;
+import edu.dental.domain.records.Mapper;
 import edu.dental.domain.reports.IFileTool;
 import edu.dental.domain.reports.MonthlyReport;
 import edu.dental.domain.reports.ReportService;
@@ -43,9 +43,9 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public boolean saveTableToFile(ProductMapper productMap, MonthlyReport report) throws ReportServiceException {
+    public boolean saveTableToFile(Mapper mapper, MonthlyReport report) throws ReportServiceException {
         try {
-            DataArrayTool dataArrayTool = new DataArrayTool(productMap, report.getWorkRecordList());
+            DataArrayTool dataArrayTool = new DataArrayTool(mapper, report.getWorkRecordList());
             String[][] reportData = dataArrayTool.buildTable();
             String tableName = report.getYear() + "_" + report.getMonth() + "_" + user.getName();
             IFileTool fileTool = new XLSXFilesTool(tableName, reportData);

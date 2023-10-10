@@ -2,7 +2,7 @@ package edu.dental.domain.records.my_work_record_book;
 
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.WorkRecord;
-import edu.dental.domain.records.ProductMapper;
+import edu.dental.domain.records.Mapper;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.utils.DatesTool;
@@ -18,16 +18,16 @@ public class MyWorkRecordBook implements WorkRecordBook {
 
     private final MyList<WorkRecord> records;
 
-    private final ProductMapper productMap;
+    private final edu.dental.domain.records.my_work_record_book.ProductMapper productMap;
 
-    private MyWorkRecordBook(MyList<WorkRecord> records, ProductMapper productMap) {
+    private MyWorkRecordBook(MyList<WorkRecord> records, edu.dental.domain.records.my_work_record_book.ProductMapper productMap) {
         this.records = records;
         this.productMap = productMap;
     }
 
     private MyWorkRecordBook() {
         this.records = new MyList<>();
-        this.productMap = new ProductMapper();
+        this.productMap = new edu.dental.domain.records.my_work_record_book.ProductMapper();
     }
 
     @Override
@@ -154,7 +154,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public ProductMapper getMap() {
+    public Mapper getMap() {
         return productMap;
     }
 }

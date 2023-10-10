@@ -29,7 +29,7 @@ public class MyDBService implements DBService {
     }
 
     @Override
-    public ProductMapperDAO getProductMapperDAO(Object... args) throws DatabaseException {
+    public MapperDAO getProductMapperDAO(Object... args) throws DatabaseException {
         try {
             return new ProductMapperMySql((User) args[0]);
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {

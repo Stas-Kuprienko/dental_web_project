@@ -2,9 +2,9 @@ package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
-import edu.dental.database.dao.ProductMapperDAO;
+import edu.dental.database.dao.MapperDAO;
 import edu.dental.domain.entities.User;
-import edu.dental.domain.records.ProductMapper;
+import edu.dental.domain.records.Mapper;
 import edu.dental.utils.data_structures.MyList;
 
 import java.lang.reflect.Constructor;
@@ -16,7 +16,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.Map;
 
-public class ProductMapperMySql implements ProductMapperDAO {
+public class ProductMapperMySql implements MapperDAO {
 
     public static final String FIELDS = "id, title, price";
 
@@ -30,7 +30,7 @@ public class ProductMapperMySql implements ProductMapperDAO {
     }
 
     @Override
-    public boolean putAll(Collection<ProductMapper.Entry> list) throws DatabaseException {
+    public boolean putAll(Collection<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> list) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The  given argument is null or empty.");
         }
@@ -48,7 +48,7 @@ public class ProductMapperMySql implements ProductMapperDAO {
     }
 
     @Override
-    public boolean put(ProductMapper.Entry entry) throws DatabaseException {
+    public boolean put(edu.dental.domain.records.my_work_record_book.ProductMapper.Entry entry) throws DatabaseException {
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
         injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
@@ -65,12 +65,12 @@ public class ProductMapperMySql implements ProductMapperDAO {
     }
 
     @Override
-    public Collection<ProductMapper.Entry> getAll() throws DatabaseException {
+    public Collection<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> getAll() throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE);
-        MyList<ProductMapper.Entry> list;
+        MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> list;
         try (Request request = new Request(query)) {
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            list = (MyList<ProductMapper.Entry>) new ProductMapperInstantiation(resultSet).build();
+            list = (MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry>) new ProductMapperInstantiation(resultSet).build();
             return list;
         } catch (SQLException e) {
             //TODO loggers
@@ -79,13 +79,13 @@ public class ProductMapperMySql implements ProductMapperDAO {
     }
 
     @Override
-    public ProductMapper.Entry get(int id) throws DatabaseException {
+    public edu.dental.domain.records.my_work_record_book.ProductMapper.Entry get(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
-        MyList<ProductMapper.Entry> list;
+        MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> list;
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            list = (MyList<ProductMapper.Entry>) new ProductMapperInstantiation(resultSet).build();
+            list = (MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry>) new ProductMapperInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | NullPointerException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -93,7 +93,7 @@ public class ProductMapperMySql implements ProductMapperDAO {
     }
 
     @Override
-    public Collection<ProductMapper.Entry> search(Object... args) throws DatabaseException {
+    public Collection<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> search(Object... args) throws DatabaseException {
         String where = "title = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         try (Request request = new Request(query)) {
@@ -107,7 +107,7 @@ public class ProductMapperMySql implements ProductMapperDAO {
     }
 
     @Override
-    public boolean edit(ProductMapper.Entry object) throws DatabaseException {
+    public boolean edit(edu.dental.domain.records.my_work_record_book.ProductMapper.Entry object) throws DatabaseException {
         String sets = "price = ?";
         String where = "title = ?";
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets, where);
@@ -143,9 +143,9 @@ public class ProductMapperMySql implements ProductMapperDAO {
     }
 
 
-    protected static class ProductMapperInstantiation implements Instantiating<ProductMapper.Entry> {
+    protected static class ProductMapperInstantiation implements Instantiating<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> {
 
-        private final MyList<ProductMapper.Entry> entries;
+        private final MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> entries;
         private final ResultSet resultSet;
 
         public ProductMapperInstantiation(ResultSet resultSet) {
@@ -154,12 +154,12 @@ public class ProductMapperMySql implements ProductMapperDAO {
         }
 
         @Override
-        public Collection<ProductMapper.Entry> build() throws SQLException, DatabaseException {
+        public Collection<Mapper.Entry> build() throws SQLException, DatabaseException {
             try (resultSet) {
-                Constructor<ProductMapper.Entry> constructor = ProductMapper.Entry
+                Constructor<Mapper.Entry> constructor = Mapper.Entry
                         .class.getDeclaredConstructor(String.class, int.class);
                 while (resultSet.next()) {
-                    ProductMapper.Entry entry = constructor.newInstance(resultSet.getString("title")
+                    Mapper.Entry entry = constructor.newInstance(resultSet.getString("title")
                                                                         , resultSet.getInt("price"));
                     entries.add(entry);
                 }

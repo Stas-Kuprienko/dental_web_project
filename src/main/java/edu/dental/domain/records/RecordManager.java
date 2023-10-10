@@ -1,10 +1,10 @@
 package edu.dental.domain.records;
 
 import edu.dental.domain.entities.WorkRecord;
-import edu.dental.utils.data_structures.MyList;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 /**
  * The basic service for managing an instances of the {@link WorkRecordBook} interface.
@@ -44,13 +44,13 @@ public final class RecordManager {
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
      * @throws WorkRecordBookException if somewhat goes wrong.
      */
-    public static synchronized WorkRecordBook getWorkRecordBook(MyList<WorkRecord> records, ProductMapper productMap) throws WorkRecordBookException {
+    public static synchronized WorkRecordBook getWorkRecordBook(Collection<WorkRecord> records, Mapper mapper) throws WorkRecordBookException {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas = (Class<? extends WorkRecordBook>) Class.forName(CLASS_NAME);
-            Constructor<?> constructor = clas.getDeclaredConstructor(MyList.class, ProductMapper.class);
+            Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class, Mapper.class);
             constructor.setAccessible(true);
-            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(records, productMap);
+            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(records, mapper);
             constructor.setAccessible(false);
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException

@@ -2,15 +2,15 @@ package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.WorkRecord;
-import edu.dental.domain.records.ProductMapper;
+import edu.dental.domain.records.Mapper;
 import edu.dental.utils.data_structures.MyList;
 
 class DataArrayTool {
 
-    private final ProductMapper productMap;
+    private final Mapper productMap;
     private final MyList<WorkRecord> recordList;
 
-    DataArrayTool(ProductMapper productMap, MyList<WorkRecord> recordList) {
+    DataArrayTool(Mapper productMap, MyList<WorkRecord> recordList) {
         this.productMap = productMap;
         this.recordList = recordList;
     }
