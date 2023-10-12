@@ -5,6 +5,7 @@ import edu.dental.domain.entities.WorkRecord;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * The basic service for managing an instances of the {@link WorkRecordBook} interface.
@@ -44,13 +45,13 @@ public final class RecordManager {
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
      * @throws WorkRecordBookException if somewhat goes wrong.
      */
-    public static synchronized WorkRecordBook getWorkRecordBook(Collection<WorkRecord> records, Mapper mapper) throws WorkRecordBookException {
+    public static synchronized WorkRecordBook getWorkRecordBook(Collection<WorkRecord> records, Map<String, Integer> map) throws WorkRecordBookException {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas = (Class<? extends WorkRecordBook>) Class.forName(CLASS_NAME);
-            Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class, Mapper.class);
+            Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class, Map.class);
             constructor.setAccessible(true);
-            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(records, mapper);
+            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(records, map);
             constructor.setAccessible(false);
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException

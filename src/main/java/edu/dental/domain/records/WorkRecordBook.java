@@ -23,12 +23,12 @@ public interface WorkRecordBook {
      * @param patient the patient name or surname of this work.
      * @param clinic the clinic of this work.
      * @param product the {@link edu.dental.domain.entities.Product product} type title
-     *                 (that having in {@link Mapper}).
+     *                 (that having in {@link Map}).
      * @param quantity the quantity of product items (no more than 32, depending on the type of product).
      * @param complete The date, when this work should be completed.
      * @return The created {@link WorkRecord} object.
      * @throws WorkRecordBookException if a given arguments is incorrect or the given product type
-     *  is not contain in {@link Mapper}.
+     *  is not contain in {@link Map}.
      */
     WorkRecord createRecord(String patient, String clinic, String product, int quantity, String complete) throws WorkRecordBookException;
 
@@ -45,18 +45,18 @@ public interface WorkRecordBook {
     /**
      * Create {@link edu.dental.domain.entities.Product product} object and add it into the given {@link WorkRecord}.
      * @param workRecord the {@link WorkRecord} object to adding a {@link edu.dental.domain.entities.Product product}.
-     * @param product the product type title to add (should be containing in {@link Mapper}).
+     * @param product the product type title to add (should be containing in {@link Map}).
      * @param quantity the quantity of a product items.
      * @return the modified given {@link WorkRecord} object back.
      * @throws WorkRecordBookException if a given arguments is incorrect or the given product type
-     *  is not contain in {@link Mapper}.
+     *  is not contain in {@link Map}.
      */
     WorkRecord addProductToRecord(WorkRecord workRecord, String product, int quantity) throws WorkRecordBookException;
 
     /**
      * Remove {@link edu.dental.domain.entities.Product product} object from the given {@linkplain  WorkRecord#getProducts() record}.
      * @param workRecord the {@link WorkRecord} object to remove a {@link edu.dental.domain.entities.Product product}.
-     * @param product the product type title to remove (should be containing in {@link Mapper}).
+     * @param product the product type title to remove (should be containing in {@link Map}).
      * @return the modified given {@link WorkRecord} object back.
      * @throws WorkRecordBookException if a given arguments is null.
      */
@@ -101,9 +101,9 @@ public interface WorkRecordBook {
     Collection<WorkRecord> getList();
 
     /**
-     * Get the {@link Map} field of {@link edu.dental.domain.entities.Product products}.
-     * @return {@link Map} object, containing {@link edu.dental.domain.entities.Product product}
+     * Get the {@link java.util.Map} field of {@link edu.dental.domain.entities.Product products}.
+     * @return {@link java.util.Map} object, containing {@link edu.dental.domain.entities.Product product}
      *  {@link java.util.Map.Entry entries}.
      */
-    Map<String, Integer> getMap();
+    java.util.Map<String, Integer> getMap();
 }

@@ -2,9 +2,10 @@ package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
-import edu.dental.database.dao.MapperDAO;
+import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.entities.User;
-import edu.dental.domain.records.Mapper;
+import edu.dental.domain.records.ProductMap;
+import edu.dental.domain.records.my_work_record_book.MyProductMap;
 import edu.dental.utils.data_structures.MyList;
 
 import java.lang.reflect.Constructor;
@@ -14,9 +15,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
-import java.util.Map;
 
-public class ProductMapperMySql implements MapperDAO {
+public class ProductMapperMySql implements ProductMapDAO {
 
     public static final String FIELDS = "id, title, price";
 
@@ -30,13 +30,13 @@ public class ProductMapperMySql implements MapperDAO {
     }
 
     @Override
-    public boolean putAll(Collection<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> list) throws DatabaseException {
+    public boolean putAll(Collection<ProductMap.Item> list) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The  given argument is null or empty.");
         }
         try (Request request = new Request()) {
             Statement statement = request.getStatement();
-            for (Map.Entry<String, Integer> entry : list) {
+            for (java.util.Map.Entry<String, Integer> entry : list) {
                 String values = String.format("DEFAULT, '%s', %s", entry.getKey(), entry.getValue());
                 String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
                 statement.addBatch(query);
@@ -48,7 +48,7 @@ public class ProductMapperMySql implements MapperDAO {
     }
 
     @Override
-    public boolean put(edu.dental.domain.records.my_work_record_book.ProductMapper.Entry entry) throws DatabaseException {
+    public boolean put(ProductMap.Item entry) throws DatabaseException {
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
         injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
@@ -65,12 +65,12 @@ public class ProductMapperMySql implements MapperDAO {
     }
 
     @Override
-    public Collection<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> getAll() throws DatabaseException {
+    public Collection<ProductMap.Item> getAll() throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE);
-        MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> list;
+        MyList<ProductMap.Item> list;
         try (Request request = new Request(query)) {
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            list = (MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry>) new ProductMapperInstantiation(resultSet).build();
+            list = (MyList<ProductMap.Item>) new ProductMapperInstantiation(resultSet).build();
             return list;
         } catch (SQLException e) {
             //TODO loggers
@@ -79,13 +79,13 @@ public class ProductMapperMySql implements MapperDAO {
     }
 
     @Override
-    public edu.dental.domain.records.my_work_record_book.ProductMapper.Entry get(int id) throws DatabaseException {
+    public ProductMap.Item get(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
-        MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> list;
+        MyList<ProductMap.Item> list;
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            list = (MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry>) new ProductMapperInstantiation(resultSet).build();
+            list = (MyList<ProductMap.Item>) new ProductMapperInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | NullPointerException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -93,7 +93,7 @@ public class ProductMapperMySql implements MapperDAO {
     }
 
     @Override
-    public Collection<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> search(Object... args) throws DatabaseException {
+    public Collection<ProductMap.Item> search(Object... args) throws DatabaseException {
         String where = "title = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         try (Request request = new Request(query)) {
@@ -107,7 +107,7 @@ public class ProductMapperMySql implements MapperDAO {
     }
 
     @Override
-    public boolean edit(edu.dental.domain.records.my_work_record_book.ProductMapper.Entry object) throws DatabaseException {
+    public boolean edit(ProductMap.Item object) throws DatabaseException {
         String sets = "price = ?";
         String where = "title = ?";
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets, where);
@@ -123,7 +123,7 @@ public class ProductMapperMySql implements MapperDAO {
     @Override
     public boolean delete(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ?");
-        try (Request request = new Request()) {
+        try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
             return request.getPreparedStatement().execute();
         } catch (SQLException e) {
@@ -133,7 +133,7 @@ public class ProductMapperMySql implements MapperDAO {
 
     public boolean delete(String title, int price) throws DatabaseException {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "title = ? AND price = ?");
-        try (Request request = new Request()) {
+        try (Request request = new Request(query)) {
             request.getPreparedStatement().setString(1, title);
             request.getPreparedStatement().setInt(2, price);
             return request.getPreparedStatement().execute();
@@ -143,27 +143,27 @@ public class ProductMapperMySql implements MapperDAO {
     }
 
 
-    protected static class ProductMapperInstantiation implements Instantiating<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> {
+    protected static class ProductMapperInstantiation implements Instantiating<ProductMap.Item> {
 
-        private final MyList<edu.dental.domain.records.my_work_record_book.ProductMapper.Entry> entries;
+        private final MyList<ProductMap.Item> items;
         private final ResultSet resultSet;
 
         public ProductMapperInstantiation(ResultSet resultSet) {
             this.resultSet = resultSet;
-            entries = new MyList<>();
+            items = new MyList<>();
         }
 
         @Override
-        public Collection<Mapper.Entry> build() throws SQLException, DatabaseException {
+        public Collection<ProductMap.Item> build() throws SQLException, DatabaseException {
             try (resultSet) {
-                Constructor<Mapper.Entry> constructor = Mapper.Entry
+                Constructor<MyProductMap.Item> constructor = MyProductMap.Item
                         .class.getDeclaredConstructor(String.class, int.class);
                 while (resultSet.next()) {
-                    Mapper.Entry entry = constructor.newInstance(resultSet.getString("title")
+                    MyProductMap.Item item = constructor.newInstance(resultSet.getString("title")
                                                                         , resultSet.getInt("price"));
-                    entries.add(entry);
+                    items.add(item);
                 }
-                return entries;
+                return items;
             } catch (NoSuchMethodException | IllegalAccessException
                      | InvocationTargetException | InstantiationException e) {
                 //TODO loggers
