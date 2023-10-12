@@ -1,6 +1,6 @@
 package edu.dental.domain.reports;
 
-import edu.dental.domain.entities.WorkRecord;
+import edu.dental.domain.entities.I_WorkRecord;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.utils.DatesTool;
 import edu.dental.utils.data_structures.MyList;
@@ -12,15 +12,15 @@ public final class MonthlyReport {
 
     private final String year;
     private final String month;
-    private final Collection<WorkRecord> workRecordList;
+    private final Collection<I_WorkRecord> workRecordList;
 
-    public MonthlyReport(String year, String month, Collection<WorkRecord> workRecordList) {
+    public MonthlyReport(String year, String month, Collection<I_WorkRecord> workRecordList) {
         this.year = year;
         this.month = month;
         this.workRecordList = workRecordList;
     }
 
-    public MonthlyReport(Collection<WorkRecord> workRecordList) {
+    public MonthlyReport(Collection<I_WorkRecord> workRecordList) {
         String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
         this.year = yearAndMonth[0];
         this.month = yearAndMonth[1];
@@ -35,8 +35,8 @@ public final class MonthlyReport {
         return month;
     }
 
-    public MyList<WorkRecord> getWorkRecordList() {
-        return (MyList<WorkRecord>) workRecordList;
+    public MyList<I_WorkRecord> getWorkRecordList() {
+        return (MyList<I_WorkRecord>) workRecordList;
     }
 
     @Override

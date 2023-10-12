@@ -3,8 +3,8 @@ package edu.dental.domain.entities;
 
 import edu.dental.utils.data_structures.MyList;
 
-import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -14,7 +14,7 @@ import java.util.Objects;
  * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the products.
  * Also containing {@code byte array} with an images of the work.
  */
-public class WorkRecord implements Serializable, IDHaving {
+public class WorkRecord implements I_WorkRecord {
 
     private int id;
 
@@ -28,24 +28,22 @@ public class WorkRecord implements Serializable, IDHaving {
 
     private LocalDate complete;
 
-    private boolean closed;
-
-    private boolean paid;
+    private Status status;
 
     private byte[] photo;
 
     private String comment;
+
 
     /**
      * Constructor for data access object.
      */
     public WorkRecord() {}
 
-    private WorkRecord(MyList<Product> products, LocalDate accepted, boolean closed, boolean paid) {
+    private WorkRecord(MyList<Product> products, LocalDate accepted, Status status) {
         this.products = products;
         this.accepted = accepted;
-        this.closed = closed;
-        this.paid = paid;
+        this.status = status;
     }
 
     /**
@@ -54,9 +52,8 @@ public class WorkRecord implements Serializable, IDHaving {
     public static Builder create() {
         MyList<Product> products = new MyList<>();
         LocalDate accepted = LocalDate.now();
-        boolean closed = false;
-        boolean paid = false;
-        return new WorkRecord(products, accepted, closed, paid).new Builder();
+        Status s = Status.MAKE;
+        return new WorkRecord(products, accepted, s).new Builder();
     }
 
     /**
@@ -142,75 +139,83 @@ public class WorkRecord implements Serializable, IDHaving {
         this.id = id;
     }
 
+    @Override
     public String getPatient() {
         return patient;
     }
 
+    @Override
     public void setPatient(String patient) {
         this.patient = patient == null||patient.isEmpty() ?
                 LocalDate.now().toString() : patient;
     }
 
+    @Override
     public String getClinic() {
         return clinic;
     }
 
+    @Override
     public void setClinic(String clinic) {
         this.clinic = clinic == null||clinic.isEmpty() ? "unknown" : clinic;
     }
 
+    @Override
     public MyList<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(MyList<Product> products) {
-        this.products = products;
+    @Override
+    public void setProducts(Collection<Product> products) {
+        this.products = (MyList<Product>) products;
     }
 
+    @Override
     public LocalDate getComplete() {
         return complete;
     }
 
+    @Override
     public void setComplete(LocalDate complete) {
         this.complete = complete;
     }
 
+    @Override
     public LocalDate getAccepted() {
         return accepted;
     }
 
+    @Override
     public void setAccepted(LocalDate accepted) {
         this.accepted = accepted;
     }
 
-    public boolean isClosed() {
-        return closed;
+    @Override
+    public Status getStatus() {
+        return status;
     }
 
-    public void setClosed(boolean closed) {
-        this.closed = closed;
+    @Override
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
-    public boolean isPaid() {
-        return paid;
-    }
-
-    public void setPaid(boolean paid) {
-        this.paid = paid;
-    }
-
+    @Override
     public byte[] getPhoto() {
         return photo;
     }
 
+    @Override
     public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 
+    @Override
     public String getComment() {
         return comment;
     }
 
+    @Override
     public void setComment(String comment) {
         this.comment = comment;
     }

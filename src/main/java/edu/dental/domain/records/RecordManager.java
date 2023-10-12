@@ -1,6 +1,6 @@
 package edu.dental.domain.records;
 
-import edu.dental.domain.entities.WorkRecord;
+import edu.dental.domain.entities.I_WorkRecord;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +45,7 @@ public final class RecordManager {
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
      * @throws WorkRecordBookException if somewhat goes wrong.
      */
-    public static synchronized WorkRecordBook getWorkRecordBook(Collection<WorkRecord> records, Map<String, Integer> map) throws WorkRecordBookException {
+    public static synchronized WorkRecordBook getWorkRecordBook(Collection<I_WorkRecord> records, Map<String, Integer> map) throws WorkRecordBookException {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas = (Class<? extends WorkRecordBook>) Class.forName(CLASS_NAME);

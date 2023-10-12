@@ -1,5 +1,6 @@
 package edu.dental.domain.records.my_work_record_book;
 
+import edu.dental.domain.entities.I_WorkRecord;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.WorkRecordBook;
@@ -15,11 +16,11 @@ import java.util.NoSuchElementException;
  */
 public class MyWorkRecordBook implements WorkRecordBook {
 
-    private final MyList<WorkRecord> records;
+    private final MyList<I_WorkRecord> records;
 
     private final MyProductMap productMap;
 
-    private MyWorkRecordBook(MyList<WorkRecord> records, MyProductMap productMap) {
+    private MyWorkRecordBook(MyList<I_WorkRecord> records, MyProductMap productMap) {
         this.records = records;
         this.productMap = productMap;
     }
@@ -62,7 +63,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public WorkRecord addProductToRecord(WorkRecord workRecord, String product, int quantity) throws WorkRecordBookException {
+    public I_WorkRecord addProductToRecord(I_WorkRecord workRecord, String product, int quantity) throws WorkRecordBookException {
         if (workRecord == null) {
             throw new WorkRecordBookException("The given WorkRecord object is null");
         }
@@ -80,7 +81,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public WorkRecord removeProduct(WorkRecord workRecord, String product) throws WorkRecordBookException {
+    public I_WorkRecord removeProduct(I_WorkRecord workRecord, String product) throws WorkRecordBookException {
         if ((workRecord == null)||(product == null || product.isEmpty())) {
             throw new WorkRecordBookException("The given argument is null or empty.");
         }
@@ -98,7 +99,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public boolean deleteRecord(WorkRecord workRecord) {
+    public boolean deleteRecord(I_WorkRecord workRecord) {
         if (workRecord == null) {
             return false;
         }
@@ -106,9 +107,9 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public WorkRecord searchRecord(String patient, String clinic) throws WorkRecordBookException {
+    public I_WorkRecord searchRecord(String patient, String clinic) throws WorkRecordBookException {
         try {
-            MyList<WorkRecord> list = records.searchElement("patient", patient);
+            MyList<I_WorkRecord> list = records.searchElement("patient", patient);
             if (list.size() > 1) {
                 list = list.searchElement("clinic", clinic);
             }
@@ -119,9 +120,9 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public WorkRecord getByID(int id) throws WorkRecordBookException {
+    public I_WorkRecord getByID(int id) throws WorkRecordBookException {
         try {
-            MyList<WorkRecord> list = records.searchElement("id", String.valueOf(id));
+            MyList<I_WorkRecord> list = records.searchElement("id", String.valueOf(id));
             return list.get(0);
         } catch (NoSuchFieldException | IllegalAccessException |NoSuchElementException | NullPointerException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
@@ -129,17 +130,18 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public MyList<WorkRecord> sorting() {
-        MyList<WorkRecord> result = new MyList<>();
-        WorkRecord[] arr = new WorkRecord[records.size()];
+    public MyList<I_WorkRecord> sorting() {
+        MyList<I_WorkRecord> result = new MyList<>();
+        I_WorkRecord[] arr = new WorkRecord[records.size()];
         arr = records.toArray(arr);
-        for (WorkRecord wr : arr) {
-            if ((wr.isClosed()) || wr.isPaid()) {
-                wr.setClosed(true);
+        for (I_WorkRecord wr : arr) {
+            if ((wr.getStatus()) == WorkRecord.Status.CLOSED) {
+                //TODO
+//                wr.setStatus();
                 result.add(wr);
                 records.remove(wr);
             } else if (DatesTool.isCurrentMonth(wr.getComplete(), PAY_DAY)) {
-                wr.setClosed(true);
+//                wr.setStatus(true);
                 result.add(wr);
                 records.remove(wr);
             }
@@ -148,7 +150,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public MyList<WorkRecord> getList() {
+    public MyList<I_WorkRecord> getList() {
         return records;
     }
 

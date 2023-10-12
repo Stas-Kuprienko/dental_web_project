@@ -4,8 +4,8 @@ import edu.dental.database.DBService;
 import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.dao.WorkRecordDAO;
+import edu.dental.domain.entities.I_WorkRecord;
 import edu.dental.domain.entities.User;
-import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.reports.IFileTool;
 import edu.dental.domain.reports.MonthlyReport;
@@ -25,7 +25,7 @@ public class MyReportService implements ReportService {
 
 
     @Override
-    public boolean putReportToDB(Collection<WorkRecord> records) throws ReportServiceException {
+    public boolean putReportToDB(Collection<I_WorkRecord> records) throws ReportServiceException {
         MonthlyReport report = new MonthlyReport(records);
         return putReportToDB(report);
     }
@@ -60,7 +60,7 @@ public class MyReportService implements ReportService {
     public MonthlyReport getReportFromDB(String month, String year) throws ReportServiceException {
         try {
             DBService db = DBServiceManager.getDBService();
-            Collection <WorkRecord> records = db.getWorkRecordDAO(user, year + month).getAll();
+            Collection <I_WorkRecord> records = db.getWorkRecordDAO(user, year + month).getAll();
             return new MonthlyReport(year, month, records);
         } catch (DatabaseException | ClassCastException e) {
             throw new ReportServiceException(e.getMessage(), e.getCause());

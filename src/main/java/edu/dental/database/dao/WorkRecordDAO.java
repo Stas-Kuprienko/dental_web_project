@@ -1,29 +1,29 @@
 package edu.dental.database.dao;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.domain.entities.WorkRecord;
+import edu.dental.domain.entities.I_WorkRecord;
 
 import java.util.Collection;
 
-public interface WorkRecordDAO extends DAO<WorkRecord> {
+public interface WorkRecordDAO extends DAO<I_WorkRecord> {
 
     @Override
-    boolean putAll(Collection<WorkRecord> list) throws DatabaseException;
+    boolean putAll(Collection<I_WorkRecord> list) throws DatabaseException;
 
     @Override
-    boolean put(WorkRecord object) throws DatabaseException;
+    boolean put(I_WorkRecord object) throws DatabaseException;
 
     @Override
-    Collection<WorkRecord> getAll() throws DatabaseException;
+    Collection<I_WorkRecord> getAll() throws DatabaseException;
 
     @Override
-    WorkRecord get(int id) throws DatabaseException;
+    I_WorkRecord get(int id) throws DatabaseException;
 
     @Override
-    Collection<WorkRecord> search(Object... args) throws DatabaseException;
+    Collection<I_WorkRecord> search(Object... args) throws DatabaseException;
 
     @Override
-    boolean edit(WorkRecord object) throws DatabaseException;
+    boolean edit(I_WorkRecord object) throws DatabaseException;
 
     @Override
     boolean delete(int id) throws DatabaseException;

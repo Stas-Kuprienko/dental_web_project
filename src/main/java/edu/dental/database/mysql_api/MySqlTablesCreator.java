@@ -30,8 +30,7 @@ public class MySqlTablesCreator implements TablesCreator {
             	clinic VARCHAR(20) NOT NULL,
             	accepted DATE NOT NULL,
                 complete DATE,
-                closed BOOLEAN NOT NULL DEFAULT 0,
-                paid BOOLEAN NOT NULL DEFAULT 0,
+                status ENUM('MAKE', 'COMPLETED', 'CLOSED', 'PAID') DEFAULT 'MAKE',
             	photo BLOB,
             	comment VARCHAR(45),
             	PRIMARY KEY (id)

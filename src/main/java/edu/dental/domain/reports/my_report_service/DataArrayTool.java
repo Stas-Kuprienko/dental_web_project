@@ -1,16 +1,16 @@
 package edu.dental.domain.reports.my_report_service;
 
+import edu.dental.domain.entities.I_WorkRecord;
 import edu.dental.domain.entities.Product;
-import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.utils.data_structures.MyList;
 
 class DataArrayTool {
 
     private final ProductMap productMap;
-    private final MyList<WorkRecord> recordList;
+    private final MyList<I_WorkRecord> recordList;
 
-    DataArrayTool(ProductMap productMap, MyList<WorkRecord> recordList) {
+    DataArrayTool(ProductMap productMap, MyList<I_WorkRecord> recordList) {
         this.productMap = productMap;
         this.recordList = recordList;
     }
@@ -41,7 +41,7 @@ class DataArrayTool {
 
         //counting rows of the table
         int r = 1;
-        for (WorkRecord wr : recordList) {
+        for (I_WorkRecord wr : recordList) {
             String[] tableRow = new String[columns.length];
             tableRow[0] = wr.getPatient();
             tableRow[1] = wr.getClinic();

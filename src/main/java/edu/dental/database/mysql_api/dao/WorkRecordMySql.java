@@ -3,6 +3,7 @@ package edu.dental.database.mysql_api.dao;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.connection.DBConfiguration;
 import edu.dental.database.dao.WorkRecordDAO;
+import edu.dental.domain.entities.I_WorkRecord;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.entities.WorkRecord;
@@ -18,7 +19,7 @@ public class WorkRecordMySql implements WorkRecordDAO {
     public final String TABLE;
     private final User user;
 
-    private static final String FIELDS = "id, patient, clinic, accepted, complete, closed, paid, photo, comment";
+    private static final String FIELDS = "id, patient, clinic, accepted, complete, status, photo, comment";
 
     public WorkRecordMySql(User user) {
         this.user = user;
@@ -31,14 +32,14 @@ public class WorkRecordMySql implements WorkRecordDAO {
     }
 
     @Override
-    public boolean putAll(Collection<WorkRecord> list) throws DatabaseException {
+    public boolean putAll(Collection<I_WorkRecord> list) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The given argument is null or empty.");
         }
         try (Request request = new Request()){
             Statement statement = request.getStatement();
-            for (WorkRecord wr : list) {
-                String query = buildQuery(wr);
+            for (I_WorkRecord wr : list) {
+                String query = buildQuery((WorkRecord) wr);
                 statement.addBatch(query);
             }
             return statement.executeBatch().length == list.size();
@@ -48,7 +49,7 @@ public class WorkRecordMySql implements WorkRecordDAO {
     }
 
     @Override
-    public boolean put(WorkRecord object) throws DatabaseException {
+    public boolean put(I_WorkRecord object) throws DatabaseException {
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
         injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
@@ -59,8 +60,7 @@ public class WorkRecordMySql implements WorkRecordDAO {
             statement.setString(i++, object.getClinic());
             statement.setDate(i++, Date.valueOf(object.getAccepted()));
             statement.setDate(i++, Date.valueOf(object.getComplete()));
-            statement.setBoolean(i++, object.isClosed());
-            statement.setBoolean(i++, object.isPaid());
+            statement.setString(i++, String.valueOf(object.getStatus()));
             Blob photo = request.createBlob();
             if (object.getPhoto() != null) {
                 photo.setBytes(1, object.getPhoto());
@@ -80,12 +80,12 @@ public class WorkRecordMySql implements WorkRecordDAO {
     }
 
     @Override
-    public Collection<WorkRecord> getAll() throws DatabaseException {
+    public Collection<I_WorkRecord> getAll() throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE);
-        MyList<WorkRecord> workRecords;
+        MyList<I_WorkRecord> workRecords;
         try (Request request = new Request(query)) {
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            workRecords = (MyList<WorkRecord>) new WorkRecordInstantiation(resultSet).build();
+            workRecords = (MyList<I_WorkRecord>) new WorkRecordInstantiation(resultSet).build();
         } catch (SQLException | IOException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -94,12 +94,12 @@ public class WorkRecordMySql implements WorkRecordDAO {
     }
 
     @Override
-    public WorkRecord get(int id) throws DatabaseException {
+    public I_WorkRecord get(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            MyList<WorkRecord> list = (MyList<WorkRecord>) new WorkRecordInstantiation(resultSet).build();
+            MyList<I_WorkRecord> list = (MyList<I_WorkRecord>) new WorkRecordInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | IOException | NullPointerException e) {
             //TODO loggers
@@ -108,14 +108,14 @@ public class WorkRecordMySql implements WorkRecordDAO {
     }
 
     @Override
-    public MyList<WorkRecord> search(Object... args) throws DatabaseException {
+    public MyList<I_WorkRecord> search(Object... args) throws DatabaseException {
         String where = "patient = ? AND clinic = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setString(1, (String) args[0]);
             request.getPreparedStatement().setString(2, (String) args[1]);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            return (MyList<WorkRecord>) new WorkRecordInstantiation(resultSet).build();
+            return (MyList<I_WorkRecord>) new WorkRecordInstantiation(resultSet).build();
         } catch (SQLException | IOException | NullPointerException | ClassCastException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -123,7 +123,7 @@ public class WorkRecordMySql implements WorkRecordDAO {
     }
 
     @Override
-    public boolean edit(WorkRecord object) throws DatabaseException {
+    public boolean edit(I_WorkRecord object) throws DatabaseException {
         StringBuilder sets = new StringBuilder();
         String[] fields = FIELDS.split(", ");
         for (int i = 1; i < fields.length; i++) {
@@ -136,14 +136,13 @@ public class WorkRecordMySql implements WorkRecordDAO {
             request.getPreparedStatement().setString(i++, object.getClinic());
             request.getPreparedStatement().setDate(i++, Date.valueOf(object.getAccepted()));
             request.getPreparedStatement().setDate(i++, Date.valueOf(object.getComplete()));
-            request.getPreparedStatement().setBoolean(i++, object.isClosed());
-            request.getPreparedStatement().setBoolean(i++, object.isPaid());
+            request.getPreparedStatement().setString(i++, String.valueOf(object.getStatus()));
             Blob photo = request.createBlob();
             photo.setBytes(1, object.getPhoto());
             request.getPreparedStatement().setBlob(i++, photo);
             request.getPreparedStatement().setString(i++, object.getComment());
             request.getPreparedStatement().setInt(i, object.getId());
-            return new ProductMySql(user.getId(), object.getId()).editAll(object.getProducts())
+            return new ProductMySql(user.getId(), object.getId()).editAll((MyList<Product>) object.getProducts())
                     && request.getPreparedStatement().execute();
         } catch (SQLException e) {
             //TODO loggers
@@ -165,16 +164,16 @@ public class WorkRecordMySql implements WorkRecordDAO {
     }
 
     private String buildQuery(WorkRecord wr) {
-        String values = "DEFAULT, '%s', '%s', '%s', '%s', %s, %s, %s, %s";
+        String values = "DEFAULT, '%s', '%s', '%s', '%s', '%s', %s, %s";
         values = String.format(values, wr.getPatient(), wr.getClinic(), wr.getAccepted(),
-                wr.getComplete(), wr.isClosed(), wr.isPaid(), Arrays.toString(wr.getPhoto()), wr.getComment());
+                wr.getComplete(), wr.getStatus(), Arrays.toString(wr.getPhoto()), wr.getComment());
         return String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
     }
 
 
-    protected class WorkRecordInstantiation implements Instantiating<WorkRecord> {
+    protected class WorkRecordInstantiation implements Instantiating<I_WorkRecord> {
 
-        private final MyList<WorkRecord> recordsList;
+        private final MyList<I_WorkRecord> recordsList;
         private final ResultSet resultSet;
 
         public WorkRecordInstantiation(ResultSet resultSet) {
@@ -183,7 +182,7 @@ public class WorkRecordMySql implements WorkRecordDAO {
         }
 
         @Override
-        public Collection<WorkRecord> build() throws SQLException, IOException, DatabaseException {
+        public Collection<I_WorkRecord> build() throws SQLException, IOException, DatabaseException {
             try (resultSet) {
                 String[] fields = FIELDS.split(", ");
                 while (resultSet.next()) {
@@ -194,8 +193,9 @@ public class WorkRecordMySql implements WorkRecordDAO {
                     workRecord.setClinic(resultSet.getString(fields[i++]));
                     workRecord.setAccepted(resultSet.getDate(fields[i++]).toLocalDate());
                     workRecord.setComplete(resultSet.getDate(fields[i++]).toLocalDate());
-                    workRecord.setClosed(resultSet.getBoolean(fields[i++]));
-                    workRecord.setPaid(resultSet.getBoolean(fields[i++]));
+                    String s = resultSet.getString(fields[i++]);
+                    WorkRecord.Status status = Enum.valueOf(WorkRecord.Status.class, s);
+                    workRecord.setStatus(status);
                     Blob blob = resultSet.getBlob(fields[i++]);
                     workRecord.setPhoto(blob.getBytes(1, (int) blob.length()));
                     blob.free();
