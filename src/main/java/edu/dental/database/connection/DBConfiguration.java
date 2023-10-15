@@ -16,7 +16,7 @@ public final class DBConfiguration {
     public static final String DB_LOGIN = "db.login";
     public static final String DB_PASSWORD = "db.password";
 
-    public static final String DATA_BASE = "mydb";
+    public static final String DATA_BASE = "dental";
 
     /**
      * The {@link Properties} file with the url, user and password values.

@@ -32,7 +32,7 @@ public class UserMySql implements UserDAO {
             byte i = 1;
             PreparedStatement statement = request.getPreparedStatement();
             statement.setString(i++, object.getName());
-            statement.setString(i++, object.getLogin());
+            statement.setString(i++, object.getEmail());
             statement.setBlob(i++, new SerialBlob(object.getPassword()));
             statement.setDate(i, Date.valueOf(object.getCreated()));
             statement.executeUpdate();
@@ -100,7 +100,7 @@ public class UserMySql implements UserDAO {
         try (Request request = new Request(query)) {
             byte i = 1;
             request.getPreparedStatement().setString(i++, object.getName());
-            request.getPreparedStatement().setString(i++, object.getLogin());
+            request.getPreparedStatement().setString(i++, object.getEmail());
             request.getPreparedStatement().setBlob(i++, new SerialBlob(object.getPassword()));
             request.getPreparedStatement().setDate(i++, Date.valueOf(object.getCreated()));
             request.getPreparedStatement().setInt(i, object.getId());
@@ -139,7 +139,7 @@ public class UserMySql implements UserDAO {
                     User user = new User();
                     user.setId(resultSet.getInt("id"));
                     user.setName(resultSet.getString("name"));
-                    user.setLogin(resultSet.getString("login"));
+                    user.setEmail(resultSet.getString("login"));
                     Blob blob = resultSet.getBlob("password");
                     byte[] password = blob.getBinaryStream().readAllBytes();
                     user.setPassword(password);

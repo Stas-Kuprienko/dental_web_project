@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 
-public class ProductMapperMySql implements ProductMapDAO {
+public class ProductMapMySql implements ProductMapDAO {
 
     public static final String FIELDS = "id, title, price";
 
@@ -24,7 +24,7 @@ public class ProductMapperMySql implements ProductMapDAO {
 
     private final User user;
 
-    public ProductMapperMySql(User user) {
+    public ProductMapMySql(User user) {
         this.user = user;
         this.TABLE = DBConfiguration.DATA_BASE + ".product_map_" + user.getId();
     }
@@ -41,7 +41,10 @@ public class ProductMapperMySql implements ProductMapDAO {
                 String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
                 statement.addBatch(query);
             }
-            return statement.executeBatch().length == list.size();
+            statement.executeBatch();
+            ResultSet resultSet = statement.getGeneratedKeys();
+
+            return true;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }

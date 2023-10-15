@@ -15,6 +15,4 @@ public interface DBService {
 
     ProductDAO getProductDAO(Object... args) throws DatabaseException;
 
-    TablesCreator getTablesCreator();
-
 }

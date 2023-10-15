@@ -2,9 +2,11 @@ package edu.dental.database.mysql_api;
 
 import edu.dental.database.DBService;
 import edu.dental.database.DatabaseException;
-import edu.dental.database.TablesCreator;
-import edu.dental.database.dao.*;
-import edu.dental.database.mysql_api.dao.ProductMapperMySql;
+import edu.dental.database.dao.ProductDAO;
+import edu.dental.database.dao.ProductMapDAO;
+import edu.dental.database.dao.UserDAO;
+import edu.dental.database.dao.WorkRecordDAO;
+import edu.dental.database.mysql_api.dao.ProductMapMySql;
 import edu.dental.database.mysql_api.dao.ProductMySql;
 import edu.dental.database.mysql_api.dao.UserMySql;
 import edu.dental.database.mysql_api.dao.WorkRecordMySql;
@@ -31,7 +33,7 @@ public class MyDBService implements DBService {
     @Override
     public ProductMapDAO getProductMapperDAO(Object... args) throws DatabaseException {
         try {
-            return new ProductMapperMySql((User) args[0]);
+            return new ProductMapMySql((User) args[0]);
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -57,11 +59,6 @@ public class MyDBService implements DBService {
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
-    }
-
-    @Override
-    public synchronized TablesCreator getTablesCreator() {
-        return MySqlTablesCreator.instance;
     }
 
     public static synchronized DBService getInstance() {
