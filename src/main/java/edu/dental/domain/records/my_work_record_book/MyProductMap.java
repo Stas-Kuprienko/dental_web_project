@@ -36,6 +36,16 @@ public class MyProductMap implements ProductMap {
     }
 
     @Override
+    public String getTitleByID(int id) {
+        for (Item i : items) {
+            if (i.id == id) {
+                return i.title;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Integer put(String key, Integer value) {
         if (key == null) {
             throw new NullPointerException("the given key is empty");
