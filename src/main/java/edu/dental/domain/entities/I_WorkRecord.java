@@ -33,12 +33,4 @@ public interface I_WorkRecord extends IDHaving, Serializable {
     enum Status {
         MAKE, COMPETED, CLOSED, PAID
     }
-
-    void setPhoto(byte[] photo);
-
-    byte[] getPhoto();
-
-    void setComment(String comment);
-
-    String getComment();
 }

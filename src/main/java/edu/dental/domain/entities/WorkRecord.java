@@ -200,22 +200,18 @@ public class WorkRecord implements I_WorkRecord {
         this.status = status;
     }
 
-    @Override
     public byte[] getPhoto() {
         return photo;
     }
 
-    @Override
     public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 
-    @Override
     public String getComment() {
         return comment;
     }
 
-    @Override
     public void setComment(String comment) {
         this.comment = comment;
     }

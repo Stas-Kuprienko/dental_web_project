@@ -16,7 +16,7 @@ public class UserMySql implements UserDAO {
 
     public static final String TABLE = DBConfiguration.DATA_BASE + ".user";
 
-    public static final String FIELDS = "id, name, login, password, created";
+    public static final String FIELDS = "id, name, email, password, created";
 
     @Override
     public boolean putAll(Collection<User> list) throws DatabaseException {
@@ -71,9 +71,15 @@ public class UserMySql implements UserDAO {
         }
     }
 
+    /**
+     *
+     * @param args 2 arguments - user {@linkplain User#getEmail() email} and {@linkplain User#getPassword() password}.
+     * @return specified {@link User} list.
+     * @throws DatabaseException
+     */
     @Override
     public MyList<User> search(Object... args) throws DatabaseException {
-        String where = "login = ? AND password = ?";
+        String where = "email = ? AND password = ?";
         byte[] password = Authenticator.passwordHash((String) args[1]);
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         ResultSet resultSet;

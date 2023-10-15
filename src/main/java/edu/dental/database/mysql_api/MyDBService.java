@@ -42,11 +42,7 @@ public class MyDBService implements DBService {
     @Override
     public WorkRecordDAO getWorkRecordDAO(Object... args) throws DatabaseException {
         try {
-            if (args.length > 1) {
-                return new WorkRecordMySql((User) args[0], (String) args[1]);
-            } else {
-                return new WorkRecordMySql((User) args[0]);
-            }
+            return new WorkRecordMySql((User) args[0]);
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -55,7 +51,7 @@ public class MyDBService implements DBService {
     @Override
     public ProductDAO getProductDAO(Object... args) throws DatabaseException {
         try {
-            return new ProductMySql((Integer) args[0], (Integer) args[1]);
+            return new ProductMySql((Integer) args[1]);
         } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }

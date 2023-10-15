@@ -1,7 +1,8 @@
 package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.database.connection.DBConfiguration;
+import edu.dental.database.TableInitializer;
+import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.ProductDAO;
 import edu.dental.domain.entities.Product;
 import edu.dental.utils.data_structures.MyList;
@@ -14,13 +15,12 @@ import java.util.Collection;
 
 public class ProductMySql implements ProductDAO {
 
-    public final String TABLE;
+    public final String TABLE = TableInitializer.PRODUCT;
     private final int workId;
 
-    private static final String FIELDS = "work_id, title, quantity, price";
+    private static final String FIELDS = "work_id, entry_id, title, quantity, price";
 
-    public ProductMySql(int userId, int workId) {
-        this.TABLE = DBConfiguration.DATA_BASE + ".product_" + userId;
+    public ProductMySql(int workId) {
         this.workId = workId;
     }
 
@@ -32,7 +32,7 @@ public class ProductMySql implements ProductDAO {
         try (Request request = new Request()) {
             Statement statement = request.getStatement();
             for (Product p : list) {
-                String values = String.format("%s, '%s', %s, %s", workId, p.title(), p.quantity(), p.price());
+                String values = String.format("%s, '%s', %s, %s", workId, p.entryId(), p.quantity(), p.price());
                 String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
                 statement.addBatch(query);
             }
@@ -51,7 +51,7 @@ public class ProductMySql implements ProductDAO {
             byte i = 1;
             PreparedStatement statement = request.getPreparedStatement();
             statement.setInt(i++, workId);
-            statement.setString(i++, object.title());
+            statement.setInt(i++, object.entryId());
             statement.setByte(i++, object.quantity());
             statement.setInt(i, object.price());
             return statement.execute();
@@ -59,6 +59,26 @@ public class ProductMySql implements ProductDAO {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
+    }
+
+    @Override
+    public Collection<Product> instantiate(ResultSet resultSet) throws SQLException {
+        String[] entryId = resultSet.getString("entry_id").split(",");
+        String[] title = resultSet.getString("title").split(",");
+        String[] quantity = resultSet.getString("quantity").split(",");
+        String[] price = resultSet.getString("price").split(",");
+        MyList<Product> products = new MyList<>();
+        try {
+            for (int i = 0; i < entryId.length; i++) {
+                Product product = new Product(Integer.parseInt(entryId[i]), title[i],
+                        (byte) Integer.parseInt(quantity[i]), Integer.parseInt(price[i]));
+                products.add(product);
+            }
+        } catch (NumberFormatException e) {
+            //TODO loggers
+            throw new SQLException(e);
+        }
+        return products;
     }
 
     @Override
@@ -74,21 +94,6 @@ public class ProductMySql implements ProductDAO {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
         return products;
-    }
-
-    @Deprecated
-    @Override
-    public Product get(int id) throws DatabaseException {
-        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "work_id = ?");
-        try (Request request = new Request(query)) {
-            request.getPreparedStatement().setInt(1, id);
-            ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            MyList<Product> list = (MyList<Product>) new ProductInstantiation(resultSet).build();
-            return list.get(0);
-        } catch (SQLException | NullPointerException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        }
     }
 
     @Override
@@ -157,7 +162,7 @@ public class ProductMySql implements ProductDAO {
     }
 
 
-    protected static class ProductInstantiation implements Instantiating<Product> {
+    protected static class ProductInstantiation {
 
         private final MyList<Product> productsList;
         private final ResultSet resultSet;
@@ -167,20 +172,29 @@ public class ProductMySql implements ProductDAO {
             this.productsList = new MyList<>();
         }
 
-        @Override
         public Collection<Product> build() throws SQLException {
             try (resultSet) {
                 String[] fields = FIELDS.split(", ");
-                while (resultSet.next()) {
-                    byte i = 1;
-                    Product p = new Product(
-                            resultSet.getString(fields[i++]),
-                            resultSet.getByte(fields[i++]),
-                            resultSet.getInt(fields[i]));
-                    productsList.add(p);
-                }
+//                while (resultSet.next()) {
+//                    byte i = 1;
+//
+//                    Product p = new Product(
+//                            resultSet.getString(fields[i++]),
+//                            resultSet.getByte(fields[i++]),
+//                            resultSet.getInt(fields[i]));
+//                    productsList.add(p);
+//                }
             }
             return this.productsList;
+        }
+    }
+    protected static class Request extends DAO.Request {
+        public Request(String query) throws SQLException {
+            super(query);
+        }
+
+        public Request() throws SQLException {
+            super();
         }
     }
 }

@@ -11,6 +11,8 @@ public interface ProductMap extends Map<String, Integer> {
 
     String getTitleByID(int id);
 
+    int getIDByTitle(String title);
+
     String[] keysToArray();
 
     Item[] toArray();
