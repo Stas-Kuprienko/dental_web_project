@@ -15,7 +15,7 @@ public class User implements Serializable, IDHaving {
 
     private String name;
 
-    private String login;
+    private String email;
 
     private byte[] password;
 
@@ -25,18 +25,18 @@ public class User implements Serializable, IDHaving {
     /**
      * Create a new User object.
      * @param name     The user name.
-     * @param login    Login for the user authorization.
+     * @param email    Login for the user authorization.
      * @param password The password for access to the account
      */
-    public User(String name, String login, String password) {
+    public User(String name, String email, String password) {
         if ((name == null || name.isEmpty())
-                || (login == null || login.isEmpty())
+                || (email == null || email.isEmpty())
                 || (password == null || password.isEmpty())) {
             throw new IllegalArgumentException();
         }
         this.created = LocalDate.now();
         this.name = name;
-        this.login = login;
+        this.email = email;
         this.password = Authenticator.passwordHash(password);
     }
 
@@ -52,7 +52,7 @@ public class User implements Serializable, IDHaving {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id && Objects.equals(name, user.name) &&
-                Objects.equals(login, user.login) && Objects.equals(created, user.created);
+                Objects.equals(email, user.email) && Objects.equals(created, user.created);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class User implements Serializable, IDHaving {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", login='" + login + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 
@@ -82,12 +82,12 @@ public class User implements Serializable, IDHaving {
         this.name = name;
     }
 
-    public String getLogin() {
-        return login;
+    public String getEmail() {
+        return email;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public byte[] getPassword() {
