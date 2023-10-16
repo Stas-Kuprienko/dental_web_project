@@ -33,4 +33,8 @@ public interface I_WorkRecord extends IDHaving, Serializable {
     enum Status {
         MAKE, COMPETED, CLOSED, PAID
     }
+
+    void setReportId(int reportId);
+
+    int getReportId();
 }

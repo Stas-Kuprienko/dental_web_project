@@ -31,35 +31,8 @@ public class MyProductMap implements ProductMap {
             throw new NoSuchElementException("type title is not found");
         } else {
             Item entry = entries[i];
-            return new Product(entry.getId(), entry.getKey(), (byte) quantity, entry.getValue());
+            return new Product(entry.getKey(), (byte) quantity, entry.getValue());
         }
-    }
-
-    @Override
-    public String getTitleByID(int id) {
-        for (Item entry : entries) {
-            if (entry == null) {
-                break;
-            }
-            if (entry.id == id) {
-                return entry.title;
-            }
-        }
-        throw new NoSuchElementException("such element is not found");
-    }
-
-    @Override
-    public int getIDByTitle(String title) {
-        title = title.toLowerCase();
-        for (Item entry : entries) {
-            if (entry == null) {
-                break;
-            }
-            if (entry.title.equals(title)) {
-                return entry.id;
-            }
-        }
-        return -1;
     }
 
     @Override

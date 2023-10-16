@@ -34,6 +34,8 @@ public class WorkRecord implements I_WorkRecord {
 
     private String comment;
 
+    private int reportId;
+
 
     /**
      * Constructor for data access object.
@@ -214,5 +216,15 @@ public class WorkRecord implements I_WorkRecord {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    @Override
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
+    }
+
+    @Override
+    public int getReportId() {
+        return reportId;
     }
 }

@@ -51,13 +51,12 @@ CREATE TABLE dental.work_record (
 
 CREATE TABLE dental.product (
     work_id INT NOT NULL,
-    id INT NOT NULL AUTO_INCREMENT,
-    title INT NOT NULL,
+    title VARCHAR(30) NOT NULL,
     quantity SMALLINT DEFAULT 0,
     price INT DEFAULT 0,
     CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES work_record(id),
-    FOREIGN KEY (title) REFERENCES product_map (id),
-    PRIMARY KEY (id, work_id)
+    FOREIGN KEY (title) REFERENCES product_map (title),
+    PRIMARY KEY (work_id, title)
     );
 
 

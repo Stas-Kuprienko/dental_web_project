@@ -14,7 +14,7 @@ public class MySqlInitializer implements TableInitializer {
                 """;
 
     public final String USER_Q = String.format("""
-            CREATE TABLE IF NOT EXISTS %s (
+            CREATE TABLE %s (
                 id INT NOT NULL AUTO_INCREMENT,
                 name VARCHAR(63),
                 email VARCHAR(129) NOT NULL UNIQUE,
@@ -24,7 +24,7 @@ public class MySqlInitializer implements TableInitializer {
                 );""", TableInitializer.USER);
 
     public final String REPORT_Q = String.format("""
-            CREATE TABLE IF NOT EXISTS %s (
+            CREATE TABLE %s (
                 id INT NOT NULL AUTO_INCREMENT,
             	year YEAR NOT NULL,
                 month ENUM ('january', 'february', 'march',
@@ -55,7 +55,7 @@ public class MySqlInitializer implements TableInitializer {
                 status ENUM('MAKE', 'CLOSED', 'PAID') DEFAULT 'MAKE',
             	photo BLOB,
             	comment VARCHAR(127),
-                report_id INT DEFAULT 0,
+                report_id INT DEFAULT null,
                 CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES user(id),
                 FOREIGN KEY (report_id) REFERENCES report (id),
             	PRIMARY KEY (id, user_id)
@@ -64,13 +64,12 @@ public class MySqlInitializer implements TableInitializer {
     public final String PRODUCT_Q = String.format("""
             CREATE TABLE %s (
                 work_id INT NOT NULL,
-                id INT NOT NULL AUTO_INCREMENT,
-                title INT NOT NULL,
+                title VARCHAR(30) NOT NULL,
                 quantity SMALLINT DEFAULT 0,
                 price INT DEFAULT 0,
                 CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES work_record(id),
-                FOREIGN KEY (title) REFERENCES product_map (id),
-                PRIMARY KEY (id, work_id)
+                FOREIGN KEY (title) REFERENCES product_map (title),
+                PRIMARY KEY (work_id, title)
                 );""", TableInitializer.PRODUCT);
 
 

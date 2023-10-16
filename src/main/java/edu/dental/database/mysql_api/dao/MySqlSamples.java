@@ -19,15 +19,13 @@ public enum MySqlSamples implements DAO.Queries {
 
     SELECT_WORK_RECORD("""
             SELECT work_record.*,
-            GROUP_CONCAT(product.title) AS entry_id,
-            GROUP_CONCAT(product_map.title) AS title,
-            GROUP_CONCAT(product.quantity) AS quantity,
-            GROUP_CONCAT(product.price) AS price
-            FROM %s
-            JOIN product ON product.work_id = work_record.id
-            JOIN product_map ON product_map.id = product.title
-            WHERE %s
-            GROUP BY work_record.id;
+            	GROUP_CONCAT(product.title) AS product,
+                GROUP_CONCAT(product.quantity) AS quantity,
+                GROUP_CONCAT(product.price) AS price
+            	FROM work_record
+                JOIN product ON product.work_id = work_record.id
+            	WHERE %s
+                GROUP BY work_record.id;
             """);
 
     public final String QUERY;

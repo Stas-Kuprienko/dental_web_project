@@ -78,7 +78,7 @@ public class WorkRecordMySql implements WorkRecordDAO {
     @Override
     public Collection<I_WorkRecord> getAll() throws DatabaseException {
         String where = TableInitializer.WORK_RECORD + ".user_id = " + user.getId();
-        String query = String.format(MySqlSamples.SELECT_WORK_RECORD.QUERY, TABLE, where);
+        String query = String.format(MySqlSamples.SELECT_WORK_RECORD.QUERY, where);
         MyList<I_WorkRecord> workRecords;
         try (Request request = new Request(query)) {
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
@@ -130,18 +130,31 @@ public class WorkRecordMySql implements WorkRecordDAO {
         try (Request request = new Request(query)) {
             byte i = 1;
             WorkRecord workRecord = (WorkRecord) object;
-            request.getPreparedStatement().setString(i++, workRecord.getPatient());
-            request.getPreparedStatement().setString(i++, workRecord.getClinic());
-            request.getPreparedStatement().setDate(i++, Date.valueOf(workRecord.getAccepted()));
-            request.getPreparedStatement().setDate(i++, Date.valueOf(workRecord.getComplete()));
-            request.getPreparedStatement().setString(i++, String.valueOf(workRecord.getStatus()));
-            Blob photo = request.createBlob();
-            photo.setBytes(1, workRecord.getPhoto());
-            request.getPreparedStatement().setBlob(i++, photo);
-            request.getPreparedStatement().setString(i++, workRecord.getComment());
-            request.getPreparedStatement().setInt(i, workRecord.getId());
-            return new ProductMySql(workRecord.getId()).editAll((MyList<Product>) workRecord.getProducts())
-                    && request.getPreparedStatement().execute();
+            PreparedStatement statement = request.getPreparedStatement();
+            statement.setString(i++, workRecord.getPatient());
+            statement.setString(i++, workRecord.getClinic());
+            statement.setDate(i++, Date.valueOf(workRecord.getAccepted()));
+            if (workRecord.getComplete() != null) {
+                statement.setDate(i++, Date.valueOf(workRecord.getComplete()));
+            } else {
+                statement.setNull(i++, Types.DATE);
+            }
+            statement.setString(i++, String.valueOf(workRecord.getStatus()));
+            if (workRecord.getPhoto() != null) {
+                Blob photo = request.createBlob();
+                photo.setBytes(1, workRecord.getPhoto());
+                statement.setBlob(i++, photo);
+            } else {
+                statement.setNull(i++, Types.BLOB);
+            }
+            statement.setString(i++, workRecord.getComment());
+            if (workRecord.getReportId() > 0) {
+                statement.setInt(i, workRecord.getReportId());
+            } else {
+                statement.setNull(i, Types.INTEGER);
+            }
+            return new ProductMySql(workRecord.getId()).overwrite(workRecord.getProducts())
+                    && statement.execute();
         } catch (SQLException | ClassCastException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -154,7 +167,7 @@ public class WorkRecordMySql implements WorkRecordDAO {
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
             int workId = request.getPreparedStatement().executeUpdate();
-            return new ProductMySql(workId).delete(workId);
+            return new ProductMySql(workId).deleteAll();
         } catch (SQLException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());

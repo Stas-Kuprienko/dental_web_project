@@ -9,10 +9,6 @@ public interface ProductMap extends Map<String, Integer> {
 
     Product createProduct(String title, int quantity);
 
-    String getTitleByID(int id);
-
-    int getIDByTitle(String title);
-
     String[] keysToArray();
 
     Item[] toArray();
