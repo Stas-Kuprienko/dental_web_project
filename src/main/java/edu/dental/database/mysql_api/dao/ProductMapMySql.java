@@ -1,7 +1,7 @@
 package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.database.connection.DBConfiguration;
+import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
@@ -20,13 +20,12 @@ public class ProductMapMySql implements ProductMapDAO {
 
     public static final String FIELDS = "id, title, price";
 
-    public final String TABLE;
+    public final String TABLE = TableInitializer.PRODUCT_MAP;
 
     private final User user;
 
     public ProductMapMySql(User user) {
         this.user = user;
-        this.TABLE = DBConfiguration.DATA_BASE + ".product_map_" + user.getId();
     }
 
     @Override
@@ -161,11 +160,13 @@ public class ProductMapMySql implements ProductMapDAO {
             try (resultSet) {
                 Constructor<MyProductMap.Item> constructor = MyProductMap.Item
                         .class.getDeclaredConstructor(String.class, int.class);
+                constructor.setAccessible(true);
                 while (resultSet.next()) {
                     MyProductMap.Item item = constructor.newInstance(resultSet.getString("title")
                                                                         , resultSet.getInt("price"));
                     items.add(item);
                 }
+                constructor.setAccessible(false);
                 return items;
             } catch (NoSuchMethodException | IllegalAccessException
                      | InvocationTargetException | InstantiationException e) {

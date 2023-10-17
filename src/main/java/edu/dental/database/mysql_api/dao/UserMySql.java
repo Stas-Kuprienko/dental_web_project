@@ -1,6 +1,7 @@
 package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
+import edu.dental.database.TableInitializer;
 import edu.dental.database.connection.DBConfiguration;
 import edu.dental.database.dao.UserDAO;
 import edu.dental.domain.authentication.Authenticator;
@@ -14,7 +15,7 @@ import java.util.Collection;
 
 public class UserMySql implements UserDAO {
 
-    public static final String TABLE = DBConfiguration.DATA_BASE + ".user";
+    public static final String TABLE = TableInitializer.USER;
 
     public static final String FIELDS = "id, name, email, password, created";
 
@@ -145,7 +146,7 @@ public class UserMySql implements UserDAO {
                     User user = new User();
                     user.setId(resultSet.getInt("id"));
                     user.setName(resultSet.getString("name"));
-                    user.setEmail(resultSet.getString("login"));
+                    user.setEmail(resultSet.getString("email"));
                     Blob blob = resultSet.getBlob("password");
                     byte[] password = blob.getBinaryStream().readAllBytes();
                     user.setPassword(password);
