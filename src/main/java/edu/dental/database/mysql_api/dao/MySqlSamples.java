@@ -31,11 +31,17 @@ public enum MySqlSamples implements DAO.Queries {
             """),
 
     SELECT_PRODUCT("""
-            SELECT * FROM product
-            WHERE title IN
-            (SELECT product_map.id FROM product_map
-            WHERE product_map.title = ?)
-            AND %s;
+            SELECT product.title AS entry_id,
+            product_map.title AS title, product.quantity, product.price
+            FROM product
+            JOIN product_map ON product_map.id = product.title
+            WHERE product.title IN
+            (SELECT product_map.id FROM product_map WHERE product_map.title = ?)
+            AND
+            (work_id IN
+            (SELECT work_record.id FROM work_record WHERE work_record.user_id =
+            (SELECT work_record.user_id FROM work_record WHERE work_record.id = ?)))
+            AND quantity = ?;
             """);
 
     public final String QUERY;

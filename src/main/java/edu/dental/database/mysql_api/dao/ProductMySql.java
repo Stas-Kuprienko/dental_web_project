@@ -97,12 +97,11 @@ public class ProductMySql implements ProductDAO {
 
     @Override
     public Collection<Product> search(String title, int quantity) throws DatabaseException {
-        String where = "work_id =? AND quantity = ?";
-        String query = String.format(MySqlSamples.SELECT_PRODUCT.QUERY, where);
+        String query = MySqlSamples.SELECT_PRODUCT.QUERY;
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setString(1, title);
             request.getPreparedStatement().setInt(2, workId);
-            request.getPreparedStatement().setInt(3, quantity);
+            request.getPreparedStatement().setByte(3, (byte) quantity);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             return new ProductInstantiation(resultSet).build();
         } catch (SQLException | NullPointerException e) {
