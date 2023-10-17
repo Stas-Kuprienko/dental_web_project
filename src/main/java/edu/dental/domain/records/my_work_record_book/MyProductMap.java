@@ -31,7 +31,7 @@ public class MyProductMap implements ProductMap {
             throw new NoSuchElementException("type title is not found");
         } else {
             Item entry = entries[i];
-            return new Product(entry.getKey(), (byte) quantity, entry.getValue());
+            return new Product(entry.getId(), entry.getKey(), (byte) quantity, entry.getValue());
         }
     }
 

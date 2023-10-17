@@ -31,9 +31,9 @@ public class ProductMySql implements ProductDAO {
         }
         try (Request request = new Request()) {
             Statement statement = request.getStatement();
-            String valuesFormat = "%s, '%s', %s, %s";
+            String valuesFormat = "%s, %s, %s, %s";
             for (Product p : list) {
-                String values = String.format(valuesFormat, workId, p.title(), p.quantity(), p.price());
+                String values = String.format(valuesFormat, workId, p.entryId(), p.quantity(), p.price());
                 String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
                 statement.addBatch(query);
             }
@@ -51,7 +51,7 @@ public class ProductMySql implements ProductDAO {
         try (Request request = new Request(query)) {
             PreparedStatement statement = request.getPreparedStatement();
             statement.setInt(1, workId);
-            statement.setString(2, product.title());
+            statement.setInt(2, product.entryId());
             statement.setByte(3, product.quantity());
             statement.setInt(4, product.price());
             return statement.execute();
@@ -64,11 +64,12 @@ public class ProductMySql implements ProductDAO {
     public Collection<Product> instantiate(ResultSet resultSet) throws DatabaseException {
         try {
             MyList<Product> products = new MyList<>();
+            String[] entryId = resultSet.getString("entry_id").split(",");
             String[] title = resultSet.getString("title").split(",");
             String[] quantity = resultSet.getString("quantity").split(",");
             String[] price = resultSet.getString("price").split(",");
             for (int i = 0; i < title.length; i++) {
-                Product product = new Product(title[i],
+                Product product = new Product(Integer.parseInt(entryId[i]), title[i],
                         (byte) Integer.parseInt(quantity[i]), Integer.parseInt(price[i]));
                 products.add(product);
             }
@@ -96,11 +97,11 @@ public class ProductMySql implements ProductDAO {
 
     @Override
     public Collection<Product> search(String title, int quantity) throws DatabaseException {
-        String where = "work_id = ? AND title = ? AND quantity = ?";
-        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
+        String where = "work_id =? AND quantity = ?";
+        String query = String.format(MySqlSamples.SELECT_PRODUCT.QUERY, where);
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setInt(1, workId);
-            request.getPreparedStatement().setString(2, title);
+            request.getPreparedStatement().setString(1, title);
+            request.getPreparedStatement().setInt(2, workId);
             request.getPreparedStatement().setInt(3, quantity);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             return new ProductInstantiation(resultSet).build();
@@ -112,12 +113,12 @@ public class ProductMySql implements ProductDAO {
     @Override
     public boolean overwrite(Collection<Product> list) throws DatabaseException {
         String delete = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = " + workId);
-        String valuesFormat = "%s, '%s', %s, %s";
+        String valuesFormat = "%s, %s, %s, %s";
         try (Request request = new Request()){
             Statement statement = request.getStatement();
             statement.addBatch(delete);
             for (Product p : list) {
-                String values = String.format(valuesFormat, workId, p.title(), p.quantity(), p.price());
+                String values = String.format(valuesFormat, workId, p.entryId(), p.quantity(), p.price());
                 String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
                 statement.addBatch(query);
             }
@@ -163,14 +164,12 @@ public class ProductMySql implements ProductDAO {
 
         public Collection<Product> build() throws SQLException {
             try (resultSet) {
-                String[] fields = FIELDS.split(", ");
                 while (resultSet.next()) {
-                    byte i = 1;
-
                     Product p = new Product(
-                            resultSet.getString(fields[i++]),
-                            resultSet.getByte(fields[i++]),
-                            resultSet.getInt(fields[i]));
+                            resultSet.getInt("entry_id"),
+                            resultSet.getString("title"),
+                            resultSet.getByte("quantity"),
+                            resultSet.getInt("price"));
                     productsList.add(p);
                 }
             }

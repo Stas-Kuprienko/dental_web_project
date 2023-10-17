@@ -175,9 +175,9 @@ public class WorkRecordMySql implements WorkRecordDAO {
     }
 
     private String buildQuery(WorkRecord wr) {
-        String values = "DEFAULT, '%s', '%s', '%s', '%s', '%s', %s, %s";
+        String values = "DEFAULT, '%s', '%s', '%s', '%s', '%s', %s, '%s', %s";
         values = String.format(values, wr.getPatient(), wr.getClinic(), wr.getAccepted(),
-                wr.getComplete(), wr.getStatus(), Arrays.toString(wr.getPhoto()), wr.getComment());
+                wr.getComplete(), wr.getStatus(), Arrays.toString(wr.getPhoto()), wr.getComment(), wr.getReportId());
         return String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
     }
 

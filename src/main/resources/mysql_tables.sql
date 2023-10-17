@@ -51,22 +51,22 @@ CREATE TABLE dental.work_record (
 
 CREATE TABLE dental.product (
     work_id INT NOT NULL,
-    title VARCHAR(30) NOT NULL,
+    title INT NOT NULL,
     quantity SMALLINT DEFAULT 0,
     price INT DEFAULT 0,
     CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES work_record(id),
-    FOREIGN KEY (title) REFERENCES product_map (title),
+    FOREIGN KEY (title) REFERENCES product_map (id),
     PRIMARY KEY (work_id, title)
     );
 
 
 SELECT work_record.*,
-    GROUP_CONCAT(product.title) AS entry_id,
+	GROUP_CONCAT(product.title) AS entry_id,
     GROUP_CONCAT(product_map.title) AS title,
     GROUP_CONCAT(product.quantity) AS quantity,
     GROUP_CONCAT(product.price) AS price
-    FROM dental.work_record
+	FROM work_record
     JOIN product ON product.work_id = work_record.id
     JOIN product_map ON product_map.id = product.title
-    WHERE work_record.user_id = ?
+	WHERE dental.work_record.user_id = 1
     GROUP BY work_record.id;
