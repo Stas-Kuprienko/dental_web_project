@@ -89,7 +89,7 @@ public class MyList<E> implements Collection<E>, Serializable {
     @Override
     public <T> T[] toArray(T[] a) {
         if (a.length < size) {
-            return (T[]) Arrays.copyOf(a, size, a.getClass());
+            return (T[]) Arrays.copyOf(elements, size, a.getClass());
         }
         System.arraycopy(elements, 0, a, 0, size);
         return a;
@@ -109,20 +109,45 @@ public class MyList<E> implements Collection<E>, Serializable {
     }
 
     /**
-     * Appends the specified element to the defined position of this list.
+     * Add the specified element to the specified position of this list.
+     * If the elements are present later the given position index,
+     *  the array moving, nothing is removing.
      * @param index The wanted position for inserting an element.
-     * @param element Specified element to be appended to this list.
+     * @param e Specified element to be added to this list.
      * @return {@code true} if it was successful.
      */
-    public boolean add(int index, E element) {
+    public boolean add(int index, E e) {
         if (index < 0 || index > size) {
             throw new ArrayIndexOutOfBoundsException("The index " + index +
                         " is out of the array bounds - the size is " + size);
         }
-        if (element == null) {
+        if (e == null) {
             throw new NullPointerException("The specified element is null.");
         }
-        elements[index] = element;
+        @SuppressWarnings("unchecked")
+        E[] arr = (E[]) new Object[index];
+        System.arraycopy(elements, 0, arr, 0, index);
+        elements[index] = e;
+        System.arraycopy(arr, 0, elements, index + 1, arr.length);
+        return true;
+    }
+
+    /**
+     * Add the specified element to the specified position of this list,
+     *  replacing the element that are present in the given position index.
+     * @param index The wanted position for inserting an element.
+     * @param e Specified element to be added to this list.
+     * @return {@code true} if it was successful.
+     */
+    public boolean replace(int index, E e) {
+        if (index < 0 || index > size) {
+            throw new ArrayIndexOutOfBoundsException("The index " + index +
+                    " is out of the array bounds - the size is " + size);
+        }
+        if (e == null) {
+            throw new NullPointerException("The specified element is null.");
+        }
+        elements[index] = e;
         return true;
     }
 
@@ -340,8 +365,8 @@ public class MyList<E> implements Collection<E>, Serializable {
                     break;
                 }
                 //get string value of object field.
-                String s = String.valueOf(getFieldValue(field, e));
-                if (s.equalsIgnoreCase(sample)) {
+                String value = String.valueOf(getFieldValue(field, e));
+                if (value.equalsIgnoreCase(sample)) {
                     this.relevant.add(e);
                 }
             }
