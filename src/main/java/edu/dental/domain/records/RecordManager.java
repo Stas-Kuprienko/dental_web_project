@@ -78,16 +78,4 @@ public final class RecordManager {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
     }
-    public static synchronized ProductMap getProductMap(Map.Entry<String, Integer>[] entries) throws WorkRecordBookException {
-        try {
-            @SuppressWarnings("unchecked")
-            Class<? extends ProductMap> clas = (Class<? extends ProductMap>) Class.forName(MAP_CLASS_NAME);
-            //TODO !!!!!!!!!!!
-            Constructor<?> constructor = clas.getConstructor(Map.Entry[].class);
-            return (ProductMap) constructor.newInstance((Object) entries);
-        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
-                 | ClassCastException | InstantiationException | IllegalAccessException e) {
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
-        }
-    }
 }

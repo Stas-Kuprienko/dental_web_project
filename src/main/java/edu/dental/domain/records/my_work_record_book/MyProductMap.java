@@ -19,9 +19,9 @@ public class MyProductMap implements ProductMap {
         size = 0;
     }
 
-    public MyProductMap(Item[] entries) {
-        size = entries.length;
-        this.entries = entries;
+    public MyProductMap(Collection<ProductMap.Item> entries) {
+        this();
+        putAll(entries);
     }
 
     @Override
@@ -72,12 +72,7 @@ public class MyProductMap implements ProductMap {
     @Override
     public boolean containsValue(Object value) {
         int v = (int) value;
-        for (Item e : entries) {
-            if (e.getValue() == v) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(toArray()).map(item -> item.price).toList().contains(v);
     }
 
     @Override
@@ -109,13 +104,18 @@ public class MyProductMap implements ProductMap {
     }
 
     @Override
-    public void putAll(java.util.Map<? extends String, ? extends Integer> m) {
+    public void putAll(Map<? extends String, ? extends Integer> m) {
         if (entries == null) {
             entries = new Item[m.size()];
         }
-        for (java.util.Map.Entry<? extends String, ? extends Integer> entry : m.entrySet()) {
+        for (Map.Entry<? extends String, ? extends Integer> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
+    }
+
+    @Override
+    public void putAll(Collection<ProductMap.Item> c) {
+        c.forEach(this::add);
     }
 
     @Override
@@ -136,24 +136,17 @@ public class MyProductMap implements ProductMap {
         if (size == 0) {
             return List.of();
         }
-        Integer[] prices = new Integer[size];
-        for (int i = 0; i < size; i++) {
-            prices[i] = entries[i].getValue();
-        }
-        return Arrays.asList(prices);
+        return Arrays.stream(toArray()).map(v -> v.price).toList();
     }
 
     @Override
-    public Set<java.util.Map.Entry<String, Integer>> entrySet() {
+    public Set<Map.Entry<String, Integer>> entrySet() {
         return Set.of(toArray());
     }
 
     public String[] keysToArray() {
-        String[] result = new String[size];
-        for (int i = 0; i < size; i++) {
-            result[i] = entries[i].getKey();
-        }
-        return result;
+        List<String> list = Arrays.stream(toArray()).map(e -> e.title).toList();
+        return list.toArray(new String[]{});
     }
 
     public Item[] toArray() {
@@ -173,12 +166,23 @@ public class MyProductMap implements ProductMap {
             return -1;
         }
         key = key.toLowerCase();
-        for (int i = 0; i < size; i++) {
-            if (entries[i].getKey().equals(key)) {
-                return i;
-            }
+        return Arrays.stream(toArray()).map(item -> item.title).toList().indexOf(key);
+    }
+
+    private void add(ProductMap.Item e) {
+        if (e == null) {
+            throw new NullPointerException("the given argument is null");
         }
-        return -1;
+        if (size == entries.length) {
+            grow();
+        }
+        int i = findIndex(e.getKey());
+        if (i > -1) {
+            entries[i] = (Item) e;
+        } else {
+            entries[size] = (Item) e;
+            size++;
+        }
     }
 
     private void grow() {
@@ -224,6 +228,28 @@ public class MyProductMap implements ProductMap {
         @Override
         public void setId(int id) {
             this.id = id;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Item item = (Item) o;
+            return id == item.id && price == item.price && Objects.equals(title, item.title);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, title);
+        }
+
+        @Override
+        public String toString() {
+            return "Item{" +
+                    "id=" + id +
+                    ", title='" + title + '\'' +
+                    ", price=" + price +
+                    '}';
         }
     }
 }
