@@ -2,11 +2,14 @@ package edu.dental.utils.data_structures;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * The data structure class. The dynamic resizable array. Implements {@link Collection} and {@link Serializable}.
- * It has the ability to {@linkplain MyList#searchElement(String, String) search}
+ * It has the ability to {@linkplain MyList#searchElement(String, Object) search}
  *  by a sample string in the desired field specified by the getter method.
  * @param <E> The type of elements in this list.
  */
@@ -255,19 +258,20 @@ public class MyList<E> implements Collection<E>, Serializable {
      * @param field Field of the searchable object for equaling.
      * @param sample A sample value to search the element.
      * @return  The {@link MyList list} of the relevant objects.
+     * @throws NullPointerException If the given argument is null or empty.
      * @throws NoSuchElementException If something goes wrong.
-     * @throws IllegalAccessException If something goes wrong.
      */
     @SuppressWarnings("unused")
-    public MyList<E> searchElement(String field, String sample) throws NoSuchFieldException, IllegalAccessException {
+    public MyList<E> searchElement(String field, Object sample) {
+        String strSample = String.valueOf(sample);
         if (field == null || field.isEmpty()) {
             throw new NullPointerException("The field argument is null or empty.");
         }
-        if (sample == null || sample.isEmpty()) {
+        if (strSample == null || strSample.isEmpty()) {
             throw new NullPointerException("The sample argument is null or empty.");
         }
         Searcher searcher = new Searcher();
-        searcher.search(field, sample);
+        searcher.search(field, strSample);
         if (searcher.relevant.isEmpty()) {
             throw new NoSuchElementException("The specified elements is not found.");
         }
@@ -341,7 +345,7 @@ public class MyList<E> implements Collection<E>, Serializable {
     }
 
     /**
-     *  The class used by the {@linkplain MyList#searchElement(String, String) search method}.
+     *  The class used by the {@linkplain MyList#searchElement(String, Object) search method}.
      */
     private class Searcher {
 
@@ -351,25 +355,24 @@ public class MyList<E> implements Collection<E>, Serializable {
             this.relevant = new MyList<>();
         }
 
-        private Object getFieldValue(String field, E e) throws NoSuchFieldException, IllegalAccessException {
-            Field fieldOfElement = e.getClass().getDeclaredField(field);
-            fieldOfElement.setAccessible(true);
-            Object fieldValue = fieldOfElement.get(e);
-            fieldOfElement.setAccessible(false);
-            return fieldValue;
+        private String getFieldValue(String field, E e) {
+            try {
+                Field fieldOfElement = e.getClass().getDeclaredField(field);
+                fieldOfElement.setAccessible(true);
+                Object fieldValue = fieldOfElement.get(e);
+                fieldOfElement.setAccessible(false);
+                return String.valueOf(fieldValue);
+            } catch (IllegalAccessException | NoSuchFieldException exception) {
+                return null;
+            }
         }
 
-        private void search(String field, String sample) throws NoSuchFieldException, IllegalAccessException {
-            for (E e : elements) {
-                if (e == null) {
-                    break;
+        private void search(String field, String sample) {
+            Arrays.stream(toArray()).forEach(e -> {
+                if (sample.equalsIgnoreCase(getFieldValue(field, e))) {
+                    relevant.add(e);
                 }
-                //get string value of object field.
-                String value = String.valueOf(getFieldValue(field, e));
-                if (value.equalsIgnoreCase(sample)) {
-                    this.relevant.add(e);
-                }
-            }
+            });
         }
     }
 
