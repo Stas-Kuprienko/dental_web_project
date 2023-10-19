@@ -34,8 +34,9 @@ public class MyReportService implements ReportService {
     public boolean putReportToDB(MonthlyReport report) throws ReportServiceException {
         try {
             DBService db = DBServiceManager.getDBService();
+            //TODO get works from db by date
             String yearMonth = report.getYear() + report.getMonth();
-            WorkRecordDAO workRecordMySql = db.getWorkRecordDAO(user, yearMonth);
+            WorkRecordDAO workRecordMySql = db.getWorkRecordDAO(user);
             workRecordMySql.putAll(report.getWorkRecordList());
         } catch (DatabaseException e) {
             throw new ReportServiceException(e.getMessage(), e.getCause());
@@ -60,7 +61,7 @@ public class MyReportService implements ReportService {
     public MonthlyReport getReportFromDB(String month, String year) throws ReportServiceException {
         try {
             DBService db = DBServiceManager.getDBService();
-            Collection <I_WorkRecord> records = db.getWorkRecordDAO(user, year + month).getAll();
+            Collection <I_WorkRecord> records = db.getWorkRecordDAO(user).getAll();
             return new MonthlyReport(year, month, records);
         } catch (DatabaseException | ClassCastException e) {
             throw new ReportServiceException(e.getMessage(), e.getCause());

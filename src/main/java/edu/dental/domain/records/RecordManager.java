@@ -25,9 +25,8 @@ public final class RecordManager {
 
     /**
      * Return an instance of the {@link WorkRecordBook}.
-     * @throws WorkRecordBookException if somewhat goes wrong.
      */
-    public static synchronized WorkRecordBook getWorkRecordBook() throws WorkRecordBookException {
+    public static synchronized WorkRecordBook getWorkRecordBook() {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas = (Class<? extends WorkRecordBook>) Class.forName(BOOK_CLASS_NAME);
@@ -38,16 +37,15 @@ public final class RecordManager {
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
-
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+            //TODO loggers
+            throw new RuntimeException(e);
         }
     }
 
     /**
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
-     * @throws WorkRecordBookException if somewhat goes wrong.
      */
-    public static synchronized WorkRecordBook getWorkRecordBook(Collection<I_WorkRecord> records, Map<String, Integer> map) throws WorkRecordBookException {
+    public static synchronized WorkRecordBook getWorkRecordBook(Collection<I_WorkRecord> records, Map<String, Integer> map) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas = (Class<? extends WorkRecordBook>) Class.forName(BOOK_CLASS_NAME);
@@ -58,12 +56,12 @@ public final class RecordManager {
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
-
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+            //TODO loggers
+            throw new RuntimeException(e);
         }
     }
 
-    public static synchronized ProductMap getProductMap() throws WorkRecordBookException {
+    public static synchronized ProductMap getProductMap() {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends ProductMap> clas = (Class<? extends ProductMap>) Class.forName(MAP_CLASS_NAME);
@@ -74,8 +72,24 @@ public final class RecordManager {
             return productMap;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
+            //TODO loggers
+            throw new RuntimeException(e);
+        }
+    }
 
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+    public static synchronized ProductMap getProductMap(Collection<ProductMap.Item> list) {
+        try {
+            @SuppressWarnings("unchecked")
+            Class<? extends ProductMap> clas = (Class<? extends ProductMap>) Class.forName(MAP_CLASS_NAME);
+            Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class);
+            constructor.setAccessible(true);
+            ProductMap productMap = (ProductMap) constructor.newInstance(list);
+            constructor.setAccessible(false);
+            return productMap;
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
+                 | ClassCastException | InstantiationException | IllegalAccessException e) {
+            //TODO loggers
+            throw new RuntimeException(e);
         }
     }
 }

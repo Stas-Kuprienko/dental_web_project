@@ -32,8 +32,8 @@ public final class Authenticator {
             throw new AuthenticationException(AuthenticationException.Causes.NULL);
         }
         User user;
+        DBService dbService = DBServiceManager.getDBService();
         try {
-            DBService dbService = DBServiceManager.getDBService();
             user = dbService.authenticate(login, password);
         } catch (DatabaseException e) {
             throw new AuthenticationException(e);

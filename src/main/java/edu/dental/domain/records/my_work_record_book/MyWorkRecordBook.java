@@ -114,7 +114,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
                 list = list.searchElement("clinic", clinic);
             }
             return list.get(0);
-        } catch (NoSuchFieldException | IllegalAccessException | NoSuchElementException | NullPointerException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
     }
@@ -124,7 +124,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             MyList<I_WorkRecord> list = records.searchElement("id", String.valueOf(id));
             return list.get(0);
-        } catch (NoSuchFieldException | IllegalAccessException |NoSuchElementException | NullPointerException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
     }

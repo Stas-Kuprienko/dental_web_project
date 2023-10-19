@@ -11,7 +11,7 @@ public interface DBService {
 
     ProductMapDAO getProductMapperDAO(Object... args) throws DatabaseException;
 
-    WorkRecordDAO getWorkRecordDAO(Object... args) throws DatabaseException;
+    WorkRecordDAO getWorkRecordDAO(User user) throws DatabaseException;
 
     ProductDAO getProductDAO(Object... args) throws DatabaseException;
 

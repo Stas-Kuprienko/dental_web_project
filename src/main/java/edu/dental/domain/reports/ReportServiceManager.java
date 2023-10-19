@@ -11,7 +11,7 @@ public final class ReportServiceManager {
 
     private static final String CLASS_NAME = "edu.dental.domain.reports.my_report_service.MyReportService";
 
-    public static synchronized ReportService getReportService(User user) throws ReportServiceException {
+    public static synchronized ReportService getReportService(User user) {
         try {
             Class<?> clas = Class.forName(CLASS_NAME);
             Constructor<?> constructor = clas.getDeclaredConstructor(User.class);
@@ -21,7 +21,7 @@ public final class ReportServiceManager {
             return reportService;
         } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             //TODO logger
-            throw new ReportServiceException(e.getMessage(), e.getCause());
+            throw new RuntimeException(e);
         }
     }
 

@@ -9,7 +9,7 @@ public final class DBServiceManager {
 
     private static final String CLASS_NAME = "edu.dental.database.mysql_api.MyDBService";
 
-    public static synchronized DBService getDBService() throws DatabaseException {
+    public static synchronized DBService getDBService() {
         try {
             Class<?> clas = Class.forName(CLASS_NAME);
             Constructor<?> constructor = clas.getDeclaredConstructor();
@@ -20,7 +20,7 @@ public final class DBServiceManager {
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                                         | InstantiationException | IllegalAccessException e) {
             //TODO logger
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new RuntimeException(e);
         }
     }
 }
