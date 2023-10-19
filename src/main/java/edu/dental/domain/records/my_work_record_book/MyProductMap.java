@@ -158,6 +158,13 @@ public class MyProductMap implements ProductMap {
         return arr;
     }
 
+    @Override
+    public String toString() {
+        return "MyProductMap{" +
+                "entries=" + Arrays.toString(toArray()) +
+                '}';
+    }
+
     private int findIndex(String key) {
         if (key == null) {
             throw new NullPointerException("the given argument is null");
