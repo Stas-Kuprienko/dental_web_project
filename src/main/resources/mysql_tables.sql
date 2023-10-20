@@ -70,3 +70,15 @@ SELECT work_record.*,
     JOIN product_map ON product_map.id = product.title
 	WHERE dental.work_record.user_id = 1
     GROUP BY work_record.id;
+
+SELECT product.title AS entry_id,
+    product_map.title AS title, product.quantity, product.price
+    FROM product
+    JOIN product_map ON product_map.id = product.title
+    WHERE product.title IN
+    (SELECT product_map.id FROM product_map WHERE product_map.title = ?)
+    AND
+    (work_id IN
+    (SELECT work_record.id FROM work_record WHERE work_record.user_id =
+    (SELECT work_record.user_id FROM work_record WHERE work_record.id = ?)))
+    AND quantity = ?;

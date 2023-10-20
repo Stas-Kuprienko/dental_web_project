@@ -64,11 +64,11 @@ public class MySqlInitializer implements TableInitializer {
     public final String PRODUCT_Q = String.format("""
             CREATE TABLE %s (
                 work_id INT NOT NULL,
-                title VARCHAR(30) NOT NULL,
+                title INT NOT NULL,
                 quantity SMALLINT DEFAULT 0,
                 price INT DEFAULT 0,
                 CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES work_record(id),
-                FOREIGN KEY (title) REFERENCES product_map (title),
+                FOREIGN KEY (title) REFERENCES product_map (id),
                 PRIMARY KEY (work_id, title)
                 );""", TableInitializer.PRODUCT);
 
