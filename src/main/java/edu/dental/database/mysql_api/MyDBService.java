@@ -31,30 +31,18 @@ public class MyDBService implements DBService {
     }
 
     @Override
-    public ProductMapDAO getProductMapperDAO(Object... args) throws DatabaseException {
-        try {
-            return new ProductMapMySql((User) args[0]);
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        }
+    public ProductMapDAO getProductMapDAO(User user) {
+            return new ProductMapMySql(user);
     }
 
     @Override
-    public WorkRecordDAO getWorkRecordDAO(User user) throws DatabaseException {
-        try {
+    public WorkRecordDAO getWorkRecordDAO(User user) {
             return new WorkRecordMySql(user);
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        }
     }
 
     @Override
-    public ProductDAO getProductDAO(Object... args) throws DatabaseException {
-        try {
-            return new ProductMySql((Integer) args[1]);
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        }
+    public ProductDAO getProductDAO(int workId) {
+            return new ProductMySql(workId);
     }
 
     public static synchronized DBService getInstance() {

@@ -2,26 +2,29 @@ package edu.dental.domain.records;
 
 import edu.dental.domain.entities.I_WorkRecord;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * The basic service for managing an instances of the {@link WorkRecordBook} interface.
  * The {@code RecordManager} returns instances implementing the {@link WorkRecordBook},
- *  loaded at the {@linkplain RecordManager#BOOK_CLASS_NAME specified path}.
+ *  loaded at the {@linkplain RecordManager#service specified path}.
  */
 public final class RecordManager {
 
     private RecordManager() {}
+    static {
+        service = new Properties();
+    }
 
-    /**
-     * The path to the class implementing the {@link WorkRecordBook}.
-     */
-    private static final String BOOK_CLASS_NAME = "edu.dental.domain.records.my_work_record_book.MyWorkRecordBook";
+    private static final Properties service;
+    private static final String PROP_PATH = "service.properties";
 
-    private static final String MAP_CLASS_NAME = "edu.dental.domain.records.my_work_record_book.MyProductMap";
 
     /**
      * Return an instance of the {@link WorkRecordBook}.
@@ -29,7 +32,8 @@ public final class RecordManager {
     public static synchronized WorkRecordBook getWorkRecordBook() {
         try {
             @SuppressWarnings("unchecked")
-            Class<? extends WorkRecordBook> clas = (Class<? extends WorkRecordBook>) Class.forName(BOOK_CLASS_NAME);
+            Class<? extends WorkRecordBook> clas =
+                    (Class<? extends WorkRecordBook>) Class.forName(getClassName(WorkRecordBook.class));
             Constructor<?> constructor = clas.getDeclaredConstructor();
             constructor.setAccessible(true);
             WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance();
@@ -48,7 +52,8 @@ public final class RecordManager {
     public static synchronized WorkRecordBook getWorkRecordBook(Collection<I_WorkRecord> records, Map<String, Integer> map) {
         try {
             @SuppressWarnings("unchecked")
-            Class<? extends WorkRecordBook> clas = (Class<? extends WorkRecordBook>) Class.forName(BOOK_CLASS_NAME);
+            Class<? extends WorkRecordBook> clas =
+                    (Class<? extends WorkRecordBook>) Class.forName(getClassName(WorkRecordBook.class));
             Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class, Map.class);
             constructor.setAccessible(true);
             WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(records, map);
@@ -64,7 +69,8 @@ public final class RecordManager {
     public static synchronized ProductMap getProductMap() {
         try {
             @SuppressWarnings("unchecked")
-            Class<? extends ProductMap> clas = (Class<? extends ProductMap>) Class.forName(MAP_CLASS_NAME);
+            Class<? extends ProductMap> clas =
+                    (Class<? extends ProductMap>) Class.forName(getClassName(ProductMap.class));
             Constructor<?> constructor = clas.getDeclaredConstructor();
             constructor.setAccessible(true);
             ProductMap productMap = (ProductMap) constructor.newInstance();
@@ -80,7 +86,8 @@ public final class RecordManager {
     public static synchronized ProductMap getProductMap(Collection<ProductMap.Item> list) {
         try {
             @SuppressWarnings("unchecked")
-            Class<? extends ProductMap> clas = (Class<? extends ProductMap>) Class.forName(MAP_CLASS_NAME);
+            Class<? extends ProductMap> clas =
+                    (Class<? extends ProductMap>) Class.forName(getClassName(ProductMap.class));
             Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class);
             constructor.setAccessible(true);
             ProductMap productMap = (ProductMap) constructor.newInstance(list);
@@ -88,6 +95,16 @@ public final class RecordManager {
             return productMap;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
+            //TODO loggers
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static synchronized <T> String getClassName(Class<T> clas) {
+        try (InputStream inStream = RecordManager.class.getClassLoader().getResourceAsStream(PROP_PATH)) {
+            service.load(inStream);
+            return service.getProperty(clas.getSimpleName());
+        } catch (IOException e) {
             //TODO loggers
             throw new RuntimeException(e);
         }
