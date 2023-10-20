@@ -60,6 +60,7 @@ public class MyProductMap implements ProductMap {
         return size;
     }
 
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
@@ -144,11 +145,13 @@ public class MyProductMap implements ProductMap {
         return Set.of(toArray());
     }
 
+    @Override
     public String[] keysToArray() {
         List<String> list = Arrays.stream(toArray()).map(e -> e.title).toList();
         return list.toArray(new String[]{});
     }
 
+    @Override
     public Item[] toArray() {
         if (size == 0) {
             throw new NullPointerException("The array of entries is empty.");

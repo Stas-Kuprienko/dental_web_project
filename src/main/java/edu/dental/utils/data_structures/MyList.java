@@ -57,7 +57,7 @@ public class MyList<E> implements Collection<E>, Serializable {
      */
     public int indexOf(E element) {
         if (element != null) {
-            for (int i = 0; i < (elements.length - 1); i++) {
+            for (int i = 0; i < size; i++) {
                 if (element.equals(elements[i])) {
                     return i;
                 }
@@ -178,7 +178,7 @@ public class MyList<E> implements Collection<E>, Serializable {
      * @throws IndexOutOfBoundsException If the given index is out of this list bounds.
      */
     public boolean remove(int index) {
-        if (index < 0 || index > size) {
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("The index " + index +
                     " is out of the array bounds - the size is " + size);
         }
@@ -261,7 +261,6 @@ public class MyList<E> implements Collection<E>, Serializable {
      * @throws NullPointerException If the given argument is null or empty.
      * @throws NoSuchElementException If something goes wrong.
      */
-    @SuppressWarnings("unused")
     public MyList<E> searchElement(String field, Object sample) {
         String strSample = String.valueOf(sample);
         if (field == null || field.isEmpty()) {
@@ -296,8 +295,7 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     @Override
     public String toString() {
-        Object[] arr = Arrays.copyOf(elements, size);
-        return Arrays.toString(arr);
+        return Arrays.toString(toArray());
     }
 
     private E[] grow(E[] arr) {
