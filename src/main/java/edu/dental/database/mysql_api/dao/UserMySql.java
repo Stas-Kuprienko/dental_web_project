@@ -1,6 +1,7 @@
 package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
+import edu.dental.database.TableInitializer;
 import edu.dental.database.connection.DBConfiguration;
 import edu.dental.database.dao.UserDAO;
 import edu.dental.domain.authentication.Authenticator;
@@ -14,9 +15,9 @@ import java.util.Collection;
 
 public class UserMySql implements UserDAO {
 
-    public static final String TABLE = DBConfiguration.DATA_BASE + ".user";
+    public static final String TABLE = TableInitializer.USER;
 
-    public static final String FIELDS = "id, name, login, password, created";
+    public static final String FIELDS = "id, name, email, password, created";
 
     @Override
     public boolean putAll(Collection<User> list) throws DatabaseException {
@@ -32,7 +33,7 @@ public class UserMySql implements UserDAO {
             byte i = 1;
             PreparedStatement statement = request.getPreparedStatement();
             statement.setString(i++, object.getName());
-            statement.setString(i++, object.getLogin());
+            statement.setString(i++, object.getEmail());
             statement.setBlob(i++, new SerialBlob(object.getPassword()));
             statement.setDate(i, Date.valueOf(object.getCreated()));
             statement.executeUpdate();
@@ -71,9 +72,15 @@ public class UserMySql implements UserDAO {
         }
     }
 
+    /**
+     *
+     * @param args 2 arguments - user {@linkplain User#getEmail() email} and {@linkplain User#getPassword() password}.
+     * @return specified {@link User} list.
+     * @throws DatabaseException
+     */
     @Override
     public MyList<User> search(Object... args) throws DatabaseException {
-        String where = "login = ? AND password = ?";
+        String where = "email = ? AND password = ?";
         byte[] password = Authenticator.passwordHash((String) args[1]);
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         ResultSet resultSet;
@@ -100,7 +107,7 @@ public class UserMySql implements UserDAO {
         try (Request request = new Request(query)) {
             byte i = 1;
             request.getPreparedStatement().setString(i++, object.getName());
-            request.getPreparedStatement().setString(i++, object.getLogin());
+            request.getPreparedStatement().setString(i++, object.getEmail());
             request.getPreparedStatement().setBlob(i++, new SerialBlob(object.getPassword()));
             request.getPreparedStatement().setDate(i++, Date.valueOf(object.getCreated()));
             request.getPreparedStatement().setInt(i, object.getId());
@@ -139,7 +146,7 @@ public class UserMySql implements UserDAO {
                     User user = new User();
                     user.setId(resultSet.getInt("id"));
                     user.setName(resultSet.getString("name"));
-                    user.setLogin(resultSet.getString("login"));
+                    user.setEmail(resultSet.getString("email"));
                     Blob blob = resultSet.getBlob("password");
                     byte[] password = blob.getBinaryStream().readAllBytes();
                     user.setPassword(password);

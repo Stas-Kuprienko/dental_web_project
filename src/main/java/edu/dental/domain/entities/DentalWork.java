@@ -8,13 +8,13 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
- * The WorkRecord class represent object of a record, containing data about certain work.
+ * The DentalWork class represent object of a record, containing data about certain work.
  * Implements {@link java.io.Serializable} because it is an object of information,
  *  and instances may be stored in memory.
  * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the products.
  * Also containing {@code byte array} with an images of the work.
  */
-public class WorkRecord implements I_WorkRecord {
+public class DentalWork implements I_DentalWork {
 
     private int id;
 
@@ -34,26 +34,28 @@ public class WorkRecord implements I_WorkRecord {
 
     private String comment;
 
+    private int reportId;
+
 
     /**
      * Constructor for data access object.
      */
-    public WorkRecord() {}
+    public DentalWork() {}
 
-    private WorkRecord(MyList<Product> products, LocalDate accepted, Status status) {
+    private DentalWork(MyList<Product> products, LocalDate accepted, Status status) {
         this.products = products;
         this.accepted = accepted;
         this.status = status;
     }
 
     /**
-     * Create the WorkRecord object.
+     * Create the DentalWork object.
      */
     public static Builder create() {
         MyList<Product> products = new MyList<>();
         LocalDate accepted = LocalDate.now();
         Status s = Status.MAKE;
-        return new WorkRecord(products, accepted, s).new Builder();
+        return new DentalWork(products, accepted, s).new Builder();
     }
 
     /**
@@ -64,38 +66,38 @@ public class WorkRecord implements I_WorkRecord {
         private Builder(){}
 
         public Builder setId(int id) {
-            WorkRecord.this.setId(id);
+            DentalWork.this.setId(id);
             return this;
         }
 
         public Builder setPatient(String patient) {
-            WorkRecord.this.setPatient(patient);
+            DentalWork.this.setPatient(patient);
             return this;
         }
 
         public Builder setClinic(String clinic) {
-            WorkRecord.this.setClinic(clinic);
+            DentalWork.this.setClinic(clinic);
             return this;
         }
 
         public Builder setComplete(LocalDate complete) {
-            WorkRecord.this.setComplete(complete);
+            DentalWork.this.setComplete(complete);
             return this;
         }
 
         public Builder setPhoto(byte[] photo) {
             //TODO
-            WorkRecord.this.setPhoto(photo);
+            DentalWork.this.setPhoto(photo);
             return this;
         }
 
         public Builder setComment(String comment) {
-            WorkRecord.this.setComment(comment);
+            DentalWork.this.setComment(comment);
             return this;
         }
 
-        public WorkRecord build() {
-            return WorkRecord.this;
+        public DentalWork build() {
+            return DentalWork.this;
         }
 
     }
@@ -104,7 +106,7 @@ public class WorkRecord implements I_WorkRecord {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        WorkRecord that = (WorkRecord) o;
+        DentalWork that = (DentalWork) o;
         return id == that.id && Objects.equals(patient, that.patient) && Objects.equals(clinic, that.clinic)
                                 && Objects.equals(complete, that.complete) && accepted.equals(that.accepted);
     }
@@ -116,7 +118,7 @@ public class WorkRecord implements I_WorkRecord {
 
     @Override
     public String toString() {
-        return "WorkRecord{" +
+        return "DentalWork{" +
                 "id=" + id +
                 ", patient='" + patient + '\'' +
                 ", clinic='" + clinic + '\'' +
@@ -200,23 +202,29 @@ public class WorkRecord implements I_WorkRecord {
         this.status = status;
     }
 
-    @Override
     public byte[] getPhoto() {
         return photo;
     }
 
-    @Override
     public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 
-    @Override
     public String getComment() {
         return comment;
     }
 
-    @Override
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    @Override
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
+    }
+
+    @Override
+    public int getReportId() {
+        return reportId;
     }
 }

@@ -2,6 +2,7 @@ package edu.dental.domain.records.my_work_record_book;
 
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
+import edu.dental.domain.records.WorkRecordBookException;
 
 import java.util.*;
 
@@ -11,38 +12,31 @@ public class MyProductMap implements ProductMap {
 
     private int size;
 
-    protected Item[] items;
+    protected Item[] entries;
 
 
     public MyProductMap() {
-        items = new Item[DEFAULT_CAPACITY];
+        entries = new Item[DEFAULT_CAPACITY];
         size = 0;
     }
 
-    public MyProductMap(Item[] entries) {
-        size = entries.length;
-        this.items = entries;
+    public MyProductMap(Collection<ProductMap.Item> entries) {
+        this();
+        putAll(entries);
     }
 
     @Override
     public Product createProduct(String title, int quantity) {
+        if (quantity > 32) {
+            throw new IllegalArgumentException("The quantity value is incorrect - cannot be more than 32 teeth.");
+        }
         int i = findIndex(title);
         if (i == -1) {
             throw new NoSuchElementException("type title is not found");
         } else {
-            Item node = items[i];
-            return new Product(node.getKey(), (byte) quantity, node.getValue());
+            Item entry = entries[i];
+            return new Product(entry.getId(), entry.getKey(), (byte) quantity, entry.getValue());
         }
-    }
-
-    @Override
-    public String getTitleByID(int id) {
-        for (Item i : items) {
-            if (i.id == id) {
-                return i.title;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -50,16 +44,16 @@ public class MyProductMap implements ProductMap {
         if (key == null) {
             throw new NullPointerException("the given key is empty");
         }
-        if (size == items.length) {
+        if (size == entries.length) {
             grow();
         }
         int i = findIndex(key);
         if (i > -1) {
-            int previous = items[i].getValue();
-            items[i].setValue(value);
+            int previous = entries[i].getValue();
+            entries[i].setValue(value);
             return previous;
         } else {
-            items[size] = new Item(key.toLowerCase(), value);
+            entries[size] = new Item(key.toLowerCase(), value);
             size++;
             return null;
         }
@@ -70,6 +64,7 @@ public class MyProductMap implements ProductMap {
         return size;
     }
 
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
@@ -82,12 +77,7 @@ public class MyProductMap implements ProductMap {
     @Override
     public boolean containsValue(Object value) {
         int v = (int) value;
-        for (Item e : items) {
-            if (e.getValue() == v) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(toArray()).map(item -> item.price).toList().contains(v);
     }
 
     @Override
@@ -97,7 +87,7 @@ public class MyProductMap implements ProductMap {
         if (i == -1) {
             throw new NullPointerException("the specified value is not found");
         } else {
-            return items[i].getValue();
+            return entries[i].getValue();
         }
     }
 
@@ -109,29 +99,34 @@ public class MyProductMap implements ProductMap {
             return null;
         } else {
             size -= 1;
-            int value = items[i].getValue();
-            items[i] = null;
+            int value = entries[i].getValue();
+            entries[i] = null;
             if (size > i) {
-                System.arraycopy(items, i + 1, items, i, size - i);
+                System.arraycopy(entries, i + 1, entries, i, size - i);
             }
             return value;
         }
     }
 
     @Override
-    public void putAll(java.util.Map<? extends String, ? extends Integer> m) {
-        if (items == null) {
-            items = new Item[m.size()];
+    public void putAll(Map<? extends String, ? extends Integer> m) {
+        if (entries == null) {
+            entries = new Item[m.size()];
         }
-        for (java.util.Map.Entry<? extends String, ? extends Integer> entry : m.entrySet()) {
+        for (Map.Entry<? extends String, ? extends Integer> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
 
     @Override
+    public void putAll(Collection<ProductMap.Item> c) {
+        c.forEach(this::add);
+    }
+
+    @Override
     public void clear() {
         if (size != 0) {
-            items = new Item[items.length];
+            entries = new Item[entries.length];
             size = 0;
         }
     }
@@ -146,33 +141,35 @@ public class MyProductMap implements ProductMap {
         if (size == 0) {
             return List.of();
         }
-        Integer[] prices = new Integer[size];
-        for (int i = 0; i < size; i++) {
-            prices[i] = items[i].getValue();
-        }
-        return Arrays.asList(prices);
+        return Arrays.stream(toArray()).map(v -> v.price).toList();
     }
 
     @Override
-    public Set<java.util.Map.Entry<String, Integer>> entrySet() {
+    public Set<Map.Entry<String, Integer>> entrySet() {
         return Set.of(toArray());
     }
 
+    @Override
     public String[] keysToArray() {
-        String[] result = new String[size];
-        for (int i = 0; i < size; i++) {
-            result[i] = items[i].getKey();
-        }
-        return result;
+        List<String> list = Arrays.stream(toArray()).map(e -> e.title).toList();
+        return list.toArray(new String[]{});
     }
 
+    @Override
     public Item[] toArray() {
         if (size == 0) {
             throw new NullPointerException("The array of entries is empty.");
         }
         Item[] arr = new Item[size];
-        System.arraycopy(items, 0, arr, 0, size);
+        System.arraycopy(entries, 0, arr, 0, size);
         return arr;
+    }
+
+    @Override
+    public String toString() {
+        return "MyProductMap{" +
+                "entries=" + Arrays.toString(toArray()) +
+                '}';
     }
 
     private int findIndex(String key) {
@@ -183,18 +180,29 @@ public class MyProductMap implements ProductMap {
             return -1;
         }
         key = key.toLowerCase();
-        for (int i = 0; i < size; i++) {
-            if (items[i].getKey().equals(key)) {
-                return i;
-            }
+        return Arrays.stream(toArray()).map(item -> item.title).toList().indexOf(key);
+    }
+
+    private void add(ProductMap.Item e) {
+        if (e == null) {
+            throw new NullPointerException("the given argument is null");
         }
-        return -1;
+        if (size == entries.length) {
+            grow();
+        }
+        int i = findIndex(e.getKey());
+        if (i > -1) {
+            entries[i] = (Item) e;
+        } else {
+            entries[size] = (Item) e;
+            size++;
+        }
     }
 
     private void grow() {
         Item[] result = new Item[size << 1];
-        System.arraycopy(items, 0, result, 0, items.length);
-        this.items = result;
+        System.arraycopy(entries, 0, result, 0, entries.length);
+        this.entries = result;
     }
 
 
@@ -234,6 +242,28 @@ public class MyProductMap implements ProductMap {
         @Override
         public void setId(int id) {
             this.id = id;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Item item = (Item) o;
+            return id == item.id && price == item.price && Objects.equals(title, item.title);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, title);
+        }
+
+        @Override
+        public String toString() {
+            return "Item{" +
+                    "id=" + id +
+                    ", title='" + title + '\'' +
+                    ", price=" + price +
+                    '}';
         }
     }
 }

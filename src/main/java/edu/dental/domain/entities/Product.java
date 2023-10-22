@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * The class represent the product object and contains entries title, price and quantity of product items.
+ * The class represent the product object and contains entries id, title, price and quantity of product items.
  */
-public record Product (String title, byte quantity, int price) implements Serializable {
+public record Product (int entryId, String title, byte quantity, int price) implements Serializable {
 
     /**
      * Count total amount of the product price.

@@ -32,16 +32,16 @@ public final class Authenticator {
             throw new AuthenticationException(AuthenticationException.Causes.NULL);
         }
         User user;
+        DBService dbService = DBServiceManager.getDBService();
         try {
-            DBService dbService = DBServiceManager.getDBService();
             user = dbService.authenticate(login, password);
         } catch (DatabaseException e) {
-            throw new AuthenticationException(e.getMessage());
+            throw new AuthenticationException(e);
         }
         if (user == null) {
             throw new AuthenticationException(AuthenticationException.Causes.NO);
         }
-        if (!(verification(user, password.getBytes()))) {
+        if (!(verification(user, password))) {
             throw new AuthenticationException(AuthenticationException.Causes.PASS);
         }
         return user;
@@ -52,8 +52,14 @@ public final class Authenticator {
      * @param password The user's password.
      * @return The {@link User} object if verification was successful, or null if not.
      */
-    private static synchronized boolean verification(User user, byte[] password) {
-        return MessageDigest.isEqual(user.getPassword(), password);
+    private static synchronized boolean verification(User user, String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] password2 = md.digest(password.getBytes());
+            return MessageDigest.isEqual(user.getPassword(), password2);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

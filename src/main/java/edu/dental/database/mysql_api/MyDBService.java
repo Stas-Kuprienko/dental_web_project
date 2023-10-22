@@ -2,12 +2,14 @@ package edu.dental.database.mysql_api;
 
 import edu.dental.database.DBService;
 import edu.dental.database.DatabaseException;
-import edu.dental.database.TablesCreator;
-import edu.dental.database.dao.*;
-import edu.dental.database.mysql_api.dao.ProductMapperMySql;
+import edu.dental.database.dao.ProductDAO;
+import edu.dental.database.dao.ProductMapDAO;
+import edu.dental.database.dao.UserDAO;
+import edu.dental.database.dao.DentalWorkDAO;
+import edu.dental.database.mysql_api.dao.ProductMapMySql;
 import edu.dental.database.mysql_api.dao.ProductMySql;
 import edu.dental.database.mysql_api.dao.UserMySql;
-import edu.dental.database.mysql_api.dao.WorkRecordMySql;
+import edu.dental.database.mysql_api.dao.DentalWorkMySql;
 import edu.dental.domain.entities.User;
 
 public class MyDBService implements DBService {
@@ -29,39 +31,18 @@ public class MyDBService implements DBService {
     }
 
     @Override
-    public ProductMapDAO getProductMapperDAO(Object... args) throws DatabaseException {
-        try {
-            return new ProductMapperMySql((User) args[0]);
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        }
+    public ProductMapDAO getProductMapDAO(User user) {
+            return new ProductMapMySql(user);
     }
 
     @Override
-    public WorkRecordDAO getWorkRecordDAO(Object... args) throws DatabaseException {
-        try {
-            if (args.length > 1) {
-                return new WorkRecordMySql((User) args[0], (String) args[1]);
-            } else {
-                return new WorkRecordMySql((User) args[0]);
-            }
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        }
+    public DentalWorkDAO getDentalWorkDAO(User user) {
+            return new DentalWorkMySql(user);
     }
 
     @Override
-    public ProductDAO getProductDAO(Object... args) throws DatabaseException {
-        try {
-            return new ProductMySql((Integer) args[0], (Integer) args[1]);
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        }
-    }
-
-    @Override
-    public synchronized TablesCreator getTablesCreator() {
-        return MySqlTablesCreator.instance;
+    public ProductDAO getProductDAO(int workId) {
+            return new ProductMySql(workId);
     }
 
     public static synchronized DBService getInstance() {

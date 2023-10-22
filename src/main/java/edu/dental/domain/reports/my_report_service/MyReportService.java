@@ -3,8 +3,7 @@ package edu.dental.domain.reports.my_report_service;
 import edu.dental.database.DBService;
 import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
-import edu.dental.database.dao.WorkRecordDAO;
-import edu.dental.domain.entities.I_WorkRecord;
+import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.reports.IFileTool;
@@ -25,33 +24,15 @@ public class MyReportService implements ReportService {
 
 
     @Override
-    public boolean putReportToDB(Collection<I_WorkRecord> records) throws ReportServiceException {
-        MonthlyReport report = new MonthlyReport(records);
-        return putReportToDB(report);
-    }
-
-    @Override
-    public boolean putReportToDB(MonthlyReport report) throws ReportServiceException {
+    public boolean saveReportToFile(Map<String, Integer> map, MonthlyReport report) throws ReportServiceException {
         try {
-            DBService db = DBServiceManager.getDBService();
-            String yearMonth = report.getYear() + report.getMonth();
-            WorkRecordDAO workRecordMySql = db.getWorkRecordDAO(user, yearMonth);
-            workRecordMySql.putAll(report.getWorkRecordList());
-        } catch (DatabaseException e) {
-            throw new ReportServiceException(e.getMessage(), e.getCause());
-        }
-        return false;
-    }
-
-    @Override
-    public boolean saveTableToFile(Map<String, Integer> map, MonthlyReport report) throws ReportServiceException {
-        try {
-            DataArrayTool dataArrayTool = new DataArrayTool((ProductMap) map, report.getWorkRecordList());
+            DataArrayTool dataArrayTool = new DataArrayTool((ProductMap) map, report.getDentalWorks());
             String[][] reportData = dataArrayTool.buildTable();
-            String tableName = report.getYear() + "_" + report.getMonth() + "_" + user.getName();
+            String tableName = user.getName() + "_" + report.getMonth() + "_" + report.getYear();
             IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
             return fileTool.createFile().writeFile();
         } catch (ClassCastException e) {
+            //TODO loggers
             throw new ReportServiceException(e.getMessage(), e.getCause());
         }
     }
@@ -60,9 +41,10 @@ public class MyReportService implements ReportService {
     public MonthlyReport getReportFromDB(String month, String year) throws ReportServiceException {
         try {
             DBService db = DBServiceManager.getDBService();
-            Collection <I_WorkRecord> records = db.getWorkRecordDAO(user, year + month).getAll();
+            Collection <I_DentalWork> records = db.getDentalWorkDAO(user).getAllMonthly(month, year);
             return new MonthlyReport(year, month, records);
         } catch (DatabaseException | ClassCastException e) {
+            //TODO loggers
             throw new ReportServiceException(e.getMessage(), e.getCause());
         }
     }

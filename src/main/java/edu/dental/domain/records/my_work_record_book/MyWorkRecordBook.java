@@ -1,8 +1,8 @@
 package edu.dental.domain.records.my_work_record_book;
 
-import edu.dental.domain.entities.I_WorkRecord;
+import edu.dental.domain.entities.DentalWork;
+import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
-import edu.dental.domain.entities.WorkRecord;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.utils.DatesTool;
@@ -16,11 +16,11 @@ import java.util.NoSuchElementException;
  */
 public class MyWorkRecordBook implements WorkRecordBook {
 
-    private final MyList<I_WorkRecord> records;
+    private final MyList<I_DentalWork> records;
 
     private final MyProductMap productMap;
 
-    private MyWorkRecordBook(MyList<I_WorkRecord> records, MyProductMap productMap) {
+    private MyWorkRecordBook(MyList<I_DentalWork> records, MyProductMap productMap) {
         this.records = records;
         this.productMap = productMap;
     }
@@ -31,10 +31,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public WorkRecord createRecord(String patient, String clinic, String product, int quantity, String complete) throws WorkRecordBookException {
-        if (quantity > 32) {
-            throw new WorkRecordBookException("The quantity value is incorrect - cannot be more than 32 teeth.");
-        }
+    public DentalWork createRecord(String patient, String clinic, String product, int quantity, String complete) throws WorkRecordBookException {
         Product p;
         LocalDate date;
         try {
@@ -43,114 +40,105 @@ public class MyWorkRecordBook implements WorkRecordBook {
         } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
-        WorkRecord workRecord = WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(date).build();
-        workRecord.getProducts().add(p);
-        records.add(workRecord);
-        return workRecord;
+        DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).setComplete(date).build();
+        dentalWork.getProducts().add(p);
+        records.add(dentalWork);
+        return dentalWork;
     }
 
     @Override
-    public WorkRecord createRecord(String patient, String clinic, String complete) throws WorkRecordBookException {
-        LocalDate date;
-        try {
-            date = DatesTool.toLocalDate(complete);
-        } catch (NullPointerException e) {
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
-        }
-        WorkRecord workRecord = WorkRecord.create().setPatient(patient).setClinic(clinic).setComplete(date).build();
-        records.add(workRecord);
-        return workRecord;
+    public DentalWork createRecord(String patient, String clinic) {
+        DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).build();
+        records.add(dentalWork);
+        return dentalWork;
     }
 
     @Override
-    public I_WorkRecord addProductToRecord(I_WorkRecord workRecord, String product, int quantity) throws WorkRecordBookException {
-        if (workRecord == null) {
-            throw new WorkRecordBookException("The given WorkRecord object is null");
-        }
-        if (quantity > 32) {
-            throw new WorkRecordBookException("The quantity value is incorrect - cannot be more than 32 teeth.");
+    public I_DentalWork addProductToRecord(I_DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException {
+        if (dentalWork == null) {
+            throw new WorkRecordBookException("The given DentalWork object is null");
         }
         Product p;
         try {
             p = productMap.createProduct(product, quantity);
-        } catch (NoSuchElementException e) {
-            throw new WorkRecordBookException("The specified product type is not found.", e.getCause());
+        } catch (IllegalArgumentException | NoSuchElementException e) {
+            throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
-        workRecord.getProducts().add(p);
-        return workRecord;
+        dentalWork.getProducts().add(p);
+        return dentalWork;
     }
 
     @Override
-    public I_WorkRecord removeProduct(I_WorkRecord workRecord, String product) throws WorkRecordBookException {
-        if ((workRecord == null)||(product == null || product.isEmpty())) {
+    public I_DentalWork removeProduct(I_DentalWork dentalWork, String product) throws WorkRecordBookException {
+        if ((dentalWork == null)||(product == null || product.isEmpty())) {
             throw new WorkRecordBookException("The given argument is null or empty.");
         }
-        if (workRecord.getProducts().isEmpty()) {
-            return workRecord;
+        if (dentalWork.getProducts().isEmpty()) {
+            return dentalWork;
         }
         product = product.toLowerCase();
-        for (Product p : workRecord.getProducts()) {
+        for (Product p : dentalWork.getProducts()) {
             if (p.title().equals(product)) {
-                workRecord.getProducts().remove(p);
+                dentalWork.getProducts().remove(p);
                 break;
             }
         }
-        return workRecord;
+        return dentalWork;
     }
 
     @Override
-    public boolean deleteRecord(I_WorkRecord workRecord) {
-        if (workRecord == null) {
+    public boolean deleteRecord(I_DentalWork dentalWork) {
+        if (dentalWork == null) {
             return false;
         }
-        return records.remove(workRecord);
+        return records.remove(dentalWork);
     }
 
     @Override
-    public I_WorkRecord searchRecord(String patient, String clinic) throws WorkRecordBookException {
+    public I_DentalWork searchRecord(String patient, String clinic) throws WorkRecordBookException {
         try {
-            MyList<I_WorkRecord> list = records.searchElement("patient", patient);
+            MyList<I_DentalWork> list = records.searchElement("patient", patient);
             if (list.size() > 1) {
                 list = list.searchElement("clinic", clinic);
             }
             return list.get(0);
-        } catch (NoSuchFieldException | IllegalAccessException | NoSuchElementException | NullPointerException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public I_WorkRecord getByID(int id) throws WorkRecordBookException {
+    public I_DentalWork getByID(int id) throws WorkRecordBookException {
         try {
-            MyList<I_WorkRecord> list = records.searchElement("id", String.valueOf(id));
+            MyList<I_DentalWork> list = records.searchElement("id", String.valueOf(id));
             return list.get(0);
-        } catch (NoSuchFieldException | IllegalAccessException |NoSuchElementException | NullPointerException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public MyList<I_WorkRecord> sorting() {
-        MyList<I_WorkRecord> result = new MyList<>();
-        I_WorkRecord[] arr = new WorkRecord[records.size()];
+    public MyList<I_DentalWork> sorting() {
+        MyList<I_DentalWork> result = new MyList<>();
+        I_DentalWork[] arr = new DentalWork[records.size()];
         arr = records.toArray(arr);
-        for (I_WorkRecord wr : arr) {
-            if ((wr.getStatus()) == WorkRecord.Status.CLOSED) {
+        for (I_DentalWork dw : arr) {
+            if ((dw.getStatus()) == DentalWork.Status.CLOSED) {
                 //TODO
-//                wr.setStatus();
-                result.add(wr);
-                records.remove(wr);
-            } else if (DatesTool.isCurrentMonth(wr.getComplete(), PAY_DAY)) {
-//                wr.setStatus(true);
-                result.add(wr);
-                records.remove(wr);
+//                dw.setStatus();
+                result.add(dw);
+                records.remove(dw);
+            } else if (DatesTool.isCurrentMonth(dw.getComplete(), PAY_DAY)) {
+//                dw.setStatus(true);
+                result.add(dw);
+                records.remove(dw);
             }
         }
         return result;
     }
 
     @Override
-    public MyList<I_WorkRecord> getList() {
+    public MyList<I_DentalWork> getList() {
         return records;
     }
 

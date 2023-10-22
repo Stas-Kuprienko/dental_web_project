@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
 
-public interface I_WorkRecord extends IDHaving, Serializable {
+public interface I_DentalWork extends IDHaving, Serializable {
 
     void setPatient(String patient);
 
@@ -34,11 +34,7 @@ public interface I_WorkRecord extends IDHaving, Serializable {
         MAKE, COMPETED, CLOSED, PAID
     }
 
-    void setPhoto(byte[] photo);
+    void setReportId(int reportId);
 
-    byte[] getPhoto();
-
-    void setComment(String comment);
-
-    String getComment();
+    int getReportId();
 }

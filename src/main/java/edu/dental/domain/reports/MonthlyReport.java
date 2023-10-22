@@ -1,6 +1,6 @@
 package edu.dental.domain.reports;
 
-import edu.dental.domain.entities.I_WorkRecord;
+import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.utils.DatesTool;
 import edu.dental.utils.data_structures.MyList;
@@ -12,19 +12,19 @@ public final class MonthlyReport {
 
     private final String year;
     private final String month;
-    private final Collection<I_WorkRecord> workRecordList;
+    private final Collection<I_DentalWork> dentalWorks;
 
-    public MonthlyReport(String year, String month, Collection<I_WorkRecord> workRecordList) {
+    public MonthlyReport(String year, String month, Collection<I_DentalWork> dentalWorks) {
         this.year = year;
         this.month = month;
-        this.workRecordList = workRecordList;
+        this.dentalWorks = dentalWorks;
     }
 
-    public MonthlyReport(Collection<I_WorkRecord> workRecordList) {
+    public MonthlyReport(Collection<I_DentalWork> dentalWorks) {
         String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
         this.year = yearAndMonth[0];
         this.month = yearAndMonth[1];
-        this.workRecordList = workRecordList;
+        this.dentalWorks = dentalWorks;
     }
 
     public String getYear() {
@@ -35,8 +35,8 @@ public final class MonthlyReport {
         return month;
     }
 
-    public MyList<I_WorkRecord> getWorkRecordList() {
-        return (MyList<I_WorkRecord>) workRecordList;
+    public MyList<I_DentalWork> getDentalWorks() {
+        return (MyList<I_DentalWork>) dentalWorks;
     }
 
     @Override
@@ -45,7 +45,7 @@ public final class MonthlyReport {
         if (o == null || getClass() != o.getClass()) return false;
         MonthlyReport that = (MonthlyReport) o;
         return Objects.equals(year, that.year) && Objects.equals(month, that.month) &&
-                Objects.equals(workRecordList, that.workRecordList);
+                Objects.equals(dentalWorks, that.dentalWorks);
     }
 
     @Override
@@ -58,7 +58,7 @@ public final class MonthlyReport {
         return "MonthlyReport{" +
                 "year='" + year + '\'' +
                 ", month='" + month + '\'' +
-                ", workRecordList=" + workRecordList +
+                ", dentalWorks=" + dentalWorks +
                 '}';
     }
 }

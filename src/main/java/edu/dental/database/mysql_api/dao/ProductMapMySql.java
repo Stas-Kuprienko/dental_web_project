@@ -1,7 +1,7 @@
 package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.database.connection.DBConfiguration;
+import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
@@ -16,17 +16,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 
-public class ProductMapperMySql implements ProductMapDAO {
+public class ProductMapMySql implements ProductMapDAO {
 
     public static final String FIELDS = "id, title, price";
 
-    public final String TABLE;
+    public final String TABLE = TableInitializer.PRODUCT_MAP;
 
     private final User user;
 
-    public ProductMapperMySql(User user) {
+    public ProductMapMySql(User user) {
         this.user = user;
-        this.TABLE = DBConfiguration.DATA_BASE + ".product_map_" + user.getId();
     }
 
     @Override
@@ -41,7 +40,10 @@ public class ProductMapperMySql implements ProductMapDAO {
                 String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
                 statement.addBatch(query);
             }
-            return statement.executeBatch().length == list.size();
+            statement.executeBatch();
+            ResultSet resultSet = statement.getGeneratedKeys();
+
+            return true;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -66,11 +68,12 @@ public class ProductMapperMySql implements ProductMapDAO {
 
     @Override
     public Collection<ProductMap.Item> getAll() throws DatabaseException {
-        String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE);
+        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "user_id = ?");
         MyList<ProductMap.Item> list;
         try (Request request = new Request(query)) {
+            request.getPreparedStatement().setInt(1, user.getId());
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            list = (MyList<ProductMap.Item>) new ProductMapperInstantiation(resultSet).build();
+            list = (MyList<ProductMap.Item>) new ProductMapInstantiation(resultSet).build();
             return list;
         } catch (SQLException e) {
             //TODO loggers
@@ -85,7 +88,7 @@ public class ProductMapperMySql implements ProductMapDAO {
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            list = (MyList<ProductMap.Item>) new ProductMapperInstantiation(resultSet).build();
+            list = (MyList<ProductMap.Item>) new ProductMapInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | NullPointerException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -94,12 +97,13 @@ public class ProductMapperMySql implements ProductMapDAO {
 
     @Override
     public Collection<ProductMap.Item> search(Object... args) throws DatabaseException {
-        String where = "title = ?";
+        String where = "user_id = ? AND title = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setString(1, (String) args[0]);
+            request.getPreparedStatement().setInt(1, user.getId());
+            request.getPreparedStatement().setString(2, (String) args[0]);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            return new ProductMapperInstantiation(resultSet).build();
+            return new ProductMapInstantiation(resultSet).build();
         } catch (SQLException | NullPointerException e) {
             //TODO
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -108,12 +112,13 @@ public class ProductMapperMySql implements ProductMapDAO {
 
     @Override
     public boolean edit(ProductMap.Item object) throws DatabaseException {
-        String sets = "price = ?";
-        String where = "title = ?";
+        String sets = "price = ? AND title = ?";
+        String where = "id = ?";
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets, where);
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, object.getValue());
             request.getPreparedStatement().setString(2, object.getKey());
+            request.getPreparedStatement().setInt(3, object.getId());
             return request.getPreparedStatement().execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -132,10 +137,12 @@ public class ProductMapperMySql implements ProductMapDAO {
     }
 
     public boolean delete(String title, int price) throws DatabaseException {
-        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "title = ? AND price = ?");
+        String where = "title = ? AND price = ? AND user_id = ?";
+        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, where);
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setString(1, title);
             request.getPreparedStatement().setInt(2, price);
+            request.getPreparedStatement().setInt(3, user.getId());
             return request.getPreparedStatement().execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -143,12 +150,12 @@ public class ProductMapperMySql implements ProductMapDAO {
     }
 
 
-    protected static class ProductMapperInstantiation implements Instantiating<ProductMap.Item> {
+    protected static class ProductMapInstantiation implements Instantiating<ProductMap.Item> {
 
         private final MyList<ProductMap.Item> items;
         private final ResultSet resultSet;
 
-        public ProductMapperInstantiation(ResultSet resultSet) {
+        public ProductMapInstantiation(ResultSet resultSet) {
             this.resultSet = resultSet;
             items = new MyList<>();
         }
@@ -158,16 +165,19 @@ public class ProductMapperMySql implements ProductMapDAO {
             try (resultSet) {
                 Constructor<MyProductMap.Item> constructor = MyProductMap.Item
                         .class.getDeclaredConstructor(String.class, int.class);
+                constructor.setAccessible(true);
                 while (resultSet.next()) {
                     MyProductMap.Item item = constructor.newInstance(resultSet.getString("title")
                                                                         , resultSet.getInt("price"));
+                    item.setId(resultSet.getInt("id"));
                     items.add(item);
                 }
+                constructor.setAccessible(false);
                 return items;
             } catch (NoSuchMethodException | IllegalAccessException
                      | InvocationTargetException | InstantiationException e) {
                 //TODO loggers
-                throw new DatabaseException(e.getMessage(), e.getCause());
+                throw new DatabaseException(e.getMessage(), e);
             }
         }
     }
