@@ -17,17 +17,17 @@ public enum MySqlSamples implements DAO.Queries {
     //TODO
     UPDATE("UPDATE %s SET %s WHERE %s;"),
 
-    SELECT_WORK_RECORD("""
-            SELECT work_record.*,
+    SELECT_DENTAL_WORK("""
+            SELECT dental_work.*,
             	GROUP_CONCAT(product.title) AS entry_id,
                 GROUP_CONCAT(product_map.title) AS title,
                 GROUP_CONCAT(product.quantity) AS quantity,
                 GROUP_CONCAT(product.price) AS price
-            	FROM work_record
-                JOIN product ON product.work_id = work_record.id
+            	FROM dental_work
+                JOIN product ON product.work_id = dental_work.id
                 JOIN product_map ON product_map.id = product.title
             	WHERE %s
-                GROUP BY work_record.id;
+                GROUP BY dental_work.id;
             """),
 
     SELECT_PRODUCT("""
@@ -39,8 +39,8 @@ public enum MySqlSamples implements DAO.Queries {
             (SELECT product_map.id FROM product_map WHERE product_map.title = ?)
             AND
             (work_id IN
-            (SELECT work_record.id FROM work_record WHERE work_record.user_id =
-            (SELECT work_record.user_id FROM work_record WHERE work_record.id = ?)))
+            (SELECT dental_work.id FROM dental_work WHERE dental_work.user_id =
+            (SELECT dental_work.user_id FROM dental_work WHERE dental_work.id = ?)))
             AND quantity = ?;
             """);
 
