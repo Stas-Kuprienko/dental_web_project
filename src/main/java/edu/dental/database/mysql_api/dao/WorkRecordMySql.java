@@ -11,6 +11,7 @@ import edu.dental.utils.data_structures.MyList;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -81,6 +82,24 @@ public class WorkRecordMySql implements WorkRecordDAO {
         String query = String.format(MySqlSamples.SELECT_WORK_RECORD.QUERY, where);
         MyList<I_WorkRecord> workRecords;
         try (Request request = new Request(query)) {
+            ResultSet resultSet = request.getPreparedStatement().executeQuery();
+            workRecords = (MyList<I_WorkRecord>) new WorkRecordInstantiation(resultSet).build();
+        } catch (SQLException | IOException | ClassCastException e) {
+            //TODO loggers
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        }
+        return workRecords;
+    }
+
+    @Override
+    public Collection<I_WorkRecord> getAllMonthly(String month, String year) throws DatabaseException {
+        String getReportId = "(SELECT id FROM " + TableInitializer.REPORT +" WHERE month = ? AND year = ?)";
+        String where = TableInitializer.WORK_RECORD + ".user_id = " + user.getId() + " AND report_id = " + getReportId;
+        String query = String.format(MySqlSamples.SELECT_WORK_RECORD.QUERY, where);
+        MyList<I_WorkRecord> workRecords;
+        try (Request request = new Request(query)) {
+            request.getPreparedStatement().setString(1, month);
+            request.getPreparedStatement().setInt(2, Integer.parseInt(year));
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             workRecords = (MyList<I_WorkRecord>) new WorkRecordInstantiation(resultSet).build();
         } catch (SQLException | IOException | ClassCastException e) {

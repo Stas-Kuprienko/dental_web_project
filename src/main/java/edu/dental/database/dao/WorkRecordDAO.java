@@ -16,6 +16,8 @@ public interface WorkRecordDAO extends DAO<I_WorkRecord> {
     @Override
     Collection<I_WorkRecord> getAll() throws DatabaseException;
 
+    Collection<I_WorkRecord> getAllMonthly(String month, String year) throws DatabaseException;
+
     @Override
     I_WorkRecord get(int id) throws DatabaseException;
 
