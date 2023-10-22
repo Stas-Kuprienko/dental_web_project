@@ -5,11 +5,11 @@ import edu.dental.database.DatabaseException;
 import edu.dental.database.dao.ProductDAO;
 import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.database.dao.UserDAO;
-import edu.dental.database.dao.WorkRecordDAO;
+import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.database.mysql_api.dao.ProductMapMySql;
 import edu.dental.database.mysql_api.dao.ProductMySql;
 import edu.dental.database.mysql_api.dao.UserMySql;
-import edu.dental.database.mysql_api.dao.WorkRecordMySql;
+import edu.dental.database.mysql_api.dao.DentalWorkMySql;
 import edu.dental.domain.entities.User;
 
 public class MyDBService implements DBService {
@@ -36,8 +36,8 @@ public class MyDBService implements DBService {
     }
 
     @Override
-    public WorkRecordDAO getWorkRecordDAO(User user) {
-            return new WorkRecordMySql(user);
+    public DentalWorkDAO getDentalWorkDAO(User user) {
+            return new DentalWorkMySql(user);
     }
 
     @Override

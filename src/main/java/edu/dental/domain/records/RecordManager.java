@@ -1,6 +1,6 @@
 package edu.dental.domain.records;
 
-import edu.dental.domain.entities.I_WorkRecord;
+import edu.dental.domain.entities.I_DentalWork;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +49,7 @@ public final class RecordManager {
     /**
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
      */
-    public static synchronized WorkRecordBook getWorkRecordBook(Collection<I_WorkRecord> records, Map<String, Integer> map) {
+    public static synchronized WorkRecordBook getWorkRecordBook(Collection<I_DentalWork> records, Map<String, Integer> map) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas =

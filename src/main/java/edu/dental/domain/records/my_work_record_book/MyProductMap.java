@@ -2,6 +2,7 @@ package edu.dental.domain.records.my_work_record_book;
 
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
+import edu.dental.domain.records.WorkRecordBookException;
 
 import java.util.*;
 
@@ -26,6 +27,9 @@ public class MyProductMap implements ProductMap {
 
     @Override
     public Product createProduct(String title, int quantity) {
+        if (quantity > 32) {
+            throw new IllegalArgumentException("The quantity value is incorrect - cannot be more than 32 teeth.");
+        }
         int i = findIndex(title);
         if (i == -1) {
             throw new NoSuchElementException("type title is not found");

@@ -12,7 +12,7 @@ public interface TableInitializer {
     String USER = DBConfiguration.DATA_BASE + ".user";
     String REPORT = DBConfiguration.DATA_BASE + ".report";
     String PRODUCT_MAP = DBConfiguration.DATA_BASE + ".product_map";
-    String WORK_RECORD = DBConfiguration.DATA_BASE + ".work_record";
+    String DENTAL_WORK = DBConfiguration.DATA_BASE + ".dental_work";
     String PRODUCT = DBConfiguration.DATA_BASE + ".product";
 
     void init();

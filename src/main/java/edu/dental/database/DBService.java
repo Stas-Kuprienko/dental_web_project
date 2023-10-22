@@ -11,7 +11,7 @@ public interface DBService {
 
     ProductMapDAO getProductMapDAO(User user);
 
-    WorkRecordDAO getWorkRecordDAO(User user);
+    DentalWorkDAO getDentalWorkDAO(User user);
 
     ProductDAO getProductDAO(int workId);
 

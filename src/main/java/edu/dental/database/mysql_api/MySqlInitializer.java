@@ -8,7 +8,7 @@ public class MySqlInitializer implements TableInitializer {
 
     public final String DROP = """
                 DROP TABLE IF EXISTS product;
-                DROP TABLE IF EXISTS work_record;
+                DROP TABLE IF EXISTS dental_work;
                 DROP TABLE IF EXISTS product_map;
                 DROP TABLE IF EXISTS user;
                 """;
@@ -44,7 +44,7 @@ public class MySqlInitializer implements TableInitializer {
               PRIMARY KEY (id, user_id)
               );""", TableInitializer.PRODUCT_MAP);
 
-    public final String WORK_RECORD_Q = String.format("""
+    public final String DENTAL_WORK_Q = String.format("""
             CREATE TABLE %s (
             	user_id INT NOT NULL,
             	id INT NOT NULL AUTO_INCREMENT,
@@ -59,7 +59,7 @@ public class MySqlInitializer implements TableInitializer {
                 CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES user(id),
                 FOREIGN KEY (report_id) REFERENCES report (id),
             	PRIMARY KEY (id, user_id)
-                );""", TableInitializer.WORK_RECORD);
+                );""", TableInitializer.DENTAL_WORK);
 
     public final String PRODUCT_Q = String.format("""
             CREATE TABLE %s (
@@ -67,7 +67,7 @@ public class MySqlInitializer implements TableInitializer {
                 title INT NOT NULL,
                 quantity SMALLINT DEFAULT 0,
                 price INT DEFAULT 0,
-                CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES work_record(id),
+                CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES dental_work(id),
                 FOREIGN KEY (title) REFERENCES product_map (id),
                 PRIMARY KEY (work_id, title)
                 );""", TableInitializer.PRODUCT);
@@ -75,7 +75,7 @@ public class MySqlInitializer implements TableInitializer {
 
     @Override
     public void init() {
-        try (Request request = new Request(DROP, USER_Q, REPORT_Q, PRODUCT_MAP_Q, WORK_RECORD_Q, PRODUCT_Q)) {
+        try (Request request = new Request(DROP, USER_Q, REPORT_Q, PRODUCT_MAP_Q, DENTAL_WORK_Q, PRODUCT_Q)) {
             request.start();
         } catch (SQLException e) {
             throw new RuntimeException(e);
