@@ -3,12 +3,14 @@ package edu.dental.domain.records.my_work_record_book;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
+import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.utils.DatesTool;
 import edu.dental.utils.data_structures.MyList;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 
 /**
@@ -20,9 +22,9 @@ public class MyWorkRecordBook implements WorkRecordBook {
 
     private final MyProductMap productMap;
 
-    private MyWorkRecordBook(MyList<I_DentalWork> records, MyProductMap productMap) {
-        this.records = records;
-        this.productMap = productMap;
+    private MyWorkRecordBook(Collection<I_DentalWork> records, ProductMap productMap) {
+        this.records = (MyList<I_DentalWork>) records;
+        this.productMap = (MyProductMap) productMap;
     }
 
     private MyWorkRecordBook() {

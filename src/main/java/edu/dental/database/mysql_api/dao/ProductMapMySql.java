@@ -15,10 +15,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class ProductMapMySql implements ProductMapDAO {
 
-    public static final String FIELDS = "id, title, price";
+    public static final String FIELDS = "id, user_id, title, price";
 
     public final String TABLE = TableInitializer.PRODUCT_MAP;
 
@@ -35,14 +36,14 @@ public class ProductMapMySql implements ProductMapDAO {
         }
         try (Request request = new Request()) {
             Statement statement = request.getStatement();
-            for (java.util.Map.Entry<String, Integer> entry : list) {
-                String values = String.format("DEFAULT, '%s', %s", entry.getKey(), entry.getValue());
+            for (ProductMap.Item entry : list) {
+                String values = String.format("DEFAULT, %s, '%s', %s", user.getId(), entry.getKey(), entry.getValue());
                 String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
                 statement.addBatch(query);
             }
             statement.executeBatch();
             ResultSet resultSet = statement.getGeneratedKeys();
-
+            setId(resultSet, list);
             return true;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -57,6 +58,7 @@ public class ProductMapMySql implements ProductMapDAO {
         try (Request request = new Request(query)) {
             byte i = 1;
             PreparedStatement statement = request.getPreparedStatement();
+            statement.setInt(i++, user.getId());
             statement.setString(i++, entry.getKey());
             statement.setInt(i, entry.getValue());
             statement.executeUpdate();
@@ -112,13 +114,16 @@ public class ProductMapMySql implements ProductMapDAO {
 
     @Override
     public boolean edit(ProductMap.Item object) throws DatabaseException {
-        String sets = "price = ? AND title = ?";
-        String where = "id = ?";
+        //TODO
+        String sets = "price = ?, title = ?";
+        String where = "id = ? AND user_id = ?";
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets, where);
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setInt(1, object.getValue());
-            request.getPreparedStatement().setString(2, object.getKey());
-            request.getPreparedStatement().setInt(3, object.getId());
+            PreparedStatement statement = request.getPreparedStatement();
+            statement.setInt(1, object.getValue());
+            statement.setString(2, object.getKey());
+            statement.setInt(3, object.getId());
+            statement.setInt(4, user.getId());
             return request.getPreparedStatement().execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -127,9 +132,10 @@ public class ProductMapMySql implements ProductMapDAO {
 
     @Override
     public boolean delete(int id) throws DatabaseException {
-        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ?");
+        String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ? AND user_id = ?");
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
+            request.getPreparedStatement().setInt(2, user.getId());
             return request.getPreparedStatement().execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -146,6 +152,13 @@ public class ProductMapMySql implements ProductMapDAO {
             return request.getPreparedStatement().execute();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
+        }
+    }
+
+    private void setId(ResultSet resultSet, Collection<ProductMap.Item> items) throws SQLException {
+        Iterator<ProductMap.Item> iterator = items.iterator();
+        while (resultSet.next()) {
+            iterator.next().setId((int) resultSet.getLong(1));
         }
     }
 

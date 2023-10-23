@@ -19,7 +19,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     public final String TABLE = TableInitializer.DENTAL_WORK;
     private final User user;
 
-    private static final String FIELDS = "id, patient, clinic, accepted, complete, status, photo, comment, report_id";
+    private static final String FIELDS = "id, report_id, patient, clinic, accepted, complete, status, photo, comment, user_id";
 
     public DentalWorkMySql(User user) {
         this.user = user;
@@ -45,8 +45,8 @@ public class DentalWorkMySql implements DentalWorkDAO {
 
     @Override
     public boolean put(I_DentalWork object) throws DatabaseException {
-        String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
-        injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
+        String injections = "?, ".repeat(FIELDS.split(", ").length - 2);
+        injections = "DEFAULT, ".repeat(2) + injections.substring(0, injections.length() - 2);
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
         try (Request request = new Request(query)) {
             byte i = 1;
@@ -64,7 +64,8 @@ public class DentalWorkMySql implements DentalWorkDAO {
             } else {
                 statement.setNull(i++, Types.BLOB);
             }
-            statement.setString(i, dentalWork.getComment());
+            statement.setString(i++, dentalWork.getComment());
+            statement.setInt(i, user.getId());
             statement.executeUpdate();
             photo.free();
             request.setID(dentalWork);
@@ -77,7 +78,8 @@ public class DentalWorkMySql implements DentalWorkDAO {
 
     @Override
     public Collection<I_DentalWork> getAll() throws DatabaseException {
-        String where = TableInitializer.DENTAL_WORK + ".user_id = " + user.getId();
+        String where = String.format("%s.user_id = %s AND %s.report_id IS NULL",
+                TableInitializer.DENTAL_WORK, user.getId(), TableInitializer.DENTAL_WORK);
         String query = String.format(MySqlSamples.SELECT_DENTAL_WORK.QUERY, where);
         MyList<I_DentalWork> dentalWorks;
         try (Request request = new Request(query)) {
@@ -142,7 +144,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     public boolean edit(I_DentalWork object) throws DatabaseException {
         StringBuilder sets = new StringBuilder();
         String[] fields = FIELDS.split(", ");
-        for (int i = 1; i < fields.length; i++) {
+        for (int i = 1; i < fields.length - 1; i++) {
             sets.append(fields[i]).append("=?,");
         } sets.deleteCharAt(sets.length()-1);
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ?");
@@ -150,6 +152,11 @@ public class DentalWorkMySql implements DentalWorkDAO {
             byte i = 1;
             DentalWork dentalWork = (DentalWork) object;
             PreparedStatement statement = request.getPreparedStatement();
+            if (dentalWork.getReportId() > 0) {
+                statement.setInt(i++, dentalWork.getReportId());
+            } else {
+                statement.setNull(i++, Types.INTEGER);
+            }
             statement.setString(i++, dentalWork.getPatient());
             statement.setString(i++, dentalWork.getClinic());
             statement.setDate(i++, Date.valueOf(dentalWork.getAccepted()));
@@ -166,12 +173,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             } else {
                 statement.setNull(i++, Types.BLOB);
             }
-            statement.setString(i++, dentalWork.getComment());
-            if (dentalWork.getReportId() > 0) {
-                statement.setInt(i, dentalWork.getReportId());
-            } else {
-                statement.setNull(i, Types.INTEGER);
-            }
+            statement.setString(i, dentalWork.getComment());
             return new ProductMySql(dentalWork.getId()).overwrite(dentalWork.getProducts())
                     && statement.execute();
         } catch (SQLException | ClassCastException e) {
@@ -219,6 +221,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
                     byte i = 0;
                     DentalWork dentalWork = new DentalWork();
                     dentalWork.setId(resultSet.getInt(fields[i++]));
+                    dentalWork.setReportId(resultSet.getInt(fields[i++]));
                     dentalWork.setPatient(resultSet.getString(fields[i++]));
                     dentalWork.setClinic(resultSet.getString(fields[i++]));
                     dentalWork.setAccepted(resultSet.getDate(fields[i++]).toLocalDate());

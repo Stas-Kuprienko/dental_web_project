@@ -49,14 +49,14 @@ public final class RecordManager {
     /**
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
      */
-    public static synchronized WorkRecordBook getWorkRecordBook(Collection<I_DentalWork> records, Map<String, Integer> map) {
+    public static synchronized WorkRecordBook getWorkRecordBook(Collection<I_DentalWork> records, ProductMap productMap) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas =
                     (Class<? extends WorkRecordBook>) Class.forName(getClassName(WorkRecordBook.class));
-            Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class, Map.class);
+            Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class, ProductMap.class);
             constructor.setAccessible(true);
-            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(records, map);
+            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(records, productMap);
             constructor.setAccessible(false);
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException

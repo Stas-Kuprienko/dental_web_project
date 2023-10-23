@@ -119,6 +119,15 @@ public class MyProductMap implements ProductMap {
     }
 
     @Override
+    public ProductMap.Item getEntry(String title) {
+        try {
+            return entries[findIndex(title)];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new NoSuchElementException(title + " - entry is not found");
+        }
+    }
+
+    @Override
     public void putAll(Collection<ProductMap.Item> c) {
         c.forEach(this::add);
     }

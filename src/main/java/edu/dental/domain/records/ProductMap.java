@@ -12,6 +12,8 @@ public interface ProductMap extends Map<String, Integer> {
 
     void putAll(Collection<Item> c);
 
+    Item getEntry(String title);
+
     String[] keysToArray();
 
     Item[] toArray();

@@ -104,5 +104,5 @@ public interface WorkRecordBook {
      * @return {@link java.util.Map} object, containing {@link edu.dental.domain.entities.Product product}
      *  {@link java.util.Map.Entry entries}.
      */
-    java.util.Map<String, Integer> getMap();
+    ProductMap getMap();
 }
