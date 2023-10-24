@@ -122,16 +122,12 @@ public class MyWorkRecordBook implements WorkRecordBook {
     @Override
     public MyList<I_DentalWork> sorting() {
         MyList<I_DentalWork> result = new MyList<>();
-        I_DentalWork[] arr = new DentalWork[records.size()];
-        arr = records.toArray(arr);
-        for (I_DentalWork dw : arr) {
-            if ((dw.getStatus()) == DentalWork.Status.CLOSED) {
-                //TODO
-//                dw.setStatus();
+        for (I_DentalWork dw : records) {
+            if (dw.getStatus().ordinal() > 0) {
                 result.add(dw);
                 records.remove(dw);
             } else if (DatesTool.isCurrentMonth(dw.getComplete(), PAY_DAY)) {
-//                dw.setStatus(true);
+                dw.setStatus(I_DentalWork.Status.CLOSED);
                 result.add(dw);
                 records.remove(dw);
             }

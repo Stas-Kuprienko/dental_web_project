@@ -111,15 +111,19 @@ public class ProductMySql implements ProductDAO {
 
     @Override
     public boolean overwrite(Collection<Product> list) throws DatabaseException {
+        //TODO fix
         String delete = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = " + workId);
-        String valuesFormat = "%s, %s, %s, %s";
-        try (Request request = new Request()){
-            Statement statement = request.getStatement();
+        String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
+        injections = workId + ", " + injections.substring(0, injections.length()-2);
+        String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
+        try (Request request = new Request(query)){
+            PreparedStatement statement = request.getPreparedStatement();
             statement.addBatch(delete);
             for (Product p : list) {
-                String values = String.format(valuesFormat, workId, p.entryId(), p.quantity(), p.price());
-                String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
-                statement.addBatch(query);
+                statement.setInt(1, p.entryId());
+                statement.setByte(2, p.quantity());
+                statement.setInt(3, p.price());
+                statement.addBatch();
             }
             return statement.executeBatch().length == list.size();
         } catch (SQLException e) {

@@ -10,6 +10,7 @@ import edu.dental.domain.entities.User;
 import edu.dental.utils.data_structures.MyList;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
         try (Request request = new Request()){
             Statement statement = request.getStatement();
             for (I_DentalWork dw : list) {
-                String query = buildQuery((DentalWork) dw);
+                String query = buildUpdateQuery((DentalWork) dw);
                 statement.addBatch(query);
             }
             return statement.executeBatch().length == list.size();
@@ -142,12 +143,13 @@ public class DentalWorkMySql implements DentalWorkDAO {
 
     @Override
     public boolean edit(I_DentalWork object) throws DatabaseException {
+        //TODO fix
         StringBuilder sets = new StringBuilder();
         String[] fields = FIELDS.split(", ");
         for (int i = 1; i < fields.length - 1; i++) {
             sets.append(fields[i]).append("=?,");
         } sets.deleteCharAt(sets.length()-1);
-        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ?");
+        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ? AND user_id = ?");
         try (Request request = new Request(query)) {
             byte i = 1;
             DentalWork dentalWork = (DentalWork) object;
@@ -173,12 +175,42 @@ public class DentalWorkMySql implements DentalWorkDAO {
             } else {
                 statement.setNull(i++, Types.BLOB);
             }
-            statement.setString(i, dentalWork.getComment());
+            statement.setString(i++, dentalWork.getComment());
+            statement.setInt(i++, dentalWork.getId());
+            statement.setInt(i, user.getId());
             return new ProductMySql(dentalWork.getId()).overwrite(dentalWork.getProducts())
-                    && statement.execute();
+                    && statement.executeUpdate() > 0;
         } catch (SQLException | ClassCastException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Override
+    public boolean edit(Collection<I_DentalWork> list, String field) throws DatabaseException {
+        if (list == null || list.isEmpty()) {
+            throw new DatabaseException("The given argument is null or empty.");
+        }
+        //TODO fix
+        Field setField = null;
+        String set = field + " = ?";
+        String where = "user_id = " + user.getId() + " AND id = ?";
+        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, set, where);
+        try (Request request = new Request(query)){
+            setField = DentalWork.class.getDeclaredField(field);
+            setField.setAccessible(true);
+            PreparedStatement statement = request.getPreparedStatement();
+            for (I_DentalWork dw : list) {
+                statement.setObject(1, setField.get(dw));
+                statement.setInt(2, dw.getId());
+                statement.addBatch();
+            }
+            setField.setAccessible(false);
+            return statement.executeBatch().length == list.size();
+        } catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
+            throw new DatabaseException(e.getMessage(), e.getCause());
+        } finally {
+            if (setField != null) setField.setAccessible(false);
         }
     }
 
@@ -195,7 +227,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
         }
     }
 
-    private String buildQuery(DentalWork dw) {
+    private String buildUpdateQuery(DentalWork dw) {
         String values = "DEFAULT, '%s', '%s', '%s', '%s', '%s', %s, '%s', %s";
         values = String.format(values, dw.getPatient(), dw.getClinic(), dw.getAccepted(),
                 dw.getComplete(), dw.getStatus(), Arrays.toString(dw.getPhoto()), dw.getComment(), dw.getReportId());

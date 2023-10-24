@@ -32,7 +32,7 @@ public class DatesTool {
         } else {
             month = today.getMonth();
         }
-        return date.getMonth().getValue() <= month.getValue();
+        return date != null && date.getMonth().getValue() <= month.getValue();
     }
 
     public static String[] getYearAndMonth(int spitDay) {

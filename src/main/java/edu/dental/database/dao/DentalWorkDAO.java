@@ -27,6 +27,8 @@ public interface DentalWorkDAO extends DAO<I_DentalWork> {
     @Override
     boolean edit(I_DentalWork object) throws DatabaseException;
 
+    boolean edit(Collection<I_DentalWork> list, String field) throws  DatabaseException;
+
     @Override
     boolean delete(int id) throws DatabaseException;
 }
