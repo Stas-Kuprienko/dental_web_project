@@ -2,21 +2,23 @@ package edu.dental.domain.records.my_work_record_book;
 
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
-import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.utils.data_structures.MyList;
 
 import java.util.*;
 
 public class MyProductMap implements ProductMap {
 
-    private static final byte DEFAULT_CAPACITY = 10;
+    private static final byte CAPACITY = 16;
 
     private int size;
 
     protected Item[] entries;
 
+    private Item head;
+
 
     public MyProductMap() {
-        entries = new Item[DEFAULT_CAPACITY];
+        entries = new Item[CAPACITY];
         size = 0;
     }
 
@@ -30,32 +32,44 @@ public class MyProductMap implements ProductMap {
         if (quantity > 32) {
             throw new IllegalArgumentException("The quantity value is incorrect - cannot be more than 32 teeth.");
         }
-        int i = findIndex(title);
-        if (i == -1) {
-            throw new NoSuchElementException("type title is not found");
-        } else {
-            Item entry = entries[i];
-            return new Product(entry.getId(), entry.getKey(), (byte) quantity, entry.getValue());
+        if (title == null || title.isEmpty()) {
+            throw new NullPointerException("the given key is null or empty");
         }
+        Item entry = entries[getIndex(title)];
+        return new Product(entry.getId(), entry.getKey(), (byte) quantity, entry.getValue());
+
     }
 
     @Override
     public Integer put(String key, Integer value) {
-        if (key == null) {
-            throw new NullPointerException("the given key is empty");
+        if (key == null || key.isEmpty()) {
+            throw new NullPointerException("the given key is null or empty");
         }
-        if (size == entries.length) {
+        if (isFilled()) {
             grow();
         }
-        int i = findIndex(key);
-        if (i > -1) {
-            int previous = entries[i].getValue();
-            entries[i].setValue(value);
-            return previous;
-        } else {
-            entries[size] = new Item(key.toLowerCase(), value);
-            size++;
-            return null;
+        key = key.toLowerCase();
+        int index = getIndex(key);
+        Item entry;
+        if (entries[index] != null && entries[index].title.equals(key)) {
+            entry = entries[index];
+            int toReturn = entry.getValue();
+            entry.setValue(value);
+            return toReturn;
+        }
+        for (;;) {
+            if (entries[index] == null) {
+                entry = new Item(key, value);
+                entries[index] = entry;
+                if (head != null) {
+                    head.previous = entry;
+                    entry.next = head;
+                }
+                head = entry;
+                size++;
+                return null;
+            }
+            index = (index + 1) % CAPACITY;
         }
     }
 
@@ -71,39 +85,64 @@ public class MyProductMap implements ProductMap {
 
     @Override
     public boolean containsKey(Object key) {
-        return findIndex((String) key) > -1;
+        String strKey = (String) key;
+        int index = getIndex(strKey.toLowerCase());
+        for (;;) {
+            if (entries[index] == null) {
+                return false;
+            } else {
+                if (entries[index].title.equals(strKey)) {
+                    return true;
+                }
+                index = (index + 1) % CAPACITY;
+            }
+        }
     }
 
     @Override
     public boolean containsValue(Object value) {
+        //TODO
         int v = (int) value;
-        return Arrays.stream(toArray()).map(item -> item.price).toList().contains(v);
+        return Arrays.stream(toArray()).anyMatch(e -> e.getValue().equals(value));
     }
 
     @Override
     public Integer get(Object key) {
         String strKey = (String) key;
-        int i = findIndex(strKey.toLowerCase());
-        if (i == -1) {
-            throw new NullPointerException("the specified value is not found");
-        } else {
-            return entries[i].getValue();
+        if (strKey == null || strKey.isEmpty()) {
+            throw new NullPointerException("the given key is null or empty");
+        }
+        int index = getIndex(strKey.toLowerCase());
+        Item entry = entries[index];
+        for (;;) {
+            if (entry == null) {
+                throw new NullPointerException("the specified value is not found");
+            }
+            if (entry.title.equals(strKey)) {
+                return entry.getValue();
+            }
+            index = (index + 1) % CAPACITY;
+            entry = entries[index];
         }
     }
 
     @Override
     public Integer remove(Object key) {
         String strKey = (String) key;
-        int i = findIndex(strKey.toLowerCase());
-        if (i == -1) {
+        int index = getIndex(strKey.toLowerCase());
+        if (entries[index] == null) {
             return null;
         } else {
-            size -= 1;
-            int value = entries[i].getValue();
-            entries[i] = null;
-            if (size > i) {
-                System.arraycopy(entries, i + 1, entries, i, size - i);
+            Item entry = entries[index];
+            entries[index] = null;
+            int value = entry.getValue();
+            if (entry.next != null) {
+                entry.next.previous = entry.previous;
             }
+            if (entry.previous != null) {
+                entry.previous.next = entry.next;
+            }
+            size -= 1;
             return value;
         }
     }
@@ -120,6 +159,7 @@ public class MyProductMap implements ProductMap {
 
     @Override
     public ProductMap.Item getEntry(String title) {
+        //TODO DELETE
         try {
             return entries[findIndex(title)];
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -129,6 +169,7 @@ public class MyProductMap implements ProductMap {
 
     @Override
     public void putAll(Collection<ProductMap.Item> c) {
+        //TODO
         c.forEach(this::add);
     }
 
@@ -148,9 +189,15 @@ public class MyProductMap implements ProductMap {
     @Override
     public Collection<Integer> values() {
         if (size == 0) {
-            return List.of();
+            throw new NullPointerException("The array of entries is empty.");
         }
-        return Arrays.stream(toArray()).map(v -> v.price).toList();
+        MyList<Integer> list = new MyList<>();
+        Item entry = head;
+        while (entry != null) {
+            list.add(entry.price);
+            entry = entry.next;
+        }
+        return list;
     }
 
     @Override
@@ -160,8 +207,16 @@ public class MyProductMap implements ProductMap {
 
     @Override
     public String[] keysToArray() {
-        List<String> list = Arrays.stream(toArray()).map(e -> e.title).toList();
-        return list.toArray(new String[]{});
+        if (size == 0) {
+            throw new NullPointerException("The array of entries is empty.");
+        }
+        String[] arr = new String[size];
+        Item entry = head;
+        for (int i = 0; entry != null; i++) {
+            arr[i] = entry.title;
+            entry = entry.next;
+        }
+        return arr;
     }
 
     @Override
@@ -170,7 +225,11 @@ public class MyProductMap implements ProductMap {
             throw new NullPointerException("The array of entries is empty.");
         }
         Item[] arr = new Item[size];
-        System.arraycopy(entries, 0, arr, 0, size);
+        Item entry = head;
+        for (int i = 0; entry != null; i++) {
+            arr[i] = entry;
+            entry = entry.next;
+        }
         return arr;
     }
 
@@ -179,6 +238,15 @@ public class MyProductMap implements ProductMap {
         return "MyProductMap{" +
                 "entries=" + Arrays.toString(toArray()) +
                 '}';
+    }
+
+    private int getIndex(String key) {
+        return key.hashCode() % CAPACITY;
+    }
+
+    private boolean isFilled() {
+        int max = 75;
+        return (size*100)/(CAPACITY*100) > max;
     }
 
     private int findIndex(String key) {
@@ -209,6 +277,7 @@ public class MyProductMap implements ProductMap {
     }
 
     private void grow() {
+        //TODO
         Item[] result = new Item[size << 1];
         System.arraycopy(entries, 0, result, 0, entries.length);
         this.entries = result;
@@ -220,6 +289,9 @@ public class MyProductMap implements ProductMap {
         private int id;
         private final String title;
         private int price;
+
+        private Item next;
+        private Item previous;
 
         Item(String title, int price) {
             this.title = title;
