@@ -5,17 +5,13 @@ import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
-import edu.dental.domain.records.my_work_record_book.MyProductMap;
-import edu.dental.utils.data_structures.MyList;
+import edu.dental.domain.records.RecordManager;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 public class ProductMapMySql implements ProductMapDAO {
 
@@ -30,20 +26,25 @@ public class ProductMapMySql implements ProductMapDAO {
     }
 
     @Override
-    public boolean putAll(Collection<ProductMap.Item> list) throws DatabaseException {
-        if (list == null || list.isEmpty()) {
+    public boolean putAll(Map<String, Integer> map) throws DatabaseException {
+        if (map == null || map.isEmpty()) {
             throw new DatabaseException("The  given argument is null or empty.");
         }
-        try (Request request = new Request()) {
-            Statement statement = request.getStatement();
-            for (ProductMap.Item entry : list) {
-                String values = String.format("DEFAULT, %s, '%s', %s", user.getId(), entry.getKey(), entry.getValue());
-                String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
-                statement.addBatch(query);
+        ProductMap productMap = (ProductMap) map;
+        String values = "DEFAULT, " + user.getId() + ", ?, ?";
+        String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
+        try(Request request = new Request(query)) {
+            PreparedStatement statement = request.getPreparedStatement();
+            Iterator<ProductMap.Item> iterator = productMap.iterator();
+            while (iterator.hasNext()) {
+                ProductMap.Item entry = iterator.next();
+                statement.setInt(1, entry.getId());
+                statement.setInt(2, entry.getValue());
+                statement.addBatch();
             }
             statement.executeBatch();
             ResultSet resultSet = statement.getGeneratedKeys();
-            setId(resultSet, list);
+            setId(resultSet, productMap);
             return true;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -51,78 +52,47 @@ public class ProductMapMySql implements ProductMapDAO {
     }
 
     @Override
-    public boolean put(ProductMap.Item entry) throws DatabaseException {
-        String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
-        injections = "DEFAULT, " + injections.substring(0, injections.length() - 2);
-        String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
+    public int put(String key, int value) throws DatabaseException {
+        String values = "DEFAULT, " + user.getId() + ", ?, ?";
+        String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, values);
         try (Request request = new Request(query)) {
-            byte i = 1;
             PreparedStatement statement = request.getPreparedStatement();
-            statement.setInt(i++, user.getId());
-            statement.setString(i++, entry.getKey());
-            statement.setInt(i, entry.getValue());
+            statement.setString(1, key);
+            statement.setInt(2, value);
             statement.executeUpdate();
-            return request.setID(entry);
+            ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+            return (int) resultSet.getLong(1);
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public Collection<ProductMap.Item> getAll() throws DatabaseException {
+    public Map<String, Integer> get() throws DatabaseException {
+        //TODO
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "user_id = ?");
-        MyList<ProductMap.Item> list;
+        ProductMap productMap = RecordManager.getProductMap();
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, user.getId());
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            list = (MyList<ProductMap.Item>) new ProductMapInstantiation(resultSet).build();
-            return list;
-        } catch (SQLException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        }
-    }
+            while (resultSet.next()) {
 
-    @Override
-    public ProductMap.Item get(int id) throws DatabaseException {
-        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
-        MyList<ProductMap.Item> list;
-        try (Request request = new Request(query)) {
-            request.getPreparedStatement().setInt(1, id);
-            ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            list = (MyList<ProductMap.Item>) new ProductMapInstantiation(resultSet).build();
-            return list.get(0);
+            }
+            return null;
         } catch (SQLException | NullPointerException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public Collection<ProductMap.Item> search(Object... args) throws DatabaseException {
-        String where = "user_id = ? AND title = ?";
-        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
-        try (Request request = new Request(query)) {
-            request.getPreparedStatement().setInt(1, user.getId());
-            request.getPreparedStatement().setString(2, (String) args[0]);
-            ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            return new ProductMapInstantiation(resultSet).build();
-        } catch (SQLException | NullPointerException e) {
-            //TODO
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        }
-    }
-
-    @Override
-    public boolean edit(ProductMap.Item object) throws DatabaseException {
+    public boolean edit(int id, int value) throws DatabaseException {
+        //TODO
         String sets = "price = ?, title = ?";
         String where = "id = ? AND user_id = ?";
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets, where);
         try (Request request = new Request(query)) {
             PreparedStatement statement = request.getPreparedStatement();
-            statement.setInt(1, object.getValue());
-            statement.setString(2, object.getKey());
-            statement.setInt(3, object.getId());
-            statement.setInt(4, user.getId());
             return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -154,43 +124,10 @@ public class ProductMapMySql implements ProductMapDAO {
         }
     }
 
-    private void setId(ResultSet resultSet, Collection<ProductMap.Item> items) throws SQLException {
-        Iterator<ProductMap.Item> iterator = items.iterator();
+    private void setId(ResultSet resultSet, ProductMap map) throws SQLException {
+        Iterator<ProductMap.Item> iterator = map.iterator();
         while (resultSet.next()) {
             iterator.next().setId((int) resultSet.getLong(1));
-        }
-    }
-
-
-    protected static class ProductMapInstantiation implements Instantiating<ProductMap.Item> {
-
-        private final MyList<ProductMap.Item> items;
-        private final ResultSet resultSet;
-
-        public ProductMapInstantiation(ResultSet resultSet) {
-            this.resultSet = resultSet;
-            items = new MyList<>();
-        }
-
-        @Override
-        public Collection<ProductMap.Item> build() throws SQLException, DatabaseException {
-            try (resultSet) {
-                Constructor<MyProductMap.Item> constructor = MyProductMap.Item
-                        .class.getDeclaredConstructor(String.class, int.class);
-                constructor.setAccessible(true);
-                while (resultSet.next()) {
-                    MyProductMap.Item item = constructor.newInstance(resultSet.getString("title")
-                                                                        , resultSet.getInt("price"));
-                    item.setId(resultSet.getInt("id"));
-                    items.add(item);
-                }
-                constructor.setAccessible(false);
-                return items;
-            } catch (NoSuchMethodException | IllegalAccessException
-                     | InvocationTargetException | InstantiationException e) {
-                //TODO loggers
-                throw new DatabaseException(e.getMessage(), e);
-            }
         }
     }
 }

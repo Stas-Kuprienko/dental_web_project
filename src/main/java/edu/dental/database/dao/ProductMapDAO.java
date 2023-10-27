@@ -1,30 +1,26 @@
 package edu.dental.database.dao;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.domain.records.ProductMap;
 
-import java.util.Collection;
+import java.sql.SQLException;
+import java.util.Map;
 
-public interface ProductMapDAO extends DAO<ProductMap.Item> {
+public interface ProductMapDAO {
 
-    @Override
-    boolean putAll(Collection<ProductMap.Item> list) throws DatabaseException;
+    boolean putAll(Map<String, Integer> map) throws DatabaseException;
 
-    @Override
-    boolean put(ProductMap.Item object) throws DatabaseException;
+    int put(String key, int value) throws DatabaseException;
 
-    @Override
-    Collection<ProductMap.Item> getAll() throws DatabaseException;
+    Map<String, Integer> get() throws DatabaseException;
 
-    @Override
-    ProductMap.Item get(int id) throws DatabaseException;
+    boolean edit(int id, int value) throws DatabaseException;
 
-    @Override
-    Collection<ProductMap.Item> search(Object... args) throws DatabaseException;
-
-    @Override
-    boolean edit(ProductMap.Item object) throws DatabaseException;
-
-    @Override
     boolean delete(int id) throws DatabaseException;
+
+    class Request extends DAO.Request {
+
+        public Request(String query) throws SQLException {
+            super(query);
+        }
+    }
 }

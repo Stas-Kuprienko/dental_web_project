@@ -74,6 +74,12 @@ public class MyProductMap implements ProductMap {
     }
 
     @Override
+    public boolean put(String title, int price, int id) {
+        //TODO
+        return false;
+    }
+
+    @Override
     public int size() {
         return size;
     }
@@ -158,16 +164,6 @@ public class MyProductMap implements ProductMap {
     }
 
     @Override
-    public ProductMap.Item getEntry(String title) {
-        //TODO DELETE
-        try {
-            return entries[findIndex(title)];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new NoSuchElementException(title + " - entry is not found");
-        }
-    }
-
-    @Override
     public void putAll(Collection<ProductMap.Item> c) {
         //TODO
         c.forEach(this::add);
@@ -231,6 +227,10 @@ public class MyProductMap implements ProductMap {
             entry = entry.next;
         }
         return arr;
+    }
+
+    public Iterator iterator() {
+        return this.new Iterator();
     }
 
     @Override
@@ -345,6 +345,30 @@ public class MyProductMap implements ProductMap {
                     ", title='" + title + '\'' +
                     ", price=" + price +
                     '}';
+        }
+    }
+
+    public final class Iterator implements java.util.Iterator<ProductMap.Item> {
+
+        private Item entry;
+
+        private Iterator() {
+            this.entry = head;
+            if (entry == null) {
+                throw new NullPointerException("this map is empty");
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return entry.next != null;
+        }
+
+        @Override
+        public Item next() {
+            Item e = entry;
+            entry = entry.next;
+            return e;
         }
     }
 }
