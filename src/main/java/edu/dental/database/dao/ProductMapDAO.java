@@ -1,17 +1,17 @@
 package edu.dental.database.dao;
 
 import edu.dental.database.DatabaseException;
+import edu.dental.domain.records.ProductMap;
 
 import java.sql.SQLException;
-import java.util.Map;
 
 public interface ProductMapDAO {
 
-    boolean putAll(Map<String, Integer> map) throws DatabaseException;
+    boolean putAll(ProductMap map) throws DatabaseException;
 
     int put(String key, int value) throws DatabaseException;
 
-    Map<String, Integer> get() throws DatabaseException;
+    ProductMap get() throws DatabaseException;
 
     boolean edit(int id, int value) throws DatabaseException;
 

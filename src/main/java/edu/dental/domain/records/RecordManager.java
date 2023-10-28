@@ -1,13 +1,15 @@
 package edu.dental.domain.records;
 
+import edu.dental.database.DatabaseException;
+import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.User;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -83,18 +85,19 @@ public final class RecordManager {
         }
     }
 
-    public static synchronized ProductMap getProductMap(Collection<ProductMap.Item> list) {
+    public static synchronized ProductMap getProductMap(User user) {
         try {
             @SuppressWarnings("unchecked")
-            Class<? extends ProductMap> clas =
-                    (Class<? extends ProductMap>) Class.forName(getClassName(ProductMap.class));
-            Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class);
+            Class<? extends ProductMapDAO> clas =
+                    (Class<? extends ProductMapDAO>) Class.forName(getClassName(ProductMapDAO.class));
+            Constructor<?> constructor = clas.getDeclaredConstructor(User.class);
             constructor.setAccessible(true);
-            ProductMap productMap = (ProductMap) constructor.newInstance(list);
+            ProductMapDAO mapDAO = (ProductMapDAO) constructor.newInstance(user);
+            ProductMap productMap = mapDAO.get();
             constructor.setAccessible(false);
             return productMap;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
-                 | ClassCastException | InstantiationException | IllegalAccessException e) {
+                 | ClassCastException | InstantiationException | IllegalAccessException | DatabaseException e) {
             //TODO loggers
             throw new RuntimeException(e);
         }

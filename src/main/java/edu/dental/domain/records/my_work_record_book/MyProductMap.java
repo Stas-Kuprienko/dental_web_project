@@ -2,7 +2,6 @@ package edu.dental.domain.records.my_work_record_book;
 
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
-import edu.dental.utils.data_structures.MyList;
 
 import java.util.*;
 
@@ -20,11 +19,6 @@ public class MyProductMap implements ProductMap {
     public MyProductMap() {
         entries = new Item[CAPACITY];
         size = 0;
-    }
-
-    public MyProductMap(Collection<ProductMap.Item> entries) {
-        this();
-        putAll(entries);
     }
 
     @Override
@@ -51,11 +45,12 @@ public class MyProductMap implements ProductMap {
         key = key.toLowerCase();
         int index = getIndex(key);
         Item entry;
+        //TODO fix doubling
         if (entries[index] != null && entries[index].title.equals(key)) {
             entry = entries[index];
-            int toReturn = entry.getValue();
+            int id = entry.getId();
             entry.setValue(value);
-            return toReturn;
+            return id;
         }
         for (;;) {
             if (entries[index] == null) {
@@ -67,16 +62,44 @@ public class MyProductMap implements ProductMap {
                 }
                 head = entry;
                 size++;
-                return null;
+                return 0;
             }
             index = (index + 1) % CAPACITY;
         }
     }
 
     @Override
-    public boolean put(String title, int price, int id) {
-        //TODO
-        return false;
+    public boolean put(String key, int value, int id) {
+        if (key == null || key.isEmpty()) {
+            throw new NullPointerException("the given key is null or empty");
+        }
+        if (isFilled()) {
+            grow();
+        }
+        key = key.toLowerCase();
+        int index = getIndex(key);
+        Item entry;
+        if (entries[index] != null && entries[index].title.equals(key)) {
+            entry = entries[index];
+            entry.setValue(value);
+            entry.setId(id);
+            return true;
+        }
+        for (;;) {
+            if (entries[index] == null) {
+                entry = new Item(key, value);
+                entry.setId(id);
+                entries[index] = entry;
+                if (head != null) {
+                    head.previous = entry;
+                    entry.next = head;
+                }
+                head = entry;
+                size++;
+                return true;
+            }
+            index = (index + 1) % CAPACITY;
+        }
     }
 
     @Override
@@ -107,8 +130,6 @@ public class MyProductMap implements ProductMap {
 
     @Override
     public boolean containsValue(Object value) {
-        //TODO
-        int v = (int) value;
         return Arrays.stream(toArray()).anyMatch(e -> e.getValue().equals(value));
     }
 
@@ -137,11 +158,11 @@ public class MyProductMap implements ProductMap {
         String strKey = (String) key;
         int index = getIndex(strKey.toLowerCase());
         if (entries[index] == null) {
-            return null;
+            return 0;
         } else {
             Item entry = entries[index];
             entries[index] = null;
-            int value = entry.getValue();
+            int id = entry.getId();
             if (entry.next != null) {
                 entry.next.previous = entry.previous;
             }
@@ -149,7 +170,7 @@ public class MyProductMap implements ProductMap {
                 entry.previous.next = entry.next;
             }
             size -= 1;
-            return value;
+            return id;
         }
     }
 
@@ -164,9 +185,26 @@ public class MyProductMap implements ProductMap {
     }
 
     @Override
-    public void putAll(Collection<ProductMap.Item> c) {
-        //TODO
-        c.forEach(this::add);
+    public boolean setId(String title, int id) {
+        title = title.toLowerCase();
+        int index = getIndex(title);
+        for (; entries[index] != null; index++) {
+            if (entries[index].title.equals(title)) {
+                entries[index].setId(id);
+                return true;
+            }
+        } return false;
+    }
+
+    @Override
+    public int getId(String title) {
+        title = title.toLowerCase();
+        int index = getIndex(title);
+        for (; entries[index] != null; index++) {
+            if (entries[index].title.equals(title)) {
+                return entries[index].getId();
+            }
+        } return 0;
     }
 
     @Override
@@ -187,7 +225,7 @@ public class MyProductMap implements ProductMap {
         if (size == 0) {
             throw new NullPointerException("The array of entries is empty.");
         }
-        MyList<Integer> list = new MyList<>();
+        Collection<Integer> list = new ArrayList<>();
         Item entry = head;
         while (entry != null) {
             list.add(entry.price);
@@ -249,38 +287,14 @@ public class MyProductMap implements ProductMap {
         return (size*100)/(CAPACITY*100) > max;
     }
 
-    private int findIndex(String key) {
-        if (key == null) {
-            throw new NullPointerException("the given argument is null");
-        }
-        if (size < 1) {
-            return -1;
-        }
-        key = key.toLowerCase();
-        return Arrays.stream(toArray()).map(item -> item.title).toList().indexOf(key);
-    }
-
-    private void add(ProductMap.Item e) {
-        if (e == null) {
-            throw new NullPointerException("the given argument is null");
-        }
-        if (size == entries.length) {
-            grow();
-        }
-        int i = findIndex(e.getKey());
-        if (i > -1) {
-            entries[i] = (Item) e;
-        } else {
-            entries[size] = (Item) e;
-            size++;
-        }
-    }
-
     private void grow() {
-        //TODO
-        Item[] result = new Item[size << 1];
-        System.arraycopy(entries, 0, result, 0, entries.length);
-        this.entries = result;
+        Item[] buff = new Item[size];
+        System.arraycopy(entries, 0, buff, 0, size);
+        entries = new Item[size << 1];
+        head = null;
+        for (Item i : buff) {
+            put(i.title, i.price, i.id);
+        }
     }
 
 

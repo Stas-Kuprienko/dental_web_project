@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.Map;
 
 public class ProductMapMySql implements ProductMapDAO {
 
@@ -19,23 +18,22 @@ public class ProductMapMySql implements ProductMapDAO {
 
     public final String TABLE = TableInitializer.PRODUCT_MAP;
 
-    private final User user;
+    private final int userId;
 
     public ProductMapMySql(User user) {
-        this.user = user;
+        this.userId = user.getId();
     }
 
     @Override
-    public boolean putAll(Map<String, Integer> map) throws DatabaseException {
+    public boolean putAll(ProductMap map) throws DatabaseException {
         if (map == null || map.isEmpty()) {
             throw new DatabaseException("The  given argument is null or empty.");
         }
-        ProductMap productMap = (ProductMap) map;
-        String values = "DEFAULT, " + user.getId() + ", ?, ?";
+        String values = "DEFAULT, " + userId + ", ?, ?";
         String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
         try(Request request = new Request(query)) {
             PreparedStatement statement = request.getPreparedStatement();
-            Iterator<ProductMap.Item> iterator = productMap.iterator();
+            Iterator<ProductMap.Item> iterator = map.iterator();
             while (iterator.hasNext()) {
                 ProductMap.Item entry = iterator.next();
                 statement.setInt(1, entry.getId());
@@ -44,7 +42,7 @@ public class ProductMapMySql implements ProductMapDAO {
             }
             statement.executeBatch();
             ResultSet resultSet = statement.getGeneratedKeys();
-            setId(resultSet, productMap);
+            setId(resultSet, map);
             return true;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -53,7 +51,7 @@ public class ProductMapMySql implements ProductMapDAO {
 
     @Override
     public int put(String key, int value) throws DatabaseException {
-        String values = "DEFAULT, " + user.getId() + ", ?, ?";
+        String values = "DEFAULT, " + userId + ", ?, ?";
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, values);
         try (Request request = new Request(query)) {
             PreparedStatement statement = request.getPreparedStatement();
@@ -69,17 +67,19 @@ public class ProductMapMySql implements ProductMapDAO {
     }
 
     @Override
-    public Map<String, Integer> get() throws DatabaseException {
-        //TODO
+    public ProductMap get() throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "user_id = ?");
         ProductMap productMap = RecordManager.getProductMap();
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setInt(1, user.getId());
+            request.getPreparedStatement().setInt(1, userId);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             while (resultSet.next()) {
-
+                String title = resultSet.getString("title");
+                int price = resultSet.getInt("price");
+                int id = resultSet.getInt("id");
+                productMap.put(title, price, id);
             }
-            return null;
+            return productMap;
         } catch (SQLException | NullPointerException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -87,12 +87,14 @@ public class ProductMapMySql implements ProductMapDAO {
 
     @Override
     public boolean edit(int id, int value) throws DatabaseException {
-        //TODO
-        String sets = "price = ?, title = ?";
+        String set = "price = ?";
         String where = "id = ? AND user_id = ?";
-        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets, where);
+        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, set, where);
         try (Request request = new Request(query)) {
             PreparedStatement statement = request.getPreparedStatement();
+            statement.setInt(1, value);
+            statement.setInt(2, id);
+            statement.setInt(3, userId);
             return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -104,7 +106,7 @@ public class ProductMapMySql implements ProductMapDAO {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ? AND user_id = ?");
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
-            request.getPreparedStatement().setInt(2, user.getId());
+            request.getPreparedStatement().setInt(2, userId);
             return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -117,7 +119,7 @@ public class ProductMapMySql implements ProductMapDAO {
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setString(1, title);
             request.getPreparedStatement().setInt(2, price);
-            request.getPreparedStatement().setInt(3, user.getId());
+            request.getPreparedStatement().setInt(3, userId);
             return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());

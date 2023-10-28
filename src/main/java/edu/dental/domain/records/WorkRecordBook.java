@@ -100,9 +100,9 @@ public interface WorkRecordBook {
     Collection<I_DentalWork> getList();
 
     /**
-     * Get the {@link java.util.Map} field of {@link edu.dental.domain.entities.Product products}.
-     * @return {@link java.util.Map} object, containing {@link edu.dental.domain.entities.Product product}
-     *  {@link java.util.Map.Entry entries}.
+     * Get the {@link ProductMap} field of {@link edu.dental.domain.entities.Product products}.
+     * @return {@link ProductMap} object, containing {@link edu.dental.domain.entities.Product product}
+     *  {@link edu.dental.domain.records.ProductMap.Item entries}.
      */
     ProductMap getMap();
 }
