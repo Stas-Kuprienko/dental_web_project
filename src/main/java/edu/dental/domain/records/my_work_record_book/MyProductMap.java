@@ -132,21 +132,27 @@ public class MyProductMap implements ProductMap {
     @Override
     public Integer remove(Object key) {
         String strKey = (String) key;
-        int index = getIndex(strKey.toLowerCase());
-        if (entries[index] == null && !containsKey(strKey)) {
+        if (strKey == null || strKey.isEmpty()) {
+            throw new NullPointerException("the given key is null or empty");
+        }
+        strKey = strKey.toLowerCase();
+        if (!containsKey(strKey)) {
             return 0;
         } else {
+            int index = getIndex(strKey);
             while (!entries[index].title.equals(strKey)){
                 index = (index + 1) % CAPACITY;
             }
             Item entry = entries[index];
             entries[index] = null;
             int id = entry.getId();
+            if (head == entry) {
+                head = entry.next;
+            } else if (entry.previous != null) {
+                entry.previous.next = entry.next;
+            }
             if (entry.next != null) {
                 entry.next.previous = entry.previous;
-            }
-            if (entry.previous != null) {
-                entry.previous.next = entry.next;
             }
             size -= 1;
             return id;
@@ -247,7 +253,9 @@ public class MyProductMap implements ProductMap {
     }
 
     private int getIndex(String key) {
-        return key.hashCode() % CAPACITY;
+        key = key.toLowerCase();
+        int index = key.hashCode() % CAPACITY;
+        return index < 0 ? index * (-1) : index;
     }
 
     private boolean isFilled() {

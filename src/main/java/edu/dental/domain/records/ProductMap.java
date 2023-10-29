@@ -12,7 +12,7 @@ public interface ProductMap extends Map<String, Integer> {
 
     /**
      * Associates the specified value with the specified key in this map
-     * (optional operation).  If the map previously contained a mapping for
+     * (optional operation). If the map previously contained a mapping for
      * the key, the old value is replaced by the specified value.
      *
      * @param key key with which the specified value is to be associated
@@ -31,6 +31,25 @@ public interface ProductMap extends Map<String, Integer> {
     @Override
     Integer put(String key, Integer value);
 
+    /**
+     * Associates the specified value with the specified key in this map
+     * (optional operation). If the map previously contained a mapping for
+     * the key, the old value is replaced by the specified value. Also set
+     * {@code id} in current {@link Item entry}.
+     *
+     * @param title key with which the specified value is to be associated
+     * @param price value to be associated with the specified key
+     * @param id id to be set in specified entry.
+     * @return true if it was success.
+     *
+     * @throws UnsupportedOperationException if the {@code put} operation
+     *         is not supported by this map.
+     * @throws ClassCastException if the class of the specified key or value
+     *         prevents it from being stored in this map.
+     * @throws NullPointerException if the specified key is null.
+     * @throws IllegalArgumentException if some property of the specified key
+     *         or value prevents it from being stored in this map.
+     */
     boolean put(String title, int price, int id);
 
     /**

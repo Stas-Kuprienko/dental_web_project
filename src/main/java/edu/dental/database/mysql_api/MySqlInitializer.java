@@ -38,7 +38,7 @@ public class MySqlInitializer implements TableInitializer {
             CREATE TABLE %s (
               user_id INT NOT NULL,
               id INT NOT NULL AUTO_INCREMENT,
-              title VARCHAR(30) NOT NULL,
+              title VARCHAR(30) NOT NULL UNIQUE,
               price INT NOT NULL,
               FOREIGN KEY (user_id) REFERENCES user(id),
               PRIMARY KEY (id, user_id)
