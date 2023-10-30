@@ -126,7 +126,10 @@ public class MyProductMap implements ProductMap {
     @Override
     public Integer get(Object key) {
         String strKey = (String) key;
-        return getItem(strKey).getValue();
+        if (strKey == null || strKey.isEmpty()) {
+            throw new NullPointerException("the given key is null or empty");
+        }
+        return getItem(strKey).price;
     }
 
     @Override
@@ -136,27 +139,27 @@ public class MyProductMap implements ProductMap {
             throw new NullPointerException("the given key is null or empty");
         }
         strKey = strKey.toLowerCase();
-        if (!containsKey(strKey)) {
-            return 0;
-        } else {
-            int index = getIndex(strKey);
-            while (!entries[index].title.equals(strKey)){
-                index = (index + 1) % CAPACITY;
+        int index = getIndex(strKey);
+        Item e;
+        for (int i = 0; i < size; i++) {
+            e = entries[index];
+            if (e != null && e.title.equals(strKey)) {
+                entries[index] = null;
+                int id = e.getId();
+                if (head == e) {
+                    head = e.next;
+                } else if (e.previous != null) {
+                    e.previous.next = e.next;
+                }
+                if (e.next != null) {
+                    e.next.previous = e.previous;
+                }
+                size -= 1;
+                return id;
             }
-            Item entry = entries[index];
-            entries[index] = null;
-            int id = entry.getId();
-            if (head == entry) {
-                head = entry.next;
-            } else if (entry.previous != null) {
-                entry.previous.next = entry.next;
-            }
-            if (entry.next != null) {
-                entry.next.previous = entry.previous;
-            }
-            size -= 1;
-            return id;
-        }
+            index = (index + 1) % CAPACITY;
+        } throw new NullPointerException("the specified entry ('"
+                + strKey + "') is not found");
     }
 
     @Override
@@ -269,16 +272,15 @@ public class MyProductMap implements ProductMap {
         }
         key = key.toLowerCase();
         int index = getIndex(key);
-        Item entry = entries[index];
-        if (!containsKey(key)) {
-            throw new NullPointerException("the specified entry ('"
-                    + key + "') is not found");
-        }
-        for (;; index = (index + 1) % CAPACITY, entry = entries[index]) {
-            if (entry != null && entry.title.equals(key)) {
-                return entry;
+        Item e;
+        for (int i = 0; i < size; i++) {
+            e = entries[index];
+            if (e != null && e.title.equals(key)) {
+                return e;
             }
-        }
+            index = (index + 1) % CAPACITY;
+        } throw new NullPointerException("the specified entry ('"
+                + key + "') is not found");
     }
 
     private void grow() {
