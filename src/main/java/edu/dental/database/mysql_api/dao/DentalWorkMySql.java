@@ -143,7 +143,6 @@ public class DentalWorkMySql implements DentalWorkDAO {
 
     @Override
     public boolean edit(I_DentalWork object) throws DatabaseException {
-        //TODO fix
         StringBuilder sets = new StringBuilder();
         String[] fields = FIELDS.split(", ");
         for (int i = 1; i < fields.length - 1; i++) {
@@ -187,11 +186,10 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
     @Override
-    public boolean edit(Collection<I_DentalWork> list, String field) throws DatabaseException {
+    public boolean edit(Collection<I_DentalWork> list, String field, int type) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The given argument is null or empty.");
         }
-        //TODO fix
         Field setField = null;
         String set = field + " = ?";
         String where = "user_id = " + user.getId() + " AND id = ?";
@@ -201,7 +199,8 @@ public class DentalWorkMySql implements DentalWorkDAO {
             setField.setAccessible(true);
             PreparedStatement statement = request.getPreparedStatement();
             for (I_DentalWork dw : list) {
-                statement.setObject(1, setField.get(dw));
+                //TODO fix
+                statement.setObject(1, setField.get(dw), type);
                 statement.setInt(2, dw.getId());
                 statement.addBatch();
             }

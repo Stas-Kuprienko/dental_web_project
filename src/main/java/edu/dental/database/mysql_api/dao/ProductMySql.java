@@ -111,7 +111,6 @@ public class ProductMySql implements ProductDAO {
 
     @Override
     public boolean overwrite(Collection<Product> list) throws DatabaseException {
-        //TODO fix
         String delete = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = " + workId);
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
         injections = workId + ", " + injections.substring(0, injections.length()-2);
@@ -125,7 +124,7 @@ public class ProductMySql implements ProductDAO {
                 statement.setInt(3, p.price());
                 statement.addBatch();
             }
-            return statement.executeBatch().length == list.size();
+            return statement.executeBatch().length == list.size() + 1;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }

@@ -62,6 +62,12 @@ public class MyWorkRecordBook implements WorkRecordBook {
         }
         Product p;
         try {
+            MyList<Product> products = (MyList<Product>) dentalWork.getProducts();
+            p = products.searchElement("title", product).get(0);
+            quantity += p.quantity();
+            removeProduct(dentalWork, product);
+        } catch (NullPointerException | NoSuchElementException ignored) {}
+        try {
             p = productMap.createProduct(product, quantity);
         } catch (IllegalArgumentException | NoSuchElementException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());

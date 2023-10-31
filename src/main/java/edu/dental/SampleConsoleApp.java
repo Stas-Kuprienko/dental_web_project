@@ -20,6 +20,7 @@ import edu.dental.domain.reports.ReportServiceManager;
 import edu.dental.utils.DatesTool;
 import edu.dental.utils.data_structures.MyList;
 
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -240,7 +241,7 @@ public class SampleConsoleApp {
 
         public static void sorting() throws DatabaseException {
             closed = (MyList<I_DentalWork>) workRecordBook.sorting();
-            System.out.println(new DentalWorkMySql(user).edit(closed, "status"));
+            System.out.println(new DentalWorkMySql(user).edit(closed, "status", Types.VARCHAR));
         }
 
         public static void saveFile() throws ReportServiceException {
