@@ -118,12 +118,15 @@ public class DentalWork implements I_DentalWork {
 
     @Override
     public String toString() {
-        return "DentalWork{" +
-                "id=" + id +
-                ", patient='" + patient + '\'' +
-                ", clinic='" + clinic + '\'' +
-                ", products=" + products +
-                ", accepted=" + accepted +
+        return "\nDentalWork{" +
+                "\n id=" + id +
+                ", \n patient='" + patient + '\'' +
+                ", \n clinic='" + clinic + '\'' +
+                ", \n products=" + products +
+                ", \n accepted=" + accepted +
+                ", \n complete=" + complete +
+                ", \n status=" + status +
+                ", \n reportId=" + reportId +
                 '}';
     }
 

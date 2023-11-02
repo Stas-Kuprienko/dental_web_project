@@ -32,10 +32,10 @@ public record Product (int entryId, String title, byte quantity, int price) impl
 
     @Override
     public String toString() {
-        return "Product{" +
-                "title='" + title + '\'' +
-                ", quantity=" + quantity +
-                ", price=" + countAmount() +
+        return "\n Product{" +
+                "\n -title='" + title + '\'' +
+                ", \n -quantity=" + quantity +
+                ", \n -price=" + countAmount() +
                 '}';
     }
 }

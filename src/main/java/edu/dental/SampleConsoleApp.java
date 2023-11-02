@@ -241,7 +241,7 @@ public class SampleConsoleApp {
 
         public static void sorting() throws DatabaseException {
             closed = (MyList<I_DentalWork>) workRecordBook.sorting();
-            System.out.println(new DentalWorkMySql(user).edit(closed, "status", Types.VARCHAR));
+            System.out.println(new DentalWorkMySql(user).setStatus(closed, "closed"));
         }
 
         public static void saveFile() throws ReportServiceException {

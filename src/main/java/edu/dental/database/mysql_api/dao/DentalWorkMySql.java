@@ -186,30 +186,23 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
     @Override
-    public boolean edit(Collection<I_DentalWork> list, String field, int type) throws DatabaseException {
+    public boolean setStatus(Collection<I_DentalWork> list, String value) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The given argument is null or empty.");
         }
-        Field setField = null;
-        String set = field + " = ?";
+        String set = "status = ?";
         String where = "user_id = " + user.getId() + " AND id = ?";
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, set, where);
         try (Request request = new Request(query)){
-            setField = DentalWork.class.getDeclaredField(field);
-            setField.setAccessible(true);
             PreparedStatement statement = request.getPreparedStatement();
             for (I_DentalWork dw : list) {
-                //TODO fix
-                statement.setObject(1, setField.get(dw), type);
+                statement.setObject(1, value);
                 statement.setInt(2, dw.getId());
                 statement.addBatch();
             }
-            setField.setAccessible(false);
             return statement.executeBatch().length == list.size();
-        } catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
-        } finally {
-            if (setField != null) setField.setAccessible(false);
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
         }
     }
 
