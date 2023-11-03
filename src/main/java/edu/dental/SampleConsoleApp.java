@@ -1,6 +1,7 @@
 package edu.dental;
 
 import edu.dental.database.DatabaseException;
+import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.database.mysql_api.dao.DentalWorkMySql;
 import edu.dental.database.mysql_api.dao.ProductMapMySql;
 import edu.dental.database.mysql_api.dao.UserMySql;
@@ -20,7 +21,6 @@ import edu.dental.domain.reports.ReportServiceManager;
 import edu.dental.utils.DatesTool;
 import edu.dental.utils.data_structures.MyList;
 
-import java.sql.Types;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -241,13 +241,18 @@ public class SampleConsoleApp {
 
         public static void sorting() throws DatabaseException {
             closed = (MyList<I_DentalWork>) workRecordBook.sorting();
-            System.out.println(new DentalWorkMySql(user).setStatus(closed, "closed"));
+            DentalWorkDAO dao = new DentalWorkMySql(user);
+            System.out.println(dao.setFieldValue(closed, "status", I_DentalWork.Status.CLOSED));
+
+            System.out.println(dao.setFieldValue(closed, "reportId",null ));
         }
 
         public static void saveFile() throws ReportServiceException {
             MonthlyReport report = new MonthlyReport("2023", "october", closed);
             System.out.println(reportService.saveReportToFile(workRecordBook.getMap(), report));
         }
+
+
     }
 
 

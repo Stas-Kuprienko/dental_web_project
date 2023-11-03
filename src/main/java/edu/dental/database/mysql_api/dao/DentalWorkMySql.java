@@ -7,6 +7,8 @@ import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
+import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.utils.DatesTool;
 import edu.dental.utils.data_structures.MyList;
 
 import java.io.IOException;
@@ -186,21 +188,47 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
     @Override
-    public boolean setStatus(Collection<I_DentalWork> list, String value) throws DatabaseException {
+    public boolean setFieldValue(Collection<I_DentalWork> list, String field, Object value) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The given argument is null or empty.");
         }
-        String set = "status = ?";
+        String set = field + " = ?";
         String where = "user_id = " + user.getId() + " AND id = ?";
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, set, where);
         try (Request request = new Request(query)){
             PreparedStatement statement = request.getPreparedStatement();
             for (I_DentalWork dw : list) {
-                statement.setObject(1, value);
+                statement.setObject(1, String.valueOf(value));
                 statement.setInt(2, dw.getId());
                 statement.addBatch();
             }
             return statement.executeBatch().length == list.size();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
+        }
+    }
+
+    public int setReportId(Collection<I_DentalWork> list) throws DatabaseException {
+        if (list == null || list.isEmpty()) {
+            throw new DatabaseException("The given argument is null or empty.");
+        }
+        String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
+        String getReportId = String.format(MySqlSamples.REPORT_ID.QUERY, yearAndMonth[0], yearAndMonth[1]);
+        String query = String.format((MySqlSamples.UPDATE.QUERY), TABLE, "report_id = (" + getReportId + ')', "id = ?");
+        try (Request request = new Request(query)) {
+            PreparedStatement statement = request.getPreparedStatement();
+            for (I_DentalWork dw : list) {
+                statement.setInt(1, dw.getId());
+                statement.addBatch();
+            }
+            int executed = statement.executeBatch().length;
+            if (!(executed == list.size())) {
+                throw new DatabaseException("error of batch executing. Finally result - " + executed);
+            }
+            statement.clearParameters();
+            ResultSet resultSet = statement.executeQuery(getReportId);
+            resultSet.next();
+            return resultSet.getInt("id");
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
         }

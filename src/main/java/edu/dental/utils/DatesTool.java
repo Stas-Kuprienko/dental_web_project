@@ -52,8 +52,23 @@ public class DatesTool {
         }
         String[] result = new String[2];
         result[0] = String.valueOf(year);
-        result[1] = month.toString();
+        result[1] = month.toString().toLowerCase();
         return result;
 
+    }
+
+    public static String[][] buildMonthStringArray(int count) {
+        int year = LocalDate.now().getYear();
+        Month month = LocalDate.now().getMonth();
+        String[][] result = new String[count][2];
+        for (int i = 0; i <= count; i++) {
+            month = month.plus(1);
+            if (month.equals(Month.JANUARY)) {
+                year += 1;
+            }
+            String[] yearNMonth = new String[] {String.valueOf(year), month.toString()};
+            result[i] = yearNMonth;
+        }
+        return result;
     }
 }

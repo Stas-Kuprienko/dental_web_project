@@ -131,7 +131,6 @@ public class MyWorkRecordBook implements WorkRecordBook {
     public MyList<I_DentalWork> sorting() {
         MyList<I_DentalWork> result = new MyList<>();
         for (I_DentalWork dw : records.toArray(new I_DentalWork[]{})) {
-            System.out.println(dw.getId());
             if (dw.getStatus().ordinal() > 0) {
                 result.add(dw);
                 records.remove(dw);

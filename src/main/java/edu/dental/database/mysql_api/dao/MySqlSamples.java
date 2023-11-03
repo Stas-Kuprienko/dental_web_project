@@ -17,6 +17,8 @@ public enum MySqlSamples implements DAO.Queries {
     //TODO
     UPDATE("UPDATE %s SET %s WHERE %s;"),
 
+    REPORT_ID("SELECT id FROM report WHERE year = %s AND month = '%s'"),
+
     SELECT_DENTAL_WORK("""
             SELECT dental_work.*,
             	GROUP_CONCAT(product.title) AS entry_id,

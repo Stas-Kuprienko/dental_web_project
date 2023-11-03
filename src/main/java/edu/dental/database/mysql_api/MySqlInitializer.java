@@ -1,6 +1,7 @@
 package edu.dental.database.mysql_api;
 
 import edu.dental.database.TableInitializer;
+import edu.dental.utils.DatesTool;
 
 import java.sql.SQLException;
 
@@ -72,12 +73,31 @@ public class MySqlInitializer implements TableInitializer {
                 PRIMARY KEY (work_id, title)
                 );""", TableInitializer.PRODUCT);
 
+    public final String CREATE_REPORTS = "INSERT INTO " +
+                                TableInitializer.REPORT +
+                    " (year, month) VALUES (%s, '%s');";
+
 
     @Override
     public void init() {
         try (Request request = new Request(DROP, USER_Q, REPORT_Q, PRODUCT_MAP_Q, DENTAL_WORK_Q, PRODUCT_Q)) {
             request.start();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addReports() {
+        int count = 12;
+        String[][] yearsNMonths = DatesTool.buildMonthStringArray(count);
+        String[] queries = new String[count];
+        for (int i = 0; i <= count; i++) {
+            queries[i] = String.format(CREATE_REPORTS, yearsNMonths[i][0], yearsNMonths[i][1]);
+        }
+        try (Request request = new Request(queries)) {
+            request.start();
+        } catch (SQLException e) {
+            //TODO logger
             throw new RuntimeException(e);
         }
     }
