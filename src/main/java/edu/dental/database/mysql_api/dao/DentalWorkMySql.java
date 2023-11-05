@@ -3,6 +3,7 @@ package edu.dental.database.mysql_api.dao;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.DentalWorkDAO;
+import edu.dental.database.mysql_api.MySqlInitializer;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
@@ -12,7 +13,6 @@ import edu.dental.utils.DatesTool;
 import edu.dental.utils.data_structures.MyList;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,7 +22,8 @@ public class DentalWorkMySql implements DentalWorkDAO {
     public final String TABLE = TableInitializer.DENTAL_WORK;
     private final User user;
 
-    private static final String FIELDS = "id, report_id, patient, clinic, accepted, complete, status, photo, comment, user_id";
+    private static final String FIELDS =
+            "id, report_id, patient, clinic, accepted, complete, status, photo, comment, user_id";
 
     public DentalWorkMySql(User user) {
         this.user = user;
@@ -42,6 +43,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             }
             return statement.executeBatch().length == list.size();
         } catch (SQLException e) {
+            //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
@@ -187,7 +189,6 @@ public class DentalWorkMySql implements DentalWorkDAO {
         }
     }
 
-    @Override
     public boolean setFieldValue(Collection<I_DentalWork> list, String field, Object value) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The given argument is null or empty.");
@@ -204,10 +205,12 @@ public class DentalWorkMySql implements DentalWorkDAO {
             }
             return statement.executeBatch().length == list.size();
         } catch (SQLException e) {
+            //TODO loggers
             throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
         }
     }
 
+    @Override
     public int setReportId(Collection<I_DentalWork> list) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The given argument is null or empty.");
@@ -223,14 +226,21 @@ public class DentalWorkMySql implements DentalWorkDAO {
             }
             int executed = statement.executeBatch().length;
             if (!(executed == list.size())) {
-                throw new DatabaseException("error of batch executing. Finally result - " + executed);
+                throw new DatabaseException("Error of batch executing. Finally result - " + executed
+                + ", the given list size - " + list.size());
             }
             statement.clearParameters();
             ResultSet resultSet = statement.executeQuery(getReportId);
             resultSet.next();
             return resultSet.getInt("id");
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
+            if (e.getMessage().equals("Illegal operation on empty result set.")) {
+                MySqlInitializer.getInstance().addReports();
+                return setReportId(list);
+            } else {
+                //TODO loggers
+                throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
+            }
         }
     }
 

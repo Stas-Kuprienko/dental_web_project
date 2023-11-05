@@ -16,6 +16,7 @@ public interface TableInitializer {
     String PRODUCT = DBConfiguration.DATA_BASE + ".product";
 
     void init();
+    void addReports();
 
     class Request extends Thread implements AutoCloseable {
 
@@ -37,7 +38,7 @@ public interface TableInitializer {
 
         @Override
         public void run() {
-            try {
+            try (this) {
                 for (String s : queries) {
                     statement.addBatch(s);
                 }

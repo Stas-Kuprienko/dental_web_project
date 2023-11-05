@@ -1,8 +1,8 @@
 package edu.dental;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.database.mysql_api.dao.DentalWorkMySql;
+import edu.dental.database.mysql_api.dao.MySqlSamples;
 import edu.dental.database.mysql_api.dao.ProductMapMySql;
 import edu.dental.database.mysql_api.dao.UserMySql;
 import edu.dental.domain.authentication.AuthenticationException;
@@ -241,10 +241,15 @@ public class SampleConsoleApp {
 
         public static void sorting() throws DatabaseException {
             closed = (MyList<I_DentalWork>) workRecordBook.sorting();
-            DentalWorkDAO dao = new DentalWorkMySql(user);
+            DentalWorkMySql dao = new DentalWorkMySql(user);
             System.out.println(dao.setFieldValue(closed, "status", I_DentalWork.Status.CLOSED));
 
-            System.out.println(dao.setFieldValue(closed, "reportId",null ));
+            int reportId;
+            System.out.println(reportId = dao.setReportId(closed));
+            for (I_DentalWork dw : closed) {
+                dw.setReportId(reportId);
+            }
+            System.out.println(closed);
         }
 
         public static void saveFile() throws ReportServiceException {

@@ -4,8 +4,17 @@ import edu.dental.database.TableInitializer;
 import edu.dental.utils.DatesTool;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class MySqlInitializer implements TableInitializer {
+
+    private static final TableInitializer instance;
+    private static LocalDate executeAddReports = null;
+
+    private MySqlInitializer() {}
+    static {
+        instance = new MySqlInitializer();
+    }
 
     public final String DROP = """
                 DROP TABLE IF EXISTS product;
@@ -80,25 +89,39 @@ public class MySqlInitializer implements TableInitializer {
 
     @Override
     public void init() {
-        try (Request request = new Request(DROP, USER_Q, REPORT_Q, PRODUCT_MAP_Q, DENTAL_WORK_Q, PRODUCT_Q)) {
+        try {
+            @SuppressWarnings("resource")
+            Request request = new Request(DROP, USER_Q, REPORT_Q, PRODUCT_MAP_Q, DENTAL_WORK_Q, PRODUCT_Q);
             request.start();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void addReports() {
+    @Override
+    public synchronized void addReports() {
+        if (executeAddReports != null &&
+                executeAddReports.equals(LocalDate.now())) {
+            return;
+        }
         int count = 12;
         String[][] yearsNMonths = DatesTool.buildMonthStringArray(count);
         String[] queries = new String[count];
-        for (int i = 0; i <= count; i++) {
+        for (int i = 0; i < count; i++) {
             queries[i] = String.format(CREATE_REPORTS, yearsNMonths[i][0], yearsNMonths[i][1]);
         }
-        try (Request request = new Request(queries)) {
+        try {
+            @SuppressWarnings("resource")
+            Request request = new Request(queries);
             request.start();
+            executeAddReports = LocalDate.now();
         } catch (SQLException e) {
             //TODO logger
             throw new RuntimeException(e);
         }
+    }
+
+    public static synchronized TableInitializer getInstance() {
+        return instance;
     }
 }

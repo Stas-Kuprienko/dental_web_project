@@ -59,15 +59,15 @@ public class DatesTool {
 
     public static String[][] buildMonthStringArray(int count) {
         int year = LocalDate.now().getYear();
-        Month month = LocalDate.now().getMonth();
+        Month month = LocalDate.now().getMonth().minus(1);
         String[][] result = new String[count][2];
-        for (int i = 0; i <= count; i++) {
+        for (int i = 0; i < count; i++) {
+            String[] yearNMonth = new String[] {String.valueOf(year), month.toString()};
+            result[i] = yearNMonth;
             month = month.plus(1);
             if (month.equals(Month.JANUARY)) {
                 year += 1;
             }
-            String[] yearNMonth = new String[] {String.valueOf(year), month.toString()};
-            result[i] = yearNMonth;
         }
         return result;
     }
