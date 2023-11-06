@@ -2,38 +2,45 @@ package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
+import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.utils.data_structures.MyList;
 
+import java.util.Collection;
+
 class DataArrayTool {
 
-    private final ProductMap productMap;
-    private final MyList<I_DentalWork> recordList;
+    private final String[] columns;
+    private final String[][] result;
 
     DataArrayTool(ProductMap productMap, MyList<I_DentalWork> recordList) {
-        this.productMap = productMap;
-        this.recordList = recordList;
+        this.columns = buildReportColumns(productMap);
+        this.result = buildReportTable(recordList);
+    }
+
+    public DataArrayTool(SalaryRecord[] salaries) {
+        this.columns = buildSalaryColumns();
+        this.result = buildSalaryTable(salaries);
     }
 
     /**
      * Create a table head by the product titles.
      * @return String array with column titles.
      */
-    private String[] buildTableColumns() {
-        String[] productTypes = productMap.keysToArray();
+    private String[] buildReportColumns(ProductMap map) {
+        String[] productTypes = map.keysToArray();
         String[] columns = new String[productTypes.length + 2];
-        columns[0] = "patient";
-        columns[1] = "clinic";
+        columns[0] = "PATIENT";
+        columns[1] = "CLINIC";
         int i = 2;
         for (String s : productTypes) {
-            columns[i] = s;
+            columns[i] = s.toUpperCase();
             i++;
         }
         return columns;
     }
 
-    public String[][] buildTable() {
-        String[] columns = buildTableColumns();
+    private String[][] buildReportTable(Collection<I_DentalWork> recordList) {
         String[][] result = new String[recordList.size() + 1][columns.length];
 
         //put head of the table
@@ -52,7 +59,7 @@ class DataArrayTool {
 
                     //search index of the product column
                     for (int i = 2; i < columns.length; i++) {
-                        if (p.title().equals(columns[i])) {
+                        if (p.title().equalsIgnoreCase(columns[i])) {
 
                             //write quantity of the product items
                             tableRow[i] = String.valueOf(p.quantity());
@@ -68,5 +75,29 @@ class DataArrayTool {
             r++;
         }
         return result;
+    }
+
+    private String[] buildSalaryColumns() {
+        return new String[] {"YEAR", "MONTH", "SALARY"};
+    }
+
+    private String[][] buildSalaryTable(SalaryRecord[] salaries) {
+        String[][] result = new String[salaries.length + 1][columns.length];
+        result[0] = columns;
+        int r = 1;
+        for (SalaryRecord sr : salaries) {
+            String[] tableRow = new String[columns.length];
+            int i = 0;
+            tableRow[i++] = String.valueOf(sr.year());
+            tableRow[i++] = sr.month();
+            tableRow[i] = String.valueOf(sr.amount());
+            result[r] = tableRow;
+            r++;
+        }
+        return result;
+    }
+
+    public String[][] getResult() {
+        return this.result;
     }
 }

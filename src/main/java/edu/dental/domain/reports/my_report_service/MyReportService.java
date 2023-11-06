@@ -4,6 +4,7 @@ import edu.dental.database.DBService;
 import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
 import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.reports.IFileTool;
@@ -12,7 +13,6 @@ import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
 
 import java.util.Collection;
-import java.util.Map;
 
 public class MyReportService implements ReportService {
 
@@ -24,17 +24,12 @@ public class MyReportService implements ReportService {
 
 
     @Override
-    public boolean saveReportToFile(Map<String, Integer> map, MonthlyReport report) throws ReportServiceException {
-        try {
-            DataArrayTool dataArrayTool = new DataArrayTool((ProductMap) map, report.getDentalWorks());
-            String[][] reportData = dataArrayTool.buildTable();
+    public boolean saveReportToFile(ProductMap map, MonthlyReport report) {
+            DataArrayTool dataArrayTool = new DataArrayTool(map, report.getDentalWorks());
+            String[][] reportData = dataArrayTool.getResult();
             String tableName = user.getName() + "_" + report.getMonth() + "_" + report.getYear();
             IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
             return fileTool.createFile().writeFile();
-        } catch (ClassCastException e) {
-            //TODO loggers
-            throw new ReportServiceException(e.getMessage(), e.getCause());
-        }
     }
 
     @Override
@@ -45,6 +40,20 @@ public class MyReportService implements ReportService {
             return new MonthlyReport(year, month, records);
         } catch (DatabaseException | ClassCastException e) {
             //TODO loggers
+            throw new ReportServiceException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Override
+    public boolean saveSalariesToFile() throws ReportServiceException {
+        DBService db = DBServiceManager.getDBService();
+        try {
+            SalaryRecord[] salaries = db.countAllSalaries(user);
+            DataArrayTool arrayTool = new DataArrayTool(salaries);
+            String nameTable = user.getName() + "_salaries_list";
+            IFileTool fileTool = new XLSXFilesTool(nameTable, arrayTool.getResult());
+            return fileTool.createFile().writeFile();
+        } catch (DatabaseException e) {
             throw new ReportServiceException(e.getMessage(), e.getCause());
         }
     }

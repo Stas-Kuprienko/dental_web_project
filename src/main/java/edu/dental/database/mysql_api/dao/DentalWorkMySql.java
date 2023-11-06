@@ -4,7 +4,6 @@ import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.DentalWorkDAO;
-import edu.dental.database.mysql_api.MySqlInitializer;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;

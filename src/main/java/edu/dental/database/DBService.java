@@ -1,6 +1,7 @@
 package edu.dental.database;
 
 import edu.dental.database.dao.*;
+import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.entities.User;
 
 public interface DBService {
@@ -17,4 +18,5 @@ public interface DBService {
 
     ProductDAO getProductDAO(int workId);
 
+    SalaryRecord[] countAllSalaries(User user) throws DatabaseException;
 }

@@ -3,15 +3,14 @@ package edu.dental.database.mysql_api;
 import edu.dental.database.DBService;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
-import edu.dental.database.dao.ProductDAO;
-import edu.dental.database.dao.ProductMapDAO;
-import edu.dental.database.dao.UserDAO;
-import edu.dental.database.dao.DentalWorkDAO;
-import edu.dental.database.mysql_api.dao.ProductMapMySql;
-import edu.dental.database.mysql_api.dao.ProductMySql;
-import edu.dental.database.mysql_api.dao.UserMySql;
-import edu.dental.database.mysql_api.dao.DentalWorkMySql;
+import edu.dental.database.dao.*;
+import edu.dental.database.mysql_api.dao.*;
+import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.entities.User;
+import edu.dental.utils.data_structures.MyList;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class MyDBService implements DBService {
 
@@ -45,5 +44,24 @@ public class MyDBService implements DBService {
     @Override
     public ProductDAO getProductDAO(int workId) {
             return new ProductMySql(workId);
+    }
+
+    @Override
+    public SalaryRecord[] countAllSalaries(User user) throws DatabaseException {
+        MyList<SalaryRecord> records = new MyList<>();
+        try (DAO.Request request = new DAO.Request(MySqlSamples.ALL_SALARIES.QUERY)) {
+            request.getPreparedStatement().setInt(1, user.getId());
+            ResultSet resultSet = request.getPreparedStatement().executeQuery();
+            while (resultSet.next()) {
+                String month = resultSet.getString(1);
+                int year = resultSet.getInt(2);
+                int amount = resultSet.getInt(3);
+                SalaryRecord salary = new SalaryRecord(year, month, amount);
+                records.add(salary);
+            }
+            return records.toArray(new SalaryRecord[]{});
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
+        }
     }
 }

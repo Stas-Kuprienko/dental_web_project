@@ -34,16 +34,27 @@ public enum MySqlSamples implements DAO.Queries {
 
     SELECT_PRODUCT("""
             SELECT product.title AS entry_id,
-            product_map.title AS title, product.quantity, product.price
-            FROM product
-            JOIN product_map ON product_map.id = product.title
-            WHERE product.title IN
-            (SELECT product_map.id FROM product_map WHERE product_map.title = ?)
-            AND
-            (work_id IN
-            (SELECT dental_work.id FROM dental_work WHERE dental_work.user_id =
-            (SELECT dental_work.user_id FROM dental_work WHERE dental_work.id = ?)))
-            AND quantity = ?;
+                product_map.title AS title, product.quantity, product.price
+                FROM product
+                JOIN product_map ON product_map.id = product.title
+                WHERE product.title IN
+                (SELECT product_map.id FROM product_map WHERE product_map.title = ?)
+                AND
+                (work_id IN
+                (SELECT dental_work.id FROM dental_work WHERE dental_work.user_id =
+                (SELECT dental_work.user_id FROM dental_work WHERE dental_work.id = ?)))
+                AND quantity = ?;
+            """),
+
+    ALL_SALARIES("""
+            SELECT report.month,
+                report.year,
+                SUM(product.price * product.quantity) AS amount
+            	FROM dental_work
+                JOIN product ON product.work_id = dental_work.id
+                JOIN report ON dental_work.report_id = report.id
+            	WHERE dental_work.user_id = ?
+                GROUP BY dental_work.report_id;
             """);
 
     public final String QUERY;

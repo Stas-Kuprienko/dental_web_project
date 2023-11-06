@@ -2,13 +2,13 @@ package edu.dental;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.mysql_api.dao.DentalWorkMySql;
-import edu.dental.database.mysql_api.dao.MySqlSamples;
 import edu.dental.database.mysql_api.dao.ProductMapMySql;
 import edu.dental.database.mysql_api.dao.UserMySql;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.RecordManager;
 import edu.dental.domain.records.WorkRecordBook;
@@ -253,11 +253,54 @@ public class SampleConsoleApp {
         }
 
         public static void saveFile() throws ReportServiceException {
-            MonthlyReport report = new MonthlyReport("2023", "october", closed);
+            System.out.println("year:");
+            int year = in.nextInt();
+            System.out.println("month:");
+            String month = in.next();
+            LocalDate today = LocalDate.now();
+            if (year == today.getYear() && month.equalsIgnoreCase(today.getMonth().toString())) {
+                System.out.println(reportService.saveReportToFile(workRecordBook.getMap(), new MonthlyReport(workRecordBook.getList())));
+                return;
+            }
+            MonthlyReport report = reportService.getReportFromDB(month, String.valueOf(year));
             System.out.println(reportService.saveReportToFile(workRecordBook.getMap(), report));
         }
 
+        public static void getReportByMonth() throws DatabaseException, ReportServiceException {
+            System.out.println("year:");
+            int year = in.nextInt();
+            System.out.println("month:");
+            String month = in.next();
+            MonthlyReport report = reportService.getReportFromDB(month, String.valueOf(year));
+            System.out.println(report);
+            System.out.println("""
+                    1 - save to file;
+                    2 - count salary;
+                    3 - select another month;
+                    """);
+            int r = in.nextInt();
+            switch (r) {
+                case 1 -> System.out.println(reportService.saveReportToFile(workRecordBook.getMap(), report));
+                case 2 -> System.out.println(count(report.getDentalWorks()));
+                case 3 -> getReportByMonth();
+            }
+        }
 
+        public static void salaryStatistic() throws ReportServiceException {
+            System.out.println(reportService.saveSalariesToFile());
+        }
+
+        private static int count(MyList<I_DentalWork> list) {
+            int n = 0;
+            for (I_DentalWork dw : list) {
+                if (!dw.getProducts().isEmpty()) {
+                    for (Product p : dw.getProducts()) {
+                        n += p.countAmount();
+                    }
+                }
+            }
+            return n;
+        }
     }
 
 
@@ -272,8 +315,10 @@ public class SampleConsoleApp {
             2 - add new record;
             3 - edit a record;
             4 - open records;
-            5 - save a report;
-            6 - sorting;
+            5 - sorting;
+            6 - save a report;
+            7 - get monthly report;
+            8 - count all salaries;
             """;
 
 
@@ -299,8 +344,10 @@ public class SampleConsoleApp {
                 for (I_DentalWork dw : workRecordBook.getList()) System.out.println(dw);
                 EntryRecord.edit();
             }
-            case 5 -> Reports.saveFile();
-            case 6 -> Reports.sorting();
+            case 5 -> Reports.sorting();
+            case 6 -> Reports.saveFile();
+            case 7 -> Reports.getReportByMonth();
+            case 8 -> Reports.salaryStatistic();
             case 0 -> Enter.logOut();
             default -> System.out.println("wrong input");
         }
