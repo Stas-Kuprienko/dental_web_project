@@ -2,6 +2,7 @@ package edu.dental.database.mysql_api;
 
 import edu.dental.database.DBService;
 import edu.dental.database.DatabaseException;
+import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.ProductDAO;
 import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.database.dao.UserDAO;
@@ -15,11 +16,12 @@ import edu.dental.domain.entities.User;
 public class MyDBService implements DBService {
 
     private MyDBService() {}
-    static {
-        instance = new MyDBService();
-    }
-    private static final MyDBService instance;
 
+
+    @Override
+    public TableInitializer getTableInitializer() {
+        return new MySqlInitializer();
+    }
 
     public User authenticate(String login, String password) throws DatabaseException {
         return new UserMySql().search(login, password).get(0);
@@ -44,9 +46,4 @@ public class MyDBService implements DBService {
     public ProductDAO getProductDAO(int workId) {
             return new ProductMySql(workId);
     }
-
-    public static synchronized DBService getInstance() {
-        return instance;
-    }
-
 }

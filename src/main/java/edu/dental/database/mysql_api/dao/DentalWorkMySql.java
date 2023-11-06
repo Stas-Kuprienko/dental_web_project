@@ -1,5 +1,6 @@
 package edu.dental.database.mysql_api.dao;
 
+import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.DentalWorkDAO;
@@ -235,7 +236,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             return resultSet.getInt("id");
         } catch (SQLException e) {
             if (e.getMessage().equals("Illegal operation on empty result set.")) {
-                MySqlInitializer.getInstance().addReports();
+                DBServiceManager.getDBService().getTableInitializer().addReports();
                 return setReportId(list);
             } else {
                 //TODO loggers

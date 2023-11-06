@@ -8,22 +8,19 @@ import java.time.LocalDate;
 
 public class MySqlInitializer implements TableInitializer {
 
-    private static final TableInitializer instance;
     private static LocalDate executeAddReports = null;
 
-    private MySqlInitializer() {}
-    static {
-        instance = new MySqlInitializer();
-    }
+    MySqlInitializer() {}
 
-    public final String DROP = """
+
+    public static final String DROP = """
                 DROP TABLE IF EXISTS product;
                 DROP TABLE IF EXISTS dental_work;
                 DROP TABLE IF EXISTS product_map;
                 DROP TABLE IF EXISTS user;
                 """;
 
-    public final String USER_Q = String.format("""
+    public static final String USER_Q = String.format("""
             CREATE TABLE %s (
                 id INT NOT NULL AUTO_INCREMENT,
                 name VARCHAR(63),
@@ -33,7 +30,7 @@ public class MySqlInitializer implements TableInitializer {
                 PRIMARY KEY (id)
                 );""", TableInitializer.USER);
 
-    public final String REPORT_Q = String.format("""
+    public static final String REPORT_Q = String.format("""
             CREATE TABLE %s (
                 id INT NOT NULL AUTO_INCREMENT,
             	year YEAR NOT NULL,
@@ -44,7 +41,7 @@ public class MySqlInitializer implements TableInitializer {
                 PRIMARY KEY (id)
                 );""", TableInitializer.REPORT);
 
-    public final String PRODUCT_MAP_Q = String.format("""
+    public static final String PRODUCT_MAP_Q = String.format("""
             CREATE TABLE %s (
               user_id INT NOT NULL,
               id INT NOT NULL AUTO_INCREMENT,
@@ -54,7 +51,7 @@ public class MySqlInitializer implements TableInitializer {
               PRIMARY KEY (id, user_id)
               );""", TableInitializer.PRODUCT_MAP);
 
-    public final String DENTAL_WORK_Q = String.format("""
+    public static final String DENTAL_WORK_Q = String.format("""
             CREATE TABLE %s (
             	user_id INT NOT NULL,
             	id INT NOT NULL AUTO_INCREMENT,
@@ -71,7 +68,7 @@ public class MySqlInitializer implements TableInitializer {
             	PRIMARY KEY (id, user_id)
                 );""", TableInitializer.DENTAL_WORK);
 
-    public final String PRODUCT_Q = String.format("""
+    public static final String PRODUCT_Q = String.format("""
             CREATE TABLE %s (
                 work_id INT NOT NULL,
                 title INT NOT NULL,
@@ -82,7 +79,7 @@ public class MySqlInitializer implements TableInitializer {
                 PRIMARY KEY (work_id, title)
                 );""", TableInitializer.PRODUCT);
 
-    public final String CREATE_REPORTS = "INSERT INTO " +
+    public static final String CREATE_REPORTS = "INSERT INTO " +
                                 TableInitializer.REPORT +
                     " (year, month) VALUES (%s, '%s');";
 
@@ -119,9 +116,5 @@ public class MySqlInitializer implements TableInitializer {
             //TODO logger
             throw new RuntimeException(e);
         }
-    }
-
-    public static synchronized TableInitializer getInstance() {
-        return instance;
     }
 }
