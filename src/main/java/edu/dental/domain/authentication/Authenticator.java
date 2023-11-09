@@ -32,7 +32,7 @@ public final class Authenticator {
             throw new AuthenticationException(AuthenticationException.Causes.NULL);
         }
         User user;
-        DBService dbService = DBServiceManager.getDBService();
+        DBService dbService = DBServiceManager.get().getDBService();
         try {
             user = dbService.authenticate(login, password);
         } catch (DatabaseException e) {

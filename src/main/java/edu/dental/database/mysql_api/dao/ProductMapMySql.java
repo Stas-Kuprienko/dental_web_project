@@ -69,7 +69,7 @@ public class ProductMapMySql implements ProductMapDAO {
     @Override
     public ProductMap get() throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "user_id = ?");
-        ProductMap productMap = RecordManager.getProductMap();
+        ProductMap productMap = RecordManager.get().getProductMap();
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, userId);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();

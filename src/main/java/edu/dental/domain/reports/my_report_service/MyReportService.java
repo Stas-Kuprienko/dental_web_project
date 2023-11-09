@@ -35,7 +35,7 @@ public class MyReportService implements ReportService {
     @Override
     public MonthlyReport getReportFromDB(String month, String year) throws ReportServiceException {
         try {
-            DBService db = DBServiceManager.getDBService();
+            DBService db = DBServiceManager.get().getDBService();
             Collection <I_DentalWork> records = db.getDentalWorkDAO(user).getAllMonthly(month, year);
             return new MonthlyReport(year, month, records);
         } catch (DatabaseException | ClassCastException e) {
@@ -46,7 +46,7 @@ public class MyReportService implements ReportService {
 
     @Override
     public boolean saveSalariesToFile() throws ReportServiceException {
-        DBService db = DBServiceManager.getDBService();
+        DBService db = DBServiceManager.get().getDBService();
         try {
             SalaryRecord[] salaries = db.countAllSalaries(user);
             DataArrayTool arrayTool = new DataArrayTool(salaries);

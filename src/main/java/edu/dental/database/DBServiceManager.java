@@ -1,23 +1,33 @@
 package edu.dental.database;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 public final class DBServiceManager {
 
-    private DBServiceManager() {}
+    private static final DBServiceManager manager;
     static {
-        service = new Properties();
+        manager = new DBServiceManager();
     }
 
-    private static final Properties service;
-    private static final String PROP_PATH = "service.properties";
+    private DBServiceManager() {
+        service = new Properties();
+        try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
+            service.load(fileInput);
+        } catch (IOException e) {
+            //TODO loggers
+            throw new RuntimeException(e);
+        }
+    }
+
+    private final Properties service;
+    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental\\target\\classes\\service.properties";
 
 
-    public static synchronized DBService getDBService() {
+    public DBService getDBService() {
         try {
             Class<?> clas = Class.forName(getClassName());
             Constructor<?> constructor = clas.getDeclaredConstructor();
@@ -32,13 +42,11 @@ public final class DBServiceManager {
         }
     }
 
-    private static synchronized String getClassName() {
-        try (InputStream inStream = DBServiceManager.class.getClassLoader().getResourceAsStream(PROP_PATH)) {
-            service.load(inStream);
-            return service.getProperty(DBService.class.getSimpleName());
-        } catch (IOException e) {
-            //TODO loggers
-            throw new RuntimeException(e);
-        }
+    private String getClassName() {
+        return service.getProperty(DBService.class.getSimpleName());
+    }
+
+    public static synchronized DBServiceManager get() {
+        return manager;
     }
 }

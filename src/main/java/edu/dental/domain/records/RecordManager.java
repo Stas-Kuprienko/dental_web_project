@@ -5,6 +5,7 @@ import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -19,19 +20,29 @@ import java.util.Properties;
  */
 public final class RecordManager {
 
-    private RecordManager() {}
+    private static final RecordManager manager;
     static {
-        service = new Properties();
+        manager = new RecordManager();
     }
 
-    private static final Properties service;
-    private static final String PROP_PATH = "service.properties";
+    private RecordManager() {
+        service = new Properties();
+        try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
+            service.load(fileInput);
+        } catch (IOException e) {
+            //TODO loggers
+            throw new RuntimeException(e);
+        }
+    }
+
+    private final Properties service;
+    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental\\target\\classes\\service.properties";
 
 
     /**
      * Return an instance of the {@link WorkRecordBook}.
      */
-    public static synchronized WorkRecordBook getWorkRecordBook() {
+    public WorkRecordBook getWorkRecordBook() {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas =
@@ -51,7 +62,7 @@ public final class RecordManager {
     /**
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
      */
-    public static synchronized WorkRecordBook getWorkRecordBook(Collection<I_DentalWork> records, ProductMap productMap) {
+    public WorkRecordBook getWorkRecordBook(Collection<I_DentalWork> records, ProductMap productMap) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas =
@@ -68,7 +79,7 @@ public final class RecordManager {
         }
     }
 
-    public static synchronized ProductMap getProductMap() {
+    public ProductMap getProductMap() {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends ProductMap> clas =
@@ -85,7 +96,7 @@ public final class RecordManager {
         }
     }
 
-    public static synchronized ProductMap getProductMap(User user) {
+    public ProductMap getProductMap(User user) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends ProductMapDAO> clas =
@@ -103,7 +114,7 @@ public final class RecordManager {
         }
     }
 
-    private static synchronized <T> String getClassName(Class<T> clas) {
+    private <T> String getClassName(Class<T> clas) {
         try (InputStream inStream = RecordManager.class.getClassLoader().getResourceAsStream(PROP_PATH)) {
             service.load(inStream);
             return service.getProperty(clas.getSimpleName());
@@ -111,5 +122,9 @@ public final class RecordManager {
             //TODO loggers
             throw new RuntimeException(e);
         }
+    }
+
+    public static synchronized RecordManager get() {
+        return manager;
     }
 }

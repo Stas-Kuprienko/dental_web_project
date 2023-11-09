@@ -7,12 +7,12 @@
 
   <servlet>
     <servlet-name>ServerApp</servlet-name>
-    <servlet-class>dental.server.ServerApp</servlet-class>
+    <servlet-class>edu.dental.server.application.ServerApp</servlet-class>
   </servlet>
 
   <servlet-mapping>
     <servlet-name>ServerApp</servlet-name>
-    <url-pattern>/start</url-pattern>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
 
 </web-app>

@@ -21,15 +21,16 @@ public final class ConnectionPool {
 
     /**
      * Generate the {@link Connection} object.
-     * @return The {@link Connection} object with the {@linkplain DBConfiguration#DB_URL URL},
-     *         {@linkplain DBConfiguration#DB_LOGIN user} and {@linkplain DBConfiguration#DB_PASSWORD password}.
+     * @return The {@link Connection} object with the {@linkplain DBConfiguration#URL URL},
+     *         {@linkplain DBConfiguration#LOGIN user} and {@linkplain DBConfiguration#PASSWORD password}.
      */
     private static Connection createConnection() {
         try {
-            return DriverManager.getConnection(DBConfiguration.getProp(DBConfiguration.DB_URL),
-                    DBConfiguration.getProp(DBConfiguration.DB_LOGIN),
-                    DBConfiguration.getProp(DBConfiguration.DB_PASSWORD));
-        } catch (SQLException e) {
+            Class.forName(DBConfiguration.get().getProp(DBConfiguration.DRIVER));
+            return DriverManager.getConnection(DBConfiguration.get().getProp(DBConfiguration.URL),
+                    DBConfiguration.get().getProp(DBConfiguration.LOGIN),
+                    DBConfiguration.get().getProp(DBConfiguration.PASSWORD));
+        } catch (SQLException | ClassNotFoundException e) {
             //TODO loggers
             throw new RuntimeException(e);
         }
@@ -50,6 +51,5 @@ public final class ConnectionPool {
         }
         instance.free.add(connection);
         instance.using.remove(connection);
-
     }
 }

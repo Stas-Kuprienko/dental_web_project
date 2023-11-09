@@ -1,5 +1,7 @@
 package edu.dental;
 
+import edu.dental.database.DBService;
+import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.mysql_api.dao.DentalWorkMySql;
 import edu.dental.database.mysql_api.dao.ProductMapMySql;
@@ -30,6 +32,8 @@ public class SampleConsoleApp {
     public static User user;
     public static WorkRecordBook workRecordBook;
     public static ReportService reportService;
+
+    public static DBService dbService;
 
     public static void main(String[] args) {
         while (true) {
@@ -64,8 +68,8 @@ public class SampleConsoleApp {
             User newUser = new User(name, login, password);
             System.out.println(new UserMySql().put(newUser));
             user = newUser;
-            workRecordBook = RecordManager.getWorkRecordBook();
-            reportService = ReportServiceManager.getReportService(user);
+            workRecordBook = RecordManager.get().getWorkRecordBook();
+            reportService = ReportServiceManager.get().getReportService(user);
             System.out.println("Welcome!");
         }
 
@@ -78,9 +82,9 @@ public class SampleConsoleApp {
 //            password = in.next();
             user = Authenticator.authenticate(login, password);
             MyList<I_DentalWork> records = (MyList<I_DentalWork>) new DentalWorkMySql(user).getAll();
-            MyProductMap productMap = (MyProductMap) RecordManager.getProductMap(user);
-            workRecordBook = RecordManager.getWorkRecordBook(records, productMap);
-            reportService = ReportServiceManager.getReportService(user);
+            MyProductMap productMap = (MyProductMap) RecordManager.get().getProductMap(user);
+            workRecordBook = RecordManager.get().getWorkRecordBook(records, productMap);
+            reportService = ReportServiceManager.get().getReportService(user);
             System.out.println("Welcome!");
         }
 
@@ -266,7 +270,7 @@ public class SampleConsoleApp {
             System.out.println(reportService.saveReportToFile(workRecordBook.getMap(), report));
         }
 
-        public static void getReportByMonth() throws DatabaseException, ReportServiceException {
+        public static void getReportByMonth() throws ReportServiceException {
             System.out.println("year:");
             int year = in.nextInt();
             System.out.println("month:");
@@ -334,6 +338,7 @@ public class SampleConsoleApp {
     }
 
     public static void menu_2() throws WorkRecordBookException, DatabaseException, ReportServiceException {
+        dbService = DBServiceManager.get().getDBService();
         System.out.println(user.getName() + ", you are enter in service\n" + options_2);
         int j = in.nextInt();
         switch (j) {

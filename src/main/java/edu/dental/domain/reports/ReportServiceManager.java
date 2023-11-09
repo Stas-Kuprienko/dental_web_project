@@ -2,6 +2,7 @@ package edu.dental.domain.reports;
 
 import edu.dental.domain.entities.User;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -10,16 +11,26 @@ import java.util.Properties;
 
 public final class ReportServiceManager {
 
-    private ReportServiceManager() {}
+    private static final ReportServiceManager manager;
     static {
-        service = new Properties();
+        manager = new ReportServiceManager();
     }
 
-    private static final Properties service;
-    private static final String PROP_PATH = "service.properties";
+    private ReportServiceManager() {
+        service = new Properties();
+        try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
+            service.load(fileInput);
+        } catch (IOException e) {
+            //TODO loggers
+            throw new RuntimeException(e);
+        }
+    }
+
+    private final Properties service;
+    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental\\target\\classes\\service.properties";
 
 
-    public static synchronized ReportService getReportService(User user) {
+    public ReportService getReportService(User user) {
         try {
             Class<?> clas = Class.forName(getClassName());
             Constructor<?> constructor = clas.getDeclaredConstructor(User.class);
@@ -33,7 +44,7 @@ public final class ReportServiceManager {
         }
     }
 
-    private static synchronized String getClassName() {
+    private  String getClassName() {
         try (InputStream inStream = ReportServiceManager.class.getClassLoader().getResourceAsStream(PROP_PATH)) {
             service.load(inStream);
             return service.getProperty(ReportService.class.getSimpleName());
@@ -41,5 +52,9 @@ public final class ReportServiceManager {
             //TODO loggers
             throw new RuntimeException(e);
         }
+    }
+
+    public static synchronized ReportServiceManager get() {
+        return manager;
     }
 }
