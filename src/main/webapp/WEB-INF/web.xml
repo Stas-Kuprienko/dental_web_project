@@ -10,9 +10,19 @@
     <servlet-class>edu.dental.server.application.ServerApp</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>ServerWelcome</servlet-name>
+    <servlet-class>edu.dental.server.application.ServerWelcome</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>ServerApp</servlet-name>
     <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ServerWelcome</servlet-name>
+    <url-pattern>/welcome</url-pattern>
   </servlet-mapping>
 
 </web-app>
