@@ -7,12 +7,17 @@
 
   <servlet>
     <servlet-name>ServerApp</servlet-name>
-    <servlet-class>edu.dental.server.application.ServerApp</servlet-class>
+    <servlet-class>edu.dental.web.servlets.ServerApp</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>ServerWelcome</servlet-name>
-    <servlet-class>edu.dental.server.application.ServerWelcome</servlet-class>
+    <servlet-class>edu.dental.web.servlets.ServerWelcome</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ProductTypePage</servlet-name>
+    <servlet-class>edu.dental.web.servlets.ProductTypePage</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -23,6 +28,11 @@
   <servlet-mapping>
     <servlet-name>ServerWelcome</servlet-name>
     <url-pattern>/welcome</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ProductTypePage</servlet-name>
+    <url-pattern>/new-product-type</url-pattern>
   </servlet-mapping>
 
 </web-app>
