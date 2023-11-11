@@ -1,25 +1,50 @@
 <!DOCTYPE html>
 <html>
-<style>
-    body {
-        background-color: dimGrey;
-    }
-    body {color:white;}
+<head>
+    <style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+tr {
+  border-bottom: 1px solid #ddd;
+}
 </style>
+</head>
 <body>
-<h1>Welcome</h1>
-<h2>Dental mechanic service</h2>
-<form action="/dental/new-product-type" method="post">
-    <input type="submit" value="add new product type">
-</form>
-<form action="/dental/new-work">
-    <input type="submit" value="add new work">
-</form>
-<form action="/dental/open-work-list">
-    <input type="submit" value="open work list">
-</form>
-<form action="/dental/save-report-file">
-    <input type="submit" value="save report to file">
-</form>
+<form action="/dental/edit" id="id" ></form>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+        <td>PATIENT</td>
+        <td>CLINIC</td>
+        <td>CERAMIC</td>
+        <td>ZRO2</td>
+        <td>EMAX</td>
+    </tr>
+    <tr>
+        <td><input type="submit" value="  1  " form="id"></td>
+        <td>Jessica</td>
+        <td>Dental</td>
+        <td style="background-color: yellow">20</td>
+        <td>  </td>
+    </tr>
+    <tr>
+        <td><input type="submit" value="  2  " form="id"></td>
+        <td>  </td>
+        <td>  </td>
+        <td>  </td>
+        <td>  </td>
+    </tr>
+    <tr>
+        <td><input type="submit" value="  3  " form="id"></td>
+        <td>  </td>
+        <td>  </td>
+        <td>  </td>
+        <td>  </td>
+    </tr>
+</table>
+
 </body>
 </html>

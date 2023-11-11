@@ -4,20 +4,24 @@
 
 <web-app>
   <display-name>dental-mechanic</display-name>
+  
+  <listener>
+    <listener-class>edu.dental.web.servlets.basic.ContextInitializer</listener-class>
+  </listener>
 
   <servlet>
     <servlet-name>ServerApp</servlet-name>
-    <servlet-class>edu.dental.web.servlets.ServerApp</servlet-class>
+    <servlet-class>edu.dental.web.servlets.basic.EnterServlet</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>ServerWelcome</servlet-name>
-    <servlet-class>edu.dental.web.servlets.ServerWelcome</servlet-class>
+    <servlet-class>edu.dental.web.servlets.basic.Prime</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>ProductTypePage</servlet-name>
-    <servlet-class>edu.dental.web.servlets.ProductTypePage</servlet-class>
+    <servlet-class>edu.dental.web.servlets.works.ProductTypePage</servlet-class>
   </servlet>
 
   <servlet-mapping>

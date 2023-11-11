@@ -1,4 +1,4 @@
-package edu.dental.web.servlets;
+package edu.dental.web.servlets.works;
 
 import edu.dental.domain.entities.User;
 import jakarta.servlet.ServletException;

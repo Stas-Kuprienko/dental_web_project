@@ -1,39 +1,55 @@
-package edu.dental.web.servlets;
+package edu.dental.web.servlets.basic;
 
+import edu.dental.database.DBService;
+import edu.dental.database.DBServiceManager;
+import edu.dental.database.DatabaseException;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
+import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
+import edu.dental.domain.records.ProductMap;
+import edu.dental.domain.records.RecordManager;
+import edu.dental.domain.records.WorkRecordBook;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 
-public class ServerWelcome extends HttpServlet {
-
-    User user;
+public class Prime extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter writer = response.getWriter();
+        User user;
+        ProductMap productMap;
+        WorkRecordBook recordBook;
+
 
         String login = request.getParameter("email");
         String password = request.getParameter("password");
 
         try {
             user = Authenticator.authenticate(login, password);
-            request.getSession().setAttribute("user", user);
-
-        } catch (AuthenticationException e) {
+            DBService dbService = DBServiceManager.get().getDBService();
+            productMap = (ProductMap) dbService.getProductMapDAO(user);
+            Collection<I_DentalWork> dentalWorks = dbService.getDentalWorkDAO(user).getAll();
+            recordBook = RecordManager.get().getWorkRecordBook(dentalWorks, productMap);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            session.setAttribute("recordBook", recordBook);
+            writer.write(String.format(htmlPage, user.getName()));
+        } catch (AuthenticationException | DatabaseException e) {
             writer.write("no such user.");
             request.getRequestDispatcher("dental/").forward(request, response);
         }
-        writer.write(String.format(actions, user.getName()));
     }
 
-    private static final String actions = """
+    private static final String htmlPage = """
             <!DOCTYPE html>
             <html>
             <style>
