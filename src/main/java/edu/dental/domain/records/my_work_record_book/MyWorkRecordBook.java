@@ -51,6 +51,20 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
+    public DentalWork createRecord(String patient, String clinic, String product, int quantity, LocalDate complete) throws WorkRecordBookException {
+        Product p;
+        try {
+            p = productMap.createProduct(product, quantity);
+        } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
+            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+        }
+        DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).setComplete(complete).build();
+        dentalWork.getProducts().add(p);
+        records.add(dentalWork);
+        return dentalWork;
+    }
+
+    @Override
     public DentalWork createRecord(String patient, String clinic) {
         DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).build();
         records.add(dentalWork);

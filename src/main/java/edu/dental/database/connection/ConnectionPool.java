@@ -1,8 +1,10 @@
 package edu.dental.database.connection;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -51,5 +53,17 @@ public final class ConnectionPool {
         }
         instance.free.add(connection);
         instance.using.remove(connection);
+    }
+
+    public static synchronized void deregister() {
+        Enumeration<Driver> drivers = DriverManager.getDrivers();
+        while (drivers.hasMoreElements()) {
+            try {
+                DriverManager.deregisterDriver(drivers.nextElement());
+            } catch (SQLException e) {
+                //TODO logger
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

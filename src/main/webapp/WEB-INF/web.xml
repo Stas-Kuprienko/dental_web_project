@@ -10,8 +10,13 @@
 <!--  </listener>-->
 
   <servlet>
-    <servlet-name>EnterServlet</servlet-name>
-    <servlet-class>edu.dental.web.servlets.basic.EnterServlet</servlet-class>
+    <servlet-name>Enter</servlet-name>
+    <jsp-file>/enter.html</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>newProduct</servlet-name>
+    <jsp-file>/newProduct.html</jsp-file>
   </servlet>
 
   <servlet>
@@ -24,8 +29,53 @@
     <servlet-class>edu.dental.web.servlets.works.ProductTypePage</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>WorkTablePage</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.WorkTablePage</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SignUp</servlet-name>
+    <jsp-file>/signUp.html</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>NewUserSaving</servlet-name>
+    <servlet-class>edu.dental.web.servlets.basic.NewUserSaver</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>DentalWorkSaver</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.DentalWorkSaver</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ProductSaver</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.ProductSaver</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>newRecord</servlet-name>
+    <jsp-file>/newRecord.html</jsp-file>
+  </servlet>
+
   <servlet-mapping>
-    <servlet-name>EnterServlet</servlet-name>
+    <servlet-name>newRecord</servlet-name>
+    <url-pattern>/new-work</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>newProduct</servlet-name>
+    <url-pattern>/new-product</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ProductSaver</servlet-name>
+    <url-pattern>/save-product</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Enter</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
 
@@ -37,6 +87,26 @@
   <servlet-mapping>
     <servlet-name>ProductTypePage</servlet-name>
     <url-pattern>/new-product-type</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>WorkTablePage</servlet-name>
+    <url-pattern>/work-list</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SignUp</servlet-name>
+    <url-pattern>/sign-up</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>NewUserSaving</servlet-name>
+    <url-pattern>/new-user</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DentalWorkSaver</servlet-name>
+    <url-pattern>/save-work</url-pattern>
   </servlet-mapping>
 
 </web-app>

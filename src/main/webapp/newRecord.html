@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+
+<style>
+            body {
+              background-color: dimGrey;
+            }
+            body {color:white;}
+            </style>
+<body>
+<h2>Input new record:</h2>
+<form action="/dental/save-work" method="post">
+    <label for="patient">patient:</label><br>
+    <input type="text" id="patient" name="patient" value=""><br>
+    <label for="clinic">clinic:</label><br>
+    <input type="text" id="clinic" name="clinic" value=""><br>
+    <label for="product">product:</label><br>
+    <input type="text" id="product" name="product" value=""><br>
+    <label for="quantity">quantity:</label><br>
+    <input type="number" id="quantity" name="quantity" value="" max="32"><br>
+    <label for="complete">complete:</label><br>
+    <input type="date" id="complete" name="complete" value=""><br>
+    <br>
+    <input type="submit" value="Save">
+</form>
+</body>
+</html>

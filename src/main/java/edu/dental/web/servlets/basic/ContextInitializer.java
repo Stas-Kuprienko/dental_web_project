@@ -48,5 +48,6 @@ public class ContextInitializer implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         ServletContextListener.super.contextDestroyed(sce);
+        ConnectionPool.deregister();
     }
 }

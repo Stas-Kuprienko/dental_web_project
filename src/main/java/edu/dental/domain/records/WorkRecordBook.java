@@ -3,6 +3,7 @@ package edu.dental.domain.records;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ public interface WorkRecordBook {
      *  is not contain in {@link Map}.
      */
     I_DentalWork createRecord(String patient, String clinic, String product, int quantity, String complete) throws WorkRecordBookException;
+
+    I_DentalWork createRecord(String patient, String clinic, String product, int quantity, LocalDate complete) throws WorkRecordBookException;
 
     /**
      * Create a {@link I_DentalWork} object and add it to {@link Collection} field of this instance.

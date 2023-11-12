@@ -4,6 +4,7 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
+import edu.dental.domain.records.WorkRecordBook;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,14 +26,17 @@ public class WorkTablePage extends HttpServlet {
         if (user == null) {
             request.getRequestDispatcher("dental/").forward(request, response);
         } else {
-            //TODO print options
-            writer.write(user.getName());
+            WorkRecordBook recordBook = (WorkRecordBook) session.getAttribute("recordBook");
+            String page = new PageBuilder(recordBook.getMap(), recordBook.getList()).getResult();
+            writer.write(page);
         }
     }
 
-    private static final String htmlPage = """
+    private static final String htmlSample = """
             <!DOCTYPE html>
             <html>
+            <meta charset="UTF-8">
+
             <head>
                 <style>
             table {
@@ -75,7 +79,7 @@ public class WorkTablePage extends HttpServlet {
         }
     }
 
-    protected class PageBuilder {
+    protected static class PageBuilder {
 
         private final String[] productMap;
         private final Collection<I_DentalWork> dentalWorks;
@@ -87,7 +91,7 @@ public class WorkTablePage extends HttpServlet {
             this.dentalWorks = dentalWorks;
             String head = buildHead();
             String rows = buildRows();
-            this.result = String.format(htmlPage, "100%", head, rows);
+            this.result = String.format(htmlSample, "100%", head, rows);
         }
 
         protected String getResult() {
