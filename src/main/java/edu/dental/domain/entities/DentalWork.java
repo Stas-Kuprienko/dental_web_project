@@ -1,10 +1,12 @@
 package edu.dental.domain.entities;
 
 
+import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.utils.data_structures.MyList;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -46,6 +48,20 @@ public class DentalWork implements I_DentalWork {
         this.products = products;
         this.accepted = accepted;
         this.status = status;
+    }
+
+    @Override
+    public Product findProduct(String type) {
+        if (products.isEmpty()) {
+            throw new NoSuchElementException("the given DentalWork(id=" + id + ") doesn't has products.");
+        }
+        type = type.toLowerCase();
+        for (Product p : products) {
+            if (p.title().equals(type)) {
+                return p;
+            }
+        }
+        throw new NoSuchElementException("the such product is not found.");
     }
 
     /**

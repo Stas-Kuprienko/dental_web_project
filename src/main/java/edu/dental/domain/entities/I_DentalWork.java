@@ -31,10 +31,12 @@ public interface I_DentalWork extends IDHaving, Serializable {
     Status getStatus();
 
     enum Status {
-        MAKE, COMPETED, CLOSED, PAID
+        MAKE, CLOSED, PAID
     }
 
     void setReportId(int reportId);
 
     int getReportId();
+
+    Product findProduct(String type);
 }
