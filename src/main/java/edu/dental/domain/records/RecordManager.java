@@ -7,7 +7,6 @@ import edu.dental.domain.entities.User;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -115,13 +114,7 @@ public final class RecordManager {
     }
 
     private <T> String getClassName(Class<T> clas) {
-        try (InputStream inStream = RecordManager.class.getClassLoader().getResourceAsStream(PROP_PATH)) {
-            service.load(inStream);
-            return service.getProperty(clas.getSimpleName());
-        } catch (IOException e) {
-            //TODO loggers
-            throw new RuntimeException(e);
-        }
+        return service.getProperty(clas.getSimpleName());
     }
 
     public static synchronized RecordManager get() {

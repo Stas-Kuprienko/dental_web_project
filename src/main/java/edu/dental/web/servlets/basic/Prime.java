@@ -36,7 +36,7 @@ public class Prime extends HttpServlet {
         try {
             user = Authenticator.authenticate(login, password);
             DBService dbService = DBServiceManager.get().getDBService();
-            productMap = (ProductMap) dbService.getProductMapDAO(user);
+            productMap = dbService.getProductMapDAO(user).get();
             Collection<I_DentalWork> dentalWorks = dbService.getDentalWorkDAO(user).getAll();
             recordBook = RecordManager.get().getWorkRecordBook(dentalWorks, productMap);
             HttpSession session = request.getSession();

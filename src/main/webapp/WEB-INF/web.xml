@@ -4,18 +4,18 @@
 
 <web-app>
   <display-name>dental-mechanic</display-name>
-  
-  <listener>
-    <listener-class>edu.dental.web.servlets.basic.ContextInitializer</listener-class>
-  </listener>
+
+<!--  <listener>-->
+<!--    <listener-class>edu.dental.web.servlets.basic.ContextInitializer</listener-class>-->
+<!--  </listener>-->
 
   <servlet>
-    <servlet-name>ServerApp</servlet-name>
+    <servlet-name>EnterServlet</servlet-name>
     <servlet-class>edu.dental.web.servlets.basic.EnterServlet</servlet-class>
   </servlet>
 
   <servlet>
-    <servlet-name>ServerWelcome</servlet-name>
+    <servlet-name>Prime</servlet-name>
     <servlet-class>edu.dental.web.servlets.basic.Prime</servlet-class>
   </servlet>
 
@@ -25,12 +25,12 @@
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>ServerApp</servlet-name>
+    <servlet-name>EnterServlet</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>ServerWelcome</servlet-name>
+    <servlet-name>Prime</servlet-name>
     <url-pattern>/welcome</url-pattern>
   </servlet-mapping>
 

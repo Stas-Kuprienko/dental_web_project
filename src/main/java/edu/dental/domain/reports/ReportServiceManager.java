@@ -4,7 +4,6 @@ import edu.dental.domain.entities.User;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
@@ -45,13 +44,7 @@ public final class ReportServiceManager {
     }
 
     private  String getClassName() {
-        try (InputStream inStream = ReportServiceManager.class.getClassLoader().getResourceAsStream(PROP_PATH)) {
-            service.load(inStream);
-            return service.getProperty(ReportService.class.getSimpleName());
-        } catch (IOException e) {
-            //TODO loggers
-            throw new RuntimeException(e);
-        }
+        return service.getProperty(ReportService.class.getSimpleName());
     }
 
     public static synchronized ReportServiceManager get() {

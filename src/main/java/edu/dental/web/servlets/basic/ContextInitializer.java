@@ -17,12 +17,7 @@ public class ContextInitializer implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("contextInitialized");
 
-        DBService dbService = DBServiceManager.get().getDBService();
-        dbService.getTableInitializer().init();
-        dbService.getTableInitializer().addReports();
-        //TODO logger
         try {
             if (!checkDB()) {
                 throw new SQLException("trouble with DB connection.");
@@ -31,9 +26,13 @@ public class ContextInitializer implements ServletContextListener {
             //TODO logger
             throw new RuntimeException(e);
         }
+        DBService dbService = DBServiceManager.get().getDBService();
+        dbService.getTableInitializer().init();
         RecordManager.get().getWorkRecordBook();
         RecordManager.get().getProductMap();
         ReportServiceManager.get().getReportService(new User());
+        System.out.println("contextInitialized");
+        //TODO logger
     }
 
     private boolean checkDB() throws SQLException {
@@ -44,5 +43,10 @@ public class ContextInitializer implements ServletContextListener {
         statement.close();
         ConnectionPool.put(connection);
         return result;
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        ServletContextListener.super.contextDestroyed(sce);
     }
 }
