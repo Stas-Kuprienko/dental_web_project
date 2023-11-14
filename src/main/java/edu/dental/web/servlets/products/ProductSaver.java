@@ -1,4 +1,4 @@
-package edu.dental.web.servlets.works;
+package edu.dental.web.servlets.products;
 
 import edu.dental.database.DBService;
 import edu.dental.database.DBServiceManager;

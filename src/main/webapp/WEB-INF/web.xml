@@ -6,7 +6,7 @@
   <display-name>dental-mechanic</display-name>
 
 <!--  <listener>-->
-<!--    <listener-class>edu.dental.web.servlets.basic.ContextInitializer</listener-class>-->
+<!--    <listener-class>edu.dental.web.servlets.ContextInitializer</listener-class>-->
 <!--  </listener>-->
 
   <servlet>
@@ -26,7 +26,7 @@
 
   <servlet>
     <servlet-name>ProductTypePage</servlet-name>
-    <servlet-class>edu.dental.web.servlets.works.ProductTypePage</servlet-class>
+    <servlet-class>edu.dental.web.servlets.products.ProductMapTable</servlet-class>
   </servlet>
 
   <servlet>
@@ -51,7 +51,7 @@
 
   <servlet>
     <servlet-name>ProductSaver</servlet-name>
-    <servlet-class>edu.dental.web.servlets.works.ProductSaver</servlet-class>
+    <servlet-class>edu.dental.web.servlets.products.ProductSaver</servlet-class>
   </servlet>
   
   <servlet>
@@ -86,7 +86,7 @@
 
   <servlet-mapping>
     <servlet-name>ProductTypePage</servlet-name>
-    <url-pattern>/new-product-type</url-pattern>
+    <url-pattern>/product-map</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

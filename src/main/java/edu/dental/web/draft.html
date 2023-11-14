@@ -3,51 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <style>
+    body {
+        background-color: dimGrey;
+    }
+    body {color:white;}
+
 table {
   border-collapse: collapse;
-  width: 100%;
+  width: 50%;
 }
 
 tr {
   border-bottom: 1px solid #ddd;
 }
 </style>
-</head>
 <body>
-<form action="/dental/edit" id="id" ></form>
-<table>
-    <tr>
-        <td>&nbsp;</td>
-        <td>PATIENT</td>
-        <td>CLINIC</td>
-        <td>CERAMIC</td>
-        <td>ZRO2</td>
-        <td>EMAX</td>
-    </tr>
-    <tr>
-        <td><input type="submit" value="1" form="id"></td>
-        <td style="background-color: yellow">Jessica</td>
-        <td style="background-color: yellow">Dental</td>
-        <td style="background-color: yellow">20</td>
-        <td style="background-color: yellow">  </td>
-        <td style="background-color: yellow">  </td>
-    </tr>
-    <tr>
-        <td><input type="submit" value="2" form="id"></td>
-        <td>Julia</td>
-        <td>Java-Dental</td>
-        <td>  </td>
-        <td>10</td>
-        <td>  </td>
-    </tr>
-    <tr>
-        <td><input type="submit" value="3" form="id"></td>
-        <td>Петрович</td>
-        <td>  </td>
-        <td>  </td>
-        <td>  </td>
-    </tr>
-</table>
+<form action="/dental/edit-type" id="id" ></form>
+
+<h2>
+    <table>
+        <tr>
+            <TD><input type="submit" value="1" form="id"></TD>
+            <TD>��������</TD>
+            <TD>700</TD>
+        </tr>
+
+        <tr>
+            <TD><input type="submit" value="2" form="id"></TD>
+            <TD>zro2</TD>
+            <TD>850</TD>
+        </tr>
+
+        <tr>
+            <TD><input type="submit" value="3" form="id"></TD>
+            <TD>emax</TD>
+            <TD>900</TD>
+        </tr>
+
+        <tr>
+            <TD><input type="submit" value="4" form="id"></TD>
+            <TD>������</TD>
+            <TD>1000</TD>
+        </tr>
+
+
+    </table>
+</h2>
 
 </body>
 </html>

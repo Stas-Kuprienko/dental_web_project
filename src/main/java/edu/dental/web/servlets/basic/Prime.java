@@ -68,10 +68,13 @@ public class Prime extends HttpServlet {
                 body {color:white;}
             </style>
             <body>
-            <h1>Welcome, %s!</h1>
-            <h2>Dental mechanic service</h2>
+            <h1>Dental mechanic service</h1>
+            <h2>Welcome, %s!</h2>
             <form action="/dental/new-product" method="post">
                 <input type="submit" value="add new product type">
+            </form>
+            <form action="/dental/product-map" method="post">
+                <input type="submit" value="open product map">
             </form>
             <form action="/dental/new-work">
                 <input type="submit" value="add new work">

@@ -5,6 +5,7 @@ import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.utils.DatesTool;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -35,22 +37,37 @@ public class WorkTablePage extends HttpServlet {
     private static final String htmlSample = """
             <!DOCTYPE html>
             <html>
-            <meta charset="UTF-8">
-
             <head>
-                <style>
-            table {
-              border-collapse: collapse;
-              width: %s;
-            }
+            <meta charset="UTF-8">
                         
-            tr {
-              border-bottom: 1px solid #ddd;
-            }
+            <style>
+                body {
+                    background-color: dimGrey;
+                }
+                body {
+                    color:white;
+                }
+                table {
+                    border-collapse: collapse;
+                    width: %s;
+                }
+                        
+                tr {
+                    border-bottom: 1px solid #ddd;
+                }
             </style>
             </head>
+            <h2 style="text-align: center; margin-left: -900px;">
+                %s
+            </h2>
             <body>
             <form action="/dental/edit" id="id" ></form>
+                        
+            <h3>
+                <label style="background-color: DodgerBlue">CLOSED</label>&emsp;&emsp;&emsp;
+                <label style="background-color: green"> PAID </label>
+            </h3>
+            <h2>
             <table>
                 <tr>
                     <TD></TD>
@@ -60,7 +77,7 @@ public class WorkTablePage extends HttpServlet {
                 </tr>
                 %s
             </table>
-                        
+            </h2>
             </body>
             </html>
             """;
@@ -69,7 +86,7 @@ public class WorkTablePage extends HttpServlet {
 
     enum TD {
         COMMON("<TD>", "</TD>\n"),
-        CLOSED("<TD style=\"background-color: yellow\">", "</TD>\n"),
+        CLOSED("<TD style=\"background-color: DodgerBlue\">", "</TD>\n"),
         PAID("<TD style=\"background-color: green\">", "</TD>\n");
         final String open;
         final String close;
@@ -91,7 +108,8 @@ public class WorkTablePage extends HttpServlet {
             this.dentalWorks = dentalWorks;
             String head = buildHead();
             String rows = buildRows();
-            this.result = String.format(htmlSample, "100%", head, rows);
+            String month = LocalDate.now().getMonth() + "    " + LocalDate.now().getYear();
+            this.result = String.format(htmlSample, "100%", month, head, rows);
         }
 
         protected String getResult() {
