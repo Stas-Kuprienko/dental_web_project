@@ -29,7 +29,6 @@ public class ProductSaver extends HttpServlet {
         try {
             int id = dbService.getProductMapDAO(user).put(title, price);
             recordBook.getMap().put(title, price, id);
-            System.out.println("OK!");
             request.setAttribute("user", user);
             request.getRequestDispatcher("/welcome").forward(request, response);
         } catch (DatabaseException e) {

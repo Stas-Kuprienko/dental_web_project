@@ -62,28 +62,38 @@ public class Prime extends HttpServlet {
             <meta charset="UTF-8">
                         
             <style>
+                        
+                header {
+                    background-color: #555;
+                    padding: 30px;
+                    text-align: center;
+                    font-size: 35px;
+                    color: white;
+                }
                 body {
                     background-color: dimGrey;
+                    text-align: center;
+                    font-size: 20px;
+                    color:white;
                 }
-                body {color:white;}
             </style>
+            <header><strong>DENTAL MECHANIC SERVICE</strong></header>
             <body>
-            <h1>Dental mechanic service</h1>
             <h2>Welcome, %s!</h2>
             <form action="/dental/new-product" method="post">
-                <input type="submit" value="add new product type">
+                <input type="submit" value="NEW PRODUCT TYPE" style="font-size: 20px; width: 300px; background-color: #78CF71">
             </form>
             <form action="/dental/product-map" method="post">
-                <input type="submit" value="open product map">
+                <input type="submit" value="OPEN PRODUCT MAP" style="font-size: 20px; width: 300px; background-color: #78CF71">
             </form>
             <form action="/dental/new-work">
-                <input type="submit" value="add new work">
+                <input type="submit" value="NEW WORK RECORD" style="font-size: 20px; width: 300px; background-color: #78CF71">
             </form>
             <form action="/dental//work-list">
-                <input type="submit" value="open work list">
+                <input type="submit" value="OPEN WORK LIST" style="font-size: 20px; width: 300px; background-color: #78CF71">
             </form>
             <form action="/dental/save-report-file">
-                <input type="submit" value="save report to file">
+                <input type="submit" value="SAVE WORK REPORT" style="font-size: 20px; width: 300px; background-color: #78CF71">
             </form>
             </body>
             </html>

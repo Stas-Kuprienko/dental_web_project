@@ -34,20 +34,32 @@ public class ProductMapTable extends HttpServlet {
             <head>
             <meta charset="UTF-8">
             <style>
+                header {
+                    background-color: #555;
+                    padding: 30px;
+                    text-align: center;
+                    font-size: 35px;
+                    color: white;
+                }
                 body {
                     background-color: dimGrey;
+                    text-align: center;
+                    font-size: 20px;
+                    color:white;
                 }
-                body {color:white;}
+                table {
+                    border-collapse: collapse;
+                    width: %s;
+                }
                         
-            table {
-              border-collapse: collapse;
-              width: %s;
-            }
-                        
-            tr {
-              border-bottom: 1px solid #ddd;
-            }
+                tr {
+                    border-bottom: 1px solid #ddd;
+                }
+                h2 {
+                    font-size: 18px;
+                }
             </style>
+            <header><strong>DENTAL MECHANIC SERVICE</strong></header>
             <body>
             <form action="/dental/edit-type" id="id" ></form>
                         
@@ -56,7 +68,7 @@ public class ProductMapTable extends HttpServlet {
                 %s
             </table>
             </h2>
-            
+                        
             </body>
             </html>
             """;

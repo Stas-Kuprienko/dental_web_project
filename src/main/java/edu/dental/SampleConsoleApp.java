@@ -74,7 +74,7 @@ public class SampleConsoleApp {
         }
 
         public static void logIn() throws AuthenticationException, DatabaseException {
-            String login = "stas@email";
+            String login = "stas.com";
             String password = "1234";
 //            System.out.print("login: ");
 //            login = in.next();

@@ -55,7 +55,7 @@ public class ProductMapMySql implements ProductMapDAO {
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, values);
         try (Request request = new Request(query)) {
             PreparedStatement statement = request.getPreparedStatement();
-            statement.setString(1, key);
+            statement.setString(1, key.toLowerCase());
             statement.setInt(2, value);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();

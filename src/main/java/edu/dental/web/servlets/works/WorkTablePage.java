@@ -5,7 +5,6 @@ import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.utils.DatesTool;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,14 +36,20 @@ public class WorkTablePage extends HttpServlet {
     private static final String htmlSample = """
             <!DOCTYPE html>
             <html>
-            <head>
             <meta charset="UTF-8">
                         
             <style>
-                body {
-                    background-color: dimGrey;
+                header {
+                    background-color: #555;
+                    padding: 30px;
+                    text-align: center;
+                    font-size: 35px;
+                    color: white;
                 }
                 body {
+                    background-color: dimGrey;
+                    text-align: center;
+                    font-size: 20px;
                     color:white;
                 }
                 table {
@@ -55,13 +60,16 @@ public class WorkTablePage extends HttpServlet {
                 tr {
                     border-bottom: 1px solid #ddd;
                 }
+                h2 {
+                    font-size: 18px;
+                }
             </style>
-            </head>
+            <header><strong>DENTAL MECHANIC SERVICE</strong></header>
             <h2 style="text-align: center; margin-left: -900px;">
-                %s
+                <strong>%s</strong>
             </h2>
             <body>
-            <form action="/dental/edit" id="id" ></form>
+            <form action="/dental/edit-work" id="id" method="post"></form>
                         
             <h3>
                 <label style="background-color: DodgerBlue">CLOSED</label>&emsp;&emsp;&emsp;
