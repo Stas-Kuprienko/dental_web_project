@@ -62,6 +62,15 @@ public final class Authenticator {
         }
     }
 
+    public static synchronized boolean verification(User user, byte[] password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            return MessageDigest.isEqual(user.getPassword(), password);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Get the {@link MessageDigest MD5} hash of the password.
      * @param password The user's password string.

@@ -69,7 +69,7 @@ public class WorkTablePage extends HttpServlet {
                 <strong>%s</strong>
             </h2>
             <body>
-            <form action="/dental/edit-work" id="id" method="post"></form>
+            <form action="/dental/edit-work" id="id" method="post">
                         
             <h3>
                 <label style="background-color: DodgerBlue">CLOSED</label>&emsp;&emsp;&emsp;
@@ -86,11 +86,12 @@ public class WorkTablePage extends HttpServlet {
                 %s
             </table>
             </h2>
+            </form>
             </body>
             </html>
             """;
 
-    private static final String submit = "<input type=\"submit\" value=\"  %s  \" form=\"id\">";
+    private static final String submit = "<input type=\"submit\" name=\"index\" value=\"%s\">";
 
     enum TD {
         COMMON("<TD>", "</TD>\n"),

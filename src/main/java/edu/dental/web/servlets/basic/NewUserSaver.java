@@ -45,7 +45,7 @@ public class NewUserSaver extends HttpServlet {
             throw new RuntimeException(e);
         } catch (DatabaseException e) {
             try {
-                request.getRequestDispatcher("/dental/").forward(request, response);
+                request.getRequestDispatcher("/enter").forward(request, response);
             } catch (ServletException | IOException ex) {
                 //TODO logger
                 throw new RuntimeException(ex);

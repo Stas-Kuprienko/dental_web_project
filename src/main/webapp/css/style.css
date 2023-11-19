@@ -1,0 +1,183 @@
+
+    body {
+        font-family: 'Trebuchet MS', sans-serif;
+        background-color: #1f1f1f;
+        text-align: center;
+        font-size: 24px;
+        color:white;
+    }
+
+    section {
+        border: 2px solid grey;
+        width: auto;
+        float: center;
+        margin-top: 92px;
+        overflow: auto;
+    }
+
+    .main-page {
+        border: 3px solid black;
+        background-image: linear-gradient(to bottom right, dimGrey, black);
+        float: left;
+        width: 45%;
+        margin: auto;
+        padding: 1%;
+        min-height: 128px;
+        color: white;
+        font-size: bold;
+        text-decoration: none;
+    }
+
+    .main-page:hover {
+        background-image: linear-gradient(to bottom right, #808080, #1f1f1f);
+        font-size: 110%;
+    }
+
+    .menu {
+        background-image: linear-gradient(#808080, #1f1f1f);
+        overflow: auto;
+        position: fixed;
+        top: 0;
+        width: 100%;
+    }
+
+    nav header {
+        text-align: center;
+        font-size: 26px;
+        font-weight: bold;
+        color: black;
+    }
+
+    .menu a {
+        float: left;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        padding: 14px 16px;
+        font-size: 14px;
+        color: white;
+    }
+
+    .menu a:hover {
+        background-color: dimGrey;
+        font-size: 16px;
+    }
+
+    button {
+        font-weight: bold;
+        background-color: #fffed4;
+        height: 30px;
+        width: 75px;
+    }
+
+    input {
+        height: 22px;
+        font-size: 18px;
+    }
+
+    select {
+        height: 22px;
+        width: 128px;
+        font-size: 18px;
+    }
+
+    .center {
+      margin: auto;
+      min-height: 75px;
+      width: 45%;
+      border: 2px solid grey;
+      padding: 1%;
+      float: left;
+      min-width: 352px;
+    }
+
+    .edit2 {
+      margin: auto;
+      min-height: 149px;
+      width: 45%;
+      min-width: 352px;
+      border: 2px solid grey;
+      padding: 1%;
+      float: left;
+      overflow: auto;
+    }
+
+    .table {
+        display: table;
+        border-collapse: collapse;
+        border: 1px solid dimGrey;
+        font-family: sans-serif;
+        width: 100%;
+    }
+
+    .thead {
+        display: table-header-group;
+    }
+
+    .tbody {
+        display: table-row-group;
+    }
+
+    .td, .th {
+        border: 1px solid dimGrey;
+        display: table-cell;
+        padding: 5px 10px;
+        text-align: center;
+    }
+
+    .tr {
+        display: table-row;
+    }
+
+    .tr-closed {
+        display: table-row;
+        background-color: #002d73;
+        border: 1px solid dimGrey;
+        text-decoration: none;
+        color: white;
+    }
+
+    .tr-paid {
+        display: table-row;
+        background-color: #075700;
+        border: 1px solid dimGrey;
+        text-decoration: none;
+        color: white;
+    }
+
+    .tr-closed:hover {
+        background: #606d82;
+        cursor: pointer;
+    }
+
+    .tr-paid:hover {
+        background: #608263;
+        cursor: pointer;
+    }
+
+    a.tr {
+        border: 1px solid dimGrey;
+        text-decoration: none;
+        color: white;
+    }
+
+    a.tr:hover {
+        background: dimGrey;
+        cursor: pointer;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1f1f1f;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #555;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: dimGrey;
+    }

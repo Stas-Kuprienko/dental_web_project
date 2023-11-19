@@ -11,8 +11,13 @@
 
   <servlet>
     <servlet-name>Enter</servlet-name>
-    <jsp-file>/enter.html</jsp-file>
+    <servlet-class>edu.dental.web.servlets.basic.Enter</servlet-class>
   </servlet>
+
+<!--  <servlet>-->
+<!--    <servlet-name>Enter</servlet-name>-->
+<!--    <jsp-file>/enter.html</jsp-file>-->
+<!--  </servlet>-->
 
   <servlet>
     <servlet-name>newProduct</servlet-name>
@@ -20,8 +25,13 @@
   </servlet>
 
   <servlet>
-    <servlet-name>Prime</servlet-name>
-    <servlet-class>edu.dental.web.servlets.basic.Prime</servlet-class>
+    <servlet-name>welcome</servlet-name>
+    <jsp-file>/welcome.html</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>Authentication</servlet-name>
+    <servlet-class>edu.dental.web.servlets.basic.AuthenticationPage</servlet-class>
   </servlet>
 
   <servlet>
@@ -59,6 +69,16 @@
     <jsp-file>/newRecord.html</jsp-file>
   </servlet>
 
+  <servlet>
+    <servlet-name>DentalWorkEditor</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.DentalWorkEditor</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Enter</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>newRecord</servlet-name>
     <url-pattern>/new-work</url-pattern>
@@ -76,12 +96,17 @@
 
   <servlet-mapping>
     <servlet-name>Enter</servlet-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern>/enter</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>Prime</servlet-name>
+    <servlet-name>welcome</servlet-name>
     <url-pattern>/welcome</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Authentication</servlet-name>
+    <url-pattern>/authentication</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -107,6 +132,16 @@
   <servlet-mapping>
     <servlet-name>DentalWorkSaver</servlet-name>
     <url-pattern>/save-work</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DentalWorkEditor</servlet-name>
+    <url-pattern>/edit-work</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/css/*</url-pattern>
   </servlet-mapping>
 
 </web-app>

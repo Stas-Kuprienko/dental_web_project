@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-public class Prime extends HttpServlet {
+public class AuthenticationPage extends HttpServlet {
 
 //    @Override
 //    public void init() throws ServletException {
@@ -46,56 +46,13 @@ public class Prime extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 session.setAttribute("recordBook", recordBook);
+                request.getRequestDispatcher("/welcome").forward(request, response);
             } else {
-                user = (User) request.getAttribute("user");
+                request.getRequestDispatcher("/").forward(request, response);
             }
-            writer.write(String.format(htmlPage, user.getName()));
         } catch (AuthenticationException | DatabaseException e) {
-            writer.write("no such user.");
-            request.getRequestDispatcher("dental/").forward(request, response);
+            request.getRequestDispatcher("/").forward(request, response);
         }
     }
 
-    private static final String htmlPage = """
-            <!DOCTYPE html>
-            <html>
-            <meta charset="UTF-8">
-                        
-            <style>
-                        
-                header {
-                    background-color: #555;
-                    padding: 30px;
-                    text-align: center;
-                    font-size: 35px;
-                    color: white;
-                }
-                body {
-                    background-color: dimGrey;
-                    text-align: center;
-                    font-size: 20px;
-                    color:white;
-                }
-            </style>
-            <header><strong>DENTAL MECHANIC SERVICE</strong></header>
-            <body>
-            <h2>Welcome, %s!</h2>
-            <form action="/dental/new-product" method="post">
-                <input type="submit" value="NEW PRODUCT TYPE" style="font-size: 20px; width: 300px; background-color: #78CF71">
-            </form>
-            <form action="/dental/product-map" method="post">
-                <input type="submit" value="OPEN PRODUCT MAP" style="font-size: 20px; width: 300px; background-color: #78CF71">
-            </form>
-            <form action="/dental/new-work">
-                <input type="submit" value="NEW WORK RECORD" style="font-size: 20px; width: 300px; background-color: #78CF71">
-            </form>
-            <form action="/dental//work-list">
-                <input type="submit" value="OPEN WORK LIST" style="font-size: 20px; width: 300px; background-color: #78CF71">
-            </form>
-            <form action="/dental/save-report-file">
-                <input type="submit" value="SAVE WORK REPORT" style="font-size: 20px; width: 300px; background-color: #78CF71">
-            </form>
-            </body>
-            </html>
-            """;
 }

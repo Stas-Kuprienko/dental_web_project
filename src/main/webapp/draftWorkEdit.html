@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DENTAL MECHANIC SERVICE</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<nav class="menu">
+    <header><strong>DENTAL MECHANIC SERVICE</strong></header>
+    <a href="/dental/new-work">NEW WORK</a>
+    <a href="dental/work-list">WORK LIST</a>
+    <a href="/dental/product-map">PRODUCT MAP</a>
+    <a href="/dental/reports">REPORTS</a>
+</nav>
+<body>
+<section>
+<h4>Edit record:</h4>
+<form action="/dental/edit-work">
+    <p class="center">
+    <label  for="patient">patient:</label><br>
+    <input type="text" id="patient" name="patient" value="Иванов">
+    <input type="hidden" name="field" value="patient">
+    <button type="submit" name="index" value="2">input</button>
+    </p>
+</form>
+<form action="/dental/edit-work">
+    <p class="center">
+    <label for="clinic">clinic:</label><br>
+    <input type="text" id="clinic" name="clinic" value="Dental-Med">
+    <input type="hidden" name="field" value="clinic">
+    <button type="submit">input</button>
+    </p>
+</form>
+<form action="/dental/edit-work">
+    <p class="center">
+        <label for="complete">complete:</label><br>
+        <input type="date" id="complete" name="complete" value="2023-11-20">
+        <input type="hidden" name="field" value="complete">
+        <button type="submit">input</button>
+    </p>
+</form>
+<form action="/dental/edit-work">
+    <p class="center">
+        <input type="radio" id="make" name="status" value="make" checked>
+        <label for="make">MAKE</label>
+        <input type="radio" id="closed" name="status" value="closed">
+        <label for="closed">CLOSED</label>
+        <input type="radio" id="paid" name="status" value="paid">
+        <label for="paid">PAID</label>&emsp;
+        <input type="hidden" name="field" value="status">
+        <button type="submit">input</button>
+    </p>
+</form>
+<form action="/dental/edit-work">
+    <h5 class="edit2">
+        <table style="margin-left: 35%;">
+            <tr>
+                <td>керамика -- 12</td>
+                <th>
+                    <button type="submit" name="product" value="керамика">delete</button>
+                </th>
+            </tr>
+            <tr>
+                <td>керамика -- 12</td>
+                <th>
+                    <button type="submit" name="product" value="керамика">delete</button>
+                </th>
+            </tr>
+            <tr>
+            <td>zro2 -- 4</td>
+                <th>
+                    <button type="submit" name="product" value="керамика">delete</button>
+                </th>
+            </tr>
+        </table>
+    </h5><br>
+    <input type="hidden" name="field" value="delete-product">
+</form>
+<form action="/dental/edit-work">
+    <p class="edit2">
+        <label for="product">product:</label><br>
+        <select id="product" name="product">
+            <option value="керамика">керамика</option>
+            <option value="zro2">zro2</option>
+            <option value="emax">emax</option>
+            <option value="работа">работа</option>
+        </select><br>
+        <label for="quantity">quantity:</label><br>
+        <input type="number" id="quantity" name="quantity" value="" max="32"><br>
+        <input type="hidden" name="field" value="add-product">
+        <button type="submit">add</button>
+    </p>
+</form>
+<form action="/dental/edit-work">
+    <p class="edit2">
+    <label for="comment">comment:</label><br>
+    <textarea id="comment" rows="4" cols="30" name="comment" maxlength="127"> </textarea>
+    <input type="hidden" name="field" value="comment">
+    <button type="submit">input</button>
+    </p>
+</form>
+    <p class="edit2" style="max-width: 128px;">
+        created:<br>
+        10-11-2023
+    </p>
+<button type="submit" action=" " style="float: left; font-size: 20px; width: 100px; min-height: 120px;">OPEN PHOTO</button>
+<form  action="/dental/welcome">
+    <button type="submit" action=" " style="float: left; min-height: 120px; font-size: 20px; width: 100px;">BACK</button>
+</form>
+</section>
+</body>
+</html>
