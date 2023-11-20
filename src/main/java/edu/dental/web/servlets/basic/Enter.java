@@ -23,24 +23,19 @@ public class Enter extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            response.getWriter().write(page);
-        } else {
+        if (user != null) {
             try {
                 User user1 = DBServiceManager.get().getDBService().getUserDAO().get(user.getId());
                 if (user.getEmail().equals(user1.getEmail())) {
                     if (Authenticator.verification(user, user1.getPassword())) {
                         request.getRequestDispatcher("/welcome").forward(request, response);
-                    } else {
-                        response.getWriter().write(page);
                     }
-                } else {
-                    response.getWriter().write(page);
                 }
             } catch (DatabaseException ignored) {
                 response.getWriter().write(page);
             }
         }
+        response.getWriter().write(page);
     }
 
     private static final String page = """
@@ -61,7 +56,7 @@ public class Enter extends HttpServlet {
             <body>
             <section>
             <h2>Input your email and password please:</h2>
-            <form action="/dental/authentication" method="post">
+            <form action="/dental/log-in" method="post">
                 <label for="email">email:</label><br>
                 <input type="text" id="email" name="email" value=""><br>
                 <label for="password">password:</label><br>

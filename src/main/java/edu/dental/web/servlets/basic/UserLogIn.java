@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-public class AuthenticationPage extends HttpServlet {
+public class UserLogIn extends HttpServlet {
 
 //    @Override
 //    public void init() throws ServletException {

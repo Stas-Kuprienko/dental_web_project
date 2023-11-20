@@ -1,6 +1,6 @@
-package edu.dental.web.servlets;
+package edu.dental.web.builders;
 
-public enum HtmlTemplate {
+public enum HtmlSamples {
 
     /**
      * Necessary using by {@linkplain String#format(String, Object...)}.
@@ -28,9 +28,9 @@ public enum HtmlTemplate {
             </html>
             """),
 
-    LIST_STATUS ("""
+    TABLE_STATUS("""
             <h4 style="float: left;">
-                    <label style="background-color: #002d73; border: 5px solid #002d73">CLOSED</label>&emsp;&emsp;&emsp;
+                    <label style="background-color: #002d73; border: 5px solid #002d73">CLOSED</label>&emsp;
                     <label style="background-color: #075700; border: 5px solid #075700"> PAID </label>
                 </h4>
             """),
@@ -54,14 +54,14 @@ public enum HtmlTemplate {
      * Necessary using by {@linkplain String#format(String, Object...)}.
      */
     TABLE_MONTH ("""
-            <h3 style="margin-top: 5%;">
+            <h3>
                 <strong>%s</strong>
             </h3>
             """);
 
 
     public final String tag;
-    HtmlTemplate(String tag) {
+    HtmlSamples(String tag) {
         this.tag = tag;
     }
 
@@ -83,13 +83,27 @@ public enum HtmlTemplate {
         /**
          * Necessary using by {@linkplain String#format(String, Object...)}.
          */
+        A_TR ("""
+                <a class="tr" href="/dental/edit-work?id=%s">
+                """, "</a>"),
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
         A_TR_CLOSED ("""
             <a class="tr-closed" href="/dental/edit-work?id=%s">
             """, "</a>"),
 
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        A_TR_PAID ("""
+                <a class="tr-paid" href="/dental/edit-work?id=%s">
+                """, "</a>"),
+
         DIV_TD ("""
                 <div class="td">
-                """, "</div")
+                """, "</div>")
         ;
 
 
