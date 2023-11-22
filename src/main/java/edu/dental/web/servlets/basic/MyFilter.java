@@ -9,6 +9,7 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.web.RAM;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -28,26 +29,24 @@ public class MyFilter extends HttpFilter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpSession session = request.getSession();
         User user;
-        ProductMap productMap;
-        WorkRecordBook recordBook;
 
         try {
-            if (request.getAttribute("user") == null) {
+            if (session.getAttribute("user") == null) {
                 if ((request.getAttribute("email") != null) && (request.getAttribute("password")) != null) {
 
                     String login = request.getParameter("email");
                     String password = request.getParameter("password");
                     user = Authenticator.authenticate(login, password);
                     DBService dbService = APIManager.instance().getDBService();
-                    productMap = dbService.getProductMapDAO(user).get();
+                    ProductMap productMap = dbService.getProductMapDAO(user).get();
                     Collection<I_DentalWork> dentalWorks = dbService.getDentalWorkDAO(user).getAll();
-                    recordBook = APIManager.instance().getWorkRecordBook(dentalWorks, productMap);
-                    session.setAttribute("user", user);
-                    session.setAttribute("recordBook", recordBook);
-                    request.getRequestDispatcher("/welcome").forward(request, response);
+                    WorkRecordBook recordBook = APIManager.instance().getWorkRecordBook(dentalWorks, productMap);
+                    session.setAttribute("user", user.getEmail());
+                    RAM.put(user, recordBook);
+                    filterChain.doFilter(request, response);
                 }
                 request.getRequestDispatcher("/").forward(request, response);
-            }
+            } filterChain.doFilter(request, response);
         } catch (AuthenticationException | DatabaseException e) {
             request.getRequestDispatcher("/").forward(request, response);
         }

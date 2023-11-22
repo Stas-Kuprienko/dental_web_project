@@ -6,6 +6,8 @@ import edu.dental.domain.entities.User;
 
 public interface DBService {
 
+    //TODO!!!!!!!!!
+
     TableInitializer getTableInitializer();
 
     User authenticate(String login, String password) throws DatabaseException;

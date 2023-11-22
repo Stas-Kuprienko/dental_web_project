@@ -7,6 +7,7 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.web.RAM;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,8 +23,13 @@ public class DentalWorkSaver extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        User user = (User) session.getAttribute("user");
-        WorkRecordBook recordBook = (WorkRecordBook) session.getAttribute("recordBook");
+        String email = (String) session.getAttribute("user");
+        if (email == null) {
+            request.getRequestDispatcher("/").forward(request, response);
+        }
+        RAM.Account account = RAM.get(email);
+        User user = account.user();
+        WorkRecordBook recordBook = account.recordBook();
 
         String patient = request.getParameter("patient");
         String clinic = request.getParameter("clinic");

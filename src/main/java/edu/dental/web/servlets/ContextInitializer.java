@@ -29,7 +29,6 @@ public class ContextInitializer implements ServletContextListener {
         APIManager.instance().getWorkRecordBook();
         APIManager.instance().getProductMap();
         APIManager.instance().getReportService(new User());
-        System.out.println("contextInitialized");
         //TODO logger
     }
 

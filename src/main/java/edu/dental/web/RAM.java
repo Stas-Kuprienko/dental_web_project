@@ -18,15 +18,26 @@ public final class RAM {
     }
 
     public static User getUser(String email) {
-        return repo.get(email).user;
+        Account account = repo.get(email);
+        if (account == null) {
+            throw new NullPointerException("The user is not found.");
+        }        return account.user;
     }
 
     public static WorkRecordBook getWorkRecordBook(String email) {
-        return repo.get(email).recordBook;
+        Account account = repo.get(email);
+        if (account == null) {
+            throw new NullPointerException("The user is not found.");
+        }
+        return account.recordBook;
     }
 
     public static Account get(String email) {
-        return repo.get(email);
+        Account account = repo.get(email);
+        if (account == null) {
+            throw new NullPointerException("The user is not found.");
+        }
+        return account;
     }
 
     private static final HashMap<String, Account> repo;

@@ -1,7 +1,7 @@
 package edu.dental.web.servlets.works;
 
-import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.web.RAM;
 import edu.dental.web.builders.TablePageBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -18,13 +18,15 @@ public class WorkTablePage extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter writer = response.getWriter();
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            request.getRequestDispatcher("/").forward(request, response);
-        } else {
-            WorkRecordBook recordBook = (WorkRecordBook) session.getAttribute("recordBook");
+        String email = (String) session.getAttribute("user");
+        try {
+            RAM.Account account = RAM.get(email);
+            WorkRecordBook recordBook = account.recordBook();
             String page = TablePageBuilder.get().build(recordBook.getMap(), recordBook.getList());
             writer.write(page);
+        } catch (NullPointerException ignored) {
+            request.getRequestDispatcher("/").forward(request, response);
         }
     }
 }
+

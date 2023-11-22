@@ -9,6 +9,7 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.web.RAM;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collection;
 
 public class UserLogIn extends HttpServlet {
@@ -28,7 +28,6 @@ public class UserLogIn extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PrintWriter writer = response.getWriter();
         User user;
         ProductMap productMap;
         WorkRecordBook recordBook;
@@ -43,8 +42,8 @@ public class UserLogIn extends HttpServlet {
                 Collection<I_DentalWork> dentalWorks = dbService.getDentalWorkDAO(user).getAll();
                 recordBook = APIManager.instance().getWorkRecordBook(dentalWorks, productMap);
                 HttpSession session = request.getSession();
-                session.setAttribute("user", user);
-                session.setAttribute("recordBook", recordBook);
+                session.setAttribute("user", user.getEmail());
+                RAM.put(user, recordBook);
                 request.getRequestDispatcher("/welcome").forward(request, response);
             } else {
                 request.getRequestDispatcher("/").forward(request, response);
