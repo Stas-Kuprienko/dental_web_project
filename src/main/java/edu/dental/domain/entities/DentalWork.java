@@ -1,7 +1,6 @@
 package edu.dental.domain.entities;
 
 
-import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.utils.data_structures.MyList;
 
 import java.time.LocalDate;
@@ -138,7 +137,7 @@ public class DentalWork implements I_DentalWork {
                 "\n id=" + id +
                 ", \n patient='" + patient + '\'' +
                 ", \n clinic='" + clinic + '\'' +
-                ", \n products=" + products +
+                ", \n products=" + (products.isEmpty() ? "null" : products) +
                 ", \n accepted=" + accepted +
                 ", \n complete=" + complete +
                 ", \n status=" + status +

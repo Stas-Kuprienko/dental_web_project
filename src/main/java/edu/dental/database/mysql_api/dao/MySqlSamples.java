@@ -26,8 +26,8 @@ public enum MySqlSamples implements DAO.Queries {
                 GROUP_CONCAT(product.quantity) AS quantity,
                 GROUP_CONCAT(product.price) AS price
             	FROM dental_work
-                JOIN product ON product.work_id = dental_work.id
-                JOIN product_map ON product_map.id = product.title
+                LEFT JOIN product ON product.work_id = dental_work.id
+                LEFT JOIN product_map ON product_map.id = product.title
             	WHERE %s
                 GROUP BY dental_work.id;
             """),

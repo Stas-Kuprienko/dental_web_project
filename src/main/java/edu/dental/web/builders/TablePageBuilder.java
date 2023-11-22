@@ -40,8 +40,7 @@ public final class TablePageBuilder {
     private String buildThread(ProductMap map) {
         StringBuilder products = new StringBuilder();
         for (String s : map.keysToArray()) {
-            products.append(tag2.DIV_TH.o).append(s.toUpperCase())
-                    .append(tag2.DIV_TH.c).append("\n\t\t");
+            line(products, tag2.DIV_TH, s.toUpperCase());
         }
         return String.format(TABLE_THREAD.tag, products);
     }
@@ -57,33 +56,29 @@ public final class TablePageBuilder {
             } else if (dw.getStatus().name().equals("PAID")) {
                 rows.append(String.format(tag2.A_TR_PAID.o, dw.getId()));
             }
-            buildRow(rows, map, dw);
-            rows.append("\n\t").append(tag2.A_TR.c);
+            buildRow(rows.append("\n\t"), map, dw);
+            rows.append(tag2.A_TR.c).append("\n\t");
         }
         return rows.append(tag2.DIV_TBODY.c).toString();
     }
 
     private void buildRow(StringBuilder str, ProductMap map, I_DentalWork dw) {
-        str.append("\n\t")
-                .append(tag2.DIV_TD.o).append(dw.getPatient()).append(tag2.DIV_TD.c).append("\n\t")
-                .append(tag2.DIV_TD.o).append(dw.getClinic()).append(tag2.DIV_TD.c).append("\n\t");
+        line(str, tag2.DIV_TD, dw.getPatient());
+        line(str, tag2.DIV_TD, dw.getClinic());
         if (dw.getProducts().isEmpty()) {
             for (String ignored : map.keysToArray()) {
-                str.append(tag2.DIV_TD.o).append(" ").append(tag2.DIV_TD.c).append("\n\t");
+                line(str, tag2.DIV_TD, " ");
             }
         } else {
             for (String s : map.keysToArray()) {
-                str.append(tag2.DIV_TD.o);
                 try {
                     Product p = dw.findProduct(s);
-                    str.append(p.quantity());
+                    line(str, tag2.DIV_TD, String.valueOf(p.quantity()));
                 } catch (NoSuchElementException | NullPointerException ignored) {
-                    str.append(" ");
+                    line(str, tag2.DIV_TD, " ");
                 }
-                str.append(tag2.DIV_TD.c).append("\n\t");
             }
         }
-        str.append(tag2.DIV_TD.o).append(dw.getComplete()).append(tag2.DIV_TD.c).append("\n\t");
+        line(str, tag2.DIV_TD, String.valueOf(dw.getComplete()));
     }
-
 }

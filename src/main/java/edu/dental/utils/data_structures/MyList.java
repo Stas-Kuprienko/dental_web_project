@@ -295,6 +295,9 @@ public class MyList<E> implements Collection<E>, Serializable {
 
     @Override
     public String toString() {
+        if (size == 0) {
+            return "";
+        }
         return Arrays.toString(toArray());
     }
 

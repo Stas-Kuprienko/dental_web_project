@@ -35,7 +35,6 @@ public class DentalWorkSaver extends HttpServlet {
             I_DentalWork dw = recordBook.createRecord(patient, clinic, product, quantity, complete);
             DBService dbService = DBServiceManager.get().getDBService();
             dbService.getDentalWorkDAO(user).put(dw);
-            System.out.println("OK!");
             request.setAttribute("user", user);
             request.getRequestDispatcher("/welcome").forward(request, response);
         } catch (WorkRecordBookException | DatabaseException e) {

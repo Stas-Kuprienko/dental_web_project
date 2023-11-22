@@ -68,43 +68,41 @@ public enum HtmlSamples {
     public enum tag2 {
 
         DIV_TABLE ("""
-            <div class="table">
-            """,
+            <div class="table">""",
                 "</div>"),
 
         DIV_TBODY ("""
-                <div class="tbody">
-                """, "</div>"),
+                <div class="tbody">""",
+                "</div>"),
 
         DIV_TH ("""
-                <div class="th">
-                """, "</div>"),
+                <div class="th">""",
+                "</div>"),
 
         /**
          * Necessary using by {@linkplain String#format(String, Object...)}.
          */
         A_TR ("""
-                <a class="tr" href="/dental/edit-work?id=%s">
-                """, "</a>"),
+                <a class="tr" href="/dental/edit-work?id=%s">""",
+                "</a>"),
 
         /**
          * Necessary using by {@linkplain String#format(String, Object...)}.
          */
         A_TR_CLOSED ("""
-            <a class="tr-closed" href="/dental/edit-work?id=%s">
-            """, "</a>"),
+            <a class="tr-closed" href="/dental/edit-work?id=%s">""",
+                "</a>"),
 
         /**
          * Necessary using by {@linkplain String#format(String, Object...)}.
          */
         A_TR_PAID ("""
-                <a class="tr-paid" href="/dental/edit-work?id=%s">
-                """, "</a>"),
+                <a class="tr-paid" href="/dental/edit-work?id=%s">""",
+                "</a>"),
 
         DIV_TD ("""
-                <div class="td">
-                """, "</div>")
-        ;
+                <div class="td">""",
+                "</div>");
 
 
         public final String o;
@@ -113,5 +111,10 @@ public enum HtmlSamples {
             this.o = o;
             this.c = c;
         }
+    }
+
+    public static StringBuilder line(StringBuilder str, tag2 tag, String value) {
+        str.append(tag.o).append(value).append(tag.c).append("\n\t\t");
+        return str;
     }
 }

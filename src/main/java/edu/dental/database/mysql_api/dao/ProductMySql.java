@@ -64,14 +64,16 @@ public class ProductMySql implements ProductDAO {
     public Collection<Product> instantiate(ResultSet resultSet) throws DatabaseException {
         try {
             MyList<Product> products = new MyList<>();
-            String[] entryId = resultSet.getString("entry_id").split(",");
-            String[] title = resultSet.getString("title").split(",");
-            String[] quantity = resultSet.getString("quantity").split(",");
-            String[] price = resultSet.getString("price").split(",");
-            for (int i = 0; i < title.length; i++) {
-                Product product = new Product(Integer.parseInt(entryId[i]), title[i],
-                        (byte) Integer.parseInt(quantity[i]), Integer.parseInt(price[i]));
-                products.add(product);
+            if (resultSet.getString("entry_id") != null) {
+                String[] entryId = resultSet.getString("entry_id").split(",");
+                String[] title = resultSet.getString("title").split(",");
+                String[] quantity = resultSet.getString("quantity").split(",");
+                String[] price = resultSet.getString("price").split(",");
+                for (int i = 0; i < title.length; i++) {
+                    Product product = new Product(Integer.parseInt(entryId[i]), title[i],
+                            (byte) Integer.parseInt(quantity[i]), Integer.parseInt(price[i]));
+                    products.add(product);
+                }
             }
             return products;
         } catch (SQLException | NumberFormatException e) {
