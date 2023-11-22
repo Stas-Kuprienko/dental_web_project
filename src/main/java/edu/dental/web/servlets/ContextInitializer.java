@@ -1,11 +1,9 @@
 package edu.dental.web.servlets;
 
 import edu.dental.database.DBService;
-import edu.dental.database.DBServiceManager;
 import edu.dental.database.connection.ConnectionPool;
+import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
-import edu.dental.domain.records.RecordManager;
-import edu.dental.domain.reports.ReportServiceManager;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
@@ -26,11 +24,11 @@ public class ContextInitializer implements ServletContextListener {
             //TODO logger
             throw new RuntimeException(e);
         }
-        DBService dbService = DBServiceManager.get().getDBService();
+        DBService dbService = APIManager.instance().getDBService();
         dbService.getTableInitializer().init();
-        RecordManager.get().getWorkRecordBook();
-        RecordManager.get().getProductMap();
-        ReportServiceManager.get().getReportService(new User());
+        APIManager.instance().getWorkRecordBook();
+        APIManager.instance().getProductMap();
+        APIManager.instance().getReportService(new User());
         System.out.println("contextInitialized");
         //TODO logger
     }

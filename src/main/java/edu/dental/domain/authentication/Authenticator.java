@@ -1,8 +1,8 @@
 package edu.dental.domain.authentication;
 
-import edu.dental.database.DBServiceManager;
-import edu.dental.database.DatabaseException;
 import edu.dental.database.DBService;
+import edu.dental.database.DatabaseException;
+import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
 
 import java.security.MessageDigest;
@@ -32,7 +32,7 @@ public final class Authenticator {
             throw new AuthenticationException(AuthenticationException.Causes.NULL);
         }
         User user;
-        DBService dbService = DBServiceManager.get().getDBService();
+        DBService dbService = APIManager.instance().getDBService();
         try {
             user = dbService.authenticate(login, password);
         } catch (DatabaseException e) {

@@ -1,25 +1,23 @@
 package edu.dental;
 
 import edu.dental.database.DBService;
-import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.mysql_api.dao.DentalWorkMySql;
 import edu.dental.database.mysql_api.dao.ProductMapMySql;
 import edu.dental.database.mysql_api.dao.UserMySql;
+import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
-import edu.dental.domain.records.RecordManager;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.domain.records.my_work_record_book.MyProductMap;
 import edu.dental.domain.reports.MonthlyReport;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
-import edu.dental.domain.reports.ReportServiceManager;
 import edu.dental.utils.DatesTool;
 import edu.dental.utils.data_structures.MyList;
 
@@ -68,8 +66,8 @@ public class SampleConsoleApp {
             User newUser = new User(name, login, password);
             System.out.println(new UserMySql().put(newUser));
             user = newUser;
-            workRecordBook = RecordManager.get().getWorkRecordBook();
-            reportService = ReportServiceManager.get().getReportService(user);
+            workRecordBook = APIManager.instance().getWorkRecordBook();
+            reportService = APIManager.instance().getReportService(user);
             System.out.println("Welcome!");
         }
 
@@ -82,9 +80,9 @@ public class SampleConsoleApp {
 //            password = in.next();
             user = Authenticator.authenticate(login, password);
             MyList<I_DentalWork> records = (MyList<I_DentalWork>) new DentalWorkMySql(user).getAll();
-            MyProductMap productMap = (MyProductMap) RecordManager.get().getProductMap(user);
-            workRecordBook = RecordManager.get().getWorkRecordBook(records, productMap);
-            reportService = ReportServiceManager.get().getReportService(user);
+            MyProductMap productMap = (MyProductMap) APIManager.instance().getProductMap(user);
+            workRecordBook = APIManager.instance().getWorkRecordBook(records, productMap);
+            reportService = APIManager.instance().getReportService(user);
             System.out.println("Welcome!");
         }
 
@@ -338,7 +336,7 @@ public class SampleConsoleApp {
     }
 
     public static void menu_2() throws WorkRecordBookException, DatabaseException, ReportServiceException {
-        dbService = DBServiceManager.get().getDBService();
+        dbService = APIManager.instance().getDBService();
         System.out.println(user.getName() + ", you are enter in service\n" + options_2);
         int j = in.nextInt();
         switch (j) {

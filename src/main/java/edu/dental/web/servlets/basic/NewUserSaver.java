@@ -1,10 +1,9 @@
 package edu.dental.web.servlets.basic;
 
 import edu.dental.database.DBService;
-import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
+import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
-import edu.dental.domain.records.RecordManager;
 import edu.dental.domain.records.WorkRecordBook;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -32,11 +31,11 @@ public class NewUserSaver extends HttpServlet {
 
         try {
             user = new User(name, email, password);
-            DBService dbService = DBServiceManager.get().getDBService();
+            DBService dbService = APIManager.instance().getDBService();
             if (!dbService.getUserDAO().put(user)) {
                 request.getRequestDispatcher("/dental/").forward(request, response);
             }
-            recordBook = RecordManager.get().getWorkRecordBook();
+            recordBook = APIManager.instance().getWorkRecordBook();
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             session.setAttribute("recordBook", recordBook);

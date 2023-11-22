@@ -5,10 +5,6 @@
 <web-app>
   <display-name>dental-mechanic</display-name>
 
-<!--  <listener>-->
-<!--    <listener-class>edu.dental.web.servlets.ContextInitializer</listener-class>-->
-<!--  </listener>-->
-
   <filter>
     <filter-name>MyFilter</filter-name>
     <filter-class>edu.dental.web.servlets.basic.MyFilter</filter-class>
@@ -16,8 +12,12 @@
 
   <filter-mapping>
     <filter-name>MyFilter</filter-name>
-    <url-pattern>/my-filter</url-pattern>
+    <url-pattern>/welcome</url-pattern>
   </filter-mapping>
+
+  <listener>
+    <listener-class>edu.dental.web.servlets.ContextInitializer</listener-class>
+  </listener>
 
   <servlet>
     <servlet-name>Enter</servlet-name>

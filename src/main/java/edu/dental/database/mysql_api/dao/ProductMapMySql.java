@@ -3,9 +3,9 @@ package edu.dental.database.mysql_api.dao;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.ProductMapDAO;
+import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
-import edu.dental.domain.records.RecordManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -69,7 +69,7 @@ public class ProductMapMySql implements ProductMapDAO {
     @Override
     public ProductMap get() throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "user_id = ?");
-        ProductMap productMap = RecordManager.get().getProductMap();
+        ProductMap productMap = APIManager.instance().getProductMap();
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, userId);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();

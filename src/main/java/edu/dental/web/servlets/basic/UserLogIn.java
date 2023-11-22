@@ -1,14 +1,13 @@
 package edu.dental.web.servlets.basic;
 
 import edu.dental.database.DBService;
-import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
+import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
-import edu.dental.domain.records.RecordManager;
 import edu.dental.domain.records.WorkRecordBook;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -39,10 +38,10 @@ public class UserLogIn extends HttpServlet {
                 String login = request.getParameter("email");
                 String password = request.getParameter("password");
                 user = Authenticator.authenticate(login, password);
-                DBService dbService = DBServiceManager.get().getDBService();
+                DBService dbService = APIManager.instance().getDBService();
                 productMap = dbService.getProductMapDAO(user).get();
                 Collection<I_DentalWork> dentalWorks = dbService.getDentalWorkDAO(user).getAll();
-                recordBook = RecordManager.get().getWorkRecordBook(dentalWorks, productMap);
+                recordBook = APIManager.instance().getWorkRecordBook(dentalWorks, productMap);
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 session.setAttribute("recordBook", recordBook);

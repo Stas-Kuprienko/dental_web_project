@@ -1,9 +1,13 @@
-package edu.dental.domain.records;
+package edu.dental.domain;
 
+import edu.dental.database.DBService;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
+import edu.dental.domain.records.ProductMap;
+import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.domain.reports.ReportService;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,19 +16,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Properties;
 
-/**
- * The basic service for managing an instances of the {@link WorkRecordBook} interface.
- * The {@code RecordManager} returns instances implementing the {@link WorkRecordBook},
- *  loaded at the {@linkplain RecordManager#service specified path}.
- */
-public final class RecordManager {
+public final class APIManager {
 
-    private static final RecordManager manager;
+    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental\\target\\classes\\service.properties";
+
+    private static final APIManager manager;
     static {
-        manager = new RecordManager();
+        manager = new APIManager();
     }
+    private final Properties service;
 
-    private RecordManager() {
+    private APIManager() {
         service = new Properties();
         try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
             service.load(fileInput);
@@ -33,9 +35,6 @@ public final class RecordManager {
             throw new RuntimeException(e);
         }
     }
-
-    private final Properties service;
-    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental\\target\\classes\\service.properties";
 
 
     /**
@@ -113,11 +112,41 @@ public final class RecordManager {
         }
     }
 
+    public ReportService getReportService(User user) {
+        try {
+            Class<?> clas = Class.forName(getClassName(ReportService.class));
+            Constructor<?> constructor = clas.getDeclaredConstructor(User.class);
+            constructor.setAccessible(true);
+            ReportService reportService = (ReportService) constructor.newInstance(user);
+            constructor.setAccessible(false);
+            return reportService;
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
+            //TODO logger
+            throw new RuntimeException(e);
+        }
+    }
+
+    public DBService getDBService() {
+        try {
+            Class<?> clas = Class.forName(getClassName(DBService.class));
+            Constructor<?> constructor = clas.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            DBService dbService = (DBService) constructor.newInstance();
+            constructor.setAccessible(false);
+            return dbService;
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
+                 | InstantiationException | IllegalAccessException e) {
+            //TODO logger
+            throw new RuntimeException(e);
+        }
+    }
+
     private <T> String getClassName(Class<T> clas) {
         return service.getProperty(clas.getSimpleName());
     }
 
-    public static synchronized RecordManager get() {
+    public static synchronized APIManager instance() {
         return manager;
     }
 }

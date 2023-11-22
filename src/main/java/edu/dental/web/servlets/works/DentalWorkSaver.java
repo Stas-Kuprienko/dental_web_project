@@ -1,8 +1,8 @@
 package edu.dental.web.servlets.works;
 
 import edu.dental.database.DBService;
-import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
+import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
@@ -33,7 +33,7 @@ public class DentalWorkSaver extends HttpServlet {
 
         try {
             I_DentalWork dw = recordBook.createRecord(patient, clinic, product, quantity, complete);
-            DBService dbService = DBServiceManager.get().getDBService();
+            DBService dbService = APIManager.instance().getDBService();
             dbService.getDentalWorkDAO(user).put(dw);
             request.setAttribute("user", user);
             request.getRequestDispatcher("/welcome").forward(request, response);

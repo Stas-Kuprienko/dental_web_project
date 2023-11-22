@@ -1,7 +1,7 @@
 package edu.dental.web.servlets.basic;
 
-import edu.dental.database.DBServiceManager;
 import edu.dental.database.DatabaseException;
+import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.User;
 import jakarta.servlet.ServletException;
@@ -25,7 +25,7 @@ public class Enter extends HttpServlet {
         User user = (User) session.getAttribute("user");
         if (user != null) {
             try {
-                User user1 = DBServiceManager.get().getDBService().getUserDAO().get(user.getId());
+                User user1 = APIManager.instance().getDBService().getUserDAO().get(user.getId());
                 if (user.getEmail().equals(user1.getEmail())) {
                     if (Authenticator.verification(user, user1.getPassword())) {
                         request.getRequestDispatcher("/welcome").forward(request, response);

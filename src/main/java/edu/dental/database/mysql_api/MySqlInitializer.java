@@ -20,7 +20,7 @@ public class MySqlInitializer implements TableInitializer {
     public static final String DROP_USER = "DROP TABLE IF EXISTS dental.user;";
 
     public static final String USER_Q = String.format("""
-            CREATE TABLE %s (
+            CREATE TABLE IF NOT EXISTS %s (
                 id INT NOT NULL AUTO_INCREMENT,
                 name VARCHAR(63),
                 email VARCHAR(129) NOT NULL UNIQUE,
@@ -30,7 +30,7 @@ public class MySqlInitializer implements TableInitializer {
                 );""", TableInitializer.USER);
 
     public static final String REPORT_Q = String.format("""
-            CREATE TABLE %s (
+            CREATE TABLE IF NOT EXISTS %s (
                 id INT NOT NULL AUTO_INCREMENT,
             	year INT NOT NULL,
                 month ENUM ('january', 'february', 'march',
@@ -41,7 +41,7 @@ public class MySqlInitializer implements TableInitializer {
                 );""", TableInitializer.REPORT);
 
     public static final String PRODUCT_MAP_Q = String.format("""
-            CREATE TABLE %s (
+            CREATE TABLE IF NOT EXISTS %s (
                 user_id INT NOT NULL,
                 id INT NOT NULL AUTO_INCREMENT,
                 title VARCHAR(30) NOT NULL UNIQUE,
@@ -51,7 +51,7 @@ public class MySqlInitializer implements TableInitializer {
                 );""", TableInitializer.PRODUCT_MAP);
 
     public static final String DENTAL_WORK_Q = String.format("""
-            CREATE TABLE %s (
+            CREATE TABLE IF NOT EXISTS %s (
             	user_id INT NOT NULL,
             	id INT NOT NULL AUTO_INCREMENT,
             	patient VARCHAR(63) NOT NULL,
@@ -68,7 +68,7 @@ public class MySqlInitializer implements TableInitializer {
                 );""", TableInitializer.DENTAL_WORK);
 
     public static final String PRODUCT_Q = String.format("""
-            CREATE TABLE %s (
+            CREATE TABLE IF NOT EXISTS %s (
                 work_id INT NOT NULL,
                 title INT NOT NULL,
                 quantity SMALLINT DEFAULT 0,
@@ -85,9 +85,10 @@ public class MySqlInitializer implements TableInitializer {
 
     @Override
     public void init() {
+//        DROP_PRODUCT, DROP_D_WORK, DROP_PROD_MAP, DROP_REPORT, DROP_USER,
         try {
             @SuppressWarnings("resource")
-            Request request = new Request(DROP_PRODUCT, DROP_D_WORK, DROP_PROD_MAP, DROP_REPORT, DROP_USER,
+            Request request = new Request(
                     USER_Q, REPORT_Q, PRODUCT_MAP_Q, DENTAL_WORK_Q, PRODUCT_Q);
             request.start();
         } catch (SQLException e) {
