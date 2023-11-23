@@ -11,8 +11,9 @@ import edu.dental.domain.reports.IFileTool;
 import edu.dental.domain.reports.MonthlyReport;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
+import edu.dental.utils.data_structures.SimpleList;
 
-import java.util.Collection;
+import java.util.List;
 
 public class MyReportService implements ReportService {
 
@@ -25,7 +26,7 @@ public class MyReportService implements ReportService {
 
     @Override
     public boolean saveReportToFile(ProductMap map, MonthlyReport report) {
-            DataArrayTool dataArrayTool = new DataArrayTool(map, report.getDentalWorks());
+            DataArrayTool dataArrayTool = new DataArrayTool(map, (SimpleList<I_DentalWork>) report.getDentalWorks());
             String[][] reportData = dataArrayTool.getResult();
             String tableName = user.getName() + "_" + report.getMonth() + "_" + report.getYear();
             IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
@@ -36,7 +37,7 @@ public class MyReportService implements ReportService {
     public MonthlyReport getReportFromDB(String month, String year) throws ReportServiceException {
         try {
             DBService db = APIManager.instance().getDBService();
-            Collection <I_DentalWork> records = db.getDentalWorkDAO(user).getAllMonthly(month, year);
+            List<I_DentalWork> records = db.getDentalWorkDAO(user).getAllMonthly(month, year);
             return new MonthlyReport(year, month, records);
         } catch (DatabaseException | ClassCastException e) {
             //TODO loggers

@@ -6,19 +6,19 @@ import edu.dental.domain.entities.IDHaving;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.Collection;
+import java.util.List;
 
 public interface DAO<T> {
 
-    boolean putAll(Collection<T> list) throws DatabaseException;
+    boolean putAll(List<T> list) throws DatabaseException;
 
     boolean put(T object) throws DatabaseException;
 
-    Collection<T> getAll() throws DatabaseException;
+    List<T> getAll() throws DatabaseException;
 
     T get(int id) throws DatabaseException;
 
-    Collection<T> search(Object... args) throws DatabaseException;
+    List<T> search(Object... args) throws DatabaseException;
 
     boolean edit(T object) throws DatabaseException;
 
@@ -105,7 +105,7 @@ public interface DAO<T> {
 
     interface Instantiating<T> {
 
-        Collection<T> build() throws SQLException, IOException, DatabaseException;
+        List<T> build() throws SQLException, IOException, DatabaseException;
 
     }
 

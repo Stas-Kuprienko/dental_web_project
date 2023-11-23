@@ -5,13 +5,13 @@ import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.ProductDAO;
 import edu.dental.domain.entities.Product;
-import edu.dental.utils.data_structures.MyList;
+import edu.dental.utils.data_structures.SimpleList;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
+import java.util.List;
 
 public class ProductMySql implements ProductDAO {
 
@@ -25,7 +25,7 @@ public class ProductMySql implements ProductDAO {
     }
 
     @Override
-    public boolean putAll(Collection<Product> list) throws DatabaseException{
+    public boolean putAll(List<Product> list) throws DatabaseException{
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The  given argument is null or empty.");
         }
@@ -61,9 +61,9 @@ public class ProductMySql implements ProductDAO {
     }
 
     @Override
-    public Collection<Product> instantiate(ResultSet resultSet) throws DatabaseException {
+    public List<Product> instantiate(ResultSet resultSet) throws DatabaseException {
         try {
-            MyList<Product> products = new MyList<>();
+            SimpleList<Product> products = new SimpleList<>();
             if (resultSet.getString("entry_id") != null) {
                 String[] entryId = resultSet.getString("entry_id").split(",");
                 String[] title = resultSet.getString("title").split(",");
@@ -83,13 +83,13 @@ public class ProductMySql implements ProductDAO {
     }
 
     @Override
-    public Collection<Product> getAll() throws DatabaseException {
+    public List<Product> getAll() throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "work_id = ?");
-        MyList<Product> products;
+        SimpleList<Product> products;
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, workId);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            products = (MyList<Product>) new ProductInstantiation(resultSet).build();
+            products = (SimpleList<Product>) new ProductInstantiation(resultSet).build();
         } catch (SQLException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -98,7 +98,7 @@ public class ProductMySql implements ProductDAO {
     }
 
     @Override
-    public Collection<Product> search(String title, int quantity) throws DatabaseException {
+    public List<Product> search(String title, int quantity) throws DatabaseException {
         String query = MySqlSamples.SELECT_PRODUCT.QUERY;
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setString(1, title);
@@ -112,7 +112,7 @@ public class ProductMySql implements ProductDAO {
     }
 
     @Override
-    public boolean overwrite(Collection<Product> list) throws DatabaseException {
+    public boolean overwrite(List<Product> list) throws DatabaseException {
         String delete = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = " + workId);
         String injections = "?, ".repeat(FIELDS.split(", ").length - 1);
         injections = workId + ", " + injections.substring(0, injections.length()-2);
@@ -158,15 +158,15 @@ public class ProductMySql implements ProductDAO {
 
     protected static class ProductInstantiation {
 
-        private final MyList<Product> productsList;
+        private final SimpleList<Product> productsList;
         private final ResultSet resultSet;
 
         public ProductInstantiation(ResultSet resultSet) {
             this.resultSet = resultSet;
-            this.productsList = new MyList<>();
+            this.productsList = new SimpleList<>();
         }
 
-        public Collection<Product> build() throws SQLException {
+        public List<Product> build() throws SQLException {
             try (resultSet) {
                 while (resultSet.next()) {
                     Product p = new Product(

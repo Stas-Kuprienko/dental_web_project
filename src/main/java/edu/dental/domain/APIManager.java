@@ -13,7 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 public final class APIManager {
@@ -60,12 +60,12 @@ public final class APIManager {
     /**
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
      */
-    public WorkRecordBook getWorkRecordBook(Collection<I_DentalWork> records, ProductMap productMap) {
+    public WorkRecordBook getWorkRecordBook(List<I_DentalWork> records, ProductMap productMap) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas =
                     (Class<? extends WorkRecordBook>) Class.forName(getClassName(WorkRecordBook.class));
-            Constructor<?> constructor = clas.getDeclaredConstructor(Collection.class, ProductMap.class);
+            Constructor<?> constructor = clas.getDeclaredConstructor(List.class, ProductMap.class);
             constructor.setAccessible(true);
             WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(records, productMap);
             constructor.setAccessible(false);

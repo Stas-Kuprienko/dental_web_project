@@ -7,7 +7,7 @@ import edu.dental.database.dao.*;
 import edu.dental.database.mysql_api.dao.*;
 import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.entities.User;
-import edu.dental.utils.data_structures.MyList;
+import edu.dental.utils.data_structures.SimpleList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,7 +49,7 @@ public class MyDBService implements DBService {
 
     @Override
     public SalaryRecord[] countAllSalaries(User user) throws DatabaseException {
-        MyList<SalaryRecord> records = new MyList<>();
+        SimpleList<SalaryRecord> records = new SimpleList<>();
         try (DAO.Request request = new DAO.Request(MySqlSamples.ALL_SALARIES.QUERY)) {
             request.getPreparedStatement().setInt(1, user.getId());
             ResultSet resultSet = request.getPreparedStatement().executeQuery();

@@ -4,7 +4,7 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.records.ProductMap;
-import edu.dental.utils.data_structures.MyList;
+import edu.dental.utils.data_structures.SimpleList;
 
 import java.util.Collection;
 
@@ -13,7 +13,7 @@ class DataArrayTool {
     private final String[] columns;
     private final String[][] result;
 
-    DataArrayTool(ProductMap productMap, MyList<I_DentalWork> recordList) {
+    DataArrayTool(ProductMap productMap, SimpleList<I_DentalWork> recordList) {
         this.columns = buildReportColumns(productMap);
         this.result = buildReportTable(recordList);
     }

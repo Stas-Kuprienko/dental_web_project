@@ -3,24 +3,23 @@ package edu.dental.domain.reports;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.utils.DatesTool;
-import edu.dental.utils.data_structures.MyList;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 public final class MonthlyReport {
 
     private final String year;
     private final String month;
-    private final Collection<I_DentalWork> dentalWorks;
+    private final List<I_DentalWork> dentalWorks;
 
-    public MonthlyReport(String year, String month, Collection<I_DentalWork> dentalWorks) {
+    public MonthlyReport(String year, String month, List<I_DentalWork> dentalWorks) {
         this.year = year;
         this.month = month;
         this.dentalWorks = dentalWorks;
     }
 
-    public MonthlyReport(Collection<I_DentalWork> dentalWorks) {
+    public MonthlyReport(List<I_DentalWork> dentalWorks) {
         String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
         this.year = yearAndMonth[0];
         this.month = yearAndMonth[1];
@@ -35,8 +34,8 @@ public final class MonthlyReport {
         return month;
     }
 
-    public MyList<I_DentalWork> getDentalWorks() {
-        return (MyList<I_DentalWork>) dentalWorks;
+    public List<I_DentalWork> getDentalWorks() {
+        return dentalWorks;
     }
 
     @Override

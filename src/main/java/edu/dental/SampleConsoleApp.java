@@ -19,7 +19,7 @@ import edu.dental.domain.reports.MonthlyReport;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.utils.DatesTool;
-import edu.dental.utils.data_structures.MyList;
+import edu.dental.utils.data_structures.SimpleList;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -79,7 +79,7 @@ public class SampleConsoleApp {
 //            System.out.print("password: ");
 //            password = in.next();
             user = Authenticator.authenticate(login, password);
-            MyList<I_DentalWork> records = (MyList<I_DentalWork>) new DentalWorkMySql(user).getAll();
+            SimpleList<I_DentalWork> records = (SimpleList<I_DentalWork>) new DentalWorkMySql(user).getAll();
             MyProductMap productMap = (MyProductMap) APIManager.instance().getProductMap(user);
             workRecordBook = APIManager.instance().getWorkRecordBook(records, productMap);
             reportService = APIManager.instance().getReportService(user);
@@ -171,7 +171,7 @@ public class SampleConsoleApp {
         }
 
         public static void edit() throws WorkRecordBookException, DatabaseException {
-            MyList<I_DentalWork> workRecords = (MyList<I_DentalWork>) workRecordBook.getList();
+            SimpleList<I_DentalWork> workRecords = (SimpleList<I_DentalWork>) workRecordBook.getList();
             for (I_DentalWork wr : workRecords) {
                 System.out.println(wr);
             }
@@ -218,7 +218,7 @@ public class SampleConsoleApp {
             }
             System.out.println(new DentalWorkMySql(user).edit(workRecord));
         }
-        private static I_DentalWork getByID(MyList<I_DentalWork> workRecords, int id) {
+        private static I_DentalWork getByID(SimpleList<I_DentalWork> workRecords, int id) {
             for (I_DentalWork wr : workRecords) {
                 if (wr.getId() == id) {
                     return wr;
@@ -239,10 +239,10 @@ public class SampleConsoleApp {
 
     public static class Reports {
 
-        static MyList<I_DentalWork> closed;
+        static SimpleList<I_DentalWork> closed;
 
         public static void sorting() throws DatabaseException {
-            closed = (MyList<I_DentalWork>) workRecordBook.sorting();
+            closed = (SimpleList<I_DentalWork>) workRecordBook.sorting();
             DentalWorkMySql dao = new DentalWorkMySql(user);
             System.out.println(dao.setFieldValue(closed, "status", I_DentalWork.Status.CLOSED));
 
@@ -283,7 +283,7 @@ public class SampleConsoleApp {
             int r = in.nextInt();
             switch (r) {
                 case 1 -> System.out.println(reportService.saveReportToFile(workRecordBook.getMap(), report));
-                case 2 -> System.out.println(count(report.getDentalWorks()));
+                case 2 -> System.out.println(count((SimpleList<I_DentalWork>) report.getDentalWorks()));
                 case 3 -> getReportByMonth();
             }
         }
@@ -292,7 +292,7 @@ public class SampleConsoleApp {
             System.out.println(reportService.saveSalariesToFile());
         }
 
-        private static int count(MyList<I_DentalWork> list) {
+        private static int count(SimpleList<I_DentalWork> list) {
             int n = 0;
             for (I_DentalWork dw : list) {
                 if (!dw.getProducts().isEmpty()) {

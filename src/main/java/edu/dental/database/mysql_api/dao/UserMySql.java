@@ -2,16 +2,15 @@ package edu.dental.database.mysql_api.dao;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
-import edu.dental.database.connection.DBConfiguration;
 import edu.dental.database.dao.UserDAO;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.User;
-import edu.dental.utils.data_structures.MyList;
+import edu.dental.utils.data_structures.SimpleList;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.sql.*;
-import java.util.Collection;
+import java.util.List;
 
 public class UserMySql implements UserDAO {
 
@@ -20,7 +19,7 @@ public class UserMySql implements UserDAO {
     public static final String FIELDS = "id, name, email, password, created";
 
     @Override
-    public boolean putAll(Collection<User> list) throws DatabaseException {
+    public boolean putAll(List<User> list) throws DatabaseException {
         return false;
     }
 
@@ -45,12 +44,12 @@ public class UserMySql implements UserDAO {
     }
 
     @Override
-    public Collection<User> getAll() throws DatabaseException {
+    public List<User> getAll() throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE);
-        MyList<User> usersList;
+        SimpleList<User> usersList;
         try (Request request = new Request(query)) {
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            usersList = (MyList<User>) new UserInstantiation(resultSet).build();
+            usersList = (SimpleList<User>) new UserInstantiation(resultSet).build();
         } catch (SQLException | IOException e) {
             //TODO logger
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -65,7 +64,7 @@ public class UserMySql implements UserDAO {
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
             resultSet = request.getPreparedStatement().executeQuery();
-            MyList<User> list = (MyList<User>) new UserInstantiation(resultSet).build();
+            SimpleList<User> list = (SimpleList<User>) new UserInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | NullPointerException | IOException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -79,7 +78,7 @@ public class UserMySql implements UserDAO {
      * @throws DatabaseException
      */
     @Override
-    public MyList<User> search(Object... args) throws DatabaseException {
+    public SimpleList<User> search(Object... args) throws DatabaseException {
         String where = "email = ? AND password = ?";
         byte[] password = Authenticator.passwordHash((String) args[1]);
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
@@ -88,7 +87,7 @@ public class UserMySql implements UserDAO {
             request.getPreparedStatement().setString(1, (String) args[0]);
             request.getPreparedStatement().setBlob(2, new SerialBlob(password));
             resultSet = request.getPreparedStatement().executeQuery();
-            return (MyList<User>) new UserInstantiation(resultSet).build();
+            return (SimpleList<User>) new UserInstantiation(resultSet).build();
         } catch (SQLException | IOException |
                  ArrayIndexOutOfBoundsException| NullPointerException | ClassCastException e) {
             //TODO logger
@@ -131,16 +130,16 @@ public class UserMySql implements UserDAO {
 
     protected static class UserInstantiation implements Instantiating<User> {
 
-        private final MyList<User> usersList;
+        private final SimpleList<User> usersList;
         private final ResultSet resultSet;
 
         protected UserInstantiation(ResultSet resultSet) {
-            this.usersList = new MyList<>();
+            this.usersList = new SimpleList<>();
             this.resultSet = resultSet;
         }
 
         @Override
-        public Collection<User> build() throws SQLException, IOException {
+        public List<User> build() throws SQLException, IOException {
             try (resultSet) {
                 while (resultSet.next()) {
                     User user = new User();
