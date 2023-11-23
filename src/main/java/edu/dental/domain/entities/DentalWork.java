@@ -1,10 +1,10 @@
 package edu.dental.domain.entities;
 
 
-import edu.dental.utils.data_structures.MyList;
+import edu.dental.utils.data_structures.SimpleList;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -23,7 +23,7 @@ public class DentalWork implements I_DentalWork {
 
     private String clinic;
 
-    private MyList<Product> products;
+    private SimpleList<Product> products;
 
     private LocalDate accepted;
 
@@ -43,7 +43,7 @@ public class DentalWork implements I_DentalWork {
      */
     public DentalWork() {}
 
-    private DentalWork(MyList<Product> products, LocalDate accepted, Status status) {
+    private DentalWork(SimpleList<Product> products, LocalDate accepted, Status status) {
         this.products = products;
         this.accepted = accepted;
         this.status = status;
@@ -67,10 +67,15 @@ public class DentalWork implements I_DentalWork {
      * Create the DentalWork object.
      */
     public static Builder create() {
-        MyList<Product> products = new MyList<>();
+        SimpleList<Product> products = new SimpleList<>();
         LocalDate accepted = LocalDate.now();
         Status s = Status.MAKE;
         return new DentalWork(products, accepted, s).new Builder();
+    }
+
+    @Override
+    public int compareTo(I_DentalWork o) {
+        return Integer.compare(id, o.getId());
     }
 
     /**
@@ -181,13 +186,13 @@ public class DentalWork implements I_DentalWork {
     }
 
     @Override
-    public MyList<Product> getProducts() {
+    public SimpleList<Product> getProducts() {
         return products;
     }
 
     @Override
-    public void setProducts(Collection<Product> products) {
-        this.products = (MyList<Product>) products;
+    public void setProducts(List<Product> products) {
+        this.products = (SimpleList<Product>) products;
     }
 
     @Override

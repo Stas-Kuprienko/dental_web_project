@@ -2,9 +2,9 @@ package edu.dental.domain.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.List;
 
-public interface I_DentalWork extends IDHaving, Serializable {
+public interface I_DentalWork extends IDHaving,Comparable<I_DentalWork>, Serializable {
 
     void setPatient(String patient);
 
@@ -14,9 +14,9 @@ public interface I_DentalWork extends IDHaving, Serializable {
 
     String getClinic();
 
-    void setProducts(Collection<Product> products);
+    void setProducts(List<Product> products);
 
-    Collection<Product> getProducts();
+    List<Product> getProducts();
 
     void setAccepted(LocalDate accepted);
 

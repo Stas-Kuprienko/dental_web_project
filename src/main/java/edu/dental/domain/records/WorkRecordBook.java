@@ -5,6 +5,7 @@ import edu.dental.domain.entities.I_DentalWork;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -94,13 +95,13 @@ public interface WorkRecordBook {
      *  and add into new {@link Collection list}.
      * @return the {@link Collection} object of sorted closed records.
      */
-    Collection<I_DentalWork> sorting();
+    List<I_DentalWork> sorting();
 
     /**
      * Get the {@link Collection list} field of {@link DentalWork} objects.
      * @return {@link Collection} object, containing {@link DentalWork records}.
      */
-    Collection<I_DentalWork> getList();
+    List<I_DentalWork> getList();
 
     /**
      * Get the {@link ProductMap} field of {@link edu.dental.domain.entities.Product products}.

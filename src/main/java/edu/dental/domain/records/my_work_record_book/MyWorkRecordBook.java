@@ -7,9 +7,10 @@ import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.utils.DatesTool;
-import edu.dental.utils.data_structures.MyList;
+import edu.dental.utils.data_structures.SimpleList;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -18,19 +19,19 @@ import java.util.NoSuchElementException;
  */
 public class MyWorkRecordBook implements WorkRecordBook {
 
-    private final MyList<I_DentalWork> records;
+    private final SimpleList<I_DentalWork> records;
 
     private final MyProductMap productMap;
 
     @SuppressWarnings("unused")
     private MyWorkRecordBook(Collection<I_DentalWork> records, ProductMap productMap) {
-        this.records = (MyList<I_DentalWork>) records;
+        this.records = (SimpleList<I_DentalWork>) records;
         this.productMap = (MyProductMap) productMap;
     }
 
     @SuppressWarnings("unused")
     private MyWorkRecordBook() {
-        this.records = new MyList<>();
+        this.records = new SimpleList<>();
         this.productMap = new MyProductMap();
     }
 
@@ -78,7 +79,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         }
         Product p;
         try {
-            MyList<Product> products = (MyList<Product>) dentalWork.getProducts();
+            SimpleList<Product> products = (SimpleList<Product>) dentalWork.getProducts();
             p = products.searchElement("title", product).get(0);
             quantity += p.quantity();
             removeProduct(dentalWork, product);
@@ -121,7 +122,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     @Override
     public I_DentalWork searchRecord(String patient, String clinic) throws WorkRecordBookException {
         try {
-            MyList<I_DentalWork> list = records.searchElement("patient", patient);
+            SimpleList<I_DentalWork> list = records.searchElement("patient", patient);
             if (list.size() > 1) {
                 list = list.searchElement("clinic", clinic);
             }
@@ -133,17 +134,24 @@ public class MyWorkRecordBook implements WorkRecordBook {
 
     @Override
     public I_DentalWork getByID(int id) throws WorkRecordBookException {
-        try {
-            MyList<I_DentalWork> list = records.searchElement("id", String.valueOf(id));
-            return list.get(0);
-        } catch (NoSuchElementException | NullPointerException e) {
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+        if (records.size() == 0) {
+            throw new WorkRecordBookException("The DentalWork list is empty.");
+        }
+        I_DentalWork[] works = new I_DentalWork[records.size()];
+        Arrays.sort(records.toArray(works));
+        I_DentalWork dw = new DentalWork();
+        dw.setId(id);
+        int i = Arrays.binarySearch(records.toArray(), dw);
+        if (i < 0) {
+            throw new WorkRecordBookException("The required object is not found (id=" + id + ").");
+        } else {
+            return works[i];
         }
     }
 
     @Override
-    public MyList<I_DentalWork> sorting() {
-        MyList<I_DentalWork> result = new MyList<>();
+    public SimpleList<I_DentalWork> sorting() {
+        SimpleList<I_DentalWork> result = new SimpleList<>();
         for (I_DentalWork dw : records.toArray(new I_DentalWork[]{})) {
             if (dw.getStatus().ordinal() > 0) {
                 result.add(dw);
@@ -158,7 +166,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public MyList<I_DentalWork> getList() {
+    public SimpleList<I_DentalWork> getList() {
         return records;
     }
 
