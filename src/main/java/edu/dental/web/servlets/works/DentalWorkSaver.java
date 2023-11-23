@@ -7,8 +7,9 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.web.RAM;
+import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 
+@WebServlet("/app/save-work")
 public class DentalWorkSaver extends HttpServlet {
 
     @Override
@@ -25,9 +27,9 @@ public class DentalWorkSaver extends HttpServlet {
 
         String email = (String) session.getAttribute("user");
         if (email == null) {
-            request.getRequestDispatcher("/").forward(request, response);
+            request.getRequestDispatcher("/enter").forward(request, response);
         }
-        RAM.Account account = RAM.get(email);
+        Repository.Account account = Repository.get(email);
         User user = account.user();
         WorkRecordBook recordBook = account.recordBook();
 
@@ -42,10 +44,10 @@ public class DentalWorkSaver extends HttpServlet {
             DBService dbService = APIManager.instance().getDBService();
             dbService.getDentalWorkDAO(user).put(dw);
             request.setAttribute("user", user);
-            request.getRequestDispatcher("/welcome").forward(request, response);
+            request.getRequestDispatcher("/app/main").forward(request, response);
         } catch (WorkRecordBookException | DatabaseException e) {
             System.out.println("Error!");
-            request.getRequestDispatcher("/welcome").forward(request, response);
+            request.getRequestDispatcher("/app/main").forward(request, response);
         }
     }
 }

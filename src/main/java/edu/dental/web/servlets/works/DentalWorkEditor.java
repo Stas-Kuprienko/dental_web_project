@@ -4,8 +4,10 @@ import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.utils.data_structures.MyList;
+import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,22 +15,27 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+@WebServlet("/app/edit-work")
 public class DentalWorkEditor extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        int index = 0;
+        int id = 0;
         try {
-            index = Integer.parseInt(request.getParameter("index")) - 1;
+            id = Integer.parseInt(request.getParameter("id"));
         } catch (NumberFormatException ignored) {
-            request.getRequestDispatcher("dental/").forward(request, response);
+            request.getRequestDispatcher("/work-list").forward(request, response);
         }
-        WorkRecordBook recordBook = (WorkRecordBook) session.getAttribute("recordBook");
-        MyList<I_DentalWork> works = (MyList<I_DentalWork>) recordBook.getList();
-        I_DentalWork dw = works.get(index);
-        String page = new PageBuilder(index, recordBook).getResult();
-        response.getWriter().write(page);
+        String email = (String) session.getAttribute("user");
+        WorkRecordBook recordBook = Repository.getWorkRecordBook(email);
+        try {
+            I_DentalWork dw = recordBook.getByID(id);
+            String page = new PageBuilder(dw, recordBook.getMap().keysToArray()).getResult();
+            response.getWriter().write(page);
+        } catch (WorkRecordBookException e) {
+            request.getRequestDispatcher("/work-list").forward(request, response);
+        }
     }
 
     private static final String htmlSample = """
@@ -59,7 +66,7 @@ public class DentalWorkEditor extends HttpServlet {
             <header><strong>DENTAL MECHANIC SERVICE</strong></header>
             <body>
             <h3>Edit record:</h3>
-            <form action="/dental/edit-work" name="index: %s">
+            <form action="/dental/edit-work?id=%s">
                 <label for="patient">patient:</label><br>
                 <input type="text" id="patient" name="patient" value="%s">
                 <input type="hidden" name="field" value=patient">
@@ -127,18 +134,17 @@ public class DentalWorkEditor extends HttpServlet {
 
         private final String result;
 
-        public PageBuilder(int index, WorkRecordBook recordBook) {
-            MyList<I_DentalWork> works = (MyList<I_DentalWork>) recordBook.getList();
-            this.dw = (DentalWork) works.get(index);
-            this.map = recordBook.getMap().keysToArray();
+        public PageBuilder(I_DentalWork dw, String[] map) {
+            this.dw = (DentalWork) dw;
+            this.map = map;
             String productList = buildProductList();
             String mapOptions = buildMapOptions();
-            this.result = build(index, productList, mapOptions);
+            this.result = build(dw.getId(), productList, mapOptions);
         }
 
-        private String build(int index, String productList, String mapOptions) {
+        private String build(int id, String productList, String mapOptions) {
             String[] status = checkStatus();
-            return String.format(htmlSample, index, dw.getPatient(),
+            return String.format(htmlSample, id, dw.getPatient(),
                     dw.getClinic(), productList, mapOptions, dw.getComplete(),
                     status[0], status[1], status[2], dw.getComment()!=null ? dw.getComment() : "");
         }

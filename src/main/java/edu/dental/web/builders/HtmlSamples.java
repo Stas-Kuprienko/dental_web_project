@@ -11,7 +11,33 @@ public enum HtmlSamples {
             <head>
                 <meta charset="UTF-8">
                 <title>DENTAL MECHANIC SERVICE</title>
-                <link rel="stylesheet" type="text/css" href="css/style.css">
+                <link rel="stylesheet" type="text/css" href="../css/style.css">
+            </head>
+            <nav class="menu">
+                <header><strong>DENTAL MECHANIC SERVICE</strong></header>
+                <a href="/dental/new-work">NEW WORK</a>
+                <a href="dental/work-list">WORK LIST</a>
+                <a href="/dental/new-product">PRODUCT MAP</a>
+                <a href="/dental/product-map">REPORTS</a>
+            </nav>
+            <body>
+            <section>
+                %s
+            </section>
+            </body>
+            </html>
+            """),
+
+    /**
+     * Necessary using by {@linkplain String#format(String, Object...)}.
+     */
+    BASIC_APP("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>DENTAL MECHANIC SERVICE</title>
+                <link rel="stylesheet" type="text/css" href="../css/style.css">
             </head>
             <nav class="menu">
                 <header><strong>DENTAL MECHANIC SERVICE</strong></header>

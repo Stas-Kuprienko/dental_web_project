@@ -3,13 +3,13 @@ package edu.dental.web;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-public final class RAM {
+public final class Repository {
 
-    private RAM() {}
+    private Repository() {}
     static {
-        repo = new HashMap<>();
+        repo = new ConcurrentHashMap<>();
     }
 
     public static void put(User user, WorkRecordBook recordBook) {
@@ -40,7 +40,7 @@ public final class RAM {
         return account;
     }
 
-    private static final HashMap<String, Account> repo;
+    private static final ConcurrentHashMap<String, Account> repo;
 
     public record Account(User user, WorkRecordBook recordBook) {}
 }

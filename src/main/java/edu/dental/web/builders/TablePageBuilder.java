@@ -34,7 +34,7 @@ public final class TablePageBuilder {
         content.append(String.format(TABLE_MONTH.tag, month)).append("\n\t")
                 .append(TABLE_STATUS.tag).append("\n\t").append(tag2.DIV_TABLE.o)
                 .append("\n\t").append(thread).append(tBody).append(tag2.DIV_TABLE.c);
-        return String.format(BASIC.tag, content);
+        return String.format(BASIC_APP.tag, content);
     }
 
     private String buildThread(ProductMap map) {

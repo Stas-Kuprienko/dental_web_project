@@ -20,24 +20,13 @@
   </listener>
 
   <servlet>
-    <servlet-name>Enter</servlet-name>
-    <servlet-class>edu.dental.web.servlets.basic.Enter</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>UserLogIn</servlet-name>
-    <servlet-class>edu.dental.web.servlets.basic.UserLogIn</servlet-class>
-  </servlet>
-
-  <servlet>
     <servlet-name>newProduct</servlet-name>
     <jsp-file>/newProduct.html</jsp-file>
   </servlet>
 
-
   <servlet>
-    <servlet-name>welcome</servlet-name>
-    <jsp-file>/welcome.html</jsp-file>
+    <servlet-name>Main</servlet-name>
+    <jsp-file>/main.html</jsp-file>
   </servlet>
 
   <servlet>
@@ -46,23 +35,8 @@
   </servlet>
 
   <servlet>
-    <servlet-name>WorkTablePage</servlet-name>
-    <servlet-class>edu.dental.web.servlets.works.WorkTablePage</servlet-class>
-  </servlet>
-
-  <servlet>
     <servlet-name>SignUp</servlet-name>
     <jsp-file>/signUp.html</jsp-file>
-  </servlet>
-
-  <servlet>
-    <servlet-name>NewUserSaving</servlet-name>
-    <servlet-class>edu.dental.web.servlets.basic.NewUserSaver</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>DentalWorkSaver</servlet-name>
-    <servlet-class>edu.dental.web.servlets.works.DentalWorkSaver</servlet-class>
   </servlet>
 
   <servlet>
@@ -72,58 +46,32 @@
 
   <servlet>
     <servlet-name>newRecord</servlet-name>
-    <jsp-file>/newRecord.html</jsp-file>
+    <jsp-file>/app/newRecord.html</jsp-file>
   </servlet>
-
-  <servlet>
-    <servlet-name>DentalWorkEditor</servlet-name>
-    <servlet-class>edu.dental.web.servlets.works.DentalWorkEditor</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>Enter</servlet-name>
-    <url-pattern>/</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>UserLogIn</servlet-name>
-    <url-pattern>/log-in</url-pattern>
-  </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>newRecord</servlet-name>
-    <url-pattern>/new-work</url-pattern>
+    <url-pattern>/app/new-work</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>newProduct</servlet-name>
-    <url-pattern>/new-product</url-pattern>
+    <url-pattern>/app/new-product</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>ProductSaver</servlet-name>
-    <url-pattern>/save-product</url-pattern>
+    <url-pattern>/app/save-product</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>Enter</servlet-name>
-    <url-pattern>/enter</url-pattern>
-  </servlet-mapping>
-
-
-  <servlet-mapping>
-    <servlet-name>welcome</servlet-name>
-    <url-pattern>/welcome</url-pattern>
+    <servlet-name>Main</servlet-name>
+    <url-pattern>/app/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>ProductTypePage</servlet-name>
-    <url-pattern>/product-map</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>WorkTablePage</servlet-name>
-    <url-pattern>/work-list</url-pattern>
+    <url-pattern>/app/product-map</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -132,23 +80,12 @@
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>NewUserSaving</servlet-name>
-    <url-pattern>/new-user</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>DentalWorkSaver</servlet-name>
-    <url-pattern>/save-work</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>DentalWorkEditor</servlet-name>
-    <url-pattern>/edit-work</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
     <servlet-name>default</servlet-name>
     <url-pattern>/css/*</url-pattern>
   </servlet-mapping>
 
+  <error-page>
+    <error-code>404</error-code>
+    <location>/enter</location>
+  </error-page>
 </web-app>

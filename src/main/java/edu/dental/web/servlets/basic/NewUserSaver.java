@@ -5,7 +5,9 @@ import edu.dental.database.DatabaseException;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+@WebServlet("/new-user")
 public class NewUserSaver extends HttpServlet {
 
     @Override
@@ -21,7 +24,7 @@ public class NewUserSaver extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user;
         WorkRecordBook recordBook;
 
@@ -29,25 +32,22 @@ public class NewUserSaver extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        try {
-            user = new User(name, email, password);
-            DBService dbService = APIManager.instance().getDBService();
-            if (!dbService.getUserDAO().put(user)) {
-                request.getRequestDispatcher("/dental/").forward(request, response);
-            }
-            recordBook = APIManager.instance().getWorkRecordBook();
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user);
-            session.setAttribute("recordBook", recordBook);
-            request.getRequestDispatcher("/welcome").forward(request, response);
-        } catch (ServletException | IOException e) {
-            throw new RuntimeException(e);
-        } catch (DatabaseException e) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            request.getRequestDispatcher("/sign-up").forward(request, response);
+        } else {
             try {
+                user = new User(name, email, password);
+                DBService dbService = APIManager.instance().getDBService();
+                if (!dbService.getUserDAO().put(user)) {
+                    request.getRequestDispatcher("/enter").forward(request, response);
+                }
+                recordBook = APIManager.instance().getWorkRecordBook();
+                session.setAttribute("user", user.getEmail());
+                Repository.put(user, recordBook);
+                request.getRequestDispatcher("/app/main").forward(request, response);
+            } catch (DatabaseException e) {
                 request.getRequestDispatcher("/enter").forward(request, response);
-            } catch (ServletException | IOException ex) {
-                //TODO logger
-                throw new RuntimeException(ex);
             }
         }
     }

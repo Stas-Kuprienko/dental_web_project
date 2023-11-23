@@ -1,10 +1,8 @@
 package edu.dental.web.servlets.basic;
 
-import edu.dental.database.DatabaseException;
-import edu.dental.domain.APIManager;
-import edu.dental.domain.authentication.Authenticator;
-import edu.dental.domain.entities.User;
+import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,30 +10,23 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+@WebServlet("/enter")
 public class Enter extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        String user = (String) session.getAttribute("user");
         if (user != null) {
             try {
-                User user1 = APIManager.instance().getDBService().getUserDAO().get(user.getId());
-                if (user.getEmail().equals(user1.getEmail())) {
-                    if (Authenticator.verification(user, user1.getPassword())) {
-                        request.getRequestDispatcher("/welcome").forward(request, response);
-                    }
-                }
-            } catch (DatabaseException ignored) {
+                Repository.get(user);
+                request.getRequestDispatcher("/app/main").forward(request, response);
+            } catch (NullPointerException e) {
                 response.getWriter().write(page);
             }
+        } else {
+            response.getWriter().write(page);
         }
-        response.getWriter().write(page);
     }
 
     private static final String page = """

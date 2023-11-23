@@ -9,19 +9,21 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.web.RAM;
+import edu.dental.web.Repository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 
+@WebFilter("/app/*")
 public class MyFilter extends HttpFilter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -39,16 +41,16 @@ public class MyFilter extends HttpFilter {
                     user = Authenticator.authenticate(login, password);
                     DBService dbService = APIManager.instance().getDBService();
                     ProductMap productMap = dbService.getProductMapDAO(user).get();
-                    Collection<I_DentalWork> dentalWorks = dbService.getDentalWorkDAO(user).getAll();
+                    List<I_DentalWork> dentalWorks = dbService.getDentalWorkDAO(user).getAll();
                     WorkRecordBook recordBook = APIManager.instance().getWorkRecordBook(dentalWorks, productMap);
                     session.setAttribute("user", user.getEmail());
-                    RAM.put(user, recordBook);
+                    Repository.put(user, recordBook);
                     filterChain.doFilter(request, response);
                 }
-                request.getRequestDispatcher("/").forward(request, response);
+                request.getRequestDispatcher("/enter").forward(request, response);
             } filterChain.doFilter(request, response);
         } catch (AuthenticationException | DatabaseException e) {
-            request.getRequestDispatcher("/").forward(request, response);
+            request.getRequestDispatcher("/enter").forward(request, response);
         }
     }
 }
