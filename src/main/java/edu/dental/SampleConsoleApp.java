@@ -18,8 +18,7 @@ import edu.dental.domain.records.my_work_record_book.MyProductMap;
 import edu.dental.domain.reports.MonthlyReport;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
-import edu.dental.utils.DatesTool;
-import edu.dental.utils.data_structures.SimpleList;
+import utils.collections.SimpleList;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -165,7 +164,7 @@ public class SampleConsoleApp {
             if (product.isEmpty()) {
                 workRecord = (DentalWork) workRecordBook.createRecord(patient, clinic);
             } else {
-                workRecord = (DentalWork) workRecordBook.createRecord(patient, clinic, product, quantity, complete);
+                workRecord = (DentalWork) workRecordBook.createRecord(patient, clinic, product, quantity, LocalDate.parse(complete));
             }
             System.out.println(new DentalWorkMySql(user).put(workRecord));
         }
@@ -199,9 +198,8 @@ public class SampleConsoleApp {
                     workRecordBook.addProductToRecord(workRecord, product, q);
                 }
                 case 4 -> {
-                    String completeStr = in.next();
-                    LocalDate complete = DatesTool.toLocalDate(completeStr);
-                    workRecord.setComplete(complete);
+                    String complete = in.next();
+                    workRecord.setComplete(LocalDate.parse(complete));
                 }
                 case 5 -> {
                     String statusStr = in.next();

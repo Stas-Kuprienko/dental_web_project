@@ -9,8 +9,8 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.utils.DatesTool;
-import edu.dental.utils.data_structures.SimpleList;
+import edu.dental.domain.DatesTool;
+import utils.collections.SimpleList;
 
 import java.io.IOException;
 import java.sql.*;

@@ -1,7 +1,7 @@
 package edu.dental.domain.entities;
 
 
-import edu.dental.utils.data_structures.SimpleList;
+import utils.collections.SimpleList;
 
 import java.time.LocalDate;
 import java.util.List;

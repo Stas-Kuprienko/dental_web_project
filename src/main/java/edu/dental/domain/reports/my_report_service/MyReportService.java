@@ -11,7 +11,7 @@ import edu.dental.domain.reports.IFileTool;
 import edu.dental.domain.reports.MonthlyReport;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
-import edu.dental.utils.data_structures.SimpleList;
+import utils.collections.SimpleList;
 
 import java.util.List;
 

@@ -5,7 +5,7 @@ import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.UserDAO;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.User;
-import edu.dental.utils.data_structures.SimpleList;
+import utils.collections.SimpleList;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;

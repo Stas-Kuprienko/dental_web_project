@@ -2,7 +2,7 @@ package edu.dental.domain.reports;
 
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.utils.DatesTool;
+import edu.dental.domain.DatesTool;
 
 import java.util.List;
 import java.util.Objects;

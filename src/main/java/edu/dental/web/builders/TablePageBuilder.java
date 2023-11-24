@@ -4,7 +4,7 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.utils.DatesTool;
+import edu.dental.domain.DatesTool;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;

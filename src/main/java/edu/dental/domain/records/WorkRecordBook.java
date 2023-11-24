@@ -4,13 +4,12 @@ import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 /**
  * The {@code WorkRecordBook} represents object is used for managing {@link DentalWork records}.
- * The implementation must contain a field - {@link Collection} of records
+ * The implementation must contain a field - {@link List} of records
  *  and can {@code create, add, remove, search, sorting} for these objects.
  */
 public interface WorkRecordBook {
@@ -22,7 +21,7 @@ public interface WorkRecordBook {
     byte PAY_DAY = 10;
 
     /**
-     * Create a {@link I_DentalWork} object and add it to {@link Collection} field of this instance.
+     * Create a {@link I_DentalWork} object and add it to {@link List} field of this instance.
      * @param patient the patient name or surname of this work.
      * @param clinic the clinic of this work.
      * @param product the {@link edu.dental.domain.entities.Product product} type title
@@ -33,12 +32,10 @@ public interface WorkRecordBook {
      * @throws WorkRecordBookException if a given arguments is incorrect or the given product type
      *  is not contain in {@link Map}.
      */
-    I_DentalWork createRecord(String patient, String clinic, String product, int quantity, String complete) throws WorkRecordBookException;
-
     I_DentalWork createRecord(String patient, String clinic, String product, int quantity, LocalDate complete) throws WorkRecordBookException;
 
     /**
-     * Create a {@link I_DentalWork} object and add it to {@link Collection} field of this instance.
+     * Create a {@link I_DentalWork} object and add it to {@link List} field of this instance.
      * @param patient the patient name or surname of this work.
      * @param clinic the clinic of this work.
      * @return The created DentalWork object.
@@ -66,7 +63,7 @@ public interface WorkRecordBook {
     I_DentalWork removeProduct(I_DentalWork dentalWork, String product) throws WorkRecordBookException;
 
     /**
-     * Delete {@link I_DentalWork} object from the instance {@link Collection} field.
+     * Delete {@link I_DentalWork} object from the instance {@link List} field.
      * @param dentalWork the object to delete.
      * @return true if all successful.
      */
@@ -90,16 +87,16 @@ public interface WorkRecordBook {
     I_DentalWork getByID(int id) throws WorkRecordBookException;
 
     /**
-     * Sort {@link I_DentalWork} objects in the instance {@link Collection} field by {@linkplain I_DentalWork#getStatus()}
+     * Sort {@link I_DentalWork} objects in the instance {@link List} field by {@linkplain I_DentalWork#getStatus()}
      *  and {@linkplain I_DentalWork#getComplete()} values. If record is suited, it's set {@code closed}, removing from the instance list
-     *  and add into new {@link Collection list}.
-     * @return the {@link Collection} object of sorted closed records.
+     *  and add into new {@link List list}.
+     * @return the {@link List} object of sorted closed records.
      */
     List<I_DentalWork> sorting();
 
     /**
-     * Get the {@link Collection list} field of {@link DentalWork} objects.
-     * @return {@link Collection} object, containing {@link DentalWork records}.
+     * Get the {@link List list} field of {@link DentalWork} objects.
+     * @return {@link List} object, containing {@link DentalWork records}.
      */
     List<I_DentalWork> getList();
 

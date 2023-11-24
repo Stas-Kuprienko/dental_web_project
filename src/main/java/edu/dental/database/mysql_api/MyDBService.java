@@ -7,7 +7,7 @@ import edu.dental.database.dao.*;
 import edu.dental.database.mysql_api.dao.*;
 import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.entities.User;
-import edu.dental.utils.data_structures.SimpleList;
+import utils.collections.SimpleList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

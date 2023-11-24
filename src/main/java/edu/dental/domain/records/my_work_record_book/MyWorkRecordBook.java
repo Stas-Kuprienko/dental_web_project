@@ -1,17 +1,17 @@
 package edu.dental.domain.records.my_work_record_book;
 
+import edu.dental.domain.DatesTool;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.utils.DatesTool;
-import edu.dental.utils.data_structures.SimpleList;
+import utils.collections.SimpleList;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -24,7 +24,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     private final MyProductMap productMap;
 
     @SuppressWarnings("unused")
-    private MyWorkRecordBook(Collection<I_DentalWork> records, ProductMap productMap) {
+    private MyWorkRecordBook(List<I_DentalWork> records, ProductMap productMap) {
         this.records = (SimpleList<I_DentalWork>) records;
         this.productMap = (MyProductMap) productMap;
     }
@@ -33,22 +33,6 @@ public class MyWorkRecordBook implements WorkRecordBook {
     private MyWorkRecordBook() {
         this.records = new SimpleList<>();
         this.productMap = new MyProductMap();
-    }
-
-    @Override
-    public DentalWork createRecord(String patient, String clinic, String product, int quantity, String complete) throws WorkRecordBookException {
-        Product p;
-        LocalDate date;
-        try {
-            p = productMap.createProduct(product, quantity);
-            date = DatesTool.toLocalDate(complete);
-        } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
-        }
-        DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).setComplete(date).build();
-        dentalWork.getProducts().add(p);
-        records.add(dentalWork);
-        return dentalWork;
     }
 
     @Override

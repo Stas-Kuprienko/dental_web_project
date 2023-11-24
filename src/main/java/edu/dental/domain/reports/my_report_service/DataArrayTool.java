@@ -4,7 +4,7 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.records.ProductMap;
-import edu.dental.utils.data_structures.SimpleList;
+import utils.collections.SimpleList;
 
 import java.util.Collection;
 
