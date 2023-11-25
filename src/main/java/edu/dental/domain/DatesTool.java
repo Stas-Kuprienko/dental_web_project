@@ -1,11 +1,12 @@
 package edu.dental.domain;
 
+import edu.dental.domain.records.WorkRecordBook;
+
 import java.time.LocalDate;
 import java.time.Month;
 
 public final class DatesTool {
     private DatesTool() {}
-
 
     public static boolean isCurrentMonth(LocalDate date, int splitDay) {
         LocalDate today = LocalDate.now();
@@ -38,6 +39,10 @@ public final class DatesTool {
         result[1] = month.toString().toLowerCase();
         return result;
 
+    }
+
+    public static String[] getYearAndMonth() {
+        return getYearAndMonth(WorkRecordBook.PAY_DAY);
     }
 
     public static String[][] buildMonthStringArray(int count) {

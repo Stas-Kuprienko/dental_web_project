@@ -1,4 +1,4 @@
-package edu.dental.web.servlets.works;
+package edu.dental.web.functional.works;
 
 public class WorkRecordOptions {
 

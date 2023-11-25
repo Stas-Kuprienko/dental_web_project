@@ -1,46 +1,23 @@
 package edu.dental.web;
 
+import edu.dental.database.DatabaseException;
+import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
 
-import java.util.concurrent.ConcurrentHashMap;
+public interface Repository {
 
-public final class Repository {
+    void put(User user, WorkRecordBook recordBook);
 
-    private Repository() {}
-    static {
-        repo = new ConcurrentHashMap<>();
-    }
+    User find(String login, String password) throws AuthenticationException, DatabaseException;
 
-    public static void put(User user, WorkRecordBook recordBook) {
-        Account account = new Account(user, recordBook);
-        repo.put(user.getEmail(), account);
-    }
+    Account get(String login);
 
-    public static User getUser(String email) {
-        Account account = repo.get(email);
-        if (account == null) {
-            throw new NullPointerException("The user is not found.");
-        }        return account.user;
-    }
+    User getUser(String login);
 
-    public static WorkRecordBook getWorkRecordBook(String email) {
-        Account account = repo.get(email);
-        if (account == null) {
-            throw new NullPointerException("The user is not found.");
-        }
-        return account.recordBook;
-    }
+    WorkRecordBook getRecordBook(String login);
 
-    public static Account get(String email) {
-        Account account = repo.get(email);
-        if (account == null) {
-            throw new NullPointerException("The user is not found.");
-        }
-        return account;
-    }
+    void delete(String login);
 
-    private static final ConcurrentHashMap<String, Account> repo;
-
-    public record Account(User user, WorkRecordBook recordBook) {}
+    interface Account {}
 }

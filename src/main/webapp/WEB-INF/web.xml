@@ -5,87 +5,42 @@
 <web-app>
   <display-name>dental-mechanic</display-name>
 
-  <filter>
-    <filter-name>MyFilter</filter-name>
-    <filter-class>edu.dental.web.servlets.basic.MyFilter</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>MyFilter</filter-name>
-    <url-pattern>/welcome</url-pattern>
-  </filter-mapping>
-
   <listener>
-    <listener-class>edu.dental.web.servlets.ContextInitializer</listener-class>
+    <listener-class>edu.dental.web.ContextInitializer</listener-class>
   </listener>
 
   <servlet>
-    <servlet-name>newProduct</servlet-name>
-    <jsp-file>/newProduct.html</jsp-file>
+    <servlet-name>signUp</servlet-name>
+    <jsp-file>/signUp.jsp</jsp-file>
   </servlet>
 
   <servlet>
     <servlet-name>Main</servlet-name>
-    <jsp-file>/main.html</jsp-file>
+    <jsp-file>/main.jsp</jsp-file>
   </servlet>
 
   <servlet>
-    <servlet-name>ProductTypePage</servlet-name>
-    <servlet-class>edu.dental.web.servlets.products.ProductMapTable</servlet-class>
+    <servlet-name>logIn</servlet-name>
+    <servlet-class>edu.dental.web.servlets.control.UserLogIn</servlet-class>
   </servlet>
 
   <servlet>
-    <servlet-name>SignUp</servlet-name>
-    <jsp-file>/signUp.html</jsp-file>
-  </servlet>
-
-  <servlet>
-    <servlet-name>ProductSaver</servlet-name>
-    <servlet-class>edu.dental.web.servlets.products.ProductSaver</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>newRecord</servlet-name>
-    <jsp-file>/app/newRecord.html</jsp-file>
+    <servlet-name>workList</servlet-name>
+    <jsp-file>/workList.jsp</jsp-file>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>newRecord</servlet-name>
-    <url-pattern>/app/new-work</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>newProduct</servlet-name>
-    <url-pattern>/app/new-product</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>ProductSaver</servlet-name>
-    <url-pattern>/app/save-product</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>Main</servlet-name>
-    <url-pattern>/app/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>ProductTypePage</servlet-name>
-    <url-pattern>/app/product-map</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>SignUp</servlet-name>
+    <servlet-name>signUp</servlet-name>
     <url-pattern>/sign-up</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>default</servlet-name>
-    <url-pattern>/css/*</url-pattern>
+    <servlet-name>Main</servlet-name>
+    <url-pattern>/main/*</url-pattern>
   </servlet-mapping>
 
-  <error-page>
-    <error-code>404</error-code>
-    <location>/enter</location>
-  </error-page>
+  <servlet-mapping>
+    <servlet-name>workList</servlet-name>
+    <url-pattern>/work-list</url-pattern>
+  </servlet-mapping>
 </web-app>

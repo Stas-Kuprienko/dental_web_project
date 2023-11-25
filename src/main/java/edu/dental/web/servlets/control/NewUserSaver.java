@@ -1,11 +1,11 @@
-package edu.dental.web.servlets.basic;
+package edu.dental.web.servlets.control;
 
 import edu.dental.database.DBService;
 import edu.dental.database.DatabaseException;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.web.Repository;
+import edu.dental.web.MyRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -44,7 +44,7 @@ public class NewUserSaver extends HttpServlet {
                 }
                 recordBook = APIManager.instance().getWorkRecordBook();
                 session.setAttribute("user", user.getEmail());
-                Repository.put(user, recordBook);
+                MyRepository.put(user, recordBook);
                 request.getRequestDispatcher("/app/main").forward(request, response);
             } catch (DatabaseException e) {
                 request.getRequestDispatcher("/enter").forward(request, response);

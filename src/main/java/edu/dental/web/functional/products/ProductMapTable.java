@@ -1,4 +1,4 @@
-package edu.dental.web.servlets.products;
+package edu.dental.web.functional.products;
 
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;

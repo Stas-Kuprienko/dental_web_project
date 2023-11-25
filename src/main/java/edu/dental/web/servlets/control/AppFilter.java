@@ -1,4 +1,4 @@
-package edu.dental.web.servlets.basic;
+package edu.dental.web.servlets.control;
 
 import edu.dental.database.DBService;
 import edu.dental.database.DatabaseException;
@@ -9,13 +9,8 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.web.Repository;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.http.HttpFilter;
+import edu.dental.web.MyRepository;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -23,8 +18,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@WebFilter("/app/*")
-public class MyFilter extends HttpFilter {
+public class AppFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -44,7 +38,7 @@ public class MyFilter extends HttpFilter {
                     List<I_DentalWork> dentalWorks = dbService.getDentalWorkDAO(user).getAll();
                     WorkRecordBook recordBook = APIManager.instance().getWorkRecordBook(dentalWorks, productMap);
                     session.setAttribute("user", user.getEmail());
-                    Repository.put(user, recordBook);
+                    MyRepository.put(user, recordBook);
                     filterChain.doFilter(request, response);
                 }
                 request.getRequestDispatcher("/enter").forward(request, response);

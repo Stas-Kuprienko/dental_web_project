@@ -1,11 +1,11 @@
-package edu.dental.web.servlets.works;
+package edu.dental.web.functional.works;
 
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.web.Repository;
+import edu.dental.web.MyRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,7 +28,7 @@ public class DentalWorkEditor extends HttpServlet {
             request.getRequestDispatcher("/work-list").forward(request, response);
         }
         String email = (String) session.getAttribute("user");
-        WorkRecordBook recordBook = Repository.getWorkRecordBook(email);
+        WorkRecordBook recordBook = MyRepository.instance().getRecordBook(email);
         try {
             I_DentalWork dw = recordBook.getByID(id);
             String page = new PageBuilder(dw, recordBook.getMap().keysToArray()).getResult();

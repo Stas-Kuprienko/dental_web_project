@@ -1,10 +1,9 @@
 package edu.dental.web.builders;
 
+import edu.dental.domain.DatesTool;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
-import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.DatesTool;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -29,7 +28,7 @@ public final class TablePageBuilder {
         String thread = buildThread(map);
         String tBody = buildTBody(map, works);
         StringBuilder content = new StringBuilder();
-        String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
+        String[] yearAndMonth = DatesTool.getYearAndMonth();
         String month = yearAndMonth[1].toUpperCase() + " - " + yearAndMonth[0];
         content.append(String.format(TABLE_MONTH.tag, month)).append("\n\t")
                 .append(TABLE_STATUS.tag).append("\n\t").append(tag2.DIV_TABLE.o)
