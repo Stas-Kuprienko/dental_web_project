@@ -10,7 +10,7 @@
 <body>
 <section>
 <h2>Sign up, please:</h2>
-<form action="/dental/main" method="post">
+<form action="/dental/new-user" method="post">
     <label for="name">name:</label><br>
     <input type="text" id="name" name="name" value=""><br>
     <label for="email">email:</label><br>

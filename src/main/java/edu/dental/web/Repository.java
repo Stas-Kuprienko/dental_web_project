@@ -9,7 +9,9 @@ public interface Repository {
 
     void put(User user, WorkRecordBook recordBook);
 
-    User find(String login, String password) throws AuthenticationException, DatabaseException;
+    User logIn(String login, String password) throws AuthenticationException;
+
+    User signUp(String name, String login, String password) throws DatabaseException;
 
     Account get(String login);
 

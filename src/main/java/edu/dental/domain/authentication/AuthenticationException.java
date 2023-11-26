@@ -12,7 +12,10 @@ public class AuthenticationException extends Exception {
 
     public AuthenticationException(Causes cause) {
         this(cause.cause);
+        this.causes = cause;
     }
+
+    public Causes causes;
 
     public enum Causes {
 

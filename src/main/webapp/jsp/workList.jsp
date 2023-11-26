@@ -1,5 +1,5 @@
 <%@ page import="edu.dental.domain.DatesTool" %>
-<%@ page import="edu.dental.web.builders.HtmlTag" %>
+<%@ page import="edu.dental.web.builders.PageBuilder" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -14,14 +14,14 @@
     <a href="/dental/main/product-map">REPORTS</a>
 </nav>
 
-    <% HtmlTag.Liner liner = new HtmlTag.Liner(request); %>
-    <% HtmlTag.RowBuilder row = new HtmlTag.RowBuilder(request); %>
+    <% PageBuilder.Header header = new PageBuilder.Header(request); %>
+    <% PageBuilder.RowBuilder row = new PageBuilder.RowBuilder(request); %>
 
 <body>
 <section>
     <h3>
         <strong>
-            <%=HtmlTag.month()%>
+            <%=PageBuilder.month()%>
         </strong>
     </h3>
 	<h4 style="float: left;">
@@ -33,8 +33,8 @@
             <div class="tr">
             <div class="th">PATIENT</div>
             <div class="th">CLINIC</div>
-            <% while (liner.hasNext()) { %>
-            <div class="th"><%=liner.next()%></div>
+            <% while (header.hasNext()) { %>
+            <div class="th"><%=header.next()%></div>
             <% } %>
             <div class="th">COMPLETE</div>
             <div class="th">ACCEPT</div>

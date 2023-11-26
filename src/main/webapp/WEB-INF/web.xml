@@ -11,22 +11,27 @@
 
   <servlet>
     <servlet-name>signUp</servlet-name>
-    <jsp-file>/signUp.jsp</jsp-file>
-  </servlet>
-
-  <servlet>
-    <servlet-name>Main</servlet-name>
-    <jsp-file>/main.jsp</jsp-file>
+    <jsp-file>/jsp/signUp.jsp</jsp-file>
   </servlet>
 
   <servlet>
     <servlet-name>logIn</servlet-name>
-    <servlet-class>edu.dental.web.servlets.control.UserLogIn</servlet-class>
+    <servlet-class>edu.dental.web.servlets.control.Authorization</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>register</servlet-name>
+    <servlet-class>edu.dental.web.servlets.control.Registration</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>Main</servlet-name>
+    <jsp-file>/jsp/main.jsp</jsp-file>
   </servlet>
 
   <servlet>
     <servlet-name>workList</servlet-name>
-    <jsp-file>/workList.jsp</jsp-file>
+    <jsp-file>/jsp/workList.jsp</jsp-file>
   </servlet>
 
   <servlet-mapping>
@@ -41,6 +46,6 @@
 
   <servlet-mapping>
     <servlet-name>workList</servlet-name>
-    <url-pattern>/work-list</url-pattern>
+    <url-pattern>/main/work-list</url-pattern>
   </servlet-mapping>
 </web-app>

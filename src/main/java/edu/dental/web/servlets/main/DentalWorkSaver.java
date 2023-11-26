@@ -1,4 +1,4 @@
-package edu.dental.web.functional.works;
+package edu.dental.web.servlets.main;
 
 import edu.dental.database.DBService;
 import edu.dental.database.DatabaseException;
@@ -7,7 +7,6 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.web.MyRepository;
 import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,7 +29,7 @@ public class DentalWorkSaver extends HttpServlet {
         if (email == null) {
             request.getRequestDispatcher("/enter").forward(request, response);
         }
-        Repository.Account account = MyRepository.instance().get(email);
+        Repository.Account account = APIManager.instance().getRepository().get(email);
         User user = account.user();
         WorkRecordBook recordBook = account.recordBook();
 

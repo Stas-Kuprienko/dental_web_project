@@ -9,9 +9,7 @@ import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.my_work_record_book.MyProductMap;
-import edu.dental.web.builders.HtmlTag;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +17,6 @@ import utils.collections.SimpleList;
 
 import java.io.IOException;
 
-@WebServlet("/log-in")
 public class UserLogIn extends HttpServlet {
 
     @Override
@@ -44,10 +41,9 @@ public class UserLogIn extends HttpServlet {
         }
         System.out.println(records);
         System.out.println(map);
-
-        request.setAttribute(HtmlTag.TABLE_MAP, map.keysToArray());
-        request.setAttribute(HtmlTag.WORK_LIST, records);
-        request.getRequestDispatcher("/work-list").forward(request, response);
+//
+//        request.setAttribute(PageBuilder.TABLE_MAP, map.keysToArray());
+//        request.setAttribute(PageBuilder.WORK_LIST, records);
+//        request.getRequestDispatcher("/work-list").forward(request, response);
     }
-
 }

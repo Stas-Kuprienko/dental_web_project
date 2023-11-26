@@ -1,13 +1,5 @@
 package edu.dental.web.builders;
 
-import edu.dental.domain.DatesTool;
-import edu.dental.domain.entities.I_DentalWork;
-import edu.dental.domain.entities.Product;
-import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Iterator;
-import java.util.List;
-
 public enum HtmlTag {
 
     /**
@@ -144,84 +136,6 @@ public enum HtmlTag {
         TAG2(String o, String c) {
             this.o = o;
             this.c = c;
-        }
-    }
-
-    public static final String TABLE_MAP = "map";
-    public static final String WORK_LIST = "works";
-
-
-    public static StringBuilder line(StringBuilder str, TAG2 tag, String value) {
-        str.append(tag.o).append(value).append(tag.c).append("\n\t\t");
-        return str;
-    }
-
-    public static String month() {
-        String[] yearNMonth = DatesTool.getYearAndMonth();
-        return yearNMonth[1].toUpperCase() + " - " + yearNMonth[0];
-    }
-
-    public static class Liner {
-
-        private final String[] map;
-        private int cursor;
-
-        public Liner(HttpServletRequest request) {
-            this.map = (String[]) request.getAttribute(TABLE_MAP);
-            this.cursor = 0;
-        }
-
-        public boolean hasNext() {
-            return cursor < map.length;
-        }
-
-        public String next() {
-            String s = map[cursor];
-            cursor += 1;
-            return s;
-        }
-    }
-
-    public static class RowBuilder {
-
-        private final Iterator<I_DentalWork> works;
-        private final String[] map;
-        private int cursor;
-
-        @SuppressWarnings("unchecked")
-        public RowBuilder(HttpServletRequest request) {
-            List<I_DentalWork> list = (List<I_DentalWork>) request.getAttribute(WORK_LIST);
-            this.works = list.iterator();
-            this.map = (String[]) request.getAttribute(TABLE_MAP);
-        }
-
-        public boolean hasNext() {
-            return works.hasNext();
-        }
-
-        public String next() {
-            I_DentalWork dw = works.next();
-            StringBuilder str = new StringBuilder();
-            TAG2 tagA = dw.getStatus().equals(I_DentalWork.Status.MAKE) ? TAG2.A_TR
-                    : dw.getStatus().equals(I_DentalWork.Status.CLOSED) ? TAG2.A_TR_CLOSED
-                                                                        : TAG2.A_TR_PAID;
-            str.append(String.format(tagA.o, dw.getId())).append("\n\t\t");
-            line(str, TAG2.DIV_TD, dw.getPatient());
-            line(str, TAG2.DIV_TD, dw.getClinic());
-            if (dw.getProducts().isEmpty()) {
-                for (String ignored : map) {
-                    line(str, TAG2.DIV_TD, " ");
-                }
-            } else {
-                for (String s : map) {
-                    Product p = dw.findProduct(s);
-                    line(str, TAG2.DIV_TD, p == null ? " " : String.valueOf(p.quantity()));
-                }
-            }
-            line(str, TAG2.DIV_TD, String.valueOf(dw.getComplete()));
-            line(str, TAG2.DIV_TD, String.valueOf(dw.getAccepted()));
-            str.append(tagA.c);
-            return str.toString();
         }
     }
 }

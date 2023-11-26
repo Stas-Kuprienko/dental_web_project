@@ -27,7 +27,7 @@ public final class Authenticator {
      *  - incorrect password;
      *  - a given argument is null.
      */
-    public static synchronized User authenticate(String login, String password) throws AuthenticationException {
+    public static User authenticate(String login, String password) throws AuthenticationException {
         if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
             throw new AuthenticationException(AuthenticationException.Causes.NULL);
         }
@@ -52,7 +52,7 @@ public final class Authenticator {
      * @param password The user's password.
      * @return The {@link User} object if verification was successful, or null if not.
      */
-    private static synchronized boolean verification(User user, String password) {
+    public static boolean verification(User user, String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] password2 = md.digest(password.getBytes());
@@ -62,7 +62,7 @@ public final class Authenticator {
         }
     }
 
-    public static synchronized boolean verification(User user, byte[] password) {
+    public static boolean verification(User user, byte[] password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             return MessageDigest.isEqual(user.getPassword(), password);
@@ -76,7 +76,7 @@ public final class Authenticator {
      * @param password The user's password string.
      * @return byte array of the password hash.
      */
-    public static synchronized byte[] passwordHash(String password) {
+    public static byte[] passwordHash(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             return md.digest(password.getBytes());

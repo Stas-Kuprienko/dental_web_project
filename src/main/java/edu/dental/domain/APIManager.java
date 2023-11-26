@@ -8,11 +8,13 @@ import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.reports.ReportService;
+import edu.dental.web.Repository;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Properties;
 
@@ -139,6 +141,22 @@ public final class APIManager {
                  | InstantiationException | IllegalAccessException e) {
             //TODO logger
             throw new RuntimeException(e);
+        }
+    }
+
+    public Repository getRepository() {
+        Method method = null;
+        try {
+            Class<?> clas = Class.forName(getClassName(Repository.class));
+            method = clas.getDeclaredMethod("instance");
+            method.setAccessible(true);
+            return (Repository) method.invoke(null);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (method != null) {
+                method.setAccessible(false);
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package edu.dental.web.functional.products;
+package edu.dental.web.servlets.main;
 
 import edu.dental.database.DBService;
 import edu.dental.database.DatabaseException;
