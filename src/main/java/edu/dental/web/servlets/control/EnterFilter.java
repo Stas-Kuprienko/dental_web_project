@@ -18,7 +18,7 @@ public class EnterFilter implements Filter {
             chain.doFilter(request, response);
         } else {
             String user = (String) session.getAttribute("user");
-            if (user == null || MyRepository.get(user) == null) {
+            if (user == null || MyRepository.instance().get(user) == null) {
                 chain.doFilter(request, response);
             } else {
                 request.getRequestDispatcher("/main");

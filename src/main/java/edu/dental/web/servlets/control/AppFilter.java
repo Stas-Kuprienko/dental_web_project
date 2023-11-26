@@ -38,7 +38,7 @@ public class AppFilter implements Filter {
                     List<I_DentalWork> dentalWorks = dbService.getDentalWorkDAO(user).getAll();
                     WorkRecordBook recordBook = APIManager.instance().getWorkRecordBook(dentalWorks, productMap);
                     session.setAttribute("user", user.getEmail());
-                    MyRepository.put(user, recordBook);
+                    MyRepository.instance().put(user, recordBook);
                     filterChain.doFilter(request, response);
                 }
                 request.getRequestDispatcher("/enter").forward(request, response);

@@ -60,7 +60,7 @@ public class DentalWork implements I_DentalWork {
                 return p;
             }
         }
-        throw new NoSuchElementException("the such product is not found.");
+        return null;
     }
 
     /**

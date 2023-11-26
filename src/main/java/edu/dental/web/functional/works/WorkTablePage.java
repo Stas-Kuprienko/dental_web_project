@@ -2,6 +2,7 @@ package edu.dental.web.functional.works;
 
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.web.MyRepository;
+import edu.dental.web.Repository;
 import edu.dental.web.builders.TablePageBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,7 +23,7 @@ public class WorkTablePage extends HttpServlet {
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("user");
         try {
-            MyRepository.Account account = MyRepository.get(email);
+            Repository.Account account = MyRepository.instance().get(email);
             WorkRecordBook recordBook = account.recordBook();
             String page = TablePageBuilder.get().build(recordBook.getMap(), recordBook.getList());
             writer.write(page);

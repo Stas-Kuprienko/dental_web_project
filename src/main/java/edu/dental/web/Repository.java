@@ -19,5 +19,9 @@ public interface Repository {
 
     void delete(String login);
 
-    interface Account {}
+
+    interface Account {
+        User user();
+        WorkRecordBook recordBook();
+    }
 }

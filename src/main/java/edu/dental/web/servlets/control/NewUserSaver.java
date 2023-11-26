@@ -44,7 +44,7 @@ public class NewUserSaver extends HttpServlet {
                 }
                 recordBook = APIManager.instance().getWorkRecordBook();
                 session.setAttribute("user", user.getEmail());
-                MyRepository.put(user, recordBook);
+                MyRepository.instance().put(user, recordBook);
                 request.getRequestDispatcher("/app/main").forward(request, response);
             } catch (DatabaseException e) {
                 request.getRequestDispatcher("/enter").forward(request, response);
