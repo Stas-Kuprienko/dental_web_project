@@ -1,6 +1,6 @@
 package edu.dental;
 
-import edu.dental.database.DBService;
+import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.mysql_api.dao.DentalWorkMySql;
 import edu.dental.database.mysql_api.dao.ProductMapMySql;
@@ -30,7 +30,7 @@ public class SampleConsoleApp {
     public static WorkRecordBook workRecordBook;
     public static ReportService reportService;
 
-    public static DBService dbService;
+    public static DatabaseService databaseService;
 
     public static void main(String[] args) {
         while (true) {
@@ -334,7 +334,7 @@ public class SampleConsoleApp {
     }
 
     public static void menu_2() throws WorkRecordBookException, DatabaseException, ReportServiceException {
-        dbService = APIManager.instance().getDBService();
+        databaseService = APIManager.instance().getDatabaseService();
         System.out.println(user.getName() + ", you are enter in service\n" + options_2);
         int j = in.nextInt();
         switch (j) {

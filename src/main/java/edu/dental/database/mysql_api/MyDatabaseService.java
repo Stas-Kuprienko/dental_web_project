@@ -1,6 +1,6 @@
 package edu.dental.database.mysql_api;
 
-import edu.dental.database.DBService;
+import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.*;
@@ -12,9 +12,9 @@ import utils.collections.SimpleList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class MyDBService implements DBService {
+public class MyDatabaseService implements DatabaseService {
 
-    private MyDBService() {}
+    private MyDatabaseService() {}
 
     //TODO!!!!!!!!!
 

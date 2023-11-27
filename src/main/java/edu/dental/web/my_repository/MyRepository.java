@@ -1,6 +1,6 @@
 package edu.dental.web.my_repository;
 
-import edu.dental.database.DBService;
+import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
@@ -47,12 +47,12 @@ public final class MyRepository implements Repository {
         } else {
             user = Authenticator.authenticate(login, password);
             WorkRecordBook recordBook;
-            DBService dbService = APIManager.instance().getDBService();
+            DatabaseService databaseService = APIManager.instance().getDatabaseService();
             List<I_DentalWork> works;
             ProductMap map;
             try {
-                map = dbService.getProductMapDAO(user).get();
-                works = dbService.getDentalWorkDAO(user).getAll();
+                map = databaseService.getProductMapDAO(user).get();
+                works = databaseService.getDentalWorkDAO(user).getAll();
             } catch (DatabaseException e) {
                 throw new AuthenticationException(e);
             }
@@ -65,7 +65,7 @@ public final class MyRepository implements Repository {
     @Override
     public User signUp(String name, String login, String password) throws DatabaseException {
         User user = new User(name, login, password);
-        APIManager.instance().getDBService().getUserDAO().put(user);
+        APIManager.instance().getDatabaseService().getUserDAO().put(user);
         WorkRecordBook recordBook = APIManager.instance().getWorkRecordBook();
         APIManager.instance().getRepository().put(user, recordBook);
         return user;

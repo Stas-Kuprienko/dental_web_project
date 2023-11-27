@@ -1,6 +1,6 @@
 package edu.dental.domain.reports.my_report_service;
 
-import edu.dental.database.DBService;
+import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.I_DentalWork;
@@ -36,7 +36,7 @@ public class MyReportService implements ReportService {
     @Override
     public MonthlyReport getReportFromDB(String month, String year) throws ReportServiceException {
         try {
-            DBService db = APIManager.instance().getDBService();
+            DatabaseService db = APIManager.instance().getDatabaseService();
             List<I_DentalWork> records = db.getDentalWorkDAO(user).getAllMonthly(month, year);
             return new MonthlyReport(year, month, records);
         } catch (DatabaseException | ClassCastException e) {
@@ -47,7 +47,7 @@ public class MyReportService implements ReportService {
 
     @Override
     public boolean saveSalariesToFile() throws ReportServiceException {
-        DBService db = APIManager.instance().getDBService();
+        DatabaseService db = APIManager.instance().getDatabaseService();
         try {
             SalaryRecord[] salaries = db.countAllSalaries(user);
             DataArrayTool arrayTool = new DataArrayTool(salaries);

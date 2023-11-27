@@ -1,6 +1,6 @@
 package edu.dental.web.servlets.main;
 
-import edu.dental.database.DBService;
+import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
@@ -25,9 +25,9 @@ public class ProductSaver extends HttpServlet {
         String title = request.getParameter("title");
         int price = Integer.parseInt(request.getParameter("price"));
 
-        DBService dbService = APIManager.instance().getDBService();
+        DatabaseService databaseService = APIManager.instance().getDatabaseService();
         try {
-            int id = dbService.getProductMapDAO(user).put(title, price);
+            int id = databaseService.getProductMapDAO(user).put(title, price);
             recordBook.getMap().put(title, price, id);
             request.setAttribute("user", user);
             request.getRequestDispatcher("/welcome").forward(request, response);

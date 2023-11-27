@@ -236,7 +236,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             return resultSet.getInt("id");
         } catch (SQLException e) {
             if (e.getMessage().equals("Illegal operation on empty result set.")) {
-                APIManager.instance().getDBService().getTableInitializer().addReports();
+                APIManager.instance().getDatabaseService().getTableInitializer().addReports();
                 return setReportId(list);
             } else {
                 //TODO loggers

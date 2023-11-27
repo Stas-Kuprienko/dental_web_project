@@ -1,6 +1,6 @@
 package edu.dental.domain;
 
-import edu.dental.database.DBService;
+import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.entities.I_DentalWork;
@@ -22,11 +22,14 @@ public final class APIManager {
 
     private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental\\target\\classes\\service.properties";
 
-    private static final APIManager manager;
+    public static final APIManager instance;
     static {
-        manager = new APIManager();
+        instance = new APIManager();
     }
     private final Properties service;
+
+    private final Repository repository;
+
 
     private APIManager() {
         service = new Properties();
@@ -36,6 +39,7 @@ public final class APIManager {
             //TODO loggers
             throw new RuntimeException(e);
         }
+        this.repository = initRepository();
     }
 
 
@@ -129,14 +133,14 @@ public final class APIManager {
         }
     }
 
-    public DBService getDBService() {
+    public DatabaseService getDatabaseService() {
         try {
-            Class<?> clas = Class.forName(getClassName(DBService.class));
+            Class<?> clas = Class.forName(getClassName(DatabaseService.class));
             Constructor<?> constructor = clas.getDeclaredConstructor();
             constructor.setAccessible(true);
-            DBService dbService = (DBService) constructor.newInstance();
+            DatabaseService databaseService = (DatabaseService) constructor.newInstance();
             constructor.setAccessible(false);
-            return dbService;
+            return databaseService;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | InstantiationException | IllegalAccessException e) {
             //TODO logger
@@ -144,7 +148,7 @@ public final class APIManager {
         }
     }
 
-    public Repository getRepository() {
+    private Repository initRepository() {
         Method method = null;
         try {
             Class<?> clas = Class.forName(getClassName(Repository.class));
@@ -160,11 +164,15 @@ public final class APIManager {
         }
     }
 
+    public Repository getRepository() {
+        return repository;
+    }
+
     private <T> String getClassName(Class<T> clas) {
         return service.getProperty(clas.getSimpleName());
     }
 
-    public static synchronized APIManager instance() {
-        return manager;
+    public static APIManager instance() {
+        return instance;
     }
 }

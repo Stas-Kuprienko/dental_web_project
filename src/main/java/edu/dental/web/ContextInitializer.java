@@ -1,6 +1,6 @@
 package edu.dental.web;
 
-import edu.dental.database.DBService;
+import edu.dental.database.DatabaseService;
 import edu.dental.database.connection.ConnectionPool;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
@@ -24,8 +24,8 @@ public class ContextInitializer implements ServletContextListener {
             //TODO logger
             throw new RuntimeException(e);
         }
-        DBService dbService = APIManager.instance().getDBService();
-        dbService.getTableInitializer().init();
+        DatabaseService databaseService = APIManager.instance().getDatabaseService();
+        databaseService.getTableInitializer().init();
         APIManager.instance().getWorkRecordBook();
         APIManager.instance().getProductMap();
         APIManager.instance().getReportService(new User());

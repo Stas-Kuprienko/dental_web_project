@@ -4,9 +4,7 @@ import edu.dental.database.dao.*;
 import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.entities.User;
 
-public interface DBService {
-
-    //TODO!!!!!!!!!
+public interface DatabaseService {
 
     TableInitializer getTableInitializer();
 
