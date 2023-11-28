@@ -4,7 +4,6 @@ import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.*;
-import edu.dental.database.mysql_api.dao.*;
 import edu.dental.domain.entities.SalaryRecord;
 import edu.dental.domain.entities.User;
 import utils.collections.SimpleList;
@@ -15,8 +14,6 @@ import java.sql.SQLException;
 public class MyDatabaseService implements DatabaseService {
 
     private MyDatabaseService() {}
-
-    //TODO!!!!!!!!!
 
     @Override
     public TableInitializer getTableInitializer() {
@@ -60,6 +57,7 @@ public class MyDatabaseService implements DatabaseService {
                 SalaryRecord salary = new SalaryRecord(year, month, amount);
                 records.add(salary);
             }
+            resultSet.close();
             return records.toArray(new SalaryRecord[]{});
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.fillInStackTrace());

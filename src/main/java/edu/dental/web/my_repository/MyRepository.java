@@ -16,14 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class MyRepository implements Repository {
 
-    private static final Repository repository;
-
     private MyRepository() {
         RAM = new ConcurrentHashMap<>();
-    }
-
-    static {
-        repository = new MyRepository();
     }
 
 
@@ -47,7 +41,7 @@ public final class MyRepository implements Repository {
         } else {
             user = Authenticator.authenticate(login, password);
             WorkRecordBook recordBook;
-            DatabaseService databaseService = APIManager.instance().getDatabaseService();
+            DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
             List<I_DentalWork> works;
             ProductMap map;
             try {
@@ -56,7 +50,7 @@ public final class MyRepository implements Repository {
             } catch (DatabaseException e) {
                 throw new AuthenticationException(e);
             }
-            recordBook = APIManager.instance().getWorkRecordBook(works, map);
+            recordBook = APIManager.INSTANCE.getWorkRecordBook(works, map);
             put(user, recordBook);
             return user;
         }
@@ -65,9 +59,9 @@ public final class MyRepository implements Repository {
     @Override
     public User signUp(String name, String login, String password) throws DatabaseException {
         User user = new User(name, login, password);
-        APIManager.instance().getDatabaseService().getUserDAO().put(user);
-        WorkRecordBook recordBook = APIManager.instance().getWorkRecordBook();
-        APIManager.instance().getRepository().put(user, recordBook);
+        APIManager.INSTANCE.getDatabaseService().getUserDAO().put(user);
+        WorkRecordBook recordBook = APIManager.INSTANCE.getWorkRecordBook();
+        APIManager.INSTANCE.getRepository().put(user, recordBook);
         return user;
     }
 
@@ -94,10 +88,6 @@ public final class MyRepository implements Repository {
 
     public Account get(String login) {
         return RAM.get(login);
-    }
-
-    private static synchronized Repository instance() {
-        return repository;
     }
 
     public record Account(User user, WorkRecordBook recordBook) implements Repository.Account {}

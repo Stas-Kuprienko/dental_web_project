@@ -1,9 +1,10 @@
-package edu.dental.database.mysql_api.dao;
+package edu.dental.database.mysql_api;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.ProductDAO;
+import edu.dental.database.mysql_api.MySqlSamples;
 import edu.dental.domain.entities.Product;
 import utils.collections.SimpleList;
 
@@ -20,7 +21,7 @@ public class ProductMySql implements ProductDAO {
 
     private static final String FIELDS = "work_id, title, quantity, price";
 
-    public ProductMySql(int workId) {
+    ProductMySql(int workId) {
         this.workId = workId;
     }
 

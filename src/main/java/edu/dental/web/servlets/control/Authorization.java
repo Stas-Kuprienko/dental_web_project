@@ -24,7 +24,7 @@ public class Authorization extends HttpServlet {
         String password = request.getParameter("password");
         if (email != null && password != null) {
             try {
-                APIManager.instance().getRepository().logIn(email, password);
+                APIManager.INSTANCE.getRepository().logIn(email, password);
                 request.getSession().setAttribute("user", email);
                 request.getRequestDispatcher("/main").forward(request, response);
             } catch (AuthenticationException e) {

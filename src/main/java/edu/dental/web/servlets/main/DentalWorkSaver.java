@@ -29,7 +29,7 @@ public class DentalWorkSaver extends HttpServlet {
         if (email == null) {
             request.getRequestDispatcher("/enter").forward(request, response);
         }
-        Repository.Account account = APIManager.instance().getRepository().get(email);
+        Repository.Account account = APIManager.INSTANCE.getRepository().get(email);
         User user = account.user();
         WorkRecordBook recordBook = account.recordBook();
 
@@ -41,7 +41,7 @@ public class DentalWorkSaver extends HttpServlet {
 
         try {
             I_DentalWork dw = recordBook.createRecord(patient, clinic, product, quantity, complete);
-            DatabaseService databaseService = APIManager.instance().getDatabaseService();
+            DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
             databaseService.getDentalWorkDAO(user).put(dw);
             request.setAttribute("user", user);
             request.getRequestDispatcher("/app/main").forward(request, response);

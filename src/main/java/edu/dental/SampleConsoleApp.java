@@ -1,10 +1,9 @@
 package edu.dental;
 
-import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
-import edu.dental.database.mysql_api.dao.DentalWorkMySql;
-import edu.dental.database.mysql_api.dao.ProductMapMySql;
-import edu.dental.database.mysql_api.dao.UserMySql;
+import edu.dental.database.DatabaseService;
+import edu.dental.database.mysql_api.DentalWorkMySql;
+import edu.dental.database.mysql_api.ProductMapMySql;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
@@ -28,9 +27,9 @@ public class SampleConsoleApp {
     public static Scanner in = new Scanner(System.in);
     public static User user;
     public static WorkRecordBook workRecordBook;
-    public static ReportService reportService;
+    public static ReportService reportService = APIManager.INSTANCE.getReportService();
 
-    public static DatabaseService databaseService;
+    public static DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
 
     public static void main(String[] args) {
         while (true) {
@@ -63,10 +62,9 @@ public class SampleConsoleApp {
             System.out.print("password: ");
             password = in.next();
             User newUser = new User(name, login, password);
-            System.out.println(new UserMySql().put(newUser));
+            System.out.println(databaseService.getUserDAO().put(newUser));
             user = newUser;
-            workRecordBook = APIManager.instance().getWorkRecordBook();
-            reportService = APIManager.instance().getReportService(user);
+            workRecordBook = APIManager.INSTANCE.getWorkRecordBook();
             System.out.println("Welcome!");
         }
 
@@ -78,10 +76,9 @@ public class SampleConsoleApp {
 //            System.out.print("password: ");
 //            password = in.next();
             user = Authenticator.authenticate(login, password);
-            SimpleList<I_DentalWork> records = (SimpleList<I_DentalWork>) new DentalWorkMySql(user).getAll();
-            MyProductMap productMap = (MyProductMap) APIManager.instance().getProductMap(user);
-            workRecordBook = APIManager.instance().getWorkRecordBook(records, productMap);
-            reportService = APIManager.instance().getReportService(user);
+            SimpleList<I_DentalWork> records = (SimpleList<I_DentalWork>) databaseService.getDentalWorkDAO(user).getAll();
+            MyProductMap productMap = (MyProductMap) APIManager.INSTANCE.getProductMap(user);
+            workRecordBook = APIManager.INSTANCE.getWorkRecordBook(records, productMap);
             System.out.println("Welcome!");
         }
 
@@ -101,7 +98,7 @@ public class SampleConsoleApp {
             System.out.println("price: ");
             int price = in.nextInt();
             int id;
-            System.out.println(id = new ProductMapMySql(user).put(product, price));
+            System.out.println(id = databaseService.getProductMapDAO(user).put(product, price));
             workRecordBook.getMap().put(product, price, id);
 
         }
@@ -114,7 +111,7 @@ public class SampleConsoleApp {
             int price = in.nextInt();
             @SuppressWarnings("all")
             int id = workRecordBook.getMap().put(product, price);
-            System.out.println(new ProductMapMySql(user).edit(id, price));
+            System.out.println(databaseService.getProductMapDAO(user).edit(id, price));
         }
 
         public static void delete() throws DatabaseException {
@@ -122,7 +119,7 @@ public class SampleConsoleApp {
             System.out.println("the product you want to delete: ");
             product = in.next();
             int id = workRecordBook.getMap().remove(product);
-            System.out.println(new ProductMapMySql(user).delete(id));
+            System.out.println(databaseService.getProductMapDAO(user).delete(id));
         }
 
         public static void open() throws DatabaseException {
@@ -166,7 +163,7 @@ public class SampleConsoleApp {
             } else {
                 workRecord = (DentalWork) workRecordBook.createRecord(patient, clinic, product, quantity, LocalDate.parse(complete));
             }
-            System.out.println(new DentalWorkMySql(user).put(workRecord));
+            System.out.println(databaseService.getDentalWorkDAO(user).put(workRecord));
         }
 
         public static void edit() throws WorkRecordBookException, DatabaseException {
@@ -214,7 +211,7 @@ public class SampleConsoleApp {
                     return;
                 }
             }
-            System.out.println(new DentalWorkMySql(user).edit(workRecord));
+            System.out.println(databaseService.getDentalWorkDAO(user).edit(workRecord));
         }
         private static I_DentalWork getByID(SimpleList<I_DentalWork> workRecords, int id) {
             for (I_DentalWork wr : workRecords) {
@@ -241,7 +238,7 @@ public class SampleConsoleApp {
 
         public static void sorting() throws DatabaseException {
             closed = (SimpleList<I_DentalWork>) workRecordBook.sorting();
-            DentalWorkMySql dao = new DentalWorkMySql(user);
+            DentalWorkMySql dao = (DentalWorkMySql) databaseService.getDentalWorkDAO(user);
             System.out.println(dao.setFieldValue(closed, "status", I_DentalWork.Status.CLOSED));
 
             int reportId;
@@ -259,11 +256,11 @@ public class SampleConsoleApp {
             String month = in.next();
             LocalDate today = LocalDate.now();
             if (year == today.getYear() && month.equalsIgnoreCase(today.getMonth().toString())) {
-                System.out.println(reportService.saveReportToFile(workRecordBook.getMap(), new MonthlyReport(workRecordBook.getList())));
+                System.out.println(reportService.saveReportToFile(workRecordBook.getMap().keysToArray(), new MonthlyReport(workRecordBook.getList())));
                 return;
             }
-            MonthlyReport report = reportService.getReportFromDB(month, String.valueOf(year));
-            System.out.println(reportService.saveReportToFile(workRecordBook.getMap(), report));
+            MonthlyReport report = reportService.getReportFromDB(user, month, String.valueOf(year));
+            System.out.println(reportService.saveReportToFile(workRecordBook.getMap().keysToArray(), report));
         }
 
         public static void getReportByMonth() throws ReportServiceException {
@@ -271,7 +268,7 @@ public class SampleConsoleApp {
             int year = in.nextInt();
             System.out.println("month:");
             String month = in.next();
-            MonthlyReport report = reportService.getReportFromDB(month, String.valueOf(year));
+            MonthlyReport report = reportService.getReportFromDB(user, month, String.valueOf(year));
             System.out.println(report);
             System.out.println("""
                     1 - save to file;
@@ -280,14 +277,14 @@ public class SampleConsoleApp {
                     """);
             int r = in.nextInt();
             switch (r) {
-                case 1 -> System.out.println(reportService.saveReportToFile(workRecordBook.getMap(), report));
+                case 1 -> System.out.println(reportService.saveReportToFile(workRecordBook.getMap().keysToArray(), report));
                 case 2 -> System.out.println(count((SimpleList<I_DentalWork>) report.getDentalWorks()));
                 case 3 -> getReportByMonth();
             }
         }
 
         public static void salaryStatistic() throws ReportServiceException {
-            System.out.println(reportService.saveSalariesToFile());
+            System.out.println(reportService.saveSalariesToFile(user));
         }
 
         private static int count(SimpleList<I_DentalWork> list) {
@@ -334,7 +331,7 @@ public class SampleConsoleApp {
     }
 
     public static void menu_2() throws WorkRecordBookException, DatabaseException, ReportServiceException {
-        databaseService = APIManager.instance().getDatabaseService();
+        databaseService = APIManager.INSTANCE.getDatabaseService();
         System.out.println(user.getName() + ", you are enter in service\n" + options_2);
         int j = in.nextInt();
         switch (j) {

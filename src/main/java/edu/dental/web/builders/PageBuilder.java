@@ -44,7 +44,7 @@ public final class PageBuilder {
 
         public Header(HttpServletRequest request) {
             String login = (String) request.getSession().getAttribute("user");
-            ProductMap productMap = APIManager.instance().getRepository().getRecordBook(login).getMap();
+            ProductMap productMap = APIManager.INSTANCE.getRepository().getRecordBook(login).getMap();
             if (productMap == null || productMap.isEmpty()) {
                 this.map = new String[] {" "};
             } else {
@@ -72,10 +72,10 @@ public final class PageBuilder {
 
         public RowBuilder(HttpServletRequest request) {
             String login = (String) request.getSession().getAttribute("user");
-            WorkRecordBook recordBook = APIManager.instance().getRepository().getRecordBook(login);
+            WorkRecordBook recordBook = APIManager.INSTANCE.getRepository().getRecordBook(login);
             List<I_DentalWork> list = recordBook.getList();
             this.works = list.iterator();
-            ProductMap productMap = APIManager.instance().getRepository().getRecordBook(login).getMap();
+            ProductMap productMap = APIManager.INSTANCE.getRepository().getRecordBook(login).getMap();
             if (productMap == null || productMap.isEmpty()) {
                 this.map = new String[] {" "};
             } else {

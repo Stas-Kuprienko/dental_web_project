@@ -25,7 +25,7 @@ public class ProductSaver extends HttpServlet {
         String title = request.getParameter("title");
         int price = Integer.parseInt(request.getParameter("price"));
 
-        DatabaseService databaseService = APIManager.instance().getDatabaseService();
+        DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
         try {
             int id = databaseService.getProductMapDAO(user).put(title, price);
             recordBook.getMap().put(title, price, id);

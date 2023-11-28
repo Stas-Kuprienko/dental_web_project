@@ -24,11 +24,11 @@ public class ContextInitializer implements ServletContextListener {
             //TODO logger
             throw new RuntimeException(e);
         }
-        DatabaseService databaseService = APIManager.instance().getDatabaseService();
+        DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
         databaseService.getTableInitializer().init();
-        APIManager.instance().getWorkRecordBook();
-        APIManager.instance().getProductMap();
-        APIManager.instance().getReportService(new User());
+        APIManager.INSTANCE.getWorkRecordBook();
+        APIManager.INSTANCE.getProductMap();
+        APIManager.INSTANCE.getReportService();
         //TODO logger
     }
 

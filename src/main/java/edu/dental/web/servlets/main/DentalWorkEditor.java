@@ -28,7 +28,7 @@ public class DentalWorkEditor extends HttpServlet {
             request.getRequestDispatcher("/work-list").forward(request, response);
         }
         String email = (String) session.getAttribute("user");
-        WorkRecordBook recordBook = APIManager.instance().getRepository().getRecordBook(email);
+        WorkRecordBook recordBook = APIManager.INSTANCE.getRepository().getRecordBook(email);
         try {
             I_DentalWork dw = recordBook.getByID(id);
             String page = new PageBuilder(dw, recordBook.getMap().keysToArray()).getResult();

@@ -27,7 +27,7 @@ public class Registration extends HttpServlet {
 
         if (name != null && email != null && password != null) {
             try {
-                User user = APIManager.instance().getRepository().signUp(name, email, password);
+                User user = APIManager.INSTANCE.getRepository().signUp(name, email, password);
                 request.getSession().setAttribute("user", user.getEmail());
                 request.getRequestDispatcher("/main").forward(request, response);
             } catch (DatabaseException e) {

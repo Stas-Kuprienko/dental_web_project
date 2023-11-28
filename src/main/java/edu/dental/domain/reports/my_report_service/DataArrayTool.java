@@ -3,7 +3,6 @@ package edu.dental.domain.reports.my_report_service;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.SalaryRecord;
-import edu.dental.domain.records.ProductMap;
 import utils.collections.SimpleList;
 
 import java.util.Collection;
@@ -13,8 +12,8 @@ class DataArrayTool {
     private final String[] columns;
     private final String[][] result;
 
-    DataArrayTool(ProductMap productMap, SimpleList<I_DentalWork> recordList) {
-        this.columns = buildReportColumns(productMap);
+    DataArrayTool(String[] keysArray, SimpleList<I_DentalWork> recordList) {
+        this.columns = buildReportColumns(keysArray);
         this.result = buildReportTable(recordList);
     }
 
@@ -27,13 +26,12 @@ class DataArrayTool {
      * Create a table head by the product titles.
      * @return String array with column titles.
      */
-    private String[] buildReportColumns(ProductMap map) {
-        String[] productTypes = map.keysToArray();
-        String[] columns = new String[productTypes.length + 2];
+    private String[] buildReportColumns(String[] map) {
+        String[] columns = new String[map.length + 2];
         columns[0] = "PATIENT";
         columns[1] = "CLINIC";
         int i = 2;
-        for (String s : productTypes) {
+        for (String s : map) {
             columns[i] = s.toUpperCase();
             i++;
         }

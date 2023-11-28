@@ -1,4 +1,4 @@
-package edu.dental.database.mysql_api.dao;
+package edu.dental.database.mysql_api;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
@@ -26,7 +26,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     private static final String FIELDS =
             "id, report_id, patient, clinic, accepted, complete, status, photo, comment, user_id";
 
-    public DentalWorkMySql(User user) {
+    DentalWorkMySql(User user) {
         this.user = user;
     }
 
@@ -236,7 +236,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             return resultSet.getInt("id");
         } catch (SQLException e) {
             if (e.getMessage().equals("Illegal operation on empty result set.")) {
-                APIManager.instance().getDatabaseService().getTableInitializer().addReports();
+                APIManager.INSTANCE.getDatabaseService().getTableInitializer().addReports();
                 return setReportId(list);
             } else {
                 //TODO loggers

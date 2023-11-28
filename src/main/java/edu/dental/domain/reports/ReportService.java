@@ -1,12 +1,12 @@
 package edu.dental.domain.reports;
 
-import edu.dental.domain.records.ProductMap;
+import edu.dental.domain.entities.User;
 
 public interface ReportService {
 
-    boolean saveReportToFile(ProductMap map, MonthlyReport report);
+    boolean saveReportToFile(String[] keysArray, MonthlyReport report);
 
-    MonthlyReport getReportFromDB(String month, String year) throws ReportServiceException;
+    MonthlyReport getReportFromDB(User user, String month, String year) throws ReportServiceException;
 
-    boolean saveSalariesToFile() throws ReportServiceException;
+    boolean saveSalariesToFile(User user) throws ReportServiceException;
 }

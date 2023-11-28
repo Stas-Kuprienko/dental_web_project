@@ -1,8 +1,9 @@
-package edu.dental.database.mysql_api.dao;
+package edu.dental.database.mysql_api;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.UserDAO;
+import edu.dental.database.mysql_api.MySqlSamples;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.User;
 import utils.collections.SimpleList;
@@ -17,6 +18,8 @@ public class UserMySql implements UserDAO {
     public static final String TABLE = TableInitializer.USER;
 
     public static final String FIELDS = "id, name, email, password, created";
+
+    UserMySql() {}
 
     @Override
     public boolean putAll(List<User> list) throws DatabaseException {

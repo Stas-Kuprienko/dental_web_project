@@ -1,7 +1,7 @@
 package edu.dental.domain;
 
-import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
+import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.entities.I_DentalWork;
 import edu.dental.domain.entities.User;
@@ -14,24 +14,23 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Properties;
 
-public final class APIManager {
+public enum APIManager {
+
+    INSTANCE;
 
     private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental\\target\\classes\\service.properties";
 
-    public static final APIManager instance;
-    static {
-        instance = new APIManager();
-    }
     private final Properties service;
 
     private final Repository repository;
+    private final DatabaseService databaseService;
+    private final ReportService reportService;
 
 
-    private APIManager() {
+    APIManager() {
         service = new Properties();
         try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
             service.load(fileInput);
@@ -39,7 +38,9 @@ public final class APIManager {
             //TODO loggers
             throw new RuntimeException(e);
         }
-        this.repository = initRepository();
+        this.repository = init(Repository.class);
+        this.databaseService = init(DatabaseService.class);
+        this.reportService = init(ReportService.class);
     }
 
 
@@ -118,61 +119,40 @@ public final class APIManager {
         }
     }
 
-    public ReportService getReportService(User user) {
-        try {
-            Class<?> clas = Class.forName(getClassName(ReportService.class));
-            Constructor<?> constructor = clas.getDeclaredConstructor(User.class);
-            constructor.setAccessible(true);
-            ReportService reportService = (ReportService) constructor.newInstance(user);
-            constructor.setAccessible(false);
-            return reportService;
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException |
-                 IllegalAccessException e) {
-            //TODO logger
-            throw new RuntimeException(e);
-        }
+    public ReportService getReportService() {
+        return reportService;
     }
 
     public DatabaseService getDatabaseService() {
-        try {
-            Class<?> clas = Class.forName(getClassName(DatabaseService.class));
-            Constructor<?> constructor = clas.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            DatabaseService databaseService = (DatabaseService) constructor.newInstance();
-            constructor.setAccessible(false);
-            return databaseService;
-        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
-                 | InstantiationException | IllegalAccessException e) {
-            //TODO logger
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Repository initRepository() {
-        Method method = null;
-        try {
-            Class<?> clas = Class.forName(getClassName(Repository.class));
-            method = clas.getDeclaredMethod("instance");
-            method.setAccessible(true);
-            return (Repository) method.invoke(null);
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (method != null) {
-                method.setAccessible(false);
-            }
-        }
+        return databaseService;
     }
 
     public Repository getRepository() {
         return repository;
     }
 
+
+
     private <T> String getClassName(Class<T> clas) {
         return service.getProperty(clas.getSimpleName());
     }
 
-    public static APIManager instance() {
-        return instance;
+    @SuppressWarnings("unchecked")
+    private <INTERFACE> INTERFACE init(Class<INTERFACE> clas) {
+        Constructor<?> constructor = null;
+        try {
+            Class<?> c = Class.forName(getClassName(clas));
+            constructor = c.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return (INTERFACE) constructor.newInstance();
+        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException
+                 | IllegalAccessException | ClassNotFoundException e) {
+            //TODO logger
+            throw new RuntimeException(e);
+        } finally {
+            if (constructor != null) {
+                constructor.setAccessible(false);
+            }
+        }
     }
 }

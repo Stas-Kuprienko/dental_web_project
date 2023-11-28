@@ -1,4 +1,4 @@
-package edu.dental.database.mysql_api.dao;
+package edu.dental.database.mysql_api;
 
 import edu.dental.database.dao.DAO;
 
