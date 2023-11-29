@@ -9,7 +9,7 @@
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
     <a href="/dental/main/new-work">NEW WORK</a>
-    <a href="dental/main/work-list">WORK LIST</a>
+    <a href="/dental/main/work-list">WORK LIST</a>
     <a href="/dental/main/new-product">PRODUCT MAP</a>
     <a href="/dental/main/product-map">REPORTS</a>
 </nav>
@@ -29,7 +29,7 @@
         <label style="background-color: #075700; border: 5px solid #075700"> PAID </label>
     </h4>
 	<div class="table">
-	    <div class="thead">
+	    <div class="thead" style="font-size: 65%;">
             <div class="tr">
             <div class="th">PATIENT</div>
             <div class="th">CLINIC</div>

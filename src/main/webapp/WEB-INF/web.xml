@@ -5,6 +5,16 @@
 <web-app>
   <display-name>dental-mechanic</display-name>
 
+  <filter>
+    <filter-name>mainFilter</filter-name>
+    <filter-class>edu.dental.web.servlets.control.MainFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>enterFilter</filter-name>
+    <filter-class>edu.dental.web.servlets.control.EnterFilter</filter-class>
+  </filter>
+
   <listener>
     <listener-class>edu.dental.web.ContextInitializer</listener-class>
   </listener>
@@ -34,6 +44,11 @@
     <jsp-file>/jsp/workList.jsp</jsp-file>
   </servlet>
 
+  <servlet>
+    <servlet-name>newWork</servlet-name>
+    <jsp-file>/jsp/newWorkRecord.jsp</jsp-file>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>signUp</servlet-name>
     <url-pattern>/sign-up</url-pattern>
@@ -48,4 +63,14 @@
     <servlet-name>workList</servlet-name>
     <url-pattern>/main/work-list</url-pattern>
   </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>newWork</servlet-name>
+    <url-pattern>/main/new-work</url-pattern>
+  </servlet-mapping>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/jsp/error.html</location>
+  </error-page>
 </web-app>

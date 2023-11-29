@@ -6,9 +6,9 @@
 </head>
 <nav class="menu" style="height: 10%;">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
-    <a href="/dental/main/user">
-        <button style="height: 50%; width: 100%; font-size: 22px;">
-            private setting
+    <a style="float: right;" href="/dental/main/user">
+        <button style="height: 50%; width: 100%; font-size: 20px;">
+            ACCOUNT
         </button>
     </a>
 </nav>
