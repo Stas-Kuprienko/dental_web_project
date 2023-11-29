@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface I_DentalWork extends IDHaving,Comparable<I_DentalWork>, Serializable {
+public interface IDentalWork extends IDHaving,Comparable<IDentalWork>, Serializable {
 
     void setPatient(String patient);
 

@@ -5,7 +5,7 @@ import edu.dental.database.DatabaseException;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
-import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.IDentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
@@ -42,7 +42,7 @@ public final class MyRepository implements Repository {
             user = Authenticator.authenticate(login, password);
             WorkRecordBook recordBook;
             DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
-            List<I_DentalWork> works;
+            List<IDentalWork> works;
             ProductMap map;
             try {
                 map = databaseService.getProductMapDAO(user).get();

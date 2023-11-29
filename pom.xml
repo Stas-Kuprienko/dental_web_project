@@ -84,6 +84,13 @@
       <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
       <version>3.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>utils.collection</groupId>
+      <artifactId>SimpleList</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${pom.basedir}/my_libraries/simple-list.jar</systemPath>
+    </dependency>
 
   </dependencies>
 

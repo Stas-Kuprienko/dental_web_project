@@ -2,7 +2,7 @@ package edu.dental.web.servlets.main;
 
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.IDentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
@@ -30,7 +30,7 @@ public class DentalWorkEditor extends HttpServlet {
         String email = (String) session.getAttribute("user");
         WorkRecordBook recordBook = APIManager.INSTANCE.getRepository().getRecordBook(email);
         try {
-            I_DentalWork dw = recordBook.getByID(id);
+            IDentalWork dw = recordBook.getByID(id);
             String page = new PageBuilder(dw, recordBook.getMap().keysToArray()).getResult();
             response.getWriter().write(page);
         } catch (WorkRecordBookException e) {
@@ -134,7 +134,7 @@ public class DentalWorkEditor extends HttpServlet {
 
         private final String result;
 
-        public PageBuilder(I_DentalWork dw, String[] map) {
+        public PageBuilder(IDentalWork dw, String[] map) {
             this.dw = (DentalWork) dw;
             this.map = map;
             String productList = buildProductList();

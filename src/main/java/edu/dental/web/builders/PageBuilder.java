@@ -2,7 +2,7 @@ package edu.dental.web.builders;
 
 import edu.dental.domain.APIManager;
 import edu.dental.domain.DatesTool;
-import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.IDentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
@@ -66,14 +66,14 @@ public final class PageBuilder {
 
     public static class RowBuilder {
 
-        private final Iterator<I_DentalWork> works;
+        private final Iterator<IDentalWork> works;
         private final String[] map;
         private int cursor;
 
         public RowBuilder(HttpServletRequest request) {
             String login = (String) request.getSession().getAttribute("user");
             WorkRecordBook recordBook = APIManager.INSTANCE.getRepository().getRecordBook(login);
-            List<I_DentalWork> list = recordBook.getList();
+            List<IDentalWork> list = recordBook.getList();
             this.works = list.iterator();
             ProductMap productMap = APIManager.INSTANCE.getRepository().getRecordBook(login).getMap();
             if (productMap == null || productMap.isEmpty()) {
@@ -88,10 +88,10 @@ public final class PageBuilder {
         }
 
         public String next() {
-            I_DentalWork dw = works.next();
+            IDentalWork dw = works.next();
             StringBuilder str = new StringBuilder();
-            TAG2 tagA = dw.getStatus().equals(I_DentalWork.Status.MAKE) ? TAG2.A_TR
-                    : dw.getStatus().equals(I_DentalWork.Status.CLOSED) ? TAG2.A_TR_CLOSED
+            TAG2 tagA = dw.getStatus().equals(IDentalWork.Status.MAKE) ? TAG2.A_TR
+                    : dw.getStatus().equals(IDentalWork.Status.CLOSED) ? TAG2.A_TR_CLOSED
                     : TAG2.A_TR_PAID;
             str.append(String.format(tagA.o, dw.getId())).append("\n\t\t");
             line(str, TAG2.DIV_TD, dw.getPatient());
@@ -116,7 +116,7 @@ public final class PageBuilder {
 
 
 
-    public String build(ProductMap map, Collection<I_DentalWork> works) {
+    public String build(ProductMap map, Collection<IDentalWork> works) {
         String thread = buildThread(map);
         String tBody = buildTBody(map, works);
         StringBuilder content = new StringBuilder();
@@ -136,10 +136,10 @@ public final class PageBuilder {
         return String.format(TABLE_THEAD.tag, products);
     }
 
-    private String buildTBody(ProductMap map, Collection<I_DentalWork> works) {
+    private String buildTBody(ProductMap map, Collection<IDentalWork> works) {
         StringBuilder rows = new StringBuilder();
         rows.append(TAG2.DIV_TBODY.o).append("\n\t");
-        for (I_DentalWork dw : works) {
+        for (IDentalWork dw : works) {
             if (dw.getStatus().name().equals("MAKE")) {
                 rows.append(String.format(TAG2.A_TR.o, dw.getId()));
             } else if (dw.getStatus().name().equals("CLOSED")) {
@@ -153,7 +153,7 @@ public final class PageBuilder {
         return rows.append(TAG2.DIV_TBODY.c).toString();
     }
 
-    private void buildRow(StringBuilder str, ProductMap map, I_DentalWork dw) {
+    private void buildRow(StringBuilder str, ProductMap map, IDentalWork dw) {
         line(str, TAG2.DIV_TD, dw.getPatient());
         line(str, TAG2.DIV_TD, dw.getClinic());
         if (dw.getProducts().isEmpty()) {

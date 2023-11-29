@@ -3,12 +3,11 @@ package edu.dental;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.mysql_api.DentalWorkMySql;
-import edu.dental.database.mysql_api.ProductMapMySql;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.IDentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
@@ -76,7 +75,7 @@ public class SampleConsoleApp {
 //            System.out.print("password: ");
 //            password = in.next();
             user = Authenticator.authenticate(login, password);
-            SimpleList<I_DentalWork> records = (SimpleList<I_DentalWork>) databaseService.getDentalWorkDAO(user).getAll();
+            SimpleList<IDentalWork> records = (SimpleList<IDentalWork>) databaseService.getDentalWorkDAO(user).getAll();
             MyProductMap productMap = (MyProductMap) APIManager.INSTANCE.getProductMap(user);
             workRecordBook = APIManager.INSTANCE.getWorkRecordBook(records, productMap);
             System.out.println("Welcome!");
@@ -167,8 +166,8 @@ public class SampleConsoleApp {
         }
 
         public static void edit() throws WorkRecordBookException, DatabaseException {
-            SimpleList<I_DentalWork> workRecords = (SimpleList<I_DentalWork>) workRecordBook.getList();
-            for (I_DentalWork wr : workRecords) {
+            SimpleList<IDentalWork> workRecords = (SimpleList<IDentalWork>) workRecordBook.getList();
+            for (IDentalWork wr : workRecords) {
                 System.out.println(wr);
             }
             int id = in.nextInt();
@@ -200,7 +199,7 @@ public class SampleConsoleApp {
                 }
                 case 5 -> {
                     String statusStr = in.next();
-                    I_DentalWork.Status status = Enum.valueOf(I_DentalWork.Status.class, statusStr);
+                    IDentalWork.Status status = Enum.valueOf(IDentalWork.Status.class, statusStr);
                     workRecord.setStatus(status);
                 }
                 case 6 -> {
@@ -213,8 +212,8 @@ public class SampleConsoleApp {
             }
             System.out.println(databaseService.getDentalWorkDAO(user).edit(workRecord));
         }
-        private static I_DentalWork getByID(SimpleList<I_DentalWork> workRecords, int id) {
-            for (I_DentalWork wr : workRecords) {
+        private static IDentalWork getByID(SimpleList<IDentalWork> workRecords, int id) {
+            for (IDentalWork wr : workRecords) {
                 if (wr.getId() == id) {
                     return wr;
                 }
@@ -234,16 +233,16 @@ public class SampleConsoleApp {
 
     public static class Reports {
 
-        static SimpleList<I_DentalWork> closed;
+        static SimpleList<IDentalWork> closed;
 
         public static void sorting() throws DatabaseException {
-            closed = (SimpleList<I_DentalWork>) workRecordBook.sorting();
+            closed = (SimpleList<IDentalWork>) workRecordBook.sorting();
             DentalWorkMySql dao = (DentalWorkMySql) databaseService.getDentalWorkDAO(user);
-            System.out.println(dao.setFieldValue(closed, "status", I_DentalWork.Status.CLOSED));
+            System.out.println(dao.setFieldValue(closed, "status", IDentalWork.Status.CLOSED));
 
             int reportId;
             System.out.println(reportId = dao.setReportId(closed));
-            for (I_DentalWork dw : closed) {
+            for (IDentalWork dw : closed) {
                 dw.setReportId(reportId);
             }
             System.out.println(closed);
@@ -256,7 +255,7 @@ public class SampleConsoleApp {
             String month = in.next();
             LocalDate today = LocalDate.now();
             if (year == today.getYear() && month.equalsIgnoreCase(today.getMonth().toString())) {
-                System.out.println(reportService.saveReportToFile(workRecordBook.getMap().keysToArray(), new MonthlyReport(workRecordBook.getList())));
+                System.out.println(reportService.saveReportToFile(workRecordBook.getMap().keysToArray(), workRecordBook.getList()));
                 return;
             }
             MonthlyReport report = reportService.getReportFromDB(user, month, String.valueOf(year));
@@ -278,7 +277,7 @@ public class SampleConsoleApp {
             int r = in.nextInt();
             switch (r) {
                 case 1 -> System.out.println(reportService.saveReportToFile(workRecordBook.getMap().keysToArray(), report));
-                case 2 -> System.out.println(count((SimpleList<I_DentalWork>) report.getDentalWorks()));
+                case 2 -> System.out.println(count((SimpleList<IDentalWork>) report.dentalWorks()));
                 case 3 -> getReportByMonth();
             }
         }
@@ -287,9 +286,9 @@ public class SampleConsoleApp {
             System.out.println(reportService.saveSalariesToFile(user));
         }
 
-        private static int count(SimpleList<I_DentalWork> list) {
+        private static int count(SimpleList<IDentalWork> list) {
             int n = 0;
-            for (I_DentalWork dw : list) {
+            for (IDentalWork dw : list) {
                 if (!dw.getProducts().isEmpty()) {
                     for (Product p : dw.getProducts()) {
                         n += p.countAmount();
@@ -339,7 +338,7 @@ public class SampleConsoleApp {
             case 2 -> EntryRecord.makeNew();
             case 3 -> EntryRecord.edit();
             case 4 -> {
-                for (I_DentalWork dw : workRecordBook.getList()) System.out.println(dw);
+                for (IDentalWork dw : workRecordBook.getList()) System.out.println(dw);
                 EntryRecord.edit();
             }
             case 5 -> Reports.sorting();

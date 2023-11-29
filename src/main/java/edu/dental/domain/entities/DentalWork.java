@@ -15,7 +15,7 @@ import java.util.Objects;
  * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the products.
  * Also containing {@code byte array} with an images of the work.
  */
-public class DentalWork implements I_DentalWork {
+public class DentalWork implements IDentalWork {
 
     private int id;
 
@@ -74,7 +74,7 @@ public class DentalWork implements I_DentalWork {
     }
 
     @Override
-    public int compareTo(I_DentalWork o) {
+    public int compareTo(IDentalWork o) {
         return Integer.compare(id, o.getId());
     }
 

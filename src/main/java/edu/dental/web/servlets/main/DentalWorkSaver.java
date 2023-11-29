@@ -3,7 +3,7 @@ package edu.dental.web.servlets.main;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
 import edu.dental.domain.APIManager;
-import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.IDentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
@@ -40,7 +40,7 @@ public class DentalWorkSaver extends HttpServlet {
         LocalDate complete = LocalDate.parse(request.getParameter("complete"));
 
         try {
-            I_DentalWork dw = recordBook.createRecord(patient, clinic, product, quantity, complete);
+            IDentalWork dw = recordBook.createRecord(patient, clinic, product, quantity, complete);
             DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
             databaseService.getDentalWorkDAO(user).put(dw);
             request.setAttribute("user", user);

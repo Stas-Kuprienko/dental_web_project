@@ -1,12 +1,10 @@
 package edu.dental.web.servlets.control;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.database.mysql_api.DentalWorkMySql;
-import edu.dental.database.mysql_api.ProductMapMySql;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
-import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.IDentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.my_work_record_book.MyProductMap;
@@ -32,10 +30,10 @@ public class UserLogIn extends HttpServlet {
             e.printStackTrace();
         }
         System.out.println(user);
-        SimpleList<I_DentalWork> records = new SimpleList<>();
+        SimpleList<IDentalWork> records = new SimpleList<>();
         ProductMap map = new MyProductMap();
         try {
-            records = (SimpleList<I_DentalWork>) APIManager.INSTANCE.getDatabaseService().getDentalWorkDAO(user).getAll();
+            records = (SimpleList<IDentalWork>) APIManager.INSTANCE.getDatabaseService().getDentalWorkDAO(user).getAll();
             map = APIManager.INSTANCE.getDatabaseService().getProductMapDAO(user).get();
         } catch (DatabaseException e) {
             e.printStackTrace();

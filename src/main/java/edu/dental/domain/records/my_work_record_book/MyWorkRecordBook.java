@@ -2,7 +2,7 @@ package edu.dental.domain.records.my_work_record_book;
 
 import edu.dental.domain.DatesTool;
 import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.entities.I_DentalWork;
+import edu.dental.domain.entities.IDentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
@@ -19,13 +19,13 @@ import java.util.NoSuchElementException;
  */
 public class MyWorkRecordBook implements WorkRecordBook {
 
-    private final SimpleList<I_DentalWork> records;
+    private final SimpleList<IDentalWork> records;
 
     private final MyProductMap productMap;
 
     @SuppressWarnings("unused")
-    private MyWorkRecordBook(List<I_DentalWork> records, ProductMap productMap) {
-        this.records = (SimpleList<I_DentalWork>) records;
+    private MyWorkRecordBook(List<IDentalWork> records, ProductMap productMap) {
+        this.records = (SimpleList<IDentalWork>) records;
         this.productMap = (MyProductMap) productMap;
     }
 
@@ -57,7 +57,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public I_DentalWork addProductToRecord(I_DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException {
+    public IDentalWork addProductToRecord(IDentalWork dentalWork, String product, int quantity) throws WorkRecordBookException {
         if (dentalWork == null) {
             throw new WorkRecordBookException("The given DentalWork object is null");
         }
@@ -78,7 +78,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public I_DentalWork removeProduct(I_DentalWork dentalWork, String product) throws WorkRecordBookException {
+    public IDentalWork removeProduct(IDentalWork dentalWork, String product) throws WorkRecordBookException {
         if ((dentalWork == null)||(product == null || product.isEmpty())) {
             throw new WorkRecordBookException("The given argument is null or empty.");
         }
@@ -96,7 +96,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public boolean deleteRecord(I_DentalWork dentalWork) {
+    public boolean deleteRecord(IDentalWork dentalWork) {
         if (dentalWork == null) {
             return false;
         }
@@ -104,9 +104,9 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public I_DentalWork searchRecord(String patient, String clinic) throws WorkRecordBookException {
+    public IDentalWork searchRecord(String patient, String clinic) throws WorkRecordBookException {
         try {
-            SimpleList<I_DentalWork> list = records.searchElement("patient", patient);
+            SimpleList<IDentalWork> list = records.searchElement("patient", patient);
             if (list.size() > 1) {
                 list = list.searchElement("clinic", clinic);
             }
@@ -117,13 +117,13 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public I_DentalWork getByID(int id) throws WorkRecordBookException {
+    public IDentalWork getByID(int id) throws WorkRecordBookException {
         if (records.size() == 0) {
             throw new WorkRecordBookException("The DentalWork list is empty.");
         }
-        I_DentalWork[] works = new I_DentalWork[records.size()];
+        IDentalWork[] works = new IDentalWork[records.size()];
         Arrays.sort(records.toArray(works));
-        I_DentalWork dw = new DentalWork();
+        IDentalWork dw = new DentalWork();
         dw.setId(id);
         int i = Arrays.binarySearch(records.toArray(), dw);
         if (i < 0) {
@@ -134,14 +134,14 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public SimpleList<I_DentalWork> sorting() {
-        SimpleList<I_DentalWork> result = new SimpleList<>();
-        for (I_DentalWork dw : records.toArray(new I_DentalWork[]{})) {
+    public SimpleList<IDentalWork> sorting() {
+        SimpleList<IDentalWork> result = new SimpleList<>();
+        for (IDentalWork dw : records.toArray(new IDentalWork[]{})) {
             if (dw.getStatus().ordinal() > 0) {
                 result.add(dw);
                 records.remove(dw);
             } else if (DatesTool.isCurrentMonth(dw.getComplete(), PAY_DAY)) {
-                dw.setStatus(I_DentalWork.Status.CLOSED);
+                dw.setStatus(IDentalWork.Status.CLOSED);
                 result.add(dw);
                 records.remove(dw);
             }
@@ -150,7 +150,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public SimpleList<I_DentalWork> getList() {
+    public SimpleList<IDentalWork> getList() {
         return records;
     }
 
