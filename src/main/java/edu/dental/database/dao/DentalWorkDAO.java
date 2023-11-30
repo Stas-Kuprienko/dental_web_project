@@ -1,33 +1,33 @@
 package edu.dental.database.dao;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.domain.entities.IDentalWork;
+import edu.dental.domain.entities.DentalWork;
 
 import java.util.List;
 
-public interface DentalWorkDAO extends DAO<IDentalWork> {
+public interface DentalWorkDAO extends DAO<DentalWork> {
 
     @Override
-    boolean putAll(List<IDentalWork> list) throws DatabaseException;
+    boolean putAll(List<DentalWork> list) throws DatabaseException;
 
     @Override
-    boolean put(IDentalWork object) throws DatabaseException;
+    boolean put(DentalWork object) throws DatabaseException;
 
     @Override
-    List<IDentalWork> getAll() throws DatabaseException;
+    List<DentalWork> getAll() throws DatabaseException;
 
-    List<IDentalWork> getAllMonthly(String month, String year) throws DatabaseException;
-
-    @Override
-    IDentalWork get(int id) throws DatabaseException;
+    List<DentalWork> getAllMonthly(String month, String year) throws DatabaseException;
 
     @Override
-    List<IDentalWork> search(Object... args) throws DatabaseException;
+    DentalWork get(int id) throws DatabaseException;
 
     @Override
-    boolean edit(IDentalWork object) throws DatabaseException;
+    List<DentalWork> search(Object... args) throws DatabaseException;
 
-    int setReportId(List<IDentalWork> list) throws  DatabaseException;
+    @Override
+    boolean edit(DentalWork object) throws DatabaseException;
+
+    int setReportId(List<DentalWork> list) throws  DatabaseException;
 
     @Override
     boolean delete(int id) throws DatabaseException;

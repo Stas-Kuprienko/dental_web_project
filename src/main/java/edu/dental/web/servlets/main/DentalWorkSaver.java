@@ -1,15 +1,14 @@
 package edu.dental.web.servlets.main;
 
-import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
+import edu.dental.database.DatabaseService;
 import edu.dental.domain.APIManager;
-import edu.dental.domain.entities.IDentalWork;
+import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +17,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 
-@WebServlet("/app/save-work")
 public class DentalWorkSaver extends HttpServlet {
 
     @Override
@@ -40,7 +38,7 @@ public class DentalWorkSaver extends HttpServlet {
         LocalDate complete = LocalDate.parse(request.getParameter("complete"));
 
         try {
-            IDentalWork dw = recordBook.createRecord(patient, clinic, product, quantity, complete);
+            DentalWork dw = recordBook.createRecord(patient, clinic, product, quantity, complete);
             DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
             databaseService.getDentalWorkDAO(user).put(dw);
             request.setAttribute("user", user);

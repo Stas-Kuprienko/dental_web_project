@@ -3,9 +3,9 @@ package edu.dental.domain.entities;
 
 import utils.collections.SimpleList;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -15,7 +15,7 @@ import java.util.Objects;
  * Has fields {@code patient,clinic,acceptDate,complete,} {@link Product} list with a types of the products.
  * Also containing {@code byte array} with an images of the work.
  */
-public class DentalWork implements IDentalWork {
+public class DentalWork implements Comparable<DentalWork>, Serializable, IDHaving {
 
     private int id;
 
@@ -49,19 +49,6 @@ public class DentalWork implements IDentalWork {
         this.status = status;
     }
 
-    @Override
-    public Product findProduct(String type) {
-        if (products.isEmpty()) {
-            throw new NoSuchElementException("the given DentalWork(id=" + id + ") doesn't has products.");
-        }
-        type = type.toLowerCase();
-        for (Product p : products) {
-            if (p.title().equals(type)) {
-                return p;
-            }
-        }
-        return null;
-    }
 
     /**
      * Create the DentalWork object.
@@ -74,9 +61,15 @@ public class DentalWork implements IDentalWork {
     }
 
     @Override
-    public int compareTo(IDentalWork o) {
+    public int compareTo(DentalWork o) {
         return Integer.compare(id, o.getId());
     }
+
+
+    public enum Status {
+        MAKE, CLOSED, PAID
+    }
+
 
     /**
      * The builder pattern class.
@@ -164,63 +157,51 @@ public class DentalWork implements IDentalWork {
         this.id = id;
     }
 
-    @Override
     public String getPatient() {
         return patient;
     }
 
-    @Override
     public void setPatient(String patient) {
         this.patient = patient == null||patient.isEmpty() ?
                 LocalDate.now().toString() : patient;
     }
 
-    @Override
     public String getClinic() {
         return clinic;
     }
 
-    @Override
     public void setClinic(String clinic) {
         this.clinic = clinic == null||clinic.isEmpty() ? "unknown" : clinic;
     }
 
-    @Override
     public SimpleList<Product> getProducts() {
         return products;
     }
 
-    @Override
     public void setProducts(List<Product> products) {
         this.products = (SimpleList<Product>) products;
     }
 
-    @Override
     public LocalDate getComplete() {
         return complete;
     }
 
-    @Override
     public void setComplete(LocalDate complete) {
         this.complete = complete;
     }
 
-    @Override
     public LocalDate getAccepted() {
         return accepted;
     }
 
-    @Override
     public void setAccepted(LocalDate accepted) {
         this.accepted = accepted;
     }
 
-    @Override
     public Status getStatus() {
         return status;
     }
 
-    @Override
     public void setStatus(Status status) {
         this.status = status;
     }
@@ -241,12 +222,10 @@ public class DentalWork implements IDentalWork {
         this.comment = comment;
     }
 
-    @Override
     public void setReportId(int reportId) {
         this.reportId = reportId;
     }
 
-    @Override
     public int getReportId() {
         return reportId;
     }

@@ -1,4 +1,4 @@
-package edu.dental.domain;
+package edu.dental.domain.utils;
 
 import edu.dental.domain.records.WorkRecordBook;
 

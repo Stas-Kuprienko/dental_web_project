@@ -1,11 +1,11 @@
 package edu.dental.domain.reports;
 
-import edu.dental.domain.entities.IDentalWork;
+import edu.dental.domain.entities.DentalWork;
 
 import java.util.List;
 import java.util.Objects;
 
-public record MonthlyReport(String year, String month, List<IDentalWork> dentalWorks) {
+public record MonthlyReport(String year, String month, List<DentalWork> dentalWorks) {
 
     @Override
     public boolean equals(Object o) {

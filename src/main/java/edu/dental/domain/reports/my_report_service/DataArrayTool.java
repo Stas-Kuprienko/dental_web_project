@@ -1,6 +1,6 @@
 package edu.dental.domain.reports.my_report_service;
 
-import edu.dental.domain.entities.IDentalWork;
+import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.SalaryRecord;
 import utils.collections.SimpleList;
@@ -12,7 +12,7 @@ class DataArrayTool {
     private final String[] columns;
     private final String[][] result;
 
-    DataArrayTool(String[] keysArray, SimpleList<IDentalWork> recordList) {
+    DataArrayTool(String[] keysArray, SimpleList<DentalWork> recordList) {
         this.columns = buildReportColumns(keysArray);
         this.result = buildReportTable(recordList);
     }
@@ -38,7 +38,7 @@ class DataArrayTool {
         return columns;
     }
 
-    private String[][] buildReportTable(Collection<IDentalWork> recordList) {
+    private String[][] buildReportTable(Collection<DentalWork> recordList) {
         String[][] result = new String[recordList.size() + 1][columns.length];
 
         //put head of the table
@@ -46,7 +46,7 @@ class DataArrayTool {
 
         //counting rows of the table
         int r = 1;
-        for (IDentalWork wr : recordList) {
+        for (DentalWork wr : recordList) {
             String[] tableRow = new String[columns.length];
             tableRow[0] = wr.getPatient();
             tableRow[1] = wr.getClinic();

@@ -3,7 +3,7 @@ package edu.dental.domain;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.ProductMapDAO;
-import edu.dental.domain.entities.IDentalWork;
+import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
@@ -67,7 +67,7 @@ public enum APIManager {
     /**
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
      */
-    public WorkRecordBook getWorkRecordBook(List<IDentalWork> records, ProductMap productMap) {
+    public WorkRecordBook getWorkRecordBook(List<DentalWork> records, ProductMap productMap) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas =

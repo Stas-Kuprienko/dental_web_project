@@ -1,8 +1,8 @@
 package edu.dental.web.servlets.control;
 
-import edu.dental.database.DatabaseException;
-import edu.dental.domain.APIManager;
+import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.entities.User;
+import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -27,10 +27,10 @@ public class Registration extends HttpServlet {
 
         if (name != null && email != null && password != null) {
             try {
-                User user = APIManager.INSTANCE.getRepository().signUp(name, email, password);
+                User user = Repository.getInstance().signUp(name, email, password);
                 request.getSession().setAttribute("user", user.getEmail());
                 request.getRequestDispatcher("/main").forward(request, response);
-            } catch (DatabaseException e) {
+            } catch (AuthenticationException e) {
                 //TODO
                 request.getRequestDispatcher("/error").forward(request, response);
             }

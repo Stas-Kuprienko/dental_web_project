@@ -1,7 +1,7 @@
 package edu.dental.domain.authentication;
 
-import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
+import edu.dental.database.DatabaseService;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
 
@@ -32,7 +32,7 @@ public final class Authenticator {
             throw new AuthenticationException(AuthenticationException.Causes.NULL);
         }
         User user;
-        DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
+        DatabaseService databaseService = DatabaseService.getInstance();
         try {
             user = databaseService.authenticate(login, password);
         } catch (DatabaseException e) {
@@ -43,6 +43,16 @@ public final class Authenticator {
         }
         if (!(verification(user, password))) {
             throw new AuthenticationException(AuthenticationException.Causes.PASS);
+        }
+        return user;
+    }
+
+    public static User create(String name, String login, String password) throws AuthenticationException {
+        User user = new User(name, login, password);
+        try {
+            APIManager.INSTANCE.getDatabaseService().getUserDAO().put(user);
+        } catch (DatabaseException e) {
+            throw new AuthenticationException(e);
         }
         return user;
     }
@@ -62,6 +72,11 @@ public final class Authenticator {
         }
     }
 
+    /**
+     * Verification the user's password when logging in.
+     * @param password The user's password.
+     * @return The {@link User} object if verification was successful, or null if not.
+     */
     public static boolean verification(User user, byte[] password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");

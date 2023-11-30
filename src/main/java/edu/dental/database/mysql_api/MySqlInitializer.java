@@ -1,7 +1,7 @@
 package edu.dental.database.mysql_api;
 
 import edu.dental.database.TableInitializer;
-import edu.dental.domain.DatesTool;
+import edu.dental.domain.utils.DatesTool;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

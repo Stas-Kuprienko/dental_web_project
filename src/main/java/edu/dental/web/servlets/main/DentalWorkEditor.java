@@ -2,12 +2,10 @@ package edu.dental.web.servlets.main;
 
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.entities.IDentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +13,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/app/edit-work")
 public class DentalWorkEditor extends HttpServlet {
 
     @Override
@@ -30,7 +27,7 @@ public class DentalWorkEditor extends HttpServlet {
         String email = (String) session.getAttribute("user");
         WorkRecordBook recordBook = APIManager.INSTANCE.getRepository().getRecordBook(email);
         try {
-            IDentalWork dw = recordBook.getByID(id);
+            DentalWork dw = recordBook.getByID(id);
             String page = new PageBuilder(dw, recordBook.getMap().keysToArray()).getResult();
             response.getWriter().write(page);
         } catch (WorkRecordBookException e) {
@@ -134,7 +131,7 @@ public class DentalWorkEditor extends HttpServlet {
 
         private final String result;
 
-        public PageBuilder(IDentalWork dw, String[] map) {
+        public PageBuilder(DentalWork dw, String[] map) {
             this.dw = (DentalWork) dw;
             this.map = map;
             String productList = buildProductList();

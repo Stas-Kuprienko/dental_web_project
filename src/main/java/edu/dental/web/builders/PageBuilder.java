@@ -1,8 +1,8 @@
 package edu.dental.web.builders;
 
 import edu.dental.domain.APIManager;
-import edu.dental.domain.DatesTool;
-import edu.dental.domain.entities.IDentalWork;
+import edu.dental.domain.utils.DatesTool;
+import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
@@ -49,13 +49,13 @@ public final class PageBuilder {
 
     public static class RowBuilder {
 
-        private final Iterator<IDentalWork> works;
+        private final Iterator<DentalWork> works;
         private final String[] map;
 
         public RowBuilder(HttpServletRequest request) {
             String login = (String) request.getSession().getAttribute("user");
             WorkRecordBook recordBook = APIManager.INSTANCE.getRepository().getRecordBook(login);
-            List<IDentalWork> list = recordBook.getList();
+            List<DentalWork> list = recordBook.getList();
             this.works = list.iterator();
             ProductMap productMap = APIManager.INSTANCE.getRepository().getRecordBook(login).getMap();
             if (productMap == null || productMap.isEmpty()) {
@@ -70,10 +70,10 @@ public final class PageBuilder {
         }
 
         public String next() {
-            IDentalWork dw = works.next();
+            DentalWork dw = works.next();
             StringBuilder str = new StringBuilder();
-            HtmlTag tagA = dw.getStatus().equals(IDentalWork.Status.MAKE) ? A_TR
-                    : dw.getStatus().equals(IDentalWork.Status.CLOSED) ? A_TR_CLOSED
+            HtmlTag tagA = dw.getStatus().equals(DentalWork.Status.MAKE) ? A_TR
+                    : dw.getStatus().equals(DentalWork.Status.CLOSED) ? A_TR_CLOSED
                     : A_TR_PAID;
             str.append(String.format(tagA.o, dw.getId())).append("\n\t\t");
             DIV_TD.line(str, dw.getPatient());
@@ -84,7 +84,7 @@ public final class PageBuilder {
                 }
             } else {
                 for (String s : map) {
-                    Product p = dw.findProduct(s);
+                    Product p = WorkRecordBook.findProduct(dw, s);
                     DIV_TD.line(str, p == null ? " " : String.valueOf(p.quantity()));
                 }
             }

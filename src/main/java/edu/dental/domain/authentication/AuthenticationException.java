@@ -1,6 +1,14 @@
 package edu.dental.domain.authentication;
 
+import org.apache.log4j.Logger;
+
 public class AuthenticationException extends Exception {
+
+    private static final Logger logger;
+    //TODO
+    static {
+        logger = Logger.getLogger("");
+    }
 
     public AuthenticationException(String message) {
         super(message);
@@ -8,10 +16,12 @@ public class AuthenticationException extends Exception {
 
     public AuthenticationException(Exception e) {
         super(e);
+        logger.info(e);
     }
 
     public AuthenticationException(Causes cause) {
         this(cause.cause);
+        logger.info(cause);
         this.causes = cause;
     }
 

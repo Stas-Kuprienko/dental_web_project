@@ -1,12 +1,22 @@
 package edu.dental.domain.records;
 
+import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.IDHaving;
 import edu.dental.domain.entities.Product;
+import edu.dental.domain.entities.User;
 
 import java.util.Iterator;
 import java.util.Map;
 
 public interface ProductMap extends Map<String, Integer> {
+
+    static ProductMap getInstance() {
+        return APIManager.INSTANCE.getProductMap();
+    }
+
+    static ProductMap getInstance(User user) {
+        return APIManager.INSTANCE.getProductMap(user);
+    }
 
     Product createProduct(String title, int quantity);
 

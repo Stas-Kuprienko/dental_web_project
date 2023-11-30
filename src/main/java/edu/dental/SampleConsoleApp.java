@@ -7,7 +7,6 @@ import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.entities.IDentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
@@ -75,7 +74,7 @@ public class SampleConsoleApp {
 //            System.out.print("password: ");
 //            password = in.next();
             user = Authenticator.authenticate(login, password);
-            SimpleList<IDentalWork> records = (SimpleList<IDentalWork>) databaseService.getDentalWorkDAO(user).getAll();
+            SimpleList<DentalWork> records = (SimpleList<DentalWork>) databaseService.getDentalWorkDAO(user).getAll();
             MyProductMap productMap = (MyProductMap) APIManager.INSTANCE.getProductMap(user);
             workRecordBook = APIManager.INSTANCE.getWorkRecordBook(records, productMap);
             System.out.println("Welcome!");
@@ -166,8 +165,8 @@ public class SampleConsoleApp {
         }
 
         public static void edit() throws WorkRecordBookException, DatabaseException {
-            SimpleList<IDentalWork> workRecords = (SimpleList<IDentalWork>) workRecordBook.getList();
-            for (IDentalWork wr : workRecords) {
+            SimpleList<DentalWork> workRecords = (SimpleList<DentalWork>) workRecordBook.getList();
+            for (DentalWork wr : workRecords) {
                 System.out.println(wr);
             }
             int id = in.nextInt();
@@ -199,7 +198,7 @@ public class SampleConsoleApp {
                 }
                 case 5 -> {
                     String statusStr = in.next();
-                    IDentalWork.Status status = Enum.valueOf(IDentalWork.Status.class, statusStr);
+                    DentalWork.Status status = Enum.valueOf(DentalWork.Status.class, statusStr);
                     workRecord.setStatus(status);
                 }
                 case 6 -> {
@@ -212,8 +211,8 @@ public class SampleConsoleApp {
             }
             System.out.println(databaseService.getDentalWorkDAO(user).edit(workRecord));
         }
-        private static IDentalWork getByID(SimpleList<IDentalWork> workRecords, int id) {
-            for (IDentalWork wr : workRecords) {
+        private static DentalWork getByID(SimpleList<DentalWork> workRecords, int id) {
+            for (DentalWork wr : workRecords) {
                 if (wr.getId() == id) {
                     return wr;
                 }
@@ -233,16 +232,16 @@ public class SampleConsoleApp {
 
     public static class Reports {
 
-        static SimpleList<IDentalWork> closed;
+        static SimpleList<DentalWork> closed;
 
         public static void sorting() throws DatabaseException {
-            closed = (SimpleList<IDentalWork>) workRecordBook.sorting();
+            closed = (SimpleList<DentalWork>) workRecordBook.sorting();
             DentalWorkMySql dao = (DentalWorkMySql) databaseService.getDentalWorkDAO(user);
-            System.out.println(dao.setFieldValue(closed, "status", IDentalWork.Status.CLOSED));
+            System.out.println(dao.setFieldValue(closed, "status", DentalWork.Status.CLOSED));
 
             int reportId;
             System.out.println(reportId = dao.setReportId(closed));
-            for (IDentalWork dw : closed) {
+            for (DentalWork dw : closed) {
                 dw.setReportId(reportId);
             }
             System.out.println(closed);
@@ -277,7 +276,7 @@ public class SampleConsoleApp {
             int r = in.nextInt();
             switch (r) {
                 case 1 -> System.out.println(reportService.saveReportToFile(workRecordBook.getMap().keysToArray(), report));
-                case 2 -> System.out.println(count((SimpleList<IDentalWork>) report.dentalWorks()));
+                case 2 -> System.out.println(count((SimpleList<DentalWork>) report.dentalWorks()));
                 case 3 -> getReportByMonth();
             }
         }
@@ -286,9 +285,9 @@ public class SampleConsoleApp {
             System.out.println(reportService.saveSalariesToFile(user));
         }
 
-        private static int count(SimpleList<IDentalWork> list) {
+        private static int count(SimpleList<DentalWork> list) {
             int n = 0;
-            for (IDentalWork dw : list) {
+            for (DentalWork dw : list) {
                 if (!dw.getProducts().isEmpty()) {
                     for (Product p : dw.getProducts()) {
                         n += p.countAmount();
@@ -338,7 +337,7 @@ public class SampleConsoleApp {
             case 2 -> EntryRecord.makeNew();
             case 3 -> EntryRecord.edit();
             case 4 -> {
-                for (IDentalWork dw : workRecordBook.getList()) System.out.println(dw);
+                for (DentalWork dw : workRecordBook.getList()) System.out.println(dw);
                 EntryRecord.edit();
             }
             case 5 -> Reports.sorting();
