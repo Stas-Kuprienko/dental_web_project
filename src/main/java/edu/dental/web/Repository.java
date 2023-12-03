@@ -4,6 +4,7 @@ import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
+import jakarta.servlet.http.HttpSession;
 
 public interface Repository {
 
@@ -18,6 +19,8 @@ public interface Repository {
     User signUp(String name, String login, String password) throws AuthenticationException;
 
     Account get(String login);
+
+    void setDtoAttributes(HttpSession session, String user);
 
     User getUser(String login);
 

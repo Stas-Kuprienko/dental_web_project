@@ -1,7 +1,7 @@
 package edu.dental.web.servlets.control;
 
-import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
+import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,8 +24,9 @@ public class Authorization extends HttpServlet {
         String password = request.getParameter("password");
         if (email != null && password != null) {
             try {
-                APIManager.INSTANCE.getRepository().logIn(email, password);
+                Repository.getInstance().logIn(email, password);
                 request.getSession().setAttribute("user", email);
+                Repository.getInstance().setDtoAttributes(request.getSession(), email);
                 request.getRequestDispatcher("/main").forward(request, response);
             } catch (AuthenticationException e) {
                 //TODO

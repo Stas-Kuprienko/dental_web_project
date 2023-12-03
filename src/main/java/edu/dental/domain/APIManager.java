@@ -8,6 +8,7 @@ import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.reports.ReportService;
+import edu.dental.web.JsonObjectParser;
 import edu.dental.web.Repository;
 
 import java.io.FileInputStream;
@@ -25,9 +26,10 @@ public enum APIManager {
 
     private final Properties service;
 
-    private final Repository repository;
     private final DatabaseService databaseService;
     private final ReportService reportService;
+    private final Repository repository;
+    private final JsonObjectParser jsonObjectParser;
 
 
     APIManager() {
@@ -38,9 +40,10 @@ public enum APIManager {
             //TODO loggers
             throw new RuntimeException(e);
         }
-        this.repository = init(Repository.class);
         this.databaseService = init(DatabaseService.class);
         this.reportService = init(ReportService.class);
+        this.repository = init(Repository.class);
+        this.jsonObjectParser = init(JsonObjectParser.class);
     }
 
 
@@ -131,7 +134,9 @@ public enum APIManager {
         return repository;
     }
 
-
+    public JsonObjectParser getJsonParser() {
+        return jsonObjectParser;
+    }
 
     private <T> String getClassName(Class<T> clas) {
         return service.getProperty(clas.getSimpleName());

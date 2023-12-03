@@ -6,6 +6,7 @@ import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
+import edu.dental.domain.entities.dto.DentalWorkDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +22,10 @@ public interface WorkRecordBook {
 
     static WorkRecordBook getInstance() {
         return APIManager.INSTANCE.getWorkRecordBook();
+    }
+
+    static WorkRecordBook getInstance(List<DentalWork> works, ProductMap map) {
+        return APIManager.INSTANCE.getWorkRecordBook(works, map);
     }
 
     static WorkRecordBook getInstance(User user) throws WorkRecordBookException {
@@ -110,6 +115,19 @@ public interface WorkRecordBook {
 
     static Product findProduct(DentalWork dw, String type) {
         if (dw.getProducts().isEmpty()) {
+            throw new NoSuchElementException("the given DentalWork(id=" + dw.getId() + ") doesn't has products.");
+        }
+        type = type.toLowerCase();
+        for (Product p : dw.getProducts()) {
+            if (p.title().equals(type)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    static Product findProduct(DentalWorkDTO dw, String type) {
+        if (dw.getProducts().length == 0) {
             throw new NoSuchElementException("the given DentalWork(id=" + dw.getId() + ") doesn't has products.");
         }
         type = type.toLowerCase();

@@ -12,7 +12,7 @@ public class DentalWorkDTO {
     private final String patient;
     private final String clinic;
     private final Product[] products;
-    private final String accept;
+    private final String accepted;
     private final String complete;
     private final String comment;
     private final String status;
@@ -21,11 +21,44 @@ public class DentalWorkDTO {
         this.id = dw.getId();
         this.patient = dw.getPatient();
         this.clinic = dw.getClinic();
-        this.accept = dw.getAccepted().toString();
+        this.accepted = dw.getAccepted().toString();
         this.complete = dw.getComplete().toString();
         this.comment = dw.getComment();
         this.status = dw.getStatus().toString();
-        this.products = dw.getProducts().toArray();
+        this.products = new Product[dw.getProducts().size()];
+        dw.getProducts().toArray(products);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getPatient() {
+        return patient;
+    }
+
+    public String getClinic() {
+        return clinic;
+    }
+
+    public Product[] getProducts() {
+        return products;
+    }
+
+    public String getAccepted() {
+        return accepted;
+    }
+
+    public String getComplete() {
+        return complete;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     @Override
@@ -33,12 +66,12 @@ public class DentalWorkDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DentalWorkDTO that = (DentalWorkDTO) o;
-        return id == that.id && Objects.equals(patient, that.patient) && Objects.equals(clinic, that.clinic) && Arrays.equals(products, that.products) && Objects.equals(accept, that.accept) && Objects.equals(complete, that.complete) && Objects.equals(comment, that.comment) && Objects.equals(status, that.status);
+        return id == that.id && Objects.equals(patient, that.patient) && Objects.equals(clinic, that.clinic) && Arrays.equals(products, that.products) && Objects.equals(accepted, that.accepted) && Objects.equals(complete, that.complete) && Objects.equals(comment, that.comment) && Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, patient, clinic, accept, complete, comment, status);
+        int result = Objects.hash(id, patient, clinic, accepted, complete, comment, status);
         result = 31 * result + Arrays.hashCode(products);
         return result;
     }
@@ -50,7 +83,7 @@ public class DentalWorkDTO {
                 ", patient='" + patient + '\'' +
                 ", clinic='" + clinic + '\'' +
                 ", products=" + Arrays.toString(products) +
-                ", accept='" + accept + '\'' +
+                ", accept='" + accepted + '\'' +
                 ", complete='" + complete + '\'' +
                 ", comment='" + comment + '\'' +
                 ", status='" + status + '\'' +

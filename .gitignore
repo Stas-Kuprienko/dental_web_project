@@ -43,3 +43,4 @@ build/
 /src/main/resources/
 /src/main/java/edu/dental/Main.java
 /src/main/webapp/draft.html
+/src/main/webapp/js_function.js

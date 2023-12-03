@@ -1,5 +1,6 @@
-<%@ page import="edu.dental.domain.DatesTool" %>
+<%@ page import="edu.dental.domain.utils.DatesTool" %>
 <%@ page import="edu.dental.web.builders.PageBuilder" %>
+<%@ page import="edu.dental.web.builders.WorkTableBodyFunction" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -15,7 +16,7 @@
 </nav>
 
     <% PageBuilder.Header header = new PageBuilder.Header(request); %>
-    <% PageBuilder.RowBuilder row = new PageBuilder.RowBuilder(request); %>
+    <% WorkTableBodyFunction row = new WorkTableBodyFunction(request); %>
 
 <body>
 <section>

@@ -2,11 +2,17 @@ package edu.dental.web.my_repository;
 
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
+import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.User;
+import edu.dental.domain.entities.dto.DentalWorkDTO;
+import edu.dental.domain.entities.dto.ProductMapDTO;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.web.JsonObjectParser;
 import edu.dental.web.Repository;
+import jakarta.servlet.http.HttpSession;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class MyRepository implements Repository {
@@ -51,6 +57,21 @@ public final class MyRepository implements Repository {
         return Authenticator.create(name, login, password);
     }
 
+    @Override
+    public void setDtoAttributes(HttpSession session, String user) {
+        Account account = get(user);
+        ProductMapDTO map = new ProductMapDTO(account.recordBook.getMap());
+        List<DentalWork> list = account.recordBook.getList();
+        DentalWorkDTO[] works = new DentalWorkDTO[list.size()];
+        list.stream().map(DentalWorkDTO::new).toList().toArray(works);
+        String jsonMap = getJson(map);
+        String jsonWorks = getJson(works);
+        session.setAttribute("map", jsonMap);
+        session.setAttribute("works", jsonWorks);
+    }
+
+
+    @Override
     public User getUser(String login) {
         Account account = RAM.get(login);
         if (account == null) {
@@ -59,6 +80,7 @@ public final class MyRepository implements Repository {
         return account.user;
     }
 
+    @Override
     public WorkRecordBook getRecordBook(String login) {
         Account account = RAM.get(login);
         if (account == null) {
@@ -72,8 +94,13 @@ public final class MyRepository implements Repository {
         RAM.remove(login);
     }
 
+    @Override
     public Account get(String login) {
         return RAM.get(login);
+    }
+
+    private String getJson(Object o) {
+        return JsonObjectParser.getInstance().parseToJson(o);
     }
 
     public record Account(User user, WorkRecordBook recordBook) implements Repository.Account {}
