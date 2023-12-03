@@ -6,6 +6,7 @@ import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.web.Repository;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
@@ -102,7 +103,7 @@ public final class PageBuilder {
 
         public OptionBuilder(HttpServletRequest request) {
             String login = (String) request.getSession().getAttribute("user");
-            ProductMap productMap = APIManager.INSTANCE.getRepository().getRecordBook(login).getMap();
+            ProductMap productMap = Repository.getInstance().getRecordBook(login).getMap();
             if (productMap == null || productMap.isEmpty()) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {
@@ -116,6 +117,9 @@ public final class PageBuilder {
         }
 
         public String next() {
+
+            //TODO!!!!!!!!!!!!!!!!!!!
+
             str.setLength(0);
             return OPTION.line(str, map.next()).toString();
         }

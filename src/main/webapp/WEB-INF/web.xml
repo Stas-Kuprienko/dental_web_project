@@ -49,6 +49,11 @@
     <jsp-file>/jsp/newWorkRecord.jsp</jsp-file>
   </servlet>
 
+  <servlet>
+    <servlet-name>saveWork</servlet-name>
+    <servlet-class>edu.dental.web.servlets.main.WorkStoring</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>signUp</servlet-name>
     <url-pattern>/sign-up</url-pattern>

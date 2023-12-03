@@ -39,6 +39,9 @@ public enum HtmlTag {
             <div class="td">""",
             "</div>"),
 
+    /**
+     * Necessary using by {@linkplain String#format(String, Object...)}.
+     */
     OPTION("""
             <option value="%s">""",
             "</option>")

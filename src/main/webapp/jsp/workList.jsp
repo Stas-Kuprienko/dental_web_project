@@ -2,6 +2,8 @@
 <%@ page import="edu.dental.web.builders.PageBuilder" %>
 <%@ page import="edu.dental.web.builders.WorkTableBodyFunction" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<% PageBuilder.Header header = new PageBuilder.Header(request); %>
+<% WorkTableBodyFunction row = new WorkTableBodyFunction(request); %>
 <html>
 <head>
     <title>DENTAL MECHANIC SERVICE</title>
@@ -13,11 +15,12 @@
     <a href="/dental/main/work-list">WORK LIST</a>
     <a href="/dental/main/new-product">PRODUCT MAP</a>
     <a href="/dental/main/product-map">REPORTS</a>
+    <a style="float: right;" href="/dental/main/user">
+        <button style="height: 50%; width: 100%; font-size: 20px;">
+            ACCOUNT
+        </button>
+    </a>
 </nav>
-
-    <% PageBuilder.Header header = new PageBuilder.Header(request); %>
-    <% WorkTableBodyFunction row = new WorkTableBodyFunction(request); %>
-
 <body>
 <section>
     <h3>
