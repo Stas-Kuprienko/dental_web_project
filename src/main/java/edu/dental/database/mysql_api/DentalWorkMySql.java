@@ -55,26 +55,31 @@ public class DentalWorkMySql implements DentalWorkDAO {
         String query = String.format(MySqlSamples.INSERT.QUERY, TABLE, FIELDS, injections);
         try (Request request = new Request(query)) {
             byte i = 1;
-            DentalWork dentalWork = (DentalWork) object;
             PreparedStatement statement = request.getPreparedStatement();
-            statement.setString(i++, dentalWork.getPatient());
-            statement.setString(i++, dentalWork.getClinic());
-            statement.setDate(i++, Date.valueOf(dentalWork.getAccepted()));
-            statement.setDate(i++, Date.valueOf(dentalWork.getComplete()));
-            statement.setString(i++, String.valueOf(dentalWork.getStatus()));
+            statement.setString(i++, object.getPatient());
+            statement.setString(i++, object.getClinic());
+            statement.setDate(i++, Date.valueOf(object.getAccepted()));
+            if (object.getComplete() == null) {
+                statement.setNull(i++, Types.DATE);
+            } else {
+                statement.setDate(i++, Date.valueOf(object.getComplete()));
+            }            statement.setString(i++, String.valueOf(object.getStatus()));
             Blob photo = request.createBlob();
-            if (dentalWork.getPhoto() != null) {
-                photo.setBytes(1, dentalWork.getPhoto());
+            if (object.getPhoto() != null) {
+                photo.setBytes(1, object.getPhoto());
                 statement.setBlob(i++, photo);
             } else {
                 statement.setNull(i++, Types.BLOB);
             }
-            statement.setString(i++, dentalWork.getComment());
+            statement.setString(i++, object.getComment());
             statement.setInt(i, user.getId());
             statement.executeUpdate();
             photo.free();
-            request.setID(dentalWork);
-            return new ProductMySql(dentalWork.getId()).putAll(dentalWork.getProducts());
+            boolean result = request.setID(object);
+            if (object.getProducts().isEmpty()) {
+                return result;
+            }
+            return new ProductMySql(object.getId()).putAll(object.getProducts());
         } catch (SQLException e) {
             //TODO loggers
             throw new DatabaseException(e.getMessage(), e.getCause());

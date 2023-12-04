@@ -45,13 +45,18 @@
   </servlet>
 
   <servlet>
+    <servlet-name>workListHandle</servlet-name>
+    <servlet-class>edu.dental.web.servlets.main.WorkRecordHandling</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>newWork</servlet-name>
     <jsp-file>/jsp/newWorkRecord.jsp</jsp-file>
   </servlet>
 
   <servlet>
     <servlet-name>saveWork</servlet-name>
-    <servlet-class>edu.dental.web.servlets.main.WorkStoring</servlet-class>
+    <servlet-class>edu.dental.web.servlets.main.WorkRecordStoring</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -66,7 +71,7 @@
 
   <servlet-mapping>
     <servlet-name>workList</servlet-name>
-    <url-pattern>/main/work-list</url-pattern>
+    <url-pattern>/main/work-list-view</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

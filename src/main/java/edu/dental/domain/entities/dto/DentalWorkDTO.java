@@ -22,7 +22,7 @@ public class DentalWorkDTO {
         this.patient = dw.getPatient();
         this.clinic = dw.getClinic();
         this.accepted = dw.getAccepted().toString();
-        this.complete = dw.getComplete().toString();
+        this.complete = dw.getComplete() != null ? dw.getComplete().toString() : null;
         this.comment = dw.getComment();
         this.status = dw.getStatus().toString();
         this.products = new Product[dw.getProducts().size()];

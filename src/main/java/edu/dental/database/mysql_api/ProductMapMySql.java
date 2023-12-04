@@ -3,7 +3,6 @@ package edu.dental.database.mysql_api;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.ProductMapDAO;
-import edu.dental.database.mysql_api.MySqlSamples;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.ProductMap;

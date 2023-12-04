@@ -26,7 +26,7 @@ public class Authorization extends HttpServlet {
             try {
                 Repository.getInstance().logIn(email, password);
                 request.getSession().setAttribute("user", email);
-                Repository.getInstance().setDtoAttributes(request.getSession(), email);
+                Repository.getInstance().setDtoAttributes(request, email);
                 request.getRequestDispatcher("/main").forward(request, response);
             } catch (AuthenticationException e) {
                 //TODO

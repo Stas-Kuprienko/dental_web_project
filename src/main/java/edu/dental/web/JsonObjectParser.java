@@ -1,7 +1,6 @@
 package edu.dental.web;
 
 import edu.dental.domain.APIManager;
-import edu.dental.domain.entities.DentalWork;
 
 public interface JsonObjectParser {
 
@@ -12,6 +11,4 @@ public interface JsonObjectParser {
     String parseToJson(Object o);
 
     Object parseFromJson(String s, Class<?> clas);
-
-    String addNewWork(String json, DentalWork dw);
 }

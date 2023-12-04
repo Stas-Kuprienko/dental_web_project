@@ -1,9 +1,10 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="edu.dental.domain.utils.DatesTool" %>
 <%@ page import="edu.dental.web.builders.PageBuilder" %>
 <%@ page import="edu.dental.web.builders.WorkTableBodyFunction" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <% PageBuilder.Header header = new PageBuilder.Header(request); %>
-<% WorkTableBodyFunction row = new WorkTableBodyFunction(request); %>
+<% WorkTableBodyFunction td = new WorkTableBodyFunction(request); %>
+
 <html>
 <head>
     <title>DENTAL MECHANIC SERVICE</title>
@@ -45,8 +46,8 @@
         </div>
     </div>
     <div class="tbody">
-        <% while (row.hasNext()) { %>
-        <%=row.next()%>
+        <% while (td.hasNext()) { %>
+        <%=td.next()%>
         <% } %>
 	</div></div>
 </section>

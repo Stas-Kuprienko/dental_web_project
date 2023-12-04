@@ -4,20 +4,18 @@ import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.web.JsonObjectParser;
 import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalDate;
 
 @WebServlet("/main/save-work")
-public class WorkStoring extends HttpServlet {
+public class WorkRecordStoring extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,12 +27,13 @@ public class WorkStoring extends HttpServlet {
 
         String login = (String) request.getSession().getAttribute("user");
         Repository.Account account = Repository.getInstance().get(login);
-        DentalWork dw = null;
+        DentalWork dw;
         if (product != null && !product.isEmpty()) {
             try {
                 dw = account.recordBook().createRecord(patient, clinic, product, quantity, complete);
             } catch (WorkRecordBookException e) {
-                request.getRequestDispatcher("/error?").forward(request, response);
+                response.sendError(500);
+                return;
             }
         } else {
             dw = account.recordBook().createRecord(patient, clinic);
@@ -42,10 +41,9 @@ public class WorkStoring extends HttpServlet {
         try {
             DatabaseService.getInstance().getDentalWorkDAO(account.user()).put(dw);
         } catch (DatabaseException e) {
-            request.getRequestDispatcher("/error?").forward(request, response);
+            response.sendError(500);
+            return;
         }
-        HttpSession session = request.getSession();
-        session.setAttribute("works", JsonObjectParser.getInstance().addNewWork((String) session.getAttribute("works"), dw));
         request.getRequestDispatcher("/main").forward(request, response);
     }
 }

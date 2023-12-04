@@ -82,13 +82,29 @@
     }
 
     .center {
+      border: 1px solid dimGrey;
       margin: auto;
-      min-height: 75px;
-      width: 45%;
-      border: 2px solid grey;
       padding: 1%;
+      min-height: 75px;
+      width: 30%;
+      min-width: 416px;
+      text-decoration: none;
+      color: white;
       float: left;
-      min-width: 352px;
+    }
+
+    .center_list {
+      border: 1px solid dimGrey;
+      margin: auto;
+      padding: 1%;
+      min-height: 75px;
+      width: 30%;
+      min-width: 416px;
+      height: 128px;
+      overflow: auto;
+      text-decoration: none;
+      color: white;
+      float: left;
     }
 
     .edit2 {

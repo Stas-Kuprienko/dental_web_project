@@ -28,6 +28,7 @@
     <input type="text" id="clinic" name="clinic" value=""><br>
     <label for="product">product:</label><br>
     <select id="product" name="product" style="width: 230px; height: 30px; font-size: 22px;">
+        <option value=""></option>
         <% while(option.hasNext()) { %>
         <%=option.next()%>
         <% } %>

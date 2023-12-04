@@ -117,11 +117,9 @@ public final class PageBuilder {
         }
 
         public String next() {
-
-            //TODO!!!!!!!!!!!!!!!!!!!
-
             str.setLength(0);
-            return OPTION.line(str, map.next()).toString();
+            String value = map.next();
+            return String.format(OPTION.line(str, value).toString(), value);
         }
     }
 }

@@ -7,7 +7,6 @@ import edu.dental.domain.entities.dto.ProductMapDTO;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.web.JsonObjectParser;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -17,11 +16,10 @@ import static edu.dental.web.builders.HtmlTag.*;
 public class WorkTableBodyFunction {
 
     public WorkTableBodyFunction(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        String jsonMap = (String) session.getAttribute("map");
+        String jsonMap = (String) request.getAttribute("map");
         ProductMapDTO mapDTO = (ProductMapDTO) JsonObjectParser.getInstance().parseFromJson(jsonMap, ProductMapDTO.class);
         this.map = mapDTO.getKeys();
-        String jsonWorks = (String) session.getAttribute("works");
+        String jsonWorks = (String) request.getAttribute("works");
         DentalWorkDTO[] works = (DentalWorkDTO[]) JsonObjectParser.getInstance().parseFromJson(jsonWorks, DentalWorkDTO[].class);
         this.iterator = Arrays.stream(works).iterator();
     }
@@ -52,7 +50,7 @@ public class WorkTableBodyFunction {
                 DIV_TD.line(str, p == null ? " " : String.valueOf(p.quantity()));
             }
         }
-        DIV_TD.line(str, String.valueOf(dw.getComplete()));
+        DIV_TD.line(str, dw.getComplete() != null ? String.valueOf(dw.getComplete()) : "");
         DIV_TD.line(str, String.valueOf(dw.getAccepted()));
         str.append(tagA.c);
         return str.toString();

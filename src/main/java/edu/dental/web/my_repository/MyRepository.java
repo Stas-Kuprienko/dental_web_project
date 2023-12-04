@@ -10,7 +10,7 @@ import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.web.JsonObjectParser;
 import edu.dental.web.Repository;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,7 +58,7 @@ public final class MyRepository implements Repository {
     }
 
     @Override
-    public void setDtoAttributes(HttpSession session, String user) {
+    public void setDtoAttributes(HttpServletRequest request, String user) {
         Account account = get(user);
         ProductMapDTO map = new ProductMapDTO(account.recordBook.getMap());
         List<DentalWork> list = account.recordBook.getList();
@@ -66,8 +66,8 @@ public final class MyRepository implements Repository {
         list.stream().map(DentalWorkDTO::new).toList().toArray(works);
         String jsonMap = getJson(map);
         String jsonWorks = getJson(works);
-        session.setAttribute("map", jsonMap);
-        session.setAttribute("works", jsonWorks);
+        request.setAttribute("map", jsonMap);
+        request.setAttribute("works", jsonWorks);
     }
 
 
