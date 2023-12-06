@@ -15,7 +15,7 @@
 <body>
 <section style="font-size: 120%;">
     <a class="main-page" href="/dental/main/new-work">NEW WORK</a>
-    <a class="main-page" href="/dental/main/work-list">WORK LIST</a>
+    <a class="main-page" href="/dental/main/work-handle">WORK LIST</a>
     <a class="main-page" href="/dental/main/product-map">PRODUCT MAP</a>
     <a class="main-page" href="/dental/main/reports">REPORTS</a>
 </section>

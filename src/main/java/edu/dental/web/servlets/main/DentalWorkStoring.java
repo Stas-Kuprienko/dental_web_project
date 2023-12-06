@@ -1,10 +1,6 @@
 package edu.dental.web.servlets.main;
 
-import edu.dental.database.DatabaseException;
-import edu.dental.database.DatabaseService;
-import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.web.Repository;
+import edu.dental.domain.Action;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,7 +11,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 @WebServlet("/main/save-work")
-public class WorkRecordStoring extends HttpServlet {
+public class DentalWorkStoring extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -26,22 +22,11 @@ public class WorkRecordStoring extends HttpServlet {
         LocalDate complete = LocalDate.parse(request.getParameter("complete"));
 
         String login = (String) request.getSession().getAttribute("user");
-        Repository.Account account = Repository.getInstance().get(login);
-        DentalWork dw;
-        if (product != null && !product.isEmpty()) {
-            try {
-                dw = account.recordBook().createRecord(patient, clinic, product, quantity, complete);
-            } catch (WorkRecordBookException e) {
-                response.sendError(500);
-                return;
-            }
-        } else {
-            dw = account.recordBook().createRecord(patient, clinic);
-        }
         try {
-            DatabaseService.getInstance().getDentalWorkDAO(account.user()).put(dw);
-        } catch (DatabaseException e) {
-            response.sendError(500);
+            Action.newWorkRecord(login, patient, clinic, product, quantity, complete);
+        } catch (Action.ActionException e) {
+            //TODO logger
+            response.sendError(e.CODE);
             return;
         }
         request.getRequestDispatcher("/main").forward(request, response);

@@ -190,6 +190,10 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
         this.complete = complete;
     }
 
+    public void setComplete(String complete) {
+        this.complete = LocalDate.parse(complete);
+    }
+
     public LocalDate getAccepted() {
         return accepted;
     }
@@ -204,6 +208,10 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setStatus(String status) {
+        this.status = Status.valueOf(status);
     }
 
     public byte[] getPhoto() {

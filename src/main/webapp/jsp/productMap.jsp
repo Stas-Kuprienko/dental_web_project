@@ -1,16 +1,15 @@
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>DENTAL MECHANIC SERVICE</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link href="/dental/css/style.css" rel="stylesheet" type="text/css"/>
 </head>
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
-    <a href="/dental/app/new-work">NEW WORK</a>
-    <a href="dental/app/work-list">WORK LIST</a>
-    <a href="/dental/app/product-map">PRODUCT MAP</a>
-    <a href="/dental/app/reports">REPORTS</a>
+    <a href="/dental/main/new-work">NEW WORK</a>
+    <a href="/dental/main/work-list">WORK LIST</a>
+    <a href="/dental/main/product-map">PRODUCT MAP</a>
+    <a href="/dental/main/reports">REPORTS</a>
 </nav>
 <body>
 <section>

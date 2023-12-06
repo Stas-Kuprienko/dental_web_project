@@ -14,9 +14,10 @@ import java.io.IOException;
 public class LogOut extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         Repository.getInstance().delete((String) session.getAttribute("user"));
         session.invalidate();
+        request.getRequestDispatcher("/").forward(request, response);
     }
 }

@@ -14,25 +14,16 @@ public enum HtmlTag {
             <div class="th">""",
             "</div>"),
 
-    /**
-     * Necessary using by {@linkplain String#format(String, Object...)}.
-     */
     A_TR("""
-            <a class="tr" href="/dental/edit-work?id=%s">""",
+            <a class="tr" href="/dental/work-handle">""",
             "</a>"),
 
-    /**
-     * Necessary using by {@linkplain String#format(String, Object...)}.
-     */
     A_TR_CLOSED("""
-            <a class="tr-closed" href="/dental/edit-work?id=%s">""",
+            <a class="tr-closed" href="/dental/work-handle">""",
             "</a>"),
 
-    /**
-     * Necessary using by {@linkplain String#format(String, Object...)}.
-     */
     A_TR_PAID("""
-            <a class="tr-paid" href="/dental/edit-work?id=%s">""",
+            <a class="tr-paid" href="/dental/work-handle">""",
             "</a>"),
 
     DIV_TD("""
@@ -77,7 +68,7 @@ public enum HtmlTag {
                 <nav class="menu">
                     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
                     <a href="/dental/new-work">NEW WORK</a>
-                    <a href="dental/work-list">WORK LIST</a>
+                    <a href="dental/work-handle">WORK LIST</a>
                     <a href="/dental/new-product">PRODUCT MAP</a>
                     <a href="/dental/product-map">REPORTS</a>
                 </nav>
@@ -103,7 +94,7 @@ public enum HtmlTag {
                 <nav class="menu">
                     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
                     <a href="/dental/new-work">NEW WORK</a>
-                    <a href="dental/work-list">WORK LIST</a>
+                    <a href="dental/work-handle">WORK LIST</a>
                     <a href="/dental/new-product">PRODUCT MAP</a>
                     <a href="/dental/product-map">REPORTS</a>
                 </nav>

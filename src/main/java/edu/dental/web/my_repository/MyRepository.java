@@ -8,7 +8,6 @@ import edu.dental.domain.entities.dto.DentalWorkDTO;
 import edu.dental.domain.entities.dto.ProductMapDTO;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.web.JsonObjectParser;
 import edu.dental.web.Repository;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -64,10 +63,8 @@ public final class MyRepository implements Repository {
         List<DentalWork> list = account.recordBook.getList();
         DentalWorkDTO[] works = new DentalWorkDTO[list.size()];
         list.stream().map(DentalWorkDTO::new).toList().toArray(works);
-        String jsonMap = getJson(map);
-        String jsonWorks = getJson(works);
-        request.setAttribute("map", jsonMap);
-        request.setAttribute("works", jsonWorks);
+        request.setAttribute("map", map);
+        request.setAttribute("works", works);
     }
 
 
@@ -97,10 +94,6 @@ public final class MyRepository implements Repository {
     @Override
     public Account get(String login) {
         return RAM.get(login);
-    }
-
-    private String getJson(Object o) {
-        return JsonObjectParser.getInstance().parseToJson(o);
     }
 
     public record Account(User user, WorkRecordBook recordBook) implements Repository.Account {}

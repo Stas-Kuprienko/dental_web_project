@@ -1,9 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.domain.utils.DatesTool" %>
-<%@ page import="edu.dental.web.builders.PageBuilder" %>
-<%@ page import="edu.dental.web.builders.WorkTableBodyFunction" %>
-<% PageBuilder.Header header = new PageBuilder.Header(request); %>
-<% WorkTableBodyFunction td = new WorkTableBodyFunction(request); %>
+<%@ page import="edu.dental.web.builders.WorkListTable" %>
+<% WorkListTable td = new WorkListTable(request); %>
 
 <html>
 <head>
@@ -13,7 +10,7 @@
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
     <a href="/dental/main/new-work">NEW WORK</a>
-    <a href="/dental/main/work-list">WORK LIST</a>
+    <a href="/dental/main/work-handle">WORK LIST</a>
     <a href="/dental/main/new-product">PRODUCT MAP</a>
     <a href="/dental/main/product-map">REPORTS</a>
     <a style="float: right;" href="/dental/main/user">
@@ -26,7 +23,7 @@
 <section>
     <h3>
         <strong>
-            <%=PageBuilder.month()%>
+            <%=WorkListTable.month()%>
         </strong>
     </h3>
 	<h4 style="float: left;">
@@ -38,8 +35,8 @@
             <div class="tr">
             <div class="th">PATIENT</div>
             <div class="th">CLINIC</div>
-            <% while (header.hasNext()) { %>
-            <div class="th"><%=header.next()%></div>
+            <% while (td.tableHead.hasNext()) { %>
+            <div class="th"><%=td.tableHead.next()%></div>
             <% } %>
             <div class="th">COMPLETE</div>
             <div class="th">ACCEPT</div>

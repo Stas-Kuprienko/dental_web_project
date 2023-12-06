@@ -50,7 +50,7 @@ public class MyProductMap implements ProductMap {
             int id = entry.getId();
             entry.setValue(value);
             return id;
-        } catch (NullPointerException ignored) {
+        } catch (NullPointerException | NoSuchElementException ignored) {
             int index = getIndex(key);
             for (;; index = (index + 1) % CAPACITY) {
                 if (entries[index] == null) {
@@ -83,7 +83,7 @@ public class MyProductMap implements ProductMap {
             entry.setValue(value);
             entry.setId(id);
             return true;
-        } catch (NullPointerException ignored) {
+        } catch (NullPointerException | NoSuchElementException ignored) {
             int index = getIndex(key);
             for (;; index = (index + 1) % CAPACITY) {
                 if (entries[index] == null) {
@@ -177,7 +177,7 @@ public class MyProductMap implements ProductMap {
         try {
             getItem(title).setId(id);
             return true;
-        } catch (NullPointerException ignored) {
+        } catch (NullPointerException | NoSuchElementException ignored) {
             return false;
         }
     }
@@ -279,7 +279,7 @@ public class MyProductMap implements ProductMap {
                 return e;
             }
             index = (index + 1) % CAPACITY;
-        } throw new NullPointerException("the specified entry ('"
+        } throw new NoSuchElementException("the specified entry ('"
                 + key + "') is not found");
     }
 

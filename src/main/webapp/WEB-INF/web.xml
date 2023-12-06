@@ -46,7 +46,12 @@
 
   <servlet>
     <servlet-name>workListHandle</servlet-name>
-    <servlet-class>edu.dental.web.servlets.main.WorkRecordHandling</servlet-class>
+    <servlet-class>edu.dental.web.servlets.main.DentalWorkHandling</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>deleteElement</servlet-name>
+    <servlet-class>edu.dental.web.servlets.main.DeleteElement</servlet-class>
   </servlet>
 
   <servlet>
@@ -56,7 +61,7 @@
 
   <servlet>
     <servlet-name>saveWork</servlet-name>
-    <servlet-class>edu.dental.web.servlets.main.WorkRecordStoring</servlet-class>
+    <servlet-class>edu.dental.web.servlets.main.DentalWorkStoring</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -71,7 +76,7 @@
 
   <servlet-mapping>
     <servlet-name>workList</servlet-name>
-    <url-pattern>/main/work-list-view</url-pattern>
+    <url-pattern>/main/work-list</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
