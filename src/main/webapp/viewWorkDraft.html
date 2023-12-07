@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DENTAL MECHANIC SERVICE</title>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+</head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		$('#patient-label').click(function(){
+			$('#patient-form').toggle();
+		});
+
+	});
+
+	$(document).ready(function(){
+
+		$('#clinic-label').click(function(){
+			$('#clinic-form').toggle();
+		});
+	});
+
+	$(document).ready(function(){
+
+		$('#complete-label').click(function(){
+			$('#complete-form').toggle();
+		});
+	});
+
+	$(document).ready(function(){
+
+		$('#status-label').click(function(){
+			$('#status-form').toggle();
+		});
+	});
+
+	$(document).ready(function(){
+
+		$('#comment-label').click(function(){
+			$('#comment-form').toggle();
+		});
+	});
+
+	</script>
+<body>
+<section>
+  <div class="">
+  <label id="patient-label"> xujlo </label>
+  <form id="patient-form" action="/abc" style="display:none">
+    <input type="text" name="value" value="xujlo"/>
+    <input type="hidden" name="field" value="patient">
+    <input type="hidden" name="id" value="1">
+    <input type="submit" value="save">
+  </form></div>
+  <div class="">
+  <label id="clinic-label"> zalupa </label>
+  <form id="clinic-form" action="/abc" style="display:none">
+    <input type="text" name="value" value="zalupa"/>
+    <input type="hidden" name="field" value="clinic">
+    <input type="hidden" name="id" value="1">
+    <input type="submit" value="save">
+  </form></div>
+  <div class="">
+  <label id="complete-label"> 10-12-2023 </label>
+  <form id="complete-form" action="/abc" style="display:none">
+    <input type="date" name="value" value="10-12-2023"/>
+    <input type="hidden" name="field" value="complete">
+    <input type="hidden" name="id" value="1">
+    <input type="submit" value="save">
+  </form></div>
+  <div class="">
+  <label id="status-label"> make </label>
+  <form id="status-form" action="/abc" style="display:none">
+    <select name="status">
+      <option value="MAKE">make</option>
+      <option value="CLOSED">closed</option>
+      <option value="PAID">paid</option>
+    </select>
+    <input type="hidden" name="field" value="status">
+    <input type="hidden" name="id" value="1">
+    <input type="submit" value="save">
+  </form></div>
+  <div class="">
+    <label id="comment-label"> some text </label>
+    <form id="comment-form" action="/abc" style="display:none">
+      <textarea name="comment">Some text</textarea>
+      <input type="hidden" name="field" value="comment">
+      <input type="hidden" name="id" value="1">
+      <input type="submit" value="save">
+    </form></div>
+</section>
+</body>
+</html>
