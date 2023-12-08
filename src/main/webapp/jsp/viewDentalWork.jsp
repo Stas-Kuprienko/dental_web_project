@@ -1,6 +1,9 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<% WorkViewPage row = new WorkViewPage(request); %>
+<% DentalWork work = ${}; %>
+
 <html>
 <head>
-  <meta charset="UTF-8">
   <title>DENTAL MECHANIC SERVICE</title>
   <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -60,27 +63,27 @@
 <body>
 <section style="font-size:24px;">
   <div class="work">
-    <label id="patient-label"> xujlo </label>
-    <form id="patient-form" action="/abc" style="display:none">
-      <input type="text" name="value" value="xujlo"/>
+    <label id="patient-label"> <%=... %> </label>
+    <form id="patient-form" action="/dental/main/work-handle" style="display:none">
+      <input type="text" name="value" value=""/>
       <input type="hidden" name="field" value="patient">
-      <input type="hidden" name="id" value="1">
+      <%=... %>
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    <label id="clinic-label"> zalupa </label>
-    <form id="clinic-form" action="/abc" style="display:none">
-      <input type="text" name="value" value="zalupa"/>
+    <label id="clinic-label"> <%=... %> </label>
+    <form id="clinic-form" action="/dental/main/work-handle" style="display:none">
+      <input type="text" name="value" value=""/>
       <input type="hidden" name="field" value="clinic">
-      <input type="hidden" name="id" value="1">
+      <%=... %>
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    <label id="complete-label"> 10-12-2023 </label>
-    <form id="complete-form" action="/abc" style="display:none">
-      <input type="date" name="value" value="10-12-2023"/>
+    <label id="complete-label"> <%=... %> </label>
+    <form id="complete-form" action="/dental/main/work-handle" style="display:none">
+      <input type="date" name="value" value=""/>
       <input type="hidden" name="field" value="complete">
-      <input type="hidden" name="id" value="1">
+      <%=... %>
       <input type="submit" value="save">
     </form></div>
   <div class="work">
@@ -89,61 +92,51 @@
       <label for="product">product:</label>
       <select id="product" name="product">
         <option value=""></option>
-        <option value="керамика">керамика</option>
-        <option value="zro2">zro2</option>
-        <option value="emax">emax</option>
-        <option value="работа">работа</option>
+        <% while( .hasNext()) { %>
+        <%=... %>
+        <% } %>
       </select>
       <label for="quantity">quantity:</label>
       <input style="width: 64px;" type="number" id="quantity" name="quantity" value="" max="32">
       <input type="hidden" name="field" value="product">
-      <button type="submit" name="id" value="2">add</button>
+      <%=... %>
     </form>
     <form action="/dental/main/delete-element">
-      <a class="tr">
-        <div class="td" style="width: 100%;">керамика - 12</div>
-        <button type="submit" name="product" value="керамика" onclick="return confirm('Are you sure?')">delete</button>
-      </a>
-      <a class="tr">
-        <div class="td" style="width: 100%;">zro2 - 6</div>
-        <button type="submit" name="product" value="zro2" onclick="return confirm('Are you sure?')">delete</button>
-      </a>
-      <a class="tr">
-        <div class="td" style="width: 100%;" onclick="return confirm('Are you sure?')">emax - 2</div>
-        <button type="submit" name="product" value="emax">delete</button>
-      </a>
-      <input type="hidden" name="id" value="2">
+      <% while( .hasNext()) { %>
+      <%=... %>
+      <% } %>
+      <%=... %>
     </form>
   </div>  <div class="work">
-  <label id="status-label"> make </label>
-  <form id="status-form" action="/abc" style="display:none">
+  <label id="status-label"> <%=... %> </label>
+  <form id="status-form" action="/dental/main/work-handle" style="display:none">
     <select name="status">
       <option value="MAKE">make</option>
       <option value="CLOSED">closed</option>
       <option value="PAID">paid</option>
     </select>
     <input type="hidden" name="field" value="status">
-    <input type="hidden" name="id" value="1">
+    <%=... %>
     <input type="submit" value="save">
   </form></div>
   <div class="work">
-    <label id="comment-label"> some text </label>
-    <form id="comment-form" action="/abc" style="display:none">
+    <label id="comment-label"> <%=... %> </label>
+    <form id="comment-form" action="/dental/main/work-handle" style="display:none">
       <textarea name="comment"></textarea>
       <input type="hidden" name="field" value="comment">
-      <input type="hidden" name="id" value="1">
+      <%=... %>
       <input type="submit" value="save">
     </form></div>
   <div class="work">
     created:<br>
-    10-11-2023<br><br>
+     <%=... %> <br><br>
     <form action="/dental/main/photo">
       <button style="width:auto;" type="submit">OPEN PHOTOS</button>
-      <input type="hidden" name="id" value="2">
+      <%=... %>
     </form>
     <form action="/dental/main/delete-element">
       <button style="width:auto;"  type="submit" onclick="return confirm('Are you sure?')">DELETE</button>
-      <input type="hidden" name="id" value="2">
+      <%=... %>
     </form>
   </div>
 </section>

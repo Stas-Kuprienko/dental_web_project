@@ -204,3 +204,60 @@
         min-height: 110px;
         width: 100px;
     }
+
+
+    .edit form {
+        line-height:1.7em;
+        width: 50%;
+    }
+
+    .edit label {
+        padding:0 1em;
+        float:left;
+        overflow:hidden;
+        margin: 0.25em  ;
+        box-shadow:0 0 0 1px;
+        line-height:1.2em;
+        text-align:center;
+        margin-left:0;
+        transition:0.5s;
+        width:45%;
+        height:30px;
+    }
+
+    .work {
+        padding: 1%;
+        margin: auto;
+        display: linear;
+        border: 2px solid dimGrey;
+        width: 65%;
+        height: auto;
+        min-height: 32px;
+        float: center;
+    }
+
+    .work:hover {
+        border-color: grey;
+    }
+
+    .work input {
+        background-color: #1f1f1f;
+        color: white;
+    }
+
+    .work input[type=submit] {
+        background-color:  #fffed4;
+        color: black;
+    }
+
+
+    dialog {
+        padding: 0;
+        border: 0;
+        border-radius: 0.6rem;
+        box-shadow: 0 0 1em black;
+    }
+
+    dialog::backdrop {
+        background-color: rgba(0, 0, 0, 0.4);
+    }

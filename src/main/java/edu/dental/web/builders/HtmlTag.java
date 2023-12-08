@@ -144,4 +144,34 @@ public enum HtmlTag {
             this.sample = sample;
         }
     }
+
+    public enum WORK_VIEW {
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        INPUT_ID("""
+                <input type="hidden" name="id" value="%s">"""),
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        BUTTON_ID("""
+                <button type="submit" name="id" value="%s">add</button>"""),
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        PRODUCT_LIST("""
+                <a class="tr">
+                  <div class="td" style="width: 100%;">%s</div>
+                  <button type="submit" name="product" value="%s" onclick="return confirm('Are you sure?')">delete</button>
+                </a>""");
+
+        public final String sample;
+
+        WORK_VIEW(String sample) {
+            this.sample = sample;
+        }
+    }
 }

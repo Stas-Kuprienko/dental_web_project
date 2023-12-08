@@ -33,7 +33,7 @@ public class DentalWorkHandling extends HttpServlet {
             } catch (Action.ActionException e) {
                 response.sendError(e.CODE);
             }
-            request.getRequestDispatcher("/main/edit-work").forward(request, response);
+            request.getRequestDispatcher("/main/view-work").forward(request, response);
         }
     }
 }
