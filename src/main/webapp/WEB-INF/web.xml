@@ -50,8 +50,18 @@
   </servlet>
 
   <servlet>
+    <servlet-name>viewWork</servlet-name>
+    <jsp-file>/jsp/viewDentalWork.jsp</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>workEdit</servlet-name>
+    <servlet-class>edu.dental.web.servlets.main.DentalWorkEditing</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>deleteElement</servlet-name>
-    <servlet-class>edu.dental.web.servlets.main.DeleteElement</servlet-class>
+    <servlet-class>edu.dental.web.servlets.main.RemovingItem</servlet-class>
   </servlet>
 
   <servlet>
@@ -77,6 +87,11 @@
   <servlet-mapping>
     <servlet-name>workList</servlet-name>
     <url-pattern>/main/work-list</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>viewWork</servlet-name>
+    <url-pattern>/main/view-work</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

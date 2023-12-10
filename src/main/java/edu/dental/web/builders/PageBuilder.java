@@ -1,5 +1,7 @@
 package edu.dental.web.builders;
 
+import edu.dental.domain.entities.Product;
+import edu.dental.domain.entities.dto.DentalWorkDTO;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.web.Repository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +39,24 @@ public final class PageBuilder {
             str.setLength(0);
             String value = map.next();
             return String.format(OPTION.line(str, value).toString(), value);
+        }
+    }
+
+    public static class ProductListBuilder {
+
+        private final Iterator<Product> iterator;
+
+        public ProductListBuilder(HttpServletRequest request) {
+            DentalWorkDTO work = (DentalWorkDTO) request.getAttribute("work");
+            this.iterator = Arrays.stream(work.products()).iterator();
+        }
+
+        public boolean hasNext() {
+            return iterator.hasNext();
+        }
+
+        public Product next() {
+            return iterator.next();
         }
     }
 }

@@ -22,42 +22,42 @@ public class DentalWorkDTO {
         this.patient = dw.getPatient();
         this.clinic = dw.getClinic();
         this.accepted = dw.getAccepted().toString();
-        this.complete = dw.getComplete() != null ? dw.getComplete().toString() : null;
-        this.comment = dw.getComment();
+        this.complete = dw.getComplete() != null ? dw.getComplete().toString() : "";
+        this.comment = dw.getComment() != null ? dw.getComment() : "";
         this.status = dw.getStatus().toString();
         this.products = new Product[dw.getProducts().size()];
         dw.getProducts().toArray(products);
     }
 
-    public int getId() {
+    public int id() {
         return id;
     }
 
-    public String getPatient() {
+    public String patient() {
         return patient;
     }
 
-    public String getClinic() {
+    public String clinic() {
         return clinic;
     }
 
-    public Product[] getProducts() {
+    public Product[] products() {
         return products;
     }
 
-    public String getAccepted() {
+    public String accepted() {
         return accepted;
     }
 
-    public String getComplete() {
+    public String complete() {
         return complete;
     }
 
-    public String getComment() {
+    public String comment() {
         return comment;
     }
 
-    public String getStatus() {
+    public String status() {
         return status;
     }
 

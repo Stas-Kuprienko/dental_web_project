@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/main/delete-element")
-public class DeleteElement extends HttpServlet {
+@WebServlet("/main/remove-item")
+public class RemovingItem extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

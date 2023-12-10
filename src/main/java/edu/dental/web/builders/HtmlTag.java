@@ -14,16 +14,25 @@ public enum HtmlTag {
             <div class="th">""",
             "</div>"),
 
+    /**
+     * Necessary using by {@linkplain String#format(String, Object...)}.
+     */
     A_TR("""
-            <a class="tr" href="/dental/work-handle">""",
+            <a class="tr" href="/dental/main/work-handle?id=%s">""",
             "</a>"),
 
+    /**
+     * Necessary using by {@linkplain String#format(String, Object...)}.
+     */
     A_TR_CLOSED("""
-            <a class="tr-closed" href="/dental/work-handle">""",
+            <a class="tr-closed" href="/dental/main/work-handle?id=%s">""",
             "</a>"),
 
+    /**
+     * Necessary using by {@linkplain String#format(String, Object...)}.
+     */
     A_TR_PAID("""
-            <a class="tr-paid" href="/dental/work-handle">""",
+            <a class="tr-paid" href="/dental/main/work-handle?id=%s">""",
             "</a>"),
 
     DIV_TD("""
@@ -137,7 +146,6 @@ public enum HtmlTag {
                 </h3>
                 """);
 
-
         public final String sample;
 
         SAMPLES(String sample) {
@@ -164,7 +172,8 @@ public enum HtmlTag {
          */
         PRODUCT_LIST("""
                 <a class="tr">
-                  <div class="td" style="width: 100%;">%s</div>
+                  <div class="td" style="width: 100%%;">%s</div>
+                  <input type="hidden" name="id" value="%s">
                   <button type="submit" name="product" value="%s" onclick="return confirm('Are you sure?')">delete</button>
                 </a>""");
 

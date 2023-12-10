@@ -43,13 +43,13 @@ public class WorkListTable {
     public String next() {
         DentalWorkDTO dw = iterator.next();
         StringBuilder str = new StringBuilder();
-        HtmlTag tagA = dw.getStatus().equals(DentalWork.Status.MAKE.toString()) ? A_TR
-                : dw.getStatus().equals(DentalWork.Status.CLOSED.toString()) ? A_TR_CLOSED
+        HtmlTag tagA = dw.status().equals(DentalWork.Status.MAKE.toString()) ? A_TR
+                : dw.status().equals(DentalWork.Status.CLOSED.toString()) ? A_TR_CLOSED
                 : A_TR_PAID;
-        str.append(String.format(tagA.o, dw.getId())).append("\n\t\t");
-        DIV_TD.line(str, dw.getPatient());
-        DIV_TD.line(str, dw.getClinic());
-        if (dw.getProducts().length == 0) {
+        str.append(String.format(tagA.o, dw.id())).append("\n\t\t");
+        DIV_TD.line(str, dw.patient());
+        DIV_TD.line(str, dw.clinic());
+        if (dw.products().length == 0) {
             for (String ignored : map) {
                 DIV_TD.line(str, "");
             }
@@ -59,8 +59,8 @@ public class WorkListTable {
                 DIV_TD.line(str, p == null ? " " : String.valueOf(p.quantity()));
             }
         }
-        DIV_TD.line(str, dw.getComplete() != null ? String.valueOf(dw.getComplete()) : "");
-        DIV_TD.line(str, String.valueOf(dw.getAccepted()));
+        DIV_TD.line(str, dw.complete() != null ? String.valueOf(dw.complete()) : "");
+        DIV_TD.line(str, String.valueOf(dw.accepted()));
         str.append(tagA.c);
         return str.toString();
     }

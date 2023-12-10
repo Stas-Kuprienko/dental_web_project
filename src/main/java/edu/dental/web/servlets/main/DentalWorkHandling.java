@@ -1,6 +1,7 @@
 package edu.dental.web.servlets.main;
 
-import edu.dental.domain.Action;
+import edu.dental.domain.entities.dto.DentalWorkDTO;
+import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,24 +16,20 @@ public class DentalWorkHandling extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String user = (String) request.getSession().getAttribute("user");
         if (request.getParameter("id") == null) {
-            Repository.getInstance().setDtoAttributes(request, (String) request.getSession().getAttribute("user"));
+            Repository.getInstance().setDtoAttributes(request, user);
             request.getRequestDispatcher("/main/work-list").forward(request, response);
         } else {
-            String user = (String) request.getSession().getAttribute("user");
             int id = Integer.parseInt(request.getParameter("id"));
-            String field = request.getParameter("field");
-            String value = request.getParameter(field);
+            DentalWorkDTO dto;
             try {
-                if (field.equals("product")) {
-                    int quantity = Integer.parseInt(request.getParameter("quantity"));
-                    Action.addProductToWork(user, id, value, quantity);
-                } else {
-                    Action.editWork(user, id, field, value);
-                }
-            } catch (Action.ActionException e) {
-                response.sendError(e.CODE);
+                dto = new DentalWorkDTO(Repository.getInstance().getRecordBook(user).getByID(id));
+            } catch (WorkRecordBookException e) {
+                request.getRequestDispatcher("/error?").forward(request, response);
+                return;
             }
+            request.setAttribute("work", dto);
             request.getRequestDispatcher("/main/view-work").forward(request, response);
         }
     }

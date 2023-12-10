@@ -127,11 +127,11 @@ public interface WorkRecordBook {
     }
 
     static Product findProduct(DentalWorkDTO dw, String type) {
-        if (dw.getProducts().length == 0) {
-            throw new NoSuchElementException("the given DentalWork(id=" + dw.getId() + ") doesn't has products.");
+        if (dw.products().length == 0) {
+            throw new NoSuchElementException("the given DentalWork(id=" + dw.id() + ") doesn't has products.");
         }
         type = type.toLowerCase();
-        for (Product p : dw.getProducts()) {
+        for (Product p : dw.products()) {
             if (p.title().equals(type)) {
                 return p;
             }
