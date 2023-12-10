@@ -1,6 +1,7 @@
 package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.domain.reports.IFileTool;
+import edu.dental.domain.reports.ReportServiceException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -8,46 +9,49 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.OutputStream;
 
 class XLSXFilesTool implements IFileTool {
 
-    private static final String fileFormat = ".xlsx";
+    public static final String fileFormat = ".xlsx";
 
     private static final String PATH_FOR_REPORTS = "src/main/resources/";
 
 
-    private final String tableName;
     private final String[][] reportData;
-    private XSSFWorkbook workbook;
+    private final XSSFBox xssfBox;
 
     XLSXFilesTool(String tableName, String[][] reportData) {
-        this.tableName = tableName;
         this.reportData = reportData;
+        this.xssfBox = new XSSFBox(tableName);
     }
 
     @Override
     public IFileTool createFile() {
-        XSSFBox xssfBox = new XSSFBox(tableName);
         putDataInSheet(xssfBox, reportData);
-        this.workbook = xssfBox.workbook;
         return this;
     }
 
     @Override
-    public boolean writeFile() {
-        if (this.workbook == null) {
-            throw new NullPointerException("XSSFWorkbook object is null");
-        }
-        File file = new File(PATH_FOR_REPORTS + workbook.getSheetName(0).toLowerCase() + fileFormat);
-        try(FileOutputStream fileOutput = new FileOutputStream(file)) {
-            workbook.write(fileOutput);
+    public boolean writeFile() throws ReportServiceException {
+        File file = new File(PATH_FOR_REPORTS + xssfBox.workbook.getSheetName(0).toLowerCase() + fileFormat);
+        try(FileOutputStream fileOutput = new FileOutputStream(file); xssfBox) {
+            xssfBox.workbook.write(fileOutput);
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             //TODO logger
-            e.printStackTrace();
-            return false;
+            throw new ReportServiceException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public OutputStream writeFile(OutputStream output) throws ReportServiceException {
+        try (xssfBox) {
+            xssfBox.workbook.write(output);
+        } catch (Exception e) {
+            throw new ReportServiceException(e.getMessage(), e);
+        }
+        return output;
     }
 
     private void putDataInSheet(XSSFBox xssfBox, String[][] reportData) {
@@ -63,7 +67,7 @@ class XLSXFilesTool implements IFileTool {
         }
     }
 
-    private static class XSSFBox {
+    private static class XSSFBox implements AutoCloseable {
 
         private final XSSFWorkbook workbook;
         private final XSSFSheet sheet;
@@ -72,6 +76,11 @@ class XLSXFilesTool implements IFileTool {
         private XSSFBox(String tableName) {
             this.workbook = new XSSFWorkbook();
             this.sheet = workbook.createSheet(tableName);
+        }
+
+        @Override
+        public void close() throws Exception {
+            this.workbook.close();
         }
     }
 }

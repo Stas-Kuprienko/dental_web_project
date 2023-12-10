@@ -7,10 +7,14 @@ import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.reports.ReportService;
+import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.web.Repository;
 
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
+import java.util.List;
 
 public final class Action {
 
@@ -111,6 +115,29 @@ public final class Action {
         try {
             workDAO.edit(dw);
         } catch (DatabaseException e) {
+            throw new ActionException(e, 500);
+        }
+    }
+
+    public static void workSorting(String login) throws ActionException {
+        User user = Repository.getInstance().getUser(login);
+        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
+        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO(user);
+        List<DentalWork> closedWorks = recordBook.sorting();
+        try {
+            workDAO.setFieldValue(closedWorks, "status", "CLOSED");
+            workDAO.setReportId(closedWorks);
+        } catch (DatabaseException e) {
+            throw new ActionException(e, 500);
+        }
+    }
+
+    public static void saveReport(String login, OutputStream output) throws ActionException {
+        ReportService reportService = ReportService.getInstance();
+        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
+        try {
+            reportService.saveReportToFile(output, recordBook.getMap().keysToArray(), recordBook.getList());
+        } catch (ReportServiceException e) {
             throw new ActionException(e, 500);
         }
     }

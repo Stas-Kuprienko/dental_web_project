@@ -14,7 +14,6 @@ import utils.collections.SimpleList;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class DentalWorkMySql implements DentalWorkDAO {
@@ -160,33 +159,32 @@ public class DentalWorkMySql implements DentalWorkDAO {
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ? AND user_id = ?");
         try (Request request = new Request(query)) {
             byte i = 1;
-            DentalWork dentalWork = (DentalWork) object;
             PreparedStatement statement = request.getPreparedStatement();
-            if (dentalWork.getReportId() > 0) {
-                statement.setInt(i++, dentalWork.getReportId());
+            if (object.getReportId() > 0) {
+                statement.setInt(i++, object.getReportId());
             } else {
                 statement.setNull(i++, Types.INTEGER);
             }
-            statement.setString(i++, dentalWork.getPatient());
-            statement.setString(i++, dentalWork.getClinic());
-            statement.setDate(i++, Date.valueOf(dentalWork.getAccepted()));
-            if (dentalWork.getComplete() != null) {
-                statement.setDate(i++, Date.valueOf(dentalWork.getComplete()));
+            statement.setString(i++, object.getPatient());
+            statement.setString(i++, object.getClinic());
+            statement.setDate(i++, Date.valueOf(object.getAccepted()));
+            if (object.getComplete() != null) {
+                statement.setDate(i++, Date.valueOf(object.getComplete()));
             } else {
                 statement.setNull(i++, Types.DATE);
             }
-            statement.setString(i++, String.valueOf(dentalWork.getStatus()));
-            if (dentalWork.getPhoto() != null) {
+            statement.setString(i++, String.valueOf(object.getStatus()));
+            if (object.getPhoto() != null) {
                 Blob photo = request.createBlob();
-                photo.setBytes(1, dentalWork.getPhoto());
+                photo.setBytes(1, object.getPhoto());
                 statement.setBlob(i++, photo);
             } else {
                 statement.setNull(i++, Types.BLOB);
             }
-            statement.setString(i++, dentalWork.getComment());
-            statement.setInt(i++, dentalWork.getId());
+            statement.setString(i++, object.getComment());
+            statement.setInt(i++, object.getId());
             statement.setInt(i, user.getId());
-            return new ProductMySql(dentalWork.getId()).overwrite(dentalWork.getProducts())
+            return new ProductMySql(object.getId()).overwrite(object.getProducts())
                     && statement.executeUpdate() > 0;
         } catch (SQLException | ClassCastException e) {
             //TODO loggers
@@ -194,7 +192,8 @@ public class DentalWorkMySql implements DentalWorkDAO {
         }
     }
 
-    public boolean setFieldValue(Collection<DentalWork> list, String field, Object value) throws DatabaseException {
+    @Override
+    public boolean setFieldValue(List<DentalWork> list, String field, Object value) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             throw new DatabaseException("The given argument is null or empty.");
         }

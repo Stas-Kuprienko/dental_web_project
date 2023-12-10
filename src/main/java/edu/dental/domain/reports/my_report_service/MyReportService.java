@@ -14,6 +14,8 @@ import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
 import utils.collections.SimpleList;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 public class MyReportService implements ReportService {
@@ -22,7 +24,7 @@ public class MyReportService implements ReportService {
 
 
     @Override
-    public boolean saveReportToFile(String[] keysArray, MonthlyReport report) {
+    public boolean saveReportToFile(String[] keysArray, MonthlyReport report) throws ReportServiceException {
         DataArrayTool dataArrayTool = new DataArrayTool(keysArray, (SimpleList<DentalWork>) report.dentalWorks());
         String[][] reportData = dataArrayTool.getResult();
         String tableName = report.month() + "_" + report.year();
@@ -31,13 +33,27 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public boolean saveReportToFile(String[] keysArray, List<DentalWork> works) {
+    public boolean saveReportToFile(String[] keysArray, List<DentalWork> works) throws ReportServiceException {
         String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
         DataArrayTool dataArrayTool = new DataArrayTool(keysArray, (SimpleList<DentalWork>) works);
         String[][] reportData = dataArrayTool.getResult();
         String tableName = yearAndMonth[1] + "_" + yearAndMonth[0];
         IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
         return fileTool.createFile().writeFile();
+    }
+
+    @Override
+    public OutputStream saveReportToFile(OutputStream output, String[] keysArray, List<DentalWork> works) throws ReportServiceException {
+        String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
+        DataArrayTool dataArrayTool = new DataArrayTool(keysArray, (SimpleList<DentalWork>) works);
+        String[][] reportData = dataArrayTool.getResult();
+        String tableName = yearAndMonth[1] + "_" + yearAndMonth[0];
+        IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
+        try {
+            return fileTool.createFile().writeFile(output);
+        } catch (IOException e) {
+            throw new ReportServiceException(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -64,5 +80,10 @@ public class MyReportService implements ReportService {
         } catch (DatabaseException e) {
             throw new ReportServiceException(e.getMessage(), e.getCause());
         }
+    }
+
+    @Override
+    public String getFileFormat() {
+        return XLSXFilesTool.fileFormat;
     }
 }

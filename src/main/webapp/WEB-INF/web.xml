@@ -36,7 +36,7 @@
 
   <servlet>
     <servlet-name>Main</servlet-name>
-    <jsp-file>/jsp/main.jsp</jsp-file>
+    <jsp-file>/jsp/main.html</jsp-file>
   </servlet>
 
   <servlet>
@@ -61,7 +61,12 @@
 
   <servlet>
     <servlet-name>deleteElement</servlet-name>
-    <servlet-class>edu.dental.web.servlets.main.RemovingItem</servlet-class>
+    <servlet-class>edu.dental.web.servlets.main.DeleteItem</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>sorting</servlet-name>
+    <servlet-class>edu.dental.web.servlets.main.WorkSorting</servlet-class>
   </servlet>
 
   <servlet>
@@ -72,6 +77,16 @@
   <servlet>
     <servlet-name>saveWork</servlet-name>
     <servlet-class>edu.dental.web.servlets.main.DentalWorkStoring</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>reportMenu</servlet-name>
+    <jsp-file>/jsp/reporting/reportMenu.html</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>saveFile</servlet-name>
+    <servlet-class>edu.dental.web.servlets.reporting.ReportFileSaving</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -97,6 +112,11 @@
   <servlet-mapping>
     <servlet-name>newWork</servlet-name>
     <url-pattern>/main/new-work</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>reportMenu</servlet-name>
+    <url-pattern>/main/reports</url-pattern>
   </servlet-mapping>
 
   <error-page>

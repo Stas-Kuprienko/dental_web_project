@@ -9,26 +9,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/main/remove-item")
-public class RemovingItem extends HttpServlet {
+@WebServlet("/main/sorting")
+public class WorkSorting extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String user = (String) request.getSession().getAttribute("user");
-        int id = Integer.parseInt(request.getParameter("id"));
-        String product = request.getParameter("product");
-        if (product != null) {
-            try {
-                Action.deleteProductFromWork(user, id, product);
-            } catch (Action.ActionException e) {
-                response.sendError(e.CODE);
-            }
-        } else {
-            try {
-                Action.deleteWorkRecord(user, id);
-            } catch (Action.ActionException e) {
-                response.sendError(e.CODE);
-            }
+        try {
+            Action.workSorting(user);
+        } catch (Action.ActionException e) {
+            response.sendError(e.CODE);
+            return;
         }
         request.getRequestDispatcher("/main/work-handle").forward(request, response);
     }

@@ -11,8 +11,8 @@
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
     <a href="/dental/main/new-work">NEW WORK</a>
     <a href="/dental/main/work-handle">WORK LIST</a>
-    <a href="/dental/main/new-product">PRODUCT MAP</a>
-    <a href="/dental/main/product-map">REPORTS</a>
+    <a href="/dental/main/product-map">PRODUCT MAP</a>
+    <a href="/dental/main/reports">REPORTS</a>
     <a style="float: right;" href="/dental/main/user">
         <button style="height: 50%; width: 100%; font-size: 20px;">
             ACCOUNT
@@ -47,6 +47,9 @@
         <%=td.next()%>
         <% } %>
 	</div></div>
-</section>
+</section><br>
+<a class="sorting" href="/dental/main/sorting">
+    <button type="submit">SORTING</button>
+</a>
 </body>
 </html>

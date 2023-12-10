@@ -33,6 +33,20 @@
         font-size: 110%;
     }
 
+    .report-page {
+        border: 3px solid black;
+        float: left;
+        width: 70%;
+        padding: 1%;
+        min-height: 64px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .report-page:hover {
+        background-color:#505050;
+    }
+
     .menu {
         background-image: linear-gradient(#808080, #1f1f1f);
         overflow: auto;
@@ -250,7 +264,6 @@
         color: black;
     }
 
-
     dialog {
         padding: 0;
         border: 0;
@@ -260,4 +273,25 @@
 
     dialog::backdrop {
         background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .sorting {
+        padding: 1%;
+        margin: auto;
+        display: box;
+        border: 2px solid dimGrey;
+        width: 128px;
+        height: 64px;
+        float: right;
+    }
+
+    .sorting button {
+        cursor:pointer;
+        width: 124px;
+        height: 60px;
+        display: block;
+    }
+
+    .sorting:hover {
+        background: dimGrey;
     }

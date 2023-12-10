@@ -65,7 +65,8 @@
 <body>
 <section style="font-size:24px;">
   <div class="work">
-    <label id="patient-label"> <%=view.work.patient() %> </label>
+    <label id="patient-label" style="font-size:80%;">patient:</label><br>
+    <label> <%=view.work.patient() %> </label>
     <form id="patient-form" action="/dental/main/work-edit" style="display:none">
       <input type="text" name="value" value=""/>
       <input type="hidden" name="field" value="patient">
@@ -73,7 +74,8 @@
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    <label id="clinic-label"> <%=view.work.clinic() %> </label>
+    <label id="clinic-label" style="font-size:80%;">clinic:</label><br>
+    <label> <%=view.work.clinic() %> </label>
     <form id="clinic-form" action="/dental/main/work-edit" style="display:none">
       <input type="text" name="value" value=""/>
       <input type="hidden" name="field" value="clinic">
@@ -81,7 +83,8 @@
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    <label id="complete-label"> <%=view.work.complete() %> </label>
+    <label id="complete-label" style="font-size:80%;">complete:</label><br>
+    <label> <%=view.work.complete() %> </label>
     <form id="complete-form" action="/dental/main/work-edit" style="display:none">
       <input type="date" name="value" value=""/>
       <input type="hidden" name="field" value="complete">
@@ -89,7 +92,7 @@
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    <label id="product-label">PRODUCTS:</label>
+    <label id="product-label" style="font-size:80%;">products:</label>
     <form id="add-product" action="/dental/main/work-edit" style="display:none;">
       <label for="product">product:</label>
       <select id="product" name="value">
@@ -103,13 +106,14 @@
       <input type="hidden" name="field" value="product">
       <%=view.buttonId()%>
     </form>
-    <form action="/dental/main/remove-item">
+    <form action="/dental/main/delete-item">
       <% while(view.hasNextProduct()) { %>
       <%=view.nextProduct()%>
       <% } %>
     </form>
   </div>  <div class="work">
-  <label id="status-label"> <%=view.work.status() %> </label>
+  <label id="status-label" style="font-size:80%;">status:</label><br>
+  <label> <%=view.work.status() %> </label>
   <form id="status-form" action="/dental/main/work-edit" style="display:none">
     <select name="value">
       <option value="MAKE">make</option>
@@ -121,21 +125,22 @@
     <input type="submit" value="save">
   </form></div>
   <div class="work">
-    <label id="comment-label"> <%=view.work.comment() %> </label>
+    <label id="comment-label" style="font-size:80%;">comment:</label><br>
+    <label> <%=view.work.comment() %> </label>
     <form id="comment-form" action="/dental/main/work-edit" style="display:none">
-      <textarea name="comment"></textarea>
+      <textarea name="value"></textarea>
       <input type="hidden" name="field" value="comment">
       <%=view.inputId()%>
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    created:<br>
+    <label  style="font-size:80%;">created:</label><br>
      <%=view.work.accepted() %> <br><br>
     <form action="/dental/main/photo">
       <button style="width:auto;" type="submit">OPEN PHOTOS</button>
       <%=view.inputId()%>
     </form>
-    <form action="/dental/main/delete-element">
+    <form action="/dental/main/delete-item">
       <button style="width:auto;"  type="submit" onclick="return confirm('Are you sure?')">DELETE</button>
       <%=view.inputId()%>
     </form>

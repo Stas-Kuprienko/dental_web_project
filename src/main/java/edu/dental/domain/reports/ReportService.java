@@ -4,6 +4,7 @@ import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.User;
 
+import java.io.OutputStream;
 import java.util.List;
 
 public interface ReportService {
@@ -12,11 +13,15 @@ public interface ReportService {
         return APIManager.INSTANCE.getReportService();
     }
 
-    boolean saveReportToFile(String[] keysArray, MonthlyReport report);
+    boolean saveReportToFile(String[] keysArray, MonthlyReport report) throws ReportServiceException;
 
-    boolean saveReportToFile(String[] keysArray, List<DentalWork> works);
+    boolean saveReportToFile(String[] keysArray, List<DentalWork> works) throws ReportServiceException;
+
+    OutputStream saveReportToFile(OutputStream output, String[] keysArray, List<DentalWork> works) throws ReportServiceException;
 
     MonthlyReport getReportFromDB(User user, String month, String year) throws ReportServiceException;
 
     boolean saveSalariesToFile(User user) throws ReportServiceException;
+
+    String getFileFormat();
 }
