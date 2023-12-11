@@ -244,6 +244,7 @@ public class MyProductMap implements ProductMap {
         return arr;
     }
 
+    @Override
     public Iterator iterator() {
         return this.new Iterator();
     }

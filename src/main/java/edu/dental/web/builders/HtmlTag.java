@@ -14,25 +14,29 @@ public enum HtmlTag {
             <div class="th">""",
             "</div>"),
 
+    A_TR_WITHOUT_HREF("""
+            <a class="tr">""",
+            "</a>"),
+
     /**
      * Necessary using by {@linkplain String#format(String, Object...)}.
      */
     A_TR("""
-            <a class="tr" href="/dental/main/work-handle?id=%s">""",
+            <a class="tr" href="/dental/main/%s?id=%s">""",
             "</a>"),
 
     /**
      * Necessary using by {@linkplain String#format(String, Object...)}.
      */
     A_TR_CLOSED("""
-            <a class="tr-closed" href="/dental/main/work-handle?id=%s">""",
+            <a class="tr-closed" href="/dental/main/%s?id=%s">""",
             "</a>"),
 
     /**
      * Necessary using by {@linkplain String#format(String, Object...)}.
      */
     A_TR_PAID("""
-            <a class="tr-paid" href="/dental/main/work-handle?id=%s">""",
+            <a class="tr-paid" href="/dental/main/%s?id=%s">""",
             "</a>"),
 
     DIV_TD("""

@@ -80,6 +80,11 @@
   </servlet>
 
   <servlet>
+    <servlet-name>productMap</servlet-name>
+    <jsp-file>/jsp/products/productMap.jsp</jsp-file>
+  </servlet>
+
+  <servlet>
     <servlet-name>reportMenu</servlet-name>
     <jsp-file>/jsp/reporting/reportMenu.html</jsp-file>
   </servlet>
@@ -112,6 +117,11 @@
   <servlet-mapping>
     <servlet-name>newWork</servlet-name>
     <url-pattern>/main/new-work</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>productMap</servlet-name>
+    <url-pattern>/main/product-map</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
