@@ -1,13 +1,16 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="edu.dental.view.builders.WorkViewPage" %>
+<% WorkViewPage view = new WorkViewPage(request); %>
+
 <html>
 <head>
-  <meta charset="UTF-8">
   <title>DENTAL MECHANIC SERVICE</title>
-  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <link href="/dental/css/style.css" rel="stylesheet" type="text/css"/>
 </head>
 <nav class="menu">
   <header><strong>DENTAL MECHANIC SERVICE</strong></header>
   <a href="/dental/main/new-work">NEW WORK</a>
-  <a href="/dental/main/work-list">WORK LIST</a>
+  <a href="/dental/main/work-handle">WORK LIST</a>
   <a href="/dental/main/product-map">PRODUCT MAP</a>
   <a href="/dental/main/reports">REPORTS</a>
 </nav>
@@ -60,90 +63,84 @@
 <body>
 <section style="font-size:24px;">
   <div class="work">
-    <label id="patient-label"> xujlo </label>
-    <form id="patient-form" action="/abc" style="display:none">
-      <input type="text" name="value" value="xujlo"/>
+    <label id="patient-label" style="font-size:80%;">patient:</label><br>
+    <label> <%=view.work.patient() %> </label>
+    <form id="patient-form" action="/dental/main/work-edit" style="display:none">
+      <input type="text" name="value" value=""/>
       <input type="hidden" name="field" value="patient">
-      <input type="hidden" name="id" value="1">
+      <%=view.inputId()%>
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    <label id="clinic-label"> zalupa </label>
-    <form id="clinic-form" action="/abc" style="display:none">
-      <input type="text" name="value" value="zalupa"/>
+    <label id="clinic-label" style="font-size:80%;">clinic:</label><br>
+    <label> <%=view.work.clinic() %> </label>
+    <form id="clinic-form" action="/dental/main/work-edit" style="display:none">
+      <input type="text" name="value" value=""/>
       <input type="hidden" name="field" value="clinic">
-      <input type="hidden" name="id" value="1">
+      <%=view.inputId()%>
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    <label id="complete-label"> 10-12-2023 </label>
-    <form id="complete-form" action="/abc" style="display:none">
-      <input type="date" name="value" value="10-12-2023"/>
+    <label id="complete-label" style="font-size:80%;">complete:</label><br>
+    <label> <%=view.work.complete() %> </label>
+    <form id="complete-form" action="/dental/main/work-edit" style="display:none">
+      <input type="date" name="value" value=""/>
       <input type="hidden" name="field" value="complete">
-      <input type="hidden" name="id" value="1">
+      <%=view.inputId()%>
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    <label id="product-label">PRODUCTS:</label>
-    <form id="add-product" action="/dental/main/work-handle" style="display:none;">
+    <label id="product-label" style="font-size:80%;">products:</label>
+    <form id="add-product" action="/dental/main/work-edit" style="display:none;">
       <label for="product">product:</label>
-      <select id="product" name="product">
+      <select id="product" name="value">
         <option value=""></option>
-        <option value="керамика">керамика</option>
-        <option value="zro2">zro2</option>
-        <option value="emax">emax</option>
-        <option value="работа">работа</option>
+        <% while(view.option.hasNext()) { %>
+        <%=view.option.next()%>
+        <% } %>
       </select>
       <label for="quantity">quantity:</label>
       <input style="width: 64px;" type="number" id="quantity" name="quantity" value="" max="32">
       <input type="hidden" name="field" value="product">
-      <button type="submit" name="id" value="2">add</button>
+      <%=view.buttonId()%>
     </form>
-    <form action="/dental/main/delete-element">
-      <a class="tr">
-        <div class="td" style="width: 100%;">керамика - 12</div>
-        <button type="submit" name="product" value="керамика" onclick="return confirm('Are you sure?')">delete</button>
-      </a>
-      <a class="tr">
-        <div class="td" style="width: 100%;">zro2 - 6</div>
-        <button type="submit" name="product" value="zro2" onclick="return confirm('Are you sure?')">delete</button>
-      </a>
-      <a class="tr">
-        <div class="td" style="width: 100%;" onclick="return confirm('Are you sure?')">emax - 2</div>
-        <button type="submit" name="product" value="emax">delete</button>
-      </a>
-      <input type="hidden" name="id" value="2">
+    <form action="/dental/main/delete-item">
+      <% while(view.hasNextProduct()) { %>
+      <%=view.nextProduct()%>
+      <% } %>
     </form>
   </div>  <div class="work">
-  <label id="status-label"> make </label>
-  <form id="status-form" action="/abc" style="display:none">
-    <select name="status">
+  <label id="status-label" style="font-size:80%;">status:</label><br>
+  <label> <%=view.work.status() %> </label>
+  <form id="status-form" action="/dental/main/work-edit" style="display:none">
+    <select name="value">
       <option value="MAKE">make</option>
       <option value="CLOSED">closed</option>
       <option value="PAID">paid</option>
     </select>
     <input type="hidden" name="field" value="status">
-    <input type="hidden" name="id" value="1">
+    <%=view.inputId()%>
     <input type="submit" value="save">
   </form></div>
   <div class="work">
-    <label id="comment-label"> some text </label>
-    <form id="comment-form" action="/abc" style="display:none">
-      <textarea name="comment"></textarea>
+    <label id="comment-label" style="font-size:80%;">comment:</label><br>
+    <label> <%=view.work.comment() %> </label>
+    <form id="comment-form" action="/dental/main/work-edit" style="display:none">
+      <textarea name="value"></textarea>
       <input type="hidden" name="field" value="comment">
-      <input type="hidden" name="id" value="1">
+      <%=view.inputId()%>
       <input type="submit" value="save">
     </form></div>
   <div class="work">
-    created:<br>
-    10-11-2023<br><br>
+    <label  style="font-size:80%;">created:</label><br>
+     <%=view.work.accepted() %> <br><br>
     <form action="/dental/main/photo">
       <button style="width:auto;" type="submit">OPEN PHOTOS</button>
-      <input type="hidden" name="id" value="2">
+      <%=view.inputId()%>
     </form>
-    <form action="/dental/main/delete-element">
+    <form action="/dental/main/delete-item">
       <button style="width:auto;"  type="submit" onclick="return confirm('Are you sure?')">DELETE</button>
-      <input type="hidden" name="id" value="2">
+      <%=view.inputId()%>
     </form>
   </div>
 </section>

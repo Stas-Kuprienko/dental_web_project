@@ -1,4 +1,4 @@
-package edu.dental.web.builders;
+package edu.dental.view;
 
 public enum HtmlTag {
 
@@ -55,16 +55,47 @@ public enum HtmlTag {
     public final String o;
     public final String c;
 
-    public StringBuilder line(StringBuilder str, String value) {
-        str.append(o).append(value).append(c).append("\n\t\t");
-        return str;
-    }
-
     HtmlTag(String o, String c) {
         this.o = o;
         this.c = c;
     }
 
+    public StringBuilder line(StringBuilder str, String value) {
+        str.append(o).append(value).append(c).append("\n\t\t");
+        return str;
+    }
+
+    public enum WORK_VIEW {
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        INPUT_ID("""
+                <input type="hidden" name="id" value="%s">"""),
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        BUTTON_ID("""
+                <button type="submit" name="id" value="%s">add</button>"""),
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        PRODUCT_LIST("""
+                <a class="tr">
+                  <div class="td" style="width: 100%%;">%s</div>
+                  <input type="hidden" name="id" value="%s">
+                  <button type="submit" name="product" value="%s" onclick="return confirm('Are you sure?')">delete</button>
+                </a>""");
+
+        public final String sample;
+
+        WORK_VIEW(String sample) {
+            this.sample = sample;
+        }
+
+    }
     public enum SAMPLES {
 
         /**
@@ -153,37 +184,6 @@ public enum HtmlTag {
         public final String sample;
 
         SAMPLES(String sample) {
-            this.sample = sample;
-        }
-    }
-
-    public enum WORK_VIEW {
-
-        /**
-         * Necessary using by {@linkplain String#format(String, Object...)}.
-         */
-        INPUT_ID("""
-                <input type="hidden" name="id" value="%s">"""),
-
-        /**
-         * Necessary using by {@linkplain String#format(String, Object...)}.
-         */
-        BUTTON_ID("""
-                <button type="submit" name="id" value="%s">add</button>"""),
-
-        /**
-         * Necessary using by {@linkplain String#format(String, Object...)}.
-         */
-        PRODUCT_LIST("""
-                <a class="tr">
-                  <div class="td" style="width: 100%%;">%s</div>
-                  <input type="hidden" name="id" value="%s">
-                  <button type="submit" name="product" value="%s" onclick="return confirm('Are you sure?')">delete</button>
-                </a>""");
-
-        public final String sample;
-
-        WORK_VIEW(String sample) {
             this.sample = sample;
         }
     }

@@ -21,7 +21,7 @@
 
   <servlet>
     <servlet-name>signUp</servlet-name>
-    <jsp-file>/jsp/signUp.jsp</jsp-file>
+    <jsp-file>/pages/signUp.html</jsp-file>
   </servlet>
 
   <servlet>
@@ -36,12 +36,12 @@
 
   <servlet>
     <servlet-name>Main</servlet-name>
-    <jsp-file>/jsp/main.html</jsp-file>
+    <jsp-file>/pages/main.html</jsp-file>
   </servlet>
 
   <servlet>
     <servlet-name>workList</servlet-name>
-    <jsp-file>/jsp/workList.jsp</jsp-file>
+    <jsp-file>/pages/works/workList.jsp</jsp-file>
   </servlet>
 
   <servlet>
@@ -51,7 +51,7 @@
 
   <servlet>
     <servlet-name>viewWork</servlet-name>
-    <jsp-file>/jsp/viewDentalWork.jsp</jsp-file>
+    <jsp-file>/pages/works/viewDentalWork.jsp</jsp-file>
   </servlet>
 
   <servlet>
@@ -71,7 +71,7 @@
 
   <servlet>
     <servlet-name>newWork</servlet-name>
-    <jsp-file>/jsp/newWorkRecord.jsp</jsp-file>
+    <jsp-file>/pages/works/newWorkRecord.jsp</jsp-file>
   </servlet>
 
   <servlet>
@@ -81,12 +81,12 @@
 
   <servlet>
     <servlet-name>productMap</servlet-name>
-    <jsp-file>/jsp/products/productMap.jsp</jsp-file>
+    <jsp-file>/pages/products/productMap.jsp</jsp-file>
   </servlet>
 
   <servlet>
     <servlet-name>reportMenu</servlet-name>
-    <jsp-file>/jsp/reporting/reportMenu.html</jsp-file>
+    <jsp-file>/pages/reports/reportMenu.html</jsp-file>
   </servlet>
 
   <servlet>
@@ -129,8 +129,13 @@
     <url-pattern>/main/reports</url-pattern>
   </servlet-mapping>
 
+  <welcome-file-list>
+    <welcome-file>/pages/index.html</welcome-file>
+  </welcome-file-list>
+
   <error-page>
     <error-code>404</error-code>
-    <location>/jsp/error.html</location>
+    <location>/pages/error.html</location>
   </error-page>
+
 </web-app>

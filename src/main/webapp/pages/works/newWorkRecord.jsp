@@ -1,6 +1,6 @@
-<%@ page import="edu.dental.web.builders.PageBuilder" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<% PageBuilder.OptionBuilder option = new PageBuilder.OptionBuilder(request); %>
+<%@ page import="edu.dental.view.builders.WorkViewPage" %>
+<% WorkViewPage.OptionBuilder option = new WorkViewPage.OptionBuilder(request); %>
 <html>
 <head>
     <title>DENTAL MECHANIC SERVICE</title>

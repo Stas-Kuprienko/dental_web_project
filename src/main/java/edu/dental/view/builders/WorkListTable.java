@@ -1,4 +1,4 @@
-package edu.dental.web.builders;
+package edu.dental.view.builders;
 
 import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.DentalWork;
@@ -8,12 +8,13 @@ import edu.dental.domain.entities.dto.ProductMapDTO;
 import edu.dental.domain.records.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.utils.DatesTool;
+import edu.dental.view.HtmlTag;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static edu.dental.web.builders.HtmlTag.*;
+import static edu.dental.view.HtmlTag.*;
 
 public class WorkListTable {
 

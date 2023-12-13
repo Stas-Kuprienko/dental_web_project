@@ -1,4 +1,4 @@
-package edu.dental.web.builders;
+package edu.dental.view.builders;
 
 import edu.dental.domain.records.ProductMap;
 import edu.dental.web.Repository;
@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Iterator;
 
-import static edu.dental.web.builders.HtmlTag.*;
+import static edu.dental.view.HtmlTag.*;
 
 public class ProductMapTable {
 
