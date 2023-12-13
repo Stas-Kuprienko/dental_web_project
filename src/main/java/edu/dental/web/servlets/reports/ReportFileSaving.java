@@ -1,4 +1,4 @@
-package edu.dental.web.servlets.reporting;
+package edu.dental.web.servlets.reports;
 
 import edu.dental.domain.Action;
 import edu.dental.domain.reports.ReportService;
@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
-@WebServlet("/main/save-file")
+@WebServlet("/main/reports/download")
 public class ReportFileSaving extends HttpServlet {
 
     @Override

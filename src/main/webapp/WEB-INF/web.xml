@@ -91,7 +91,7 @@
 
   <servlet>
     <servlet-name>saveFile</servlet-name>
-    <servlet-class>edu.dental.web.servlets.reporting.ReportFileSaving</servlet-class>
+    <servlet-class>edu.dental.web.servlets.reports.ReportFileSaving</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -121,7 +121,7 @@
 
   <servlet-mapping>
     <servlet-name>productMap</servlet-name>
-    <url-pattern>/main/product-map</url-pattern>
+    <url-pattern>/main/product-map/page</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

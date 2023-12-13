@@ -34,7 +34,7 @@
     <h3>
         <a class="tr" id="product-new">+ New product</a>
         <a class="th" id="product-form" style="display:none">
-            <form action="/dental/main/save-product">
+            <form method="post" action="/dental/main/product-map">
                 <label for="title">product:</label>
                 <input id="title" type="text" name="title" value=""><br>
                 <label for="price">price:</label>

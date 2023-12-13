@@ -96,6 +96,33 @@ public enum HtmlTag {
         }
 
     }
+
+    public enum PRODUCT_VIEW {
+        FORM("""
+            <div class="td" style="width: 40%%;">
+            <form style="display: inline-block;" method="post" action="/dental/main/product-map">
+                <input style="width:96px;" type="number" name="price" value="">
+                <input type="submit" value="save">
+                <input type="hidden" name="title" value="%s">
+                <input type="hidden" name="id" value="%s">
+                <input type="hidden" name="method" value="put">
+            </form>&emsp;
+            <form style="display: inline-block;" method="post" action="/dental/main/product-map">
+                <input type="hidden" name="title" value="%s">
+                <input type="hidden" name="id" value="%s">
+                <input type="hidden" name="method" value="delete">
+                <input type="submit" value="delete">
+                </form>&emsp;
+            <form style="display: inline-block;" action="/dental/main/product-map">
+                <input type="submit" value="cancel">
+            </form></div>""");
+
+
+        public final String sample;
+        PRODUCT_VIEW(String sample) {
+            this.sample = sample;
+        }
+    }
     public enum SAMPLES {
 
         /**

@@ -46,7 +46,7 @@ public class ProductMapTable {
         if (item.getId() == id) {
             str.append(A_TR_WITHOUT_HREF.o);
             DIV_TD.line(str, item.getKey());
-            str.append(String.format(FORM, item.getKey()));
+            str.append(String.format(PRODUCT_VIEW.FORM.sample, item.getKey(), item.getId(), item.getKey(), item.getId()));
         } else {
             str.append(String.format(A_TR.o, href, item.getId()));
             DIV_TD.line(str, item.getKey());
@@ -55,16 +55,4 @@ public class ProductMapTable {
         str.append(A_TR.c);
         return str.toString();
     }
-
-
-    private static final String FORM = """
-                <div class="td" style="width: 40%%;">
-                <form style="display: inline-block;" action="/dental/main/save-product">
-                    <input style="width:96px;" type="number" name="price" value="">
-                    <input type="submit" value="save">
-                    <input type="hidden" name="title" value="%s">
-                </form>&emsp;
-                <form style="display: inline-block;" action="/dental/main/product-map">
-                    <input type="submit" value="cancel">
-                </form></div>""";
 }
