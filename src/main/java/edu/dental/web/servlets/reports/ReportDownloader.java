@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 @WebServlet("/main/reports/download")
-public class ReportFileSaving extends HttpServlet {
+public class ReportDownloader extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

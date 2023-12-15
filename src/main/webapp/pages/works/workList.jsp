@@ -10,7 +10,7 @@
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
     <a href="/dental/main/new-work">NEW WORK</a>
-    <a href="/dental/main/work-handle">WORK LIST</a>
+    <a href="/dental/main/work-list">WORK LIST</a>
     <a href="/dental/main/product-map">PRODUCT MAP</a>
     <a href="/dental/main/reports">REPORTS</a>
     <a style="float: right;" href="/dental/main/user">
@@ -48,7 +48,7 @@
         <% } %>
 	</div></div>
 </section><br>
-<a class="sorting" href="/dental/main/sorting">
+<a class="sorting" href="/dental/main/work-list/sorting">
     <button type="submit">SORTING</button>
 </a>
 </body>

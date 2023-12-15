@@ -67,6 +67,13 @@ public final class MyRepository implements Repository {
         request.setAttribute("works", works);
     }
 
+    @Override
+    public List<DentalWorkDTO> getDentalWorkDtoList(String user) {
+        Account account = get(user);
+        List<DentalWork> list = account.recordBook.getList();
+        return list.stream().map(DentalWorkDTO::new).toList();
+    }
+
 
     @Override
     public User getUser(String login) {

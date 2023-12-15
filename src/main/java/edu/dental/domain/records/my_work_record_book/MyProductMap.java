@@ -232,7 +232,7 @@ public class MyProductMap implements ProductMap {
     @Override
     public Item[] toArray() {
         if (size == 0) {
-            throw new NullPointerException("The array of entries is empty.");
+            return new Item[0];
         }
         Item[] arr = new Item[size];
         Item entry = head;
@@ -369,9 +369,6 @@ public class MyProductMap implements ProductMap {
         private Item entry;
 
         private Iterator() {
-            if (head == null) {
-                throw new NullPointerException("this map is empty");
-            }
             this.entry = head;
         }
 

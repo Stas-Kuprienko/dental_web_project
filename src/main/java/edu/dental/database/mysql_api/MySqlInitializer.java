@@ -37,7 +37,7 @@ public class MySqlInitializer implements TableInitializer {
             					'april', 'may', 'june',
                             'july', 'august', 'september',
                            'october', 'november', 'december') NOT NULL,
-                PRIMARY KEY (id)
+                PRIMARY KEY (id, year, month)
                 );""", TableInitializer.REPORT);
 
     public static final String PRODUCT_MAP_Q = String.format("""

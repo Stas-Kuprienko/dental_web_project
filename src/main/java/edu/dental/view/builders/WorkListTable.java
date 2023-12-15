@@ -18,7 +18,7 @@ import static edu.dental.view.HtmlTag.*;
 
 public class WorkListTable {
 
-    private static final String href = "work-handle";
+    private static final String href = "dental-work";
 
     public final Header tableHead;
 

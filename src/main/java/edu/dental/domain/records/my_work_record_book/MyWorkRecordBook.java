@@ -1,6 +1,5 @@
 package edu.dental.domain.records.my_work_record_book;
 
-import edu.dental.domain.utils.DatesTool;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.records.ProductMap;
@@ -135,11 +134,12 @@ public class MyWorkRecordBook implements WorkRecordBook {
     @Override
     public SimpleList<DentalWork> sorting() {
         SimpleList<DentalWork> result = new SimpleList<>();
+        LocalDate today = LocalDate.now();
         for (DentalWork dw : records.toArray(new DentalWork[]{})) {
             if (dw.getStatus().ordinal() > 0) {
                 result.add(dw);
                 records.remove(dw);
-            } else if (DatesTool.isCurrentMonth(dw.getComplete(), PAY_DAY)) {
+            } else if (dw.getComplete().isBefore(today)) {
                 dw.setStatus(DentalWork.Status.CLOSED);
                 result.add(dw);
                 records.remove(dw);

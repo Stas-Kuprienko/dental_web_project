@@ -13,7 +13,6 @@ import utils.collections.SimpleList;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.Arrays;
 import java.util.List;
 
 public class DentalWorkMySql implements DentalWorkDAO {
@@ -22,7 +21,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     private final User user;
 
     private static final String FIELDS =
-            "id, report_id, patient, clinic, accepted, complete, status, photo, comment, user_id";
+            "id, report_id, patient, clinic, accepted, complete, status, comment, user_id";
 
     DentalWorkMySql(User user) {
         this.user = user;
@@ -63,17 +62,9 @@ public class DentalWorkMySql implements DentalWorkDAO {
             } else {
                 statement.setDate(i++, Date.valueOf(object.getComplete()));
             }            statement.setString(i++, String.valueOf(object.getStatus()));
-            Blob photo = request.createBlob();
-            if (object.getPhoto() != null) {
-                photo.setBytes(1, object.getPhoto());
-                statement.setBlob(i++, photo);
-            } else {
-                statement.setNull(i++, Types.BLOB);
-            }
             statement.setString(i++, object.getComment());
             statement.setInt(i, user.getId());
             statement.executeUpdate();
-            photo.free();
             boolean result = request.setID(object);
             if (object.getProducts().isEmpty()) {
                 return result;
@@ -174,13 +165,6 @@ public class DentalWorkMySql implements DentalWorkDAO {
                 statement.setNull(i++, Types.DATE);
             }
             statement.setString(i++, String.valueOf(object.getStatus()));
-            if (object.getPhoto() != null) {
-                Blob photo = request.createBlob();
-                photo.setBytes(1, object.getPhoto());
-                statement.setBlob(i++, photo);
-            } else {
-                statement.setNull(i++, Types.BLOB);
-            }
             statement.setString(i++, object.getComment());
             statement.setInt(i++, object.getId());
             statement.setInt(i, user.getId());
@@ -195,7 +179,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     @Override
     public boolean setFieldValue(List<DentalWork> list, String field, Object value) throws DatabaseException {
         if (list == null || list.isEmpty()) {
-            throw new DatabaseException("The given argument is null or empty.");
+            return false;
         }
         String set = field + " = ?";
         String where = "user_id = " + user.getId() + " AND id = ?";
@@ -217,7 +201,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     @Override
     public int setReportId(List<DentalWork> list) throws DatabaseException {
         if (list == null || list.isEmpty()) {
-            throw new DatabaseException("The given argument is null or empty.");
+            return 0;
         }
         String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
         String getReportId = String.format(MySqlSamples.REPORT_ID.QUERY, yearAndMonth[0], yearAndMonth[1]);
@@ -262,9 +246,9 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
     private String buildUpdateQuery(DentalWork dw) {
-        String values = "DEFAULT, '%s', '%s', '%s', '%s', '%s', %s, '%s', %s";
+        String values = "DEFAULT, '%s', '%s', '%s', '%s', '%s', '%s', %s";
         values = String.format(values, dw.getPatient(), dw.getClinic(), dw.getAccepted(),
-                dw.getComplete(), dw.getStatus(), Arrays.toString(dw.getPhoto()), dw.getComment(), dw.getReportId());
+                dw.getComplete(), dw.getStatus(), dw.getComment(), dw.getReportId());
         return String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
     }
 
@@ -298,11 +282,6 @@ public class DentalWorkMySql implements DentalWorkDAO {
                     String s = resultSet.getString(fields[i++]);
                     DentalWork.Status status = Enum.valueOf(DentalWork.Status.class, s);
                     dentalWork.setStatus(status);
-                    Blob blob = resultSet.getBlob(fields[i++]);
-                    if (blob != null) {
-                        dentalWork.setPhoto(blob.getBytes(1, (int) blob.length()));
-                        blob.free();
-                    }
                     dentalWork.setComment(resultSet.getString(fields[i]));
                     SimpleList<Product> products = (SimpleList<Product>)
                             new ProductMySql(dentalWork.getId()).instantiate(resultSet);

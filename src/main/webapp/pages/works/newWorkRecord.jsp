@@ -9,7 +9,7 @@
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
     <a href="/dental/main/new-work">NEW WORK</a>
-    <a href="/dental/main/work-handle">WORK LIST</a>
+    <a href="/dental/main/work-list">WORK LIST</a>
     <a href="/dental/main/product-map">PRODUCT MAP</a>
     <a href="/dental/main/reports">REPORTS</a>
     <a style="float: right;" href="/dental/main/user">
@@ -21,7 +21,7 @@
 <body>
 <section>
 <h2>Input new record:</h2>
-<form action="/dental/main/save-work" method="post">
+<form action="/dental/main/dental-work" method="post">
     <label for="patient">patient:</label><br>
     <input type="text" id="patient" name="patient" value=""><br>
     <label for="clinic">clinic:</label><br>

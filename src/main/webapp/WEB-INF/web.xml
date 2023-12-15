@@ -40,28 +40,28 @@
   </servlet>
 
   <servlet>
-    <servlet-name>workList</servlet-name>
+    <servlet-name>workListServlet</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.WorkListServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>workListPage</servlet-name>
     <jsp-file>/pages/works/workList.jsp</jsp-file>
   </servlet>
 
   <servlet>
-    <servlet-name>workListHandle</servlet-name>
-    <servlet-class>edu.dental.web.servlets.main.DentalWorkHandling</servlet-class>
+    <servlet-name>jsonDentalWorks</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.JsonDentalWorkServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>dentalWork</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.DentalWorkServlet</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>viewWork</servlet-name>
     <jsp-file>/pages/works/viewDentalWork.jsp</jsp-file>
-  </servlet>
-
-  <servlet>
-    <servlet-name>workEdit</servlet-name>
-    <servlet-class>edu.dental.web.servlets.main.DentalWorkEditing</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>deleteElement</servlet-name>
-    <servlet-class>edu.dental.web.servlets.main.DeleteItem</servlet-class>
   </servlet>
 
   <servlet>
@@ -72,11 +72,6 @@
   <servlet>
     <servlet-name>newWork</servlet-name>
     <jsp-file>/pages/works/newWorkRecord.jsp</jsp-file>
-  </servlet>
-
-  <servlet>
-    <servlet-name>saveWork</servlet-name>
-    <servlet-class>edu.dental.web.servlets.main.DentalWorkStoring</servlet-class>
   </servlet>
 
   <servlet>
@@ -91,7 +86,7 @@
 
   <servlet>
     <servlet-name>saveFile</servlet-name>
-    <servlet-class>edu.dental.web.servlets.reports.ReportFileSaving</servlet-class>
+    <servlet-class>edu.dental.web.servlets.reports.ReportDownloader</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -105,13 +100,13 @@
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>workList</servlet-name>
-    <url-pattern>/main/work-list</url-pattern>
+    <servlet-name>workListPage</servlet-name>
+    <url-pattern>/main/work-list/page</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>viewWork</servlet-name>
-    <url-pattern>/main/view-work</url-pattern>
+    <url-pattern>/main/dental-work/page</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
