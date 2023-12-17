@@ -19,7 +19,7 @@ public interface DatabaseService {
 
     ProductMapDAO getProductMapDAO(User user);
 
-    DentalWorkDAO getDentalWorkDAO(User user);
+    DentalWorkDAO getDentalWorkDAO();
 
     ProductDAO getProductDAO(int workId);
 

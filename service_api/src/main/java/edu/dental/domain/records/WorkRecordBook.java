@@ -32,7 +32,7 @@ public interface WorkRecordBook {
         List<DentalWork> works;
         ProductMap map;
         try {
-            works = db.getDentalWorkDAO(user).getAll();
+            works = db.getDentalWorkDAO().getAll(user.getId());
             map = APIManager.INSTANCE.getProductMap(user);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());

@@ -4,7 +4,6 @@ import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.entities.User;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
@@ -31,9 +30,8 @@ public class WorkSorting extends HttpServlet {
     }
 
     private void workSorting(String login) throws DatabaseException {
-        User user = Repository.getInstance().getUser(login);
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO(user);
+        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
         List<DentalWork> closedWorks = recordBook.sorting();
         workDAO.setFieldValue(closedWorks, "status", "CLOSED");
         workDAO.setReportId(closedWorks);

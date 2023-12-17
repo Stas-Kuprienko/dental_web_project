@@ -104,7 +104,7 @@ public class DentalWorkServlet extends HttpServlet {
     private int newDentalWork(String login, String patient, String clinic, String product, int quantity, LocalDate complete) throws WorkRecordBookException, DatabaseException {
         User user = Repository.getInstance().getUser(login);
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO(user);
+        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
         DentalWork dw;
 
         if (product == null || product.isEmpty()) {
@@ -124,7 +124,7 @@ public class DentalWorkServlet extends HttpServlet {
     private void addProductToWork(String login, int id, String product, int quantity) throws WorkRecordBookException, DatabaseException {
         User user = Repository.getInstance().getUser(login);
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO(user);
+        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
         DentalWork dw;
         dw = recordBook.getByID(id);
         recordBook.addProductToRecord(dw, product, quantity);
@@ -139,7 +139,7 @@ public class DentalWorkServlet extends HttpServlet {
     private void editWork(String login, int id, String field, String value) throws WorkRecordBookException, DatabaseException {
         User user = Repository.getInstance().getUser(login);
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO(user);
+        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
         DentalWork dw = recordBook.getByID(id);
         try {
             DentalWork.class.getMethod(concatenate(field, "set"), String.class).invoke(dw, value);
@@ -152,7 +152,7 @@ public class DentalWorkServlet extends HttpServlet {
     private void deleteProductFromWork(String login, int id, String product) throws WorkRecordBookException, DatabaseException {
         User user = Repository.getInstance().getUser(login);
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO(user);
+        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
         DentalWork dw = recordBook.getByID(id);
         recordBook.removeProduct(dw, product);
         workDAO.edit(dw);
@@ -162,7 +162,7 @@ public class DentalWorkServlet extends HttpServlet {
     private void deleteWorkRecord(String login, int id) throws WorkRecordBookException, DatabaseException {
         User user = Repository.getInstance().getUser(login);
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO(user);
+        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
         DentalWork dw = recordBook.getByID(id);
         recordBook.deleteRecord(dw);
         workDAO.delete(id);

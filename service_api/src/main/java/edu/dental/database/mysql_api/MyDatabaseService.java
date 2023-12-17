@@ -35,8 +35,8 @@ public class MyDatabaseService implements DatabaseService {
     }
 
     @Override
-    public DentalWorkDAO getDentalWorkDAO(User user) {
-            return new DentalWorkMySql(user);
+    public DentalWorkDAO getDentalWorkDAO() {
+            return new DentalWorkMySql();
     }
 
     @Override

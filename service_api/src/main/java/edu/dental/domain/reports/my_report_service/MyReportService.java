@@ -60,7 +60,7 @@ public class MyReportService implements ReportService {
     public MonthlyReport getReportFromDB(User user, String month, String year) throws ReportServiceException {
         try {
             DatabaseService db = APIManager.INSTANCE.getDatabaseService();
-            List<DentalWork> records = db.getDentalWorkDAO(user).getAllMonthly(month, year);
+            List<DentalWork> records = db.getDentalWorkDAO().getAllMonthly(user.getId(), month, year);
             return new MonthlyReport(year, month, records);
         } catch (DatabaseException | ClassCastException e) {
             //TODO loggers
