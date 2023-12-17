@@ -42,3 +42,4 @@ build/
 /service_api/src/main/java/edu/dental/Main.java
 /web_api/src/main/webapp/style.css
 /web_api/src/main/webapp/draft.html
+/.run/

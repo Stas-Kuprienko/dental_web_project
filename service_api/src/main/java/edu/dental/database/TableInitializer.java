@@ -14,6 +14,7 @@ public interface TableInitializer {
     String PRODUCT_MAP = DBConfiguration.DATA_BASE + ".product_map";
     String DENTAL_WORK = DBConfiguration.DATA_BASE + ".dental_work";
     String PRODUCT = DBConfiguration.DATA_BASE + ".product";
+    String PHOTO = DBConfiguration.DATA_BASE + ".photo";
 
     void init();
     void addReports();

@@ -13,25 +13,19 @@ public class MySqlInitializer implements TableInitializer {
     MySqlInitializer() {}
 
 
-    public static final String DROP_PRODUCT = "DROP TABLE IF EXISTS dental.product;";
-    public static final String DROP_D_WORK = "DROP TABLE IF EXISTS dental.dental_work;";
-    public static final String DROP_PROD_MAP = "DROP TABLE IF EXISTS dental.product_map;";
-    public static final String DROP_REPORT = "DROP TABLE IF EXISTS dental.report;";
-    public static final String DROP_USER = "DROP TABLE IF EXISTS dental.user;";
-
     public static final String USER_Q = String.format("""
             CREATE TABLE IF NOT EXISTS %s (
-                id INT NOT NULL AUTO_INCREMENT,
-                name VARCHAR(63),
-                email VARCHAR(129) NOT NULL UNIQUE,
-                password BLOB NOT NULL,
-                created DATE NOT NULL,
-                PRIMARY KEY (id, email)
+            	id INT NOT NULL AUTO_INCREMENT,
+            	name VARCHAR(63),
+            	email VARCHAR(129) NOT NULL UNIQUE,
+            	password BLOB NOT NULL,
+            	created DATE NOT NULL,
+            	PRIMARY KEY (id, email)
                 );""", TableInitializer.USER);
 
     public static final String REPORT_Q = String.format("""
             CREATE TABLE IF NOT EXISTS %s (
-                id INT NOT NULL AUTO_INCREMENT,
+            	id INT NOT NULL AUTO_INCREMENT,
             	year INT NOT NULL,
                 month ENUM ('january', 'february', 'march',
             					'april', 'may', 'june',
@@ -42,12 +36,12 @@ public class MySqlInitializer implements TableInitializer {
 
     public static final String PRODUCT_MAP_Q = String.format("""
             CREATE TABLE IF NOT EXISTS %s (
-                user_id INT NOT NULL,
-                id INT NOT NULL AUTO_INCREMENT,
-                title VARCHAR(30) NOT NULL UNIQUE,
-                price INT NOT NULL,
-                FOREIGN KEY (user_id) REFERENCES user(id),
-                PRIMARY KEY (id, user_id)
+            	user_id INT NOT NULL,
+            	id INT NOT NULL AUTO_INCREMENT,
+            	title VARCHAR(31) NOT NULL UNIQUE,
+            	price INT NOT NULL,
+            	FOREIGN KEY (user_id) REFERENCES user(id),
+            	PRIMARY KEY (id, user_id, title)
                 );""", TableInitializer.PRODUCT_MAP);
 
     public static final String DENTAL_WORK_Q = String.format("""
@@ -59,11 +53,10 @@ public class MySqlInitializer implements TableInitializer {
             	accepted DATE NOT NULL,
                 complete DATE,
                 status ENUM('MAKE', 'CLOSED', 'PAID') DEFAULT 'MAKE',
-            	photo BLOB,
             	comment VARCHAR(127),
                 report_id INT DEFAULT null,
                 FOREIGN KEY (report_id) REFERENCES report (id),
-                CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES user(id),
+                CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
             	PRIMARY KEY (id, user_id)
                 );""", TableInitializer.DENTAL_WORK);
 
@@ -73,10 +66,19 @@ public class MySqlInitializer implements TableInitializer {
                 title INT NOT NULL,
                 quantity SMALLINT DEFAULT 0,
                 price INT DEFAULT 0,
-                CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES dental_work(id),
+                CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES dental_work(id) ON DELETE CASCADE,
                 FOREIGN KEY (title) REFERENCES product_map (id),
                 PRIMARY KEY (work_id, title)
                 );""", TableInitializer.PRODUCT);
+
+    public static final String PHOTO_Q = String.format("""
+            CREATE TABLE IF NOT EXISTS %s (
+            	id INT NOT NULL AUTO_INCREMENT,
+                work_id INT NOT NULL,
+                file BLOB NOT NULL,
+                CONSTRAINT FOREIGN KEY (work_id) REFERENCES dental_work(id),
+                PRIMARY KEY (id, work_id)
+                );""", TableInitializer.PHOTO);
 
     public static final String CREATE_REPORTS = "INSERT INTO " +
                                 TableInitializer.REPORT +
@@ -85,11 +87,10 @@ public class MySqlInitializer implements TableInitializer {
 
     @Override
     public void init() {
-//        DROP_PRODUCT, DROP_D_WORK, DROP_PROD_MAP, DROP_REPORT, DROP_USER,
         try {
             @SuppressWarnings("resource")
             Request request = new Request(
-                    USER_Q, REPORT_Q, PRODUCT_MAP_Q, DENTAL_WORK_Q, PRODUCT_Q);
+                    USER_Q, REPORT_Q, PRODUCT_MAP_Q, DENTAL_WORK_Q, PRODUCT_Q, PHOTO_Q);
             request.start();
         } catch (SQLException e) {
             throw new RuntimeException(e);
