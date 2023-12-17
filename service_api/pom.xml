@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dental</artifactId>
+        <groupId>edu</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>service_api</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>service_api</name>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+
+    <build>
+        <finalName>dental_service_api</finalName>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>utils.collection</groupId>
+            <artifactId>SimpleList</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/my_libraries/simple-list.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+</project>
