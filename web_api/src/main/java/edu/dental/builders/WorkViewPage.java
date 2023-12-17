@@ -1,8 +1,8 @@
 package edu.dental.builders;
 
-import edu.dental.domain.entities.Product;
-import edu.dental.domain.entities.dto.DentalWorkDTO;
-import edu.dental.domain.records.ProductMap;
+import edu.dental.dto.Product;
+import edu.dental.dto.ProductMap;
+import edu.dental.dto.DentalWork;
 import edu.dental.web.Repository;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -15,12 +15,12 @@ public class WorkViewPage {
 
     public final OptionBuilder option;
 
-    public final DentalWorkDTO work;
+    public final DentalWork work;
     private final Iterator<Product> products;
 
     public WorkViewPage(HttpServletRequest request) {
         String user = (String) request.getSession(false).getAttribute("user");
-        this.work = (DentalWorkDTO) request.getAttribute("work");
+        this.work = (DentalWork) request.getAttribute("work");
         this.products = Arrays.stream(work.products()).iterator();
         this.option = new OptionBuilder(request);
     }
@@ -50,11 +50,11 @@ public class WorkViewPage {
 
         public OptionBuilder(HttpServletRequest request) {
             String login = (String) request.getSession().getAttribute("user");
-            ProductMap productMap = Repository.getInstance().getRecordBook(login).getMap();
+            ProductMap productMap = Repository.getInstance().getMapDto(login);
             if (productMap == null || productMap.isEmpty()) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {
-                this.map = Arrays.stream(productMap.keysToArray()).iterator();
+                this.map = Arrays.stream(productMap.getKeys()).iterator();
             }
             str = new StringBuilder();
         }

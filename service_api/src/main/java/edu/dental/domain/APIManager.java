@@ -20,7 +20,7 @@ public enum APIManager {
 
     INSTANCE;
 
-    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental\\target\\classes\\service.properties";
+    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\service_api\\target\\classes\\service.properties";
 
     private final Properties service;
 

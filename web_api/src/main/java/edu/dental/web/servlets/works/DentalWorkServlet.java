@@ -5,7 +5,6 @@ import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.User;
-import edu.dental.domain.entities.dto.DentalWorkDTO;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.web.Repository;
@@ -54,7 +53,7 @@ public class DentalWorkServlet extends HttpServlet {
         int id = request.getParameter("id") != null ?
                 Integer.parseInt(request.getParameter("id")) : (int) request.getAttribute("id");
         try {
-            DentalWorkDTO dto = new DentalWorkDTO(Repository.getInstance().getRecordBook(user).getByID(id));
+            edu.dental.dto.DentalWork dto = new edu.dental.dto.DentalWork(Repository.getInstance().getRecordBook(user).getByID(id));
             request.setAttribute("work", dto);
             request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
         } catch (WorkRecordBookException e) {

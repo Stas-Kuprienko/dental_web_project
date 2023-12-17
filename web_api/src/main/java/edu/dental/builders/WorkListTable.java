@@ -1,17 +1,15 @@
 package edu.dental.builders;
 
 import edu.dental.WebAPI;
-import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.entities.Product;
-import edu.dental.domain.entities.dto.DentalWorkDTO;
-import edu.dental.domain.entities.dto.ProductMapDTO;
-import edu.dental.domain.records.ProductMap;
-import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.dto.DentalWork;
+import edu.dental.dto.Product;
+import edu.dental.dto.ProductMap;
 import edu.dental.domain.utils.DatesTool;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static edu.dental.builders.HtmlTag.*;
 
@@ -22,13 +20,13 @@ public class WorkListTable {
     public final Header tableHead;
 
     private final String[] map;
-    private final Iterator<DentalWorkDTO> iterator;
+    private final Iterator<DentalWork> iterator;
 
     public WorkListTable(HttpServletRequest request) {
         this.tableHead = new Header(request);
-        ProductMapDTO map = (ProductMapDTO) request.getAttribute("map");
+        ProductMap map = (ProductMap) request.getAttribute("map");
         this.map = map.getKeys();
-        DentalWorkDTO[] works = (DentalWorkDTO[]) request.getAttribute("works");
+        DentalWork[] works = (DentalWork[]) request.getAttribute("works");
         this.iterator = Arrays.stream(works).iterator();
     }
 
@@ -43,7 +41,7 @@ public class WorkListTable {
     }
 
     public String next() {
-        DentalWorkDTO dw = iterator.next();
+        DentalWork dw = iterator.next();
         StringBuilder str = new StringBuilder();
         HtmlTag tagA = dw.status().equals(DentalWork.Status.MAKE.toString()) ? A_TR
                 : dw.status().equals(DentalWork.Status.CLOSED.toString()) ? A_TR_CLOSED
@@ -57,7 +55,7 @@ public class WorkListTable {
             }
         } else {
             for (String s : map) {
-                Product p = WorkRecordBook.findProduct(dw, s);
+                Product p = findProduct(dw, s);
                 DIV_TD.line(str, p == null ? " " : String.valueOf(p.quantity()));
             }
         }
@@ -67,6 +65,19 @@ public class WorkListTable {
         return str.toString();
     }
 
+    private Product findProduct(DentalWork dw, String type) {
+        if (dw.products().length == 0) {
+            throw new NoSuchElementException("the given DentalWork(id=" + dw.id() + ") doesn't has products.");
+        }
+        type = type.toLowerCase();
+        for (Product p : dw.products()) {
+            if (p.title().equals(type)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
 
     public static class Header {
 
@@ -74,11 +85,11 @@ public class WorkListTable {
 
         private Header(HttpServletRequest request) {
             String login = (String) request.getSession().getAttribute("user");
-            ProductMap productMap = WebAPI.INSTANCE.getRepository().getRecordBook(login).getMap();
+            ProductMap productMap = WebAPI.INSTANCE.getRepository().getMapDto(login);
             if (productMap == null || productMap.isEmpty()) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {
-                this.map = Arrays.stream(productMap.keysToArray()).iterator();
+                this.map = Arrays.stream(productMap.getKeys()).iterator();
             }
         }
 

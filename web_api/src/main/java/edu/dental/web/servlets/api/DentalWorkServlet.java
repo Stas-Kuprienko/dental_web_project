@@ -1,6 +1,6 @@
 package edu.dental.web.servlets.api;
 
-import edu.dental.domain.entities.dto.DentalWorkDTO;
+import edu.dental.dto.DentalWork;
 import edu.dental.web.JsonObjectParser;
 import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
@@ -18,7 +18,7 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String user = request.getParameter("user");
-        List<DentalWorkDTO> works = Repository.getInstance().getDentalWorkDtoList(user);
+        List<DentalWork> works = Repository.getInstance().getDentalWorkDtoList(user);
         String json = JsonObjectParser.getInstance().parseToJson(works.toArray());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

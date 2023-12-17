@@ -1,6 +1,6 @@
 package edu.dental.builders;
 
-import edu.dental.domain.records.ProductMap;
+import edu.dental.dto.ProductMap;
 import edu.dental.web.Repository;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,7 +18,7 @@ public class ProductMapTable {
 
     public ProductMapTable(HttpServletRequest request) {
         String user = (String) request.getSession().getAttribute("user");
-        ProductMap map = Repository.getInstance().getRecordBook(user).getMap();
+        ProductMap map = Repository.getInstance().getMapDto(user);
         this.iterator = map.iterator();
         String strId = request.getParameter("id");
         id = (strId == null || strId.isEmpty()) ? 0 : Integer.parseInt(strId);

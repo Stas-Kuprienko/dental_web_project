@@ -6,7 +6,6 @@ import edu.dental.domain.APIManager;
 import edu.dental.domain.entities.DentalWork;
 import edu.dental.domain.entities.Product;
 import edu.dental.domain.entities.User;
-import edu.dental.domain.entities.dto.DentalWorkDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -119,19 +118,6 @@ public interface WorkRecordBook {
         }
         type = type.toLowerCase();
         for (Product p : dw.getProducts()) {
-            if (p.title().equals(type)) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    static Product findProduct(DentalWorkDTO dw, String type) {
-        if (dw.products().length == 0) {
-            throw new NoSuchElementException("the given DentalWork(id=" + dw.id() + ") doesn't has products.");
-        }
-        type = type.toLowerCase();
-        for (Product p : dw.products()) {
             if (p.title().equals(type)) {
                 return p;
             }

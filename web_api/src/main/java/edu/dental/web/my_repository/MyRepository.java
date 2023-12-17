@@ -2,12 +2,11 @@ package edu.dental.web.my_repository;
 
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
-import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.entities.User;
-import edu.dental.domain.entities.dto.DentalWorkDTO;
-import edu.dental.domain.entities.dto.ProductMapDTO;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.entities.User;
+import edu.dental.dto.DentalWork;
+import edu.dental.dto.ProductMap;
 import edu.dental.web.Repository;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -59,19 +58,23 @@ public final class MyRepository implements Repository {
     @Override
     public void setDtoAttributes(HttpServletRequest request, String user) {
         Account account = get(user);
-        ProductMapDTO map = new ProductMapDTO(account.recordBook.getMap());
-        List<DentalWork> list = account.recordBook.getList();
-        DentalWorkDTO[] works = new DentalWorkDTO[list.size()];
-        list.stream().map(DentalWorkDTO::new).toList().toArray(works);
+        ProductMap map = new ProductMap(account.recordBook.getMap());
+        DentalWork[] works = new DentalWork[account.recordBook.getList().size()];
+        account.recordBook.getList().stream().map(DentalWork::new).toList().toArray(works);
         request.setAttribute("map", map);
         request.setAttribute("works", works);
     }
 
     @Override
-    public List<DentalWorkDTO> getDentalWorkDtoList(String user) {
+    public ProductMap getMapDto(String user) {
         Account account = get(user);
-        List<DentalWork> list = account.recordBook.getList();
-        return list.stream().map(DentalWorkDTO::new).toList();
+        return new ProductMap(account.recordBook.getMap());
+    }
+
+    @Override
+    public List<DentalWork> getDentalWorkDtoList(String user) {
+        Account account = get(user);
+        return account.recordBook.getList().stream().map(DentalWork::new).toList();
     }
 
 
@@ -102,6 +105,7 @@ public final class MyRepository implements Repository {
     public Account get(String login) {
         return RAM.get(login);
     }
+
 
     public record Account(User user, WorkRecordBook recordBook) implements Repository.Account {}
 }

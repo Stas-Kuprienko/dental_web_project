@@ -58,6 +58,7 @@ public class ContextInitializer implements ServletContextListener {
             //TODO logger
             throw new RuntimeException();
         }
+        System.out.println("XYU!");
     }
 
     private boolean checkDB() throws SQLException {

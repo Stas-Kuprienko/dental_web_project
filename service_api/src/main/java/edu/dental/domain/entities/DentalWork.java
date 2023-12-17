@@ -19,6 +19,8 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
 
     private int id;
 
+    private int userId;
+
     private String patient;
 
     private String clinic;
@@ -30,8 +32,6 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
     private LocalDate complete;
 
     private Status status;
-
-    private byte[] photo;
 
     private String comment;
 
@@ -83,6 +83,11 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
             return this;
         }
 
+        public Builder setUserId(int id) {
+            DentalWork.this.setUserId(id);
+            return this;
+        }
+
         public Builder setPatient(String patient) {
             DentalWork.this.setPatient(patient);
             return this;
@@ -95,12 +100,6 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
 
         public Builder setComplete(LocalDate complete) {
             DentalWork.this.setComplete(complete);
-            return this;
-        }
-
-        public Builder setPhoto(byte[] photo) {
-            //TODO
-            DentalWork.this.setPhoto(photo);
             return this;
         }
 
@@ -120,8 +119,11 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DentalWork that = (DentalWork) o;
-        return id == that.id && Objects.equals(patient, that.patient) && Objects.equals(clinic, that.clinic)
-                                && Objects.equals(complete, that.complete) && accepted.equals(that.accepted);
+        return id == that.id && userId == that.userId &&
+                Objects.equals(patient, that.patient) &&
+                Objects.equals(clinic, that.clinic) &&
+                Objects.equals(complete, that.complete) &&
+                accepted.equals(that.accepted);
     }
 
     @Override
@@ -133,6 +135,7 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
     public String toString() {
         return "\nDentalWork{" +
                 "\n id=" + id +
+                ", \n userId=" + userId +
                 ", \n patient='" + patient + '\'' +
                 ", \n clinic='" + clinic + '\'' +
                 ", \n products=" + (products.isEmpty() ? "null" : products) +
@@ -155,6 +158,14 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
     @Override
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getPatient() {
@@ -212,14 +223,6 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
 
     public void setStatus(String status) {
         this.status = Status.valueOf(status);
-    }
-
-    public byte[] getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
     }
 
     public String getComment() {

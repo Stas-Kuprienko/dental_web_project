@@ -1,11 +1,11 @@
 package edu.dental.web;
 
 import edu.dental.WebAPI;
-import edu.dental.domain.APIManager;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.entities.User;
-import edu.dental.domain.entities.dto.DentalWorkDTO;
+import edu.dental.dto.DentalWork;
 import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.dto.ProductMap;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
@@ -26,7 +26,9 @@ public interface Repository {
 
     void setDtoAttributes(HttpServletRequest request, String user);
 
-    List<DentalWorkDTO> getDentalWorkDtoList(String user);
+    ProductMap getMapDto(String user);
+
+    List<DentalWork> getDentalWorkDtoList(String user);
 
     User getUser(String login);
 

@@ -36,7 +36,7 @@ public final class DBConfiguration {
     /**
      * The path to the {@link Properties} file for connecting to a database.
      */
-    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental\\target\\classes\\mysql.properties";
+    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\service_api\\target\\classes\\mysql.properties";
 
     /**
      * To get the properties value by key string.

@@ -1,7 +1,7 @@
 package edu.dental.web.servlets.works;
 
-import edu.dental.domain.entities.dto.DentalWorkDTO;
-import edu.dental.domain.entities.dto.ProductMapDTO;
+import edu.dental.dto.DentalWork;
+import edu.dental.dto.ProductMap;
 import edu.dental.web.JsonObjectParser;
 import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
@@ -26,11 +26,11 @@ public class WorkListServlet extends HttpServlet {
         String user = (String) request.getSession().getAttribute("user");
         String url = "http://localhost:8081/dental/api/dental-works?user=" + user;
         String json = getJson(url, request.getSession().getId());
-        DentalWorkDTO[] works = (DentalWorkDTO[]) JsonObjectParser.getInstance().parseFromJson(json, DentalWorkDTO[].class);
+        DentalWork[] works = (DentalWork[]) JsonObjectParser.getInstance().parseFromJson(json, DentalWork[].class);
         request.setAttribute("works", works);
 
         //temporary
-        ProductMapDTO mapDTO = new ProductMapDTO(Repository.getInstance().getRecordBook(user).getMap());
+        ProductMap mapDTO = new ProductMap(Repository.getInstance().getRecordBook(user).getMap());
         request.setAttribute("map", mapDTO);
         // *** //
 
