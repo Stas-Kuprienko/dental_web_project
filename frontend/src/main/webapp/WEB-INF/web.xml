@@ -1,0 +1,127 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>dental-mechanic</display-name>
+
+  <filter>
+    <filter-name>mainFilter</filter-name>
+    <filter-class>edu.dental.web.servlets.control.MainFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>enterFilter</filter-name>
+    <filter-class>edu.dental.web.servlets.control.EnterFilter</filter-class>
+  </filter>
+
+  <servlet>
+    <servlet-name>signUp</servlet-name>
+    <jsp-file>/pages/signUp.html</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>logIn</servlet-name>
+    <servlet-class>edu.dental.web.servlets.control.Authorization</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>register</servlet-name>
+    <servlet-class>edu.dental.web.servlets.control.Registration</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>Main</servlet-name>
+    <jsp-file>/pages/main.html</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>workListServlet</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.WorkListServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>workListPage</servlet-name>
+    <jsp-file>/pages/works/workList.jsp</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>dentalWork</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.DentalWorkServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>viewWork</servlet-name>
+    <jsp-file>/pages/works/viewDentalWork.jsp</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>sorting</servlet-name>
+    <servlet-class>edu.dental.web.servlets.works.WorkSorting</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>newWork</servlet-name>
+    <jsp-file>/pages/works/newWorkRecord.jsp</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>productMap</servlet-name>
+    <jsp-file>/pages/products/productMap.jsp</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>reportMenu</servlet-name>
+    <jsp-file>/pages/reports/reportMenu.html</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>saveFile</servlet-name>
+    <servlet-class>edu.dental.web.servlets.reports.ReportDownloader</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>signUp</servlet-name>
+    <url-pattern>/sign-up</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Main</servlet-name>
+    <url-pattern>/main/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>workListPage</servlet-name>
+    <url-pattern>/main/work-list/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>viewWork</servlet-name>
+    <url-pattern>/main/dental-work/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>newWork</servlet-name>
+    <url-pattern>/main/new-work</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>productMap</servlet-name>
+    <url-pattern>/main/product-map/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>reportMenu</servlet-name>
+    <url-pattern>/main/reports</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>/pages/index.html</welcome-file>
+  </welcome-file-list>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/pages/error.html</location>
+  </error-page>
+
+</web-app>

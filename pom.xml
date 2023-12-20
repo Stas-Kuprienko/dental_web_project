@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>edu</groupId>
-    <artifactId>dental</artifactId>
+    <groupId>edu.dental</groupId>
+    <artifactId>project</artifactId>
     <version>1.0</version>
     <modules>
-        <module>web_api</module>
-        <module>service_api</module>
+        <module>frontend</module>
+        <module>backend</module>
     </modules>
     <packaging>pom</packaging>
 

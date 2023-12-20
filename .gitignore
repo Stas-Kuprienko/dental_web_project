@@ -37,9 +37,7 @@ build/
 ### Mac OS ###
 .DS_Store
 /.idea/
-/backend/src/main/java/edu/dental/Main.java
-/web_api/localTomcat/
-/service_api/src/main/java/edu/dental/Main.java
-/web_api/src/main/webapp/style.css
-/web_api/src/main/webapp/draft.html
-/.run/
+/backend/core/src/main/java/edu/dental/Main.java
+/.run/deploy.run.xml
+/frontend/src/main/webapp/draft.html
+/frontend/src/main/webapp/style.css
