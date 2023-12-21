@@ -3,7 +3,7 @@ package edu.dental.builders;
 import edu.dental.beans.Product;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.DentalWork;
-import edu.dental.web.Repository;
+import edu.dental.service.Repository;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class WorkViewPage {
 
         public OptionBuilder(HttpServletRequest request) {
             String login = (String) request.getSession().getAttribute("user");
-            ProductMap productMap = Repository.getInstance().getMapDto(login);
+            ProductMap productMap = Repository.getInstance().getMap(login);
             if (productMap == null || productMap.isEmpty()) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {

@@ -1,14 +1,6 @@
 package edu.dental.web.works;
 
 import edu.dental.beans.DentalWork;
-import edu.dental.database.DatabaseException;
-import edu.dental.database.DatabaseService;
-import edu.dental.database.dao.DentalWorkDAO;
-import edu.dental.domain.entities.DentalWork;
-import edu.dental.domain.entities.User;
-import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.web.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 
 @WebServlet("/main/dental-work")
@@ -38,13 +29,9 @@ public class DentalWorkServlet extends HttpServlet {
             int quantity = Integer.parseInt(request.getParameter("quantity"));
             LocalDate complete = LocalDate.parse(request.getParameter("complete"));
 
-            try {
-                int id = newDentalWork(login, patient, clinic, product, quantity, complete);
-                request.setAttribute("id", id);
-                doGet(request, response);
-            } catch (DatabaseException | WorkRecordBookException e) {
-                response.sendError(500);
-            }
+            int id = newDentalWork(login, patient, clinic, product, quantity, complete);
+            request.setAttribute("id", id);
+            doGet(request, response);
         }
     }
 
@@ -53,13 +40,9 @@ public class DentalWorkServlet extends HttpServlet {
         String user = (String) request.getSession().getAttribute("user");
         int id = request.getParameter("id") != null ?
                 Integer.parseInt(request.getParameter("id")) : (int) request.getAttribute("id");
-        try {
-            DentalWork dto = new DentalWork(Repository.getInstance().getRecordBook(user).getByID(id));
-            request.setAttribute("work", dto);
-            request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
-        } catch (WorkRecordBookException e) {
-            request.getRequestDispatcher("/error?").forward(request, response);
-        }
+        DentalWork dto = null;
+        request.setAttribute("work", dto);
+        request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
     }
 
     @Override
@@ -68,18 +51,13 @@ public class DentalWorkServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         String field = request.getParameter("field");
         String value = request.getParameter("value");
-        try {
-            if (field.equals("product")) {
-                if (!(value == null || value.isEmpty())) {
-                    int quantity = Integer.parseInt(request.getParameter("quantity"));
-                    addProductToWork(user, id, value, quantity);
-                }
-            } else {
-                editWork(user, id, field, value);
+        if (field.equals("product")) {
+            if (!(value == null || value.isEmpty())) {
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+                addProductToWork(user, id, value, quantity);
             }
-        } catch (WorkRecordBookException | DatabaseException e) {
-            response.sendError(500);
-            return;
+        } else {
+            editWork(user, id, field, value);
         }
         doGet(request, response);
     }
@@ -89,84 +67,31 @@ public class DentalWorkServlet extends HttpServlet {
         String user = (String) request.getSession().getAttribute("user");
         int id = Integer.parseInt(request.getParameter("id"));
         String product = request.getParameter("product");
-        try {
-            if (product != null) {
-                deleteProductFromWork(user, id, product);
-                doGet(request, response);
-            } else {
-                deleteWorkRecord(user, id);
-                request.getRequestDispatcher("/main/work-list").forward(request, response);
-            }
-        } catch (WorkRecordBookException | DatabaseException e) {
-            response.sendError(500);
-        }
-    }
-
-    private int newDentalWork(String login, String patient, String clinic, String product, int quantity, LocalDate complete) throws WorkRecordBookException, DatabaseException {
-        User user = Repository.getInstance().getUser(login);
-        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
-        DentalWork dw;
-
-        if (product == null || product.isEmpty()) {
-            dw = recordBook.createRecord(patient, clinic);
+        if (product != null) {
+            deleteProductFromWork(user, id, product);
+            doGet(request, response);
         } else {
-            dw = recordBook.createRecord(patient, clinic, product, quantity, complete);
+            deleteWorkRecord(user, id);
+            request.getRequestDispatcher("/main/work-list").forward(request, response);
         }
-        try {
-            workDAO.put(dw);
-        } catch (DatabaseException e) {
-            recordBook.deleteRecord(dw);
-            throw e;
-        }
-        return dw.getId();
     }
 
-    private void addProductToWork(String login, int id, String product, int quantity) throws WorkRecordBookException, DatabaseException {
-        User user = Repository.getInstance().getUser(login);
-        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
+    private int newDentalWork(String login, String patient, String clinic, String product, int quantity, LocalDate complete) {
         DentalWork dw;
-        dw = recordBook.getByID(id);
-        recordBook.addProductToRecord(dw, product, quantity);
-        try {
-            workDAO.edit(dw);
-        } catch (DatabaseException e) {
-            recordBook.deleteRecord(dw);
-            throw e;
-        }
+        return 0;
     }
 
-    private void editWork(String login, int id, String field, String value) throws WorkRecordBookException, DatabaseException {
-        User user = Repository.getInstance().getUser(login);
-        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
-        DentalWork dw = recordBook.getByID(id);
-        try {
-            DentalWork.class.getMethod(concatenate(field, "set"), String.class).invoke(dw, value);
-            workDAO.edit(dw);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
-        }
+    private void addProductToWork(String login, int id, String product, int quantity) {
     }
 
-    private void deleteProductFromWork(String login, int id, String product) throws WorkRecordBookException, DatabaseException {
-        User user = Repository.getInstance().getUser(login);
-        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
-        DentalWork dw = recordBook.getByID(id);
-        recordBook.removeProduct(dw, product);
-        workDAO.edit(dw);
+    private void editWork(String login, int id, String field, String value) {
+    }
+
+    private void deleteProductFromWork(String login, int id, String product) {
     }
 
 
-    private void deleteWorkRecord(String login, int id) throws WorkRecordBookException, DatabaseException {
-        User user = Repository.getInstance().getUser(login);
-        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
-        DentalWorkDAO workDAO = DatabaseService.getInstance().getDentalWorkDAO();
-        DentalWork dw = recordBook.getByID(id);
-        recordBook.deleteRecord(dw);
-        workDAO.delete(id);
+    private void deleteWorkRecord(String login, int id) {
     }
 
     private String concatenate(String toModify, @SuppressWarnings("all") String toInsert) {
