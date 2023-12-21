@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="server" type="TomcatRunner-By-Camtwo" factoryName="TomcatRunConfiguration">
+  <configuration default="false" name="server" type="TomcatRunner-By-Camtwo" factoryName="TomcatRunConfiguration" activateToolWindowBeforeRun="false">
     <option name="TomcatRunnerV001-Modules" value="{&quot;modules&quot;:[{&quot;context&quot;:&quot;/dental&quot;,&quot;documentBase&quot;:&quot;$PROJECT_DIR$/frontend/src/main/webapp&quot;,&quot;internal&quot;:true,&quot;reloadable&quot;:true},{&quot;context&quot;:&quot;/dental-api&quot;,&quot;documentBase&quot;:&quot;$PROJECT_DIR$/backend/web/src/main/webapp&quot;,&quot;internal&quot;:true,&quot;reloadable&quot;:true}]}" />
     <option name="TomcatRunnerV001-TomcatInstallation" value="$PROJECT_DIR$/../../apache-tomcat-10.1.16" />
     <option name="TomcatRunnerV001-VmArgs" value="" />

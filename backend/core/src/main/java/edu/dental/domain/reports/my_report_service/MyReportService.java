@@ -3,18 +3,15 @@ package edu.dental.domain.reports.my_report_service;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.domain.APIManager;
-import edu.dental.domain.utils.DatesTool;
-import edu.dental.entities.DentalWork;
-import edu.dental.entities.SalaryRecord;
-import edu.dental.entities.User;
-import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.reports.IFileTool;
 import edu.dental.domain.reports.MonthlyReport;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
+import edu.dental.entities.DentalWork;
+import edu.dental.entities.SalaryRecord;
+import edu.dental.entities.User;
 import utils.collections.SimpleList;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -33,27 +30,20 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public boolean saveReportToFile(String[] keysArray, List<DentalWork> works) throws ReportServiceException {
-        String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
+    public boolean saveReportToFile(String[] keysArray, List<DentalWork> works, String month, String year) throws ReportServiceException {
         DataArrayTool dataArrayTool = new DataArrayTool(keysArray, (SimpleList<DentalWork>) works);
         String[][] reportData = dataArrayTool.getResult();
-        String tableName = yearAndMonth[1] + "_" + yearAndMonth[0];
+        String tableName = month + "_" + year;
         IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
         return fileTool.createFile().writeFile();
     }
 
     @Override
     public OutputStream saveReportToFile(OutputStream output, String[] keysArray, List<DentalWork> works) throws ReportServiceException {
-        String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
         DataArrayTool dataArrayTool = new DataArrayTool(keysArray, (SimpleList<DentalWork>) works);
         String[][] reportData = dataArrayTool.getResult();
-        String tableName = yearAndMonth[1] + "_" + yearAndMonth[0];
-        IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
-        try {
-            return fileTool.createFile().writeFile(output);
-        } catch (IOException e) {
-            throw new ReportServiceException(e.getMessage(), e);
-        }
+        IFileTool fileTool = new XLSXFilesTool(reportData);
+        return fileTool.createFile().writeFile(output);
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class DentalWork {
 
-    private int id;
+    private final int id;
     private String patient;
     private String clinic;
     private Product[] products;
@@ -24,18 +24,6 @@ public class DentalWork {
         this.complete = complete;
         this.comment = comment;
         this.status = status;
-    }
-
-    public DentalWork(edu.dental.domain.entities.DentalWork dw) {
-        this.id = dw.getId();
-        this.patient = dw.getPatient();
-        this.clinic = dw.getClinic();
-        this.accepted = dw.getAccepted().toString();
-        this.complete = dw.getComplete() != null ? dw.getComplete().toString() : "";
-        this.comment = dw.getComment() != null ? dw.getComment() : "";
-        this.status = dw.getStatus().toString();
-        this.products = new Product[dw.getProducts().size()];
-        dw.getProducts().stream().map(Product::parse).toList().toArray(products);
     }
 
     public int id() {
@@ -68,10 +56,6 @@ public class DentalWork {
 
     public String status() {
         return status;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setPatient(String patient) {
@@ -111,7 +95,10 @@ public class DentalWork {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DentalWork that = (DentalWork) o;
-        return id == that.id && Objects.equals(patient, that.patient) && Objects.equals(clinic, that.clinic) && Arrays.equals(products, that.products) && Objects.equals(accepted, that.accepted) && Objects.equals(complete, that.complete) && Objects.equals(comment, that.comment) && Objects.equals(status, that.status);
+        return id == that.id && Objects.equals(patient, that.patient)
+                && Objects.equals(clinic, that.clinic) && Arrays.equals(products, that.products)
+                && Objects.equals(accepted, that.accepted) && Objects.equals(complete, that.complete)
+                && Objects.equals(comment, that.comment) && Objects.equals(status, that.status);
     }
 
     @Override

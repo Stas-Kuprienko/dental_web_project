@@ -1,4 +1,4 @@
-package edu.dental.builders;
+package edu.dental.constructors;
 
 import edu.dental.beans.Product;
 import edu.dental.beans.ProductMap;
@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static edu.dental.builders.HtmlTag.OPTION;
+import static edu.dental.constructors.HtmlTag.OPTION;
 
 public class WorkViewPage {
 

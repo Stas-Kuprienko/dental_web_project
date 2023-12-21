@@ -1,4 +1,4 @@
-package edu.dental.builders;
+package edu.dental.constructors;
 
 import edu.dental.beans.ProductMap;
 import edu.dental.service.Repository;
@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Iterator;
 
-import static edu.dental.builders.HtmlTag.*;
+import static edu.dental.constructors.HtmlTag.*;
 
 public class ProductMapTable {
 
@@ -34,9 +34,9 @@ public class ProductMapTable {
         }
         ProductMap.Item item = iterator.next();
         StringBuilder str = new StringBuilder();
-        str.append(String.format(A_TR.o, href, item.getId()));
-        DIV_TD.line(str, item.getKey());
-        DIV_TD.line(str, String.valueOf(item.getValue()));
+        str.append(String.format(A_TR.o, href, item.id()));
+        DIV_TD.line(str, item.key());
+        DIV_TD.line(str, String.valueOf(item.value()));
         str.append(A_TR.c);
         return str.toString();
     }
@@ -44,14 +44,14 @@ public class ProductMapTable {
     private String next(int id) {
         ProductMap.Item item = iterator.next();
         StringBuilder str = new StringBuilder();
-        if (item.getId() == id) {
+        if (item.id() == id) {
             str.append(A_TR_WITHOUT_HREF.o);
-            DIV_TD.line(str, item.getKey());
-            str.append(String.format(HtmlTag.PRODUCT_VIEW.FORM.sample, item.getKey(), item.getId(), item.getKey(), item.getId()));
+            DIV_TD.line(str, item.key());
+            str.append(String.format(HtmlTag.PRODUCT_VIEW.FORM.sample, item.key(), item.id(), item.key(), item.id()));
         } else {
-            str.append(String.format(A_TR.o, href, item.getId()));
-            DIV_TD.line(str, item.getKey());
-            DIV_TD.line(str, String.valueOf(item.getValue()));
+            str.append(String.format(A_TR.o, href, item.id()));
+            DIV_TD.line(str, item.key());
+            DIV_TD.line(str, String.valueOf(item.value()));
         }
         str.append(A_TR.c);
         return str.toString();

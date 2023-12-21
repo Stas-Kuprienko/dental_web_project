@@ -1,4 +1,4 @@
-package edu.dental.builders;
+package edu.dental.constructors;
 
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static edu.dental.builders.HtmlTag.*;
+import static edu.dental.constructors.HtmlTag.*;
 
 public class WorkListTable {
 
@@ -31,8 +31,7 @@ public class WorkListTable {
 
     public static String month() {
         //TODO !!!!!!!
-        String[] yearNMonth = new String[2];
-        return yearNMonth[1].toUpperCase() + " - " + yearNMonth[0];
+        return "";
     }
 
     public boolean hasNext() {

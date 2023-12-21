@@ -9,5 +9,5 @@ public interface IFileTool {
 
     boolean writeFile() throws ReportServiceException;
 
-    OutputStream writeFile(OutputStream output) throws IOException, ReportServiceException;
+    OutputStream writeFile(OutputStream output) throws ReportServiceException;
 }

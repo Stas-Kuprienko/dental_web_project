@@ -24,7 +24,7 @@ public interface DentalWorkDAO {
 
     boolean setFieldValue(List<DentalWork> list, String field, Object value) throws DatabaseException;
 
-    int setReportId(List<DentalWork> list) throws  DatabaseException;
+    int setReportId(List<DentalWork> list, String month, String year) throws  DatabaseException;
 
     boolean delete(int id) throws DatabaseException;
 

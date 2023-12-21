@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.builders.WorkListTable" %>
+<%@ page import="edu.dental.constructors.WorkListTable" %>
 <% WorkListTable td = new WorkListTable(request); %>
 
 <html>

@@ -8,10 +8,6 @@ import java.util.Objects;
  */
 public record Product(int entryId, String title, byte quantity, int price) implements Serializable {
 
-    public static Product parse(edu.dental.domain.entities.Product product) {
-        return new Product(product.entryId(), product.title(), product.quantity(), product.price());
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

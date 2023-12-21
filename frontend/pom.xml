@@ -12,9 +12,9 @@
     <artifactId>frontend</artifactId>
     <packaging>war</packaging>
 
-    <name>frontend Maven Webapp</name>
+    <name>frontend_api</name>
     <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <url>http://localhost:8080/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

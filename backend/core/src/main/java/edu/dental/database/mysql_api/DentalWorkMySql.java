@@ -7,8 +7,6 @@ import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
-import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.utils.DatesTool;
 import utils.collections.SimpleList;
 
 import java.io.IOException;
@@ -196,12 +194,11 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
     @Override
-    public int setReportId(List<DentalWork> list) throws DatabaseException {
+    public int setReportId(List<DentalWork> list, String month, String year) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             return 0;
         }
-        String[] yearAndMonth = DatesTool.getYearAndMonth(WorkRecordBook.PAY_DAY);
-        String getReportId = String.format(MySqlSamples.REPORT_ID.QUERY, yearAndMonth[0], yearAndMonth[1]);
+        String getReportId = String.format(MySqlSamples.REPORT_ID.QUERY, year, month);
         String query = String.format((MySqlSamples.UPDATE.QUERY), TABLE, "report_id = (" + getReportId + ')', "id = ?");
         try (Request request = new Request(query)) {
             PreparedStatement statement = request.getPreparedStatement();
@@ -221,7 +218,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
         } catch (SQLException e) {
             if (e.getMessage().equals("Illegal operation on empty result set.")) {
                 DatabaseService.getInstance().getTableInitializer().addReports();
-                return setReportId(list);
+                return setReportId(list, month, year);
             } else {
                 //TODO loggers
                 throw new DatabaseException(e.getMessage(), e.fillInStackTrace());

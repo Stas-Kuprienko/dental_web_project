@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.builders.WorkViewPage" %>
+<%@ page import="edu.dental.constructors.WorkViewPage" %>
 <% WorkViewPage.OptionBuilder option = new WorkViewPage.OptionBuilder(request); %>
 <html>
 <head>

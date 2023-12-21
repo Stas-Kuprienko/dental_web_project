@@ -15,7 +15,7 @@ public interface ReportService {
 
     boolean saveReportToFile(String[] keysArray, MonthlyReport report) throws ReportServiceException;
 
-    boolean saveReportToFile(String[] keysArray, List<DentalWork> works) throws ReportServiceException;
+    boolean saveReportToFile(String[] keysArray, List<DentalWork> works, String month, String year) throws ReportServiceException;
 
     OutputStream saveReportToFile(OutputStream output, String[] keysArray, List<DentalWork> works) throws ReportServiceException;
 

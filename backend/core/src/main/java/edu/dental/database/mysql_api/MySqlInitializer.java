@@ -1,10 +1,10 @@
 package edu.dental.database.mysql_api;
 
 import edu.dental.database.TableInitializer;
-import edu.dental.domain.utils.DatesTool;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Month;
 
 public class MySqlInitializer implements TableInitializer {
 
@@ -104,7 +104,7 @@ public class MySqlInitializer implements TableInitializer {
             return;
         }
         int count = 12;
-        String[][] yearsNMonths = DatesTool.buildMonthStringArray(count);
+        String[][] yearsNMonths = buildMonthStringArray(count);
         String[] queries = new String[count];
         for (int i = 0; i < count; i++) {
             queries[i] = String.format(CREATE_REPORTS, yearsNMonths[i][0], yearsNMonths[i][1]);
@@ -118,5 +118,21 @@ public class MySqlInitializer implements TableInitializer {
             //TODO logger
             throw new RuntimeException(e);
         }
+    }
+
+
+    private String[][] buildMonthStringArray(int count) {
+        int year = LocalDate.now().getYear();
+        Month month = LocalDate.now().getMonth().minus(1);
+        String[][] result = new String[count][2];
+        for (int i = 0; i < count; i++) {
+            String[] yearNMonth = new String[] {String.valueOf(year), month.toString()};
+            result[i] = yearNMonth;
+            month = month.plus(1);
+            if (month.equals(Month.JANUARY)) {
+                year += 1;
+            }
+        }
+        return result;
     }
 }

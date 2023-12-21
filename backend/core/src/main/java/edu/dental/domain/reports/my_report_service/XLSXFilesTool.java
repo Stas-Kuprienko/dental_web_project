@@ -7,9 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 class XLSXFilesTool implements IFileTool {
 
@@ -25,6 +23,12 @@ class XLSXFilesTool implements IFileTool {
         this.reportData = reportData;
         this.xssfBox = new XSSFBox(tableName);
     }
+
+    XLSXFilesTool(String[][] reportData) {
+        this.reportData = reportData;
+        this.xssfBox = new XSSFBox();
+    }
+
 
     @Override
     public IFileTool createFile() {
@@ -72,6 +76,11 @@ class XLSXFilesTool implements IFileTool {
         private final XSSFWorkbook workbook;
         private final XSSFSheet sheet;
         private XSSFRow row;
+
+        private XSSFBox() {
+            this.workbook = new XSSFWorkbook();
+            this.sheet = workbook.createSheet();
+        }
 
         private XSSFBox(String tableName) {
             this.workbook = new XSSFWorkbook();

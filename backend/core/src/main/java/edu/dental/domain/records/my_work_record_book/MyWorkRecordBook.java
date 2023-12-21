@@ -1,11 +1,10 @@
 package edu.dental.domain.records.my_work_record_book;
 
+import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
-import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.domain.utils.DatesTool;
 import utils.collections.SimpleList;
 
 import java.time.LocalDate;
@@ -18,18 +17,22 @@ import java.util.NoSuchElementException;
  */
 public class MyWorkRecordBook implements WorkRecordBook {
 
+    private final int userId;
+
     private final SimpleList<DentalWork> records;
 
     private final MyProductMap productMap;
 
     @SuppressWarnings("unused")
-    private MyWorkRecordBook(List<DentalWork> records, ProductMap productMap) {
+    private MyWorkRecordBook(int userId, List<DentalWork> records, ProductMap productMap) {
+        this.userId = userId;
         this.records = (SimpleList<DentalWork>) records;
         this.productMap = (MyProductMap) productMap;
     }
 
     @SuppressWarnings("unused")
-    private MyWorkRecordBook() {
+    private MyWorkRecordBook(int userId) {
+        this.userId = userId;
         this.records = new SimpleList<>();
         this.productMap = new MyProductMap();
     }
@@ -108,8 +111,12 @@ public class MyWorkRecordBook implements WorkRecordBook {
             SimpleList<DentalWork> list = records.searchElement("patient", patient);
             if (list.size() > 1) {
                 list = list.searchElement("clinic", clinic);
+                return list.get(0);
             }
-            return list.get(0);
+            if (list.get(0).getClinic().equals(clinic)) {
+                return list.get(0);
+            }
+            throw new WorkRecordBookException("such element is not found");
         } catch (NoSuchElementException | NullPointerException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
@@ -133,30 +140,23 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public SimpleList<DentalWork> sorting() {
-        SimpleList<DentalWork> result = new SimpleList<>();
-        LocalDate today = LocalDate.now();
-        for (DentalWork dw : records.toArray(new DentalWork[]{})) {
-            if (dw.getStatus().ordinal() > 1) {
-                records.remove(dw);
-            } else if (dw.getComplete().isBefore(today)) {
-                dw.setStatus(DentalWork.Status.CLOSED);
-                result.add(dw);
-                if (!(DatesTool.isCurrentMonth(dw.getComplete(), PAY_DAY))) {
-                    records.remove(dw);
-                }
-            }
-        }
-        return result;
+    public SimpleList<DentalWork> sorting(int month) {
+        //TODO
+        Sorter sorter = new Sorter(records);
+        return (SimpleList<DentalWork>) sorter.doIt(month);
     }
 
     @Override
-    public SimpleList<DentalWork> getList() {
+    public int getUserId() {
+        return userId;
+    }
+
+    public SimpleList<DentalWork> getRecords() {
         return records;
     }
 
     @Override
-    public MyProductMap getMap() {
+    public MyProductMap getProductMap() {
         return productMap;
     }
 }

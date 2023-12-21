@@ -58,9 +58,9 @@ public final class MyRepository implements Repository {
     @Override
     public void setDtoAttributes(HttpServletRequest request, String user) {
         Account account = get(user);
-        ProductMap map = new ProductMap(account.recordBook.getMap());
-        DentalWork[] works = new DentalWork[account.recordBook.getList().size()];
-        account.recordBook.getList().stream().map(DentalWork::new).toList().toArray(works);
+        ProductMap map = new ProductMap(account.recordBook.getProductMap());
+        DentalWork[] works = new DentalWork[account.recordBook.getRecords().size()];
+        account.recordBook.getRecords().stream().map(DentalWork::new).toList().toArray(works);
         request.setAttribute("map", map);
         request.setAttribute("works", works);
     }
@@ -68,13 +68,13 @@ public final class MyRepository implements Repository {
     @Override
     public ProductMap getMapDto(String user) {
         Account account = get(user);
-        return new ProductMap(account.recordBook.getMap());
+        return new ProductMap(account.recordBook.getProductMap());
     }
 
     @Override
     public List<DentalWork> getDentalWorkDtoList(String user) {
         Account account = get(user);
-        return account.recordBook.getList().stream().map(DentalWork::new).toList();
+        return account.recordBook.getRecords().stream().map(DentalWork::new).toList();
     }
 
 

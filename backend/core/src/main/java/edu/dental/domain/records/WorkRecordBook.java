@@ -42,12 +42,6 @@ public interface WorkRecordBook {
     }
 
     /**
-     * The day of month, for {@linkplain WorkRecordBook#sorting()} method, is used like a border,
-     *  when sorting {@link DentalWork}s by month.
-     */
-    byte PAY_DAY = 10;
-
-    /**
      * Create a {@link DentalWork} object and add it to {@link List} field of this instance.
      * @param patient the patient name or surname of this work.
      * @param clinic the clinic of this work.
@@ -132,18 +126,20 @@ public interface WorkRecordBook {
      *  and add into new {@link List list}.
      * @return the {@link List} object of sorted closed records.
      */
-    List<DentalWork> sorting();
+    List<DentalWork> sorting(int month);
+
+    int getUserId();
 
     /**
      * Get the {@link List list} field of {@link DentalWork} objects.
      * @return {@link List} object, containing {@link DentalWork records}.
      */
-    List<DentalWork> getList();
+    List<DentalWork> getRecords();
 
     /**
      * Get the {@link ProductMap} field of {@link Product products}.
      * @return {@link ProductMap} object, containing {@link Product product}
      *  {@link ProductMap.Item entries}.
      */
-    ProductMap getMap();
+    ProductMap getProductMap();
 }

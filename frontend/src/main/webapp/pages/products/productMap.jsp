@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.builders.ProductMapTable" %>
+<%@ page import="edu.dental.constructors.ProductMapTable" %>
 <% ProductMapTable mapTable = new ProductMapTable(request); %>
 
 <html>

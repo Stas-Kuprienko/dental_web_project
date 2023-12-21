@@ -34,6 +34,10 @@ public class Repository {
         RAM.put(login, account);
     }
 
+    public void delete(String login) {
+        RAM.remove(login);
+    }
+
     public static Repository getInstance() {
         return instance;
     }
