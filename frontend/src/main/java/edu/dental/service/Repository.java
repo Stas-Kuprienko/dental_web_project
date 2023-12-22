@@ -2,6 +2,7 @@ package edu.dental.service;
 
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +33,14 @@ public class Repository {
     public void setAccount(String login, Account.DTO dto) {
         Account account = Account.create(dto);
         RAM.put(login, account);
+    }
+
+    public void setDtoAttributes(HttpServletRequest request, String user) {
+        ProductMap map = getMap(user);
+        DentalWork[] works = new DentalWork[0];
+        getWorks(user).toArray(works);
+        request.setAttribute("map", map);
+        request.setAttribute("works", works);
     }
 
     public void delete(String login) {

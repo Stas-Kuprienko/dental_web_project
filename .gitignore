@@ -41,3 +41,5 @@ build/
 /.run/deploy.run.xml
 /frontend/src/main/webapp/draft.html
 /frontend/src/main/webapp/style.css
+/backend/web/apache-tomcat-10.1.16/
+/frontend/apache-tomcat-10.1.16/

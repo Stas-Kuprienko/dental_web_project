@@ -20,7 +20,7 @@ public enum APIManager {
 
     INSTANCE;
 
-    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\service_api\\target\\classes\\service.properties";
+    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\service.properties";
 
     private final Properties service;
 
@@ -44,14 +44,14 @@ public enum APIManager {
     /**
      * Return an instance of the {@link WorkRecordBook}.
      */
-    public WorkRecordBook getWorkRecordBook() {
+    public WorkRecordBook getWorkRecordBook(int userId) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas =
                     (Class<? extends WorkRecordBook>) Class.forName(getClassName(WorkRecordBook.class));
-            Constructor<?> constructor = clas.getDeclaredConstructor();
+            Constructor<?> constructor = clas.getDeclaredConstructor(int.class);
             constructor.setAccessible(true);
-            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance();
+            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(userId);
             constructor.setAccessible(false);
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
@@ -64,14 +64,14 @@ public enum APIManager {
     /**
      * Return an instance of the {@link WorkRecordBook}, with the set argument values in the class fields.
      */
-    public WorkRecordBook getWorkRecordBook(List<DentalWork> records, ProductMap productMap) {
+    public WorkRecordBook getWorkRecordBook(int userId, List<DentalWork> records, ProductMap productMap) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends WorkRecordBook> clas =
                     (Class<? extends WorkRecordBook>) Class.forName(getClassName(WorkRecordBook.class));
-            Constructor<?> constructor = clas.getDeclaredConstructor(List.class, ProductMap.class);
+            Constructor<?> constructor = clas.getDeclaredConstructor(int.class, List.class, ProductMap.class);
             constructor.setAccessible(true);
-            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(records, productMap);
+            WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(userId, records, productMap);
             constructor.setAccessible(false);
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException

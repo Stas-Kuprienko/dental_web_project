@@ -20,25 +20,26 @@ import java.util.NoSuchElementException;
  */
 public interface WorkRecordBook {
 
-    static WorkRecordBook getInstance() {
-        return APIManager.INSTANCE.getWorkRecordBook();
+    static WorkRecordBook createNew(int userId) {
+        return APIManager.INSTANCE.getWorkRecordBook(userId);
     }
 
-    static WorkRecordBook getInstance(List<DentalWork> works, ProductMap map) {
-        return APIManager.INSTANCE.getWorkRecordBook(works, map);
+    static WorkRecordBook getInstance(int userId, List<DentalWork> works, ProductMap map) {
+        return APIManager.INSTANCE.getWorkRecordBook(userId, works, map);
     }
 
-    static WorkRecordBook getInstance(User user) throws WorkRecordBookException {
+    static WorkRecordBook getInstance(int userId) throws WorkRecordBookException {
         DatabaseService db = APIManager.INSTANCE.getDatabaseService();
         List<DentalWork> works;
         ProductMap map;
         try {
-            works = db.getDentalWorkDAO().getAll(user.getId());
-            map = APIManager.INSTANCE.getProductMap(user);
+            works = db.getDentalWorkDAO().getAll(userId);
+            //TODO
+            map = APIManager.INSTANCE.getProductMap(null);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
-        return APIManager.INSTANCE.getWorkRecordBook(works, map);
+        return APIManager.INSTANCE.getWorkRecordBook(userId, works, map);
     }
 
     /**

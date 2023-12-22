@@ -4,11 +4,9 @@ import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.entities.User;
 import edu.dental.dto.DentalWork;
-import edu.dental.dto.ProductMap;
+import edu.dental.entities.User;
 import edu.dental.service.Repository;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,28 +20,29 @@ public final class MyRepository implements Repository {
 
     private final ConcurrentHashMap<String, Account> RAM;
 
-    public void put(User user, WorkRecordBook recordBook) {
+    public Account put(User user, WorkRecordBook recordBook) {
         Account account = new Account(user, recordBook);
         RAM.put(user.getEmail(), account);
+        return account;
     }
 
     @Override
     public User logIn(String login, String password) throws AuthenticationException {
         User user;
-        Account acc = RAM.get(login);
-        if (acc != null) {
-            user = acc.user;
+        Account account = RAM.get(login);
+        if (account != null) {
+            user = account.user;
             if (Authenticator.verification(user, password)) {
-                return acc.user;
+                return account.user;
             }
             throw new AuthenticationException(AuthenticationException.Causes.PASS);
         } else {
             user = Authenticator.authenticate(login, password);
             WorkRecordBook recordBook;
             try {
-                recordBook = WorkRecordBook.getInstance(user);
+                recordBook = WorkRecordBook.getInstance(user.getId());
             } catch (WorkRecordBookException e) {
-                throw new AuthenticationException(e);
+                throw new AuthenticationException(AuthenticationException.Causes.ERROR);
             }
             put(user, recordBook);
             return user;
@@ -51,49 +50,25 @@ public final class MyRepository implements Repository {
     }
 
     @Override
-    public User signUp(String name, String login, String password) throws AuthenticationException {
-        return Authenticator.create(name, login, password);
-    }
-
-    @Override
-    public void setDtoAttributes(HttpServletRequest request, String user) {
-        Account account = get(user);
-        ProductMap map = new ProductMap(account.recordBook.getProductMap());
-        DentalWork[] works = new DentalWork[account.recordBook.getRecords().size()];
-        account.recordBook.getRecords().stream().map(DentalWork::new).toList().toArray(works);
-        request.setAttribute("map", map);
-        request.setAttribute("works", works);
-    }
-
-    @Override
-    public ProductMap getMapDto(String user) {
-        Account account = get(user);
-        return new ProductMap(account.recordBook.getProductMap());
+    public Account signUp(String name, String login, String password) throws AuthenticationException {
+        User user = Authenticator.create(name, login, password);
+        WorkRecordBook recordBook = WorkRecordBook.createNew(user.getId());
+        return put(user, recordBook);
     }
 
     @Override
     public List<DentalWork> getDentalWorkDtoList(String user) {
-        Account account = get(user);
-        return account.recordBook.getRecords().stream().map(DentalWork::new).toList();
+        return get(user).recordBook.getRecords().stream().map(DentalWork::new).toList();
     }
-
 
     @Override
     public User getUser(String login) {
-        Account account = RAM.get(login);
-        if (account == null) {
-            throw new NullPointerException("The user is not found.");
-        }
-        return account.user;
+        return RAM.get(login).user;
     }
 
     @Override
     public WorkRecordBook getRecordBook(String login) {
-        Account account = RAM.get(login);
-        if (account == null) {
-            throw new NullPointerException("The user is not found.");
-        }
-        return account.recordBook;
+        return RAM.get(login).recordBook;
     }
 
     @Override

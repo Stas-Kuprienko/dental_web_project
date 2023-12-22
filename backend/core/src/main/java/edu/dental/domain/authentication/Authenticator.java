@@ -5,8 +5,18 @@ import edu.dental.database.DatabaseService;
 import edu.dental.domain.APIManager;
 import edu.dental.entities.User;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
+import java.time.ZoneId;
+import java.util.Properties;
 
 /**
  * Authenticate a user if such exists.
@@ -36,7 +46,7 @@ public final class Authenticator {
         try {
             user = databaseService.authenticate(login, password);
         } catch (DatabaseException e) {
-            throw new AuthenticationException(e);
+            throw new AuthenticationException(AuthenticationException.Causes.ERROR);
         }
         if (user == null) {
             throw new AuthenticationException(AuthenticationException.Causes.NO);
@@ -50,11 +60,12 @@ public final class Authenticator {
     public static User create(String name, String login, String password) throws AuthenticationException {
         User user = new User(name, login, password);
         try {
-            APIManager.INSTANCE.getDatabaseService().getUserDAO().put(user);
+            if (APIManager.INSTANCE.getDatabaseService().getUserDAO().put(user)) {
+                return user;
+            } else throw new AuthenticationException(AuthenticationException.Causes.ERROR);
         } catch (DatabaseException e) {
-            throw new AuthenticationException(e);
+            throw new AuthenticationException(AuthenticationException.Causes.ERROR);
         }
-        return user;
     }
 
     /**
@@ -98,6 +109,45 @@ public final class Authenticator {
         } catch (NoSuchAlgorithmException e) {
             //TODO logger
             throw new RuntimeException(e);
+        }
+    }
+
+    public static class JwtUtils {
+        private JwtUtils() {}
+
+        private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\src\\main\\resources\\secret_key.properties";
+
+        private static final Properties prop = loadProperties();
+
+        private static final String SECRET_KEY = prop.getProperty("key");
+
+        public static String generateJwtFromEntity(User user) {
+            JwtBuilder jwtBuilder = Jwts.builder()
+                    .setSubject(String.valueOf(user.getId()))
+                    .setIssuedAt(Date.from(user.getCreated().atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY);
+
+            jwtBuilder.claim("user", user.getEmail());
+
+            return jwtBuilder.compact();
+        }
+
+        public static Claims parseJwt(String jwt) {
+            return Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(jwt)
+                    .getBody();
+        }
+
+        private static Properties loadProperties() {
+            try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
+                Properties prop = new Properties();
+                prop.load(fileInput);
+                return prop;
+            } catch (IOException e) {
+                //TODO loggers
+                throw new RuntimeException(e);
+            }
         }
     }
 }

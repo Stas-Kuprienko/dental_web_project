@@ -48,7 +48,7 @@ public class ContextInitializer implements ServletContextListener {
             //TODO logger
             throw new RuntimeException();
         }
-        if (!(Arrays.stream(APIManager.INSTANCE.getWorkRecordBook()
+        if (!(Arrays.stream(APIManager.INSTANCE.getWorkRecordBook(0)
                 .getClass().getInterfaces()).toList().contains(WorkRecordBook.class))) {
             //TODO logger
             throw new RuntimeException();

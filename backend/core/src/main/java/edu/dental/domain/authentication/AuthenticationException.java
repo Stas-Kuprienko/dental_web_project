@@ -33,7 +33,9 @@ public class AuthenticationException extends Exception {
 
         NO("The specified user is not found."),
 
-        PASS("The specified password is incorrect.");
+        PASS("The specified password is incorrect."),
+
+        ERROR("Happen exception on server.");
 
 
         public final String cause;
