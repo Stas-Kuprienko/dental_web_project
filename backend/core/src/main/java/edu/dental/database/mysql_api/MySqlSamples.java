@@ -1,8 +1,6 @@
 package edu.dental.database.mysql_api;
 
-import edu.dental.database.dao.DAO;
-
-public enum MySqlSamples implements DAO.Queries {
+public enum MySqlSamples {
 
     INSERT("INSERT INTO %s (%s) VALUES (%s);"),
 

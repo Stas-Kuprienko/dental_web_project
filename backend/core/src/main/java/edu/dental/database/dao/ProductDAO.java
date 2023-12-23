@@ -24,4 +24,15 @@ public interface ProductDAO {
     boolean deleteAll() throws DatabaseException;
 
     boolean delete(String title) throws DatabaseException;
+
+
+    class Request extends DAORequest {
+        public Request(String query) throws SQLException {
+            super(query);
+        }
+
+        public Request() throws SQLException {
+            super();
+        }
+    }
 }

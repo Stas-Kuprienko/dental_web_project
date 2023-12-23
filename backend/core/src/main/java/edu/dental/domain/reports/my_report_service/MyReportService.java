@@ -2,6 +2,7 @@ package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
+import edu.dental.database.dao.ReportDAO;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.reports.IFileTool;
 import edu.dental.domain.reports.MonthlyReport;
@@ -60,9 +61,9 @@ public class MyReportService implements ReportService {
 
     @Override
     public boolean saveSalariesToFile(User user) throws ReportServiceException {
-        DatabaseService db = APIManager.INSTANCE.getDatabaseService();
+        ReportDAO report = APIManager.INSTANCE.getDatabaseService().getReportDAO();
         try {
-            SalaryRecord[] salaries = db.countAllSalaries(user);
+            SalaryRecord[] salaries = report.countAllSalaries(user.getId());
             DataArrayTool arrayTool = new DataArrayTool(salaries);
             String nameTable = user.getName() + "_salaries_list";
             IFileTool fileTool = new XLSXFilesTool(nameTable, arrayTool.getResult());

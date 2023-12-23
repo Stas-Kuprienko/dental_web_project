@@ -4,7 +4,6 @@ import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.ProductMapDAO;
 import edu.dental.domain.APIManager;
-import edu.dental.entities.User;
 import edu.dental.entities.ProductMap;
 
 import java.sql.PreparedStatement;
@@ -20,8 +19,8 @@ public class ProductMapMySql implements ProductMapDAO {
 
     private final int userId;
 
-    ProductMapMySql(User user) {
-        this.userId = user.getId();
+    ProductMapMySql(int userId) {
+        this.userId = userId;
     }
 
     @Override

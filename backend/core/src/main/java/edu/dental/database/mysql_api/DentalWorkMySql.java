@@ -3,7 +3,6 @@ package edu.dental.database.mysql_api;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.TableInitializer;
-import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
@@ -31,7 +30,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
         try (Request request = new Request()){
             Statement statement = request.getStatement();
             for (DentalWork dw : list) {
-                String query = buildUpdateQuery(dw);
+                String query = buildInsertQuery(dw);
                 statement.addBatch(query);
             }
             return statement.executeBatch().length == list.size();
@@ -172,12 +171,12 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
     @Override
-    public boolean setFieldValue(List<DentalWork> list, String field, Object value) throws DatabaseException {
+    public boolean setFieldValue(int userId, List<DentalWork> list, String field, Object value) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             return false;
         }
         String set = field + " = ?";
-        String where = "user_id = " + list.get(0).getUserId() + " AND id = ?";
+        String where = "user_id = " + userId + " AND id = ?";
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, set, where);
         try (Request request = new Request(query)){
             PreparedStatement statement = request.getPreparedStatement();
@@ -239,7 +238,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
         }
     }
 
-    private String buildUpdateQuery(DentalWork dw) {
+    private String buildInsertQuery(DentalWork dw) {
         String values = "DEFAULT, '%s', '%s', '%s', '%s', '%s', '%s', %s";
         values = String.format(values, dw.getPatient(), dw.getClinic(), dw.getAccepted(),
                 dw.getComplete(), dw.getStatus(), dw.getComment(), dw.getReportId());
@@ -247,7 +246,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
 
-    protected static class DentalWorkInstantiation implements DAO.Instantiating<DentalWork> {
+    protected static class DentalWorkInstantiation implements Instantiating<DentalWork> {
 
         private final SimpleList<DentalWork> recordsList;
         private final ResultSet resultSet;

@@ -2,8 +2,8 @@ package edu.dental.database.mysql_api;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
+import edu.dental.database.dao.Instantiation;
 import edu.dental.database.dao.UserDAO;
-import edu.dental.domain.authentication.Authenticator;
 import edu.dental.entities.User;
 import utils.collections.SimpleList;
 
@@ -20,10 +20,6 @@ public class UserMySql implements UserDAO {
 
     UserMySql() {}
 
-    @Override
-    public boolean putAll(List<User> list) throws DatabaseException {
-        return false;
-    }
 
     @Override
     public boolean put(User object) throws DatabaseException {
@@ -45,7 +41,6 @@ public class UserMySql implements UserDAO {
         }
     }
 
-    @Override
     public List<User> getAll() throws DatabaseException {
         String query = String.format(MySqlSamples.SELECT_ALL.QUERY, "*", TABLE);
         SimpleList<User> usersList;
@@ -75,19 +70,17 @@ public class UserMySql implements UserDAO {
 
     /**
      *
-     * @param args 2 arguments - user {@linkplain User#getEmail() email} and {@linkplain User#getPassword() password}.
+     * @param login user {@linkplain User#getEmail() email}.
      * @return specified {@link User} list.
      * @throws DatabaseException
      */
     @Override
-    public SimpleList<User> search(Object... args) throws DatabaseException {
-        String where = "email = ? AND password = ?";
-        byte[] password = Authenticator.passwordHash((String) args[1]);
+    public SimpleList<User> search(String login) throws DatabaseException {
+        String where = "email = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         ResultSet resultSet;
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setString(1, (String) args[0]);
-            request.getPreparedStatement().setBlob(2, new SerialBlob(password));
+            request.getPreparedStatement().setString(1, login);
             resultSet = request.getPreparedStatement().executeQuery();
             return (SimpleList<User>) new UserInstantiation(resultSet).build();
         } catch (SQLException | IOException |
@@ -130,7 +123,7 @@ public class UserMySql implements UserDAO {
         }
     }
 
-    protected static class UserInstantiation implements Instantiating<User> {
+    protected static class UserInstantiation implements Instantiation<User> {
 
         private final SimpleList<User> usersList;
         private final ResultSet resultSet;

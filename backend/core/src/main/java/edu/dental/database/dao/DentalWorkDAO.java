@@ -3,6 +3,7 @@ package edu.dental.database.dao;
 import edu.dental.database.DatabaseException;
 import edu.dental.entities.DentalWork;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -22,13 +23,13 @@ public interface DentalWorkDAO {
 
     boolean edit(DentalWork object) throws DatabaseException;
 
-    boolean setFieldValue(List<DentalWork> list, String field, Object value) throws DatabaseException;
+    boolean setFieldValue(int userId, List<DentalWork> list, String field, Object value) throws DatabaseException;
 
     int setReportId(List<DentalWork> list, String month, String year) throws  DatabaseException;
 
     boolean delete(int id) throws DatabaseException;
 
-    class Request extends DAO.Request {
+    class Request extends DAORequest {
         public Request(String query) throws SQLException {
             super(query);
         }
@@ -36,5 +37,11 @@ public interface DentalWorkDAO {
         public Request() throws SQLException {
             super();
         }
+    }
+
+    interface Instantiating<T> {
+
+        List<T> build() throws SQLException, IOException, DatabaseException;
+
     }
 }

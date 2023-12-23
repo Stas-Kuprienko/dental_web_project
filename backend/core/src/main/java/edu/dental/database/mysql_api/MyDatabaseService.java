@@ -20,8 +20,9 @@ public class MyDatabaseService implements DatabaseService {
         return new MySqlInitializer();
     }
 
-    public User authenticate(String login, String password) throws DatabaseException {
-        return new UserMySql().search(login, password).get(0);
+    @Override
+    public User findUser(String login) throws DatabaseException {
+        return new UserMySql().search(login).get(0);
     }
 
     @Override
@@ -30,8 +31,8 @@ public class MyDatabaseService implements DatabaseService {
     }
 
     @Override
-    public ProductMapDAO getProductMapDAO(User user) {
-            return new ProductMapMySql(user);
+    public ProductMapDAO getProductMapDAO(int userId) {
+            return new ProductMapMySql(userId);
     }
 
     @Override
@@ -45,22 +46,7 @@ public class MyDatabaseService implements DatabaseService {
     }
 
     @Override
-    public SalaryRecord[] countAllSalaries(User user) throws DatabaseException {
-        SimpleList<SalaryRecord> records = new SimpleList<>();
-        try (DAO.Request request = new DAO.Request(MySqlSamples.ALL_SALARIES.QUERY)) {
-            request.getPreparedStatement().setInt(1, user.getId());
-            ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            while (resultSet.next()) {
-                String month = resultSet.getString(1);
-                int year = resultSet.getInt(2);
-                int amount = resultSet.getInt(3);
-                SalaryRecord salary = new SalaryRecord(year, month, amount);
-                records.add(salary);
-            }
-            resultSet.close();
-            return records.toArray(new SalaryRecord[]{});
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
-        }
+    public ReportDAO getReportDAO() {
+        return new ReportMySql();
     }
 }

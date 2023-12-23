@@ -17,7 +17,7 @@ public interface ProductMapDAO {
 
     boolean delete(int id) throws DatabaseException;
 
-    class Request extends DAO.Request {
+    class Request extends DAORequest {
 
         public Request(String query) throws SQLException {
             super(query);
