@@ -5,9 +5,9 @@
 <web-app>
   <display-name>dental-api</display-name>
 
-  <listener>
-    <listener-class>edu.dental.service.ContextInitializer</listener-class>
-  </listener>
+<!--  <listener>-->
+<!--    <listener-class>edu.dental.service.ContextInitializer</listener-class>-->
+<!--  </listener>-->
 
   <servlet>
     <servlet-name>jsonDentalWorks</servlet-name>

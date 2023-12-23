@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
-@WebListener("/")
+//@WebListener("/")
 public class ContextInitializer implements ServletContextListener {
 
     @Override

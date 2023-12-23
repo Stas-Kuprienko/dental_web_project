@@ -1,4 +1,4 @@
-package edu.dental.web.control;
+package edu.dental.servlets.control;
 
 import edu.dental.service.Repository;
 import jakarta.servlet.ServletException;

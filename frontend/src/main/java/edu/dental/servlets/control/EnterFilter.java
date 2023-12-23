@@ -1,4 +1,4 @@
-package edu.dental.web.control;
+package edu.dental.servlets.control;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;

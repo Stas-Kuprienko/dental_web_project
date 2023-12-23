@@ -1,4 +1,4 @@
-package edu.dental.web.works;
+package edu.dental.servlets.works;
 
 import edu.dental.beans.DentalWork;
 import jakarta.servlet.ServletException;

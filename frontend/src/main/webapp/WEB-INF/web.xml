@@ -7,12 +7,12 @@
 
 <!--  <filter>-->
 <!--    <filter-name>mainFilter</filter-name>-->
-<!--    <filter-class>edu.dental.web.control.MainFilter</filter-class>-->
+<!--    <filter-class>edu.dental.servlets.control.MainFilter</filter-class>-->
 <!--  </filter>-->
 
 <!--  <filter>-->
 <!--    <filter-name>enterFilter</filter-name>-->
-<!--    <filter-class>edu.dental.web.control.EnterFilter</filter-class>-->
+<!--    <filter-class>edu.dental.servlets.control.EnterFilter</filter-class>-->
 <!--  </filter>-->
 
   <servlet>
@@ -22,12 +22,12 @@
 
   <servlet>
     <servlet-name>logIn</servlet-name>
-    <servlet-class>edu.dental.web.control.Authorization</servlet-class>
+    <servlet-class>edu.dental.servlets.control.Authorization</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>register</servlet-name>
-    <servlet-class>edu.dental.web.control.Registration</servlet-class>
+    <servlet-class>edu.dental.servlets.control.Registration</servlet-class>
   </servlet>
 
   <servlet>
@@ -37,7 +37,7 @@
 
   <servlet>
     <servlet-name>workListServlet</servlet-name>
-    <servlet-class>edu.dental.web.works.WorkListServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.works.WorkListServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -47,7 +47,7 @@
 
   <servlet>
     <servlet-name>dentalWork</servlet-name>
-    <servlet-class>edu.dental.web.works.DentalWorkServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.works.DentalWorkServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -57,7 +57,7 @@
 
   <servlet>
     <servlet-name>sorting</servlet-name>
-    <servlet-class>edu.dental.web.works.WorkSorting</servlet-class>
+    <servlet-class>edu.dental.servlets.works.WorkSorting</servlet-class>
   </servlet>
 
   <servlet>
@@ -77,7 +77,7 @@
 
   <servlet>
     <servlet-name>saveFile</servlet-name>
-    <servlet-class>edu.dental.web.reports.ReportDownloader</servlet-class>
+    <servlet-class>edu.dental.servlets.reports.ReportDownloader</servlet-class>
   </servlet>
 
   <servlet-mapping>

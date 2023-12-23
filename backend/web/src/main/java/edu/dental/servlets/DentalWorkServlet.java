@@ -18,7 +18,8 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String user = request.getParameter("user");
-        List<DentalWork> works = Repository.getInstance().getDentalWorkDtoList(user);
+        //TODO
+        List<DentalWork> works = Repository.getInstance().getDentalWorkDtoList(0);
         String json = JsonObjectParser.getInstance().parseToJson(works.toArray());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

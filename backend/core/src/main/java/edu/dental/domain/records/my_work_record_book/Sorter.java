@@ -9,10 +9,10 @@ import java.util.List;
 
 public class Sorter implements SorterTool<DentalWork> {
 
-    private final List<DentalWork> data;
+    private final List<DentalWork> works;
 
-    public Sorter(List<DentalWork> data) {
-        this.data = data;
+    public Sorter(List<DentalWork> works) {
+        this.works = works;
     }
 
     @Override
@@ -20,13 +20,23 @@ public class Sorter implements SorterTool<DentalWork> {
         //TODO
         SimpleList<DentalWork> result = new SimpleList<>();
         LocalDate today = LocalDate.now();
-        for (DentalWork dw : data) {
+        boolean isCurrentMonth = today.getMonth().getValue() == month;
+        for (DentalWork dw : works) {
             if (dw.getStatus().ordinal() > 1) {
-                data.remove(dw);
-            } else if (dw.getComplete().isBefore(today)) {
-                dw.setStatus(DentalWork.Status.CLOSED);
+                works.remove(dw);
                 result.add(dw);
-
+            } else {
+                if (isCurrentMonth) {
+                    if (dw.getComplete().isBefore(today)) {
+                        dw.setStatus(DentalWork.Status.CLOSED);
+                        result.add(dw);
+                    }
+                } else {
+                    if (dw.getComplete().getMonth().getValue() <= month) {
+                        dw.setStatus(DentalWork.Status.CLOSED);
+                        result.add(dw);
+                    }
+                }
             }
         }
         return result;

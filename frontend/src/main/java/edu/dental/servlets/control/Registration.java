@@ -1,7 +1,5 @@
-package edu.dental.web.control;
+package edu.dental.servlets.control;
 
-import edu.dental.beans.User;
-import edu.dental.service.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

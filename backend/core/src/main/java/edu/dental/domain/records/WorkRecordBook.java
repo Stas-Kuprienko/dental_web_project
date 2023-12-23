@@ -28,18 +28,18 @@ public interface WorkRecordBook {
         return APIManager.INSTANCE.getWorkRecordBook(userId, works, map);
     }
 
-    static WorkRecordBook getInstance(int userId) throws WorkRecordBookException {
+    static WorkRecordBook getInstance(User user) throws WorkRecordBookException {
         DatabaseService db = APIManager.INSTANCE.getDatabaseService();
         List<DentalWork> works;
         ProductMap map;
         try {
-            works = db.getDentalWorkDAO().getAll(userId);
+            works = db.getDentalWorkDAO().getAll(user.getId());
             //TODO
-            map = APIManager.INSTANCE.getProductMap(null);
+            map = APIManager.INSTANCE.getProductMap(user);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
-        return APIManager.INSTANCE.getWorkRecordBook(userId, works, map);
+        return APIManager.INSTANCE.getWorkRecordBook(user.getId(), works, map);
     }
 
     /**
