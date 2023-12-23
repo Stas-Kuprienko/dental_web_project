@@ -1,7 +1,6 @@
 package edu.dental.service;
 
 import edu.dental.WebAPI;
-import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWork;
 import edu.dental.entities.User;
@@ -17,19 +16,15 @@ public interface Repository {
 
     MyRepository.Account put(User user, WorkRecordBook recordBook);
 
-    User logIn(String login, String password) throws AuthenticationException;
+    Account get(int id);
 
-    Account signUp(String name, String login, String password) throws AuthenticationException;
+    List<DentalWork> getDentalWorkDtoList(int id);
 
-    Account get(String login);
+    User getUser(int id);
 
-    List<DentalWork> getDentalWorkDtoList(String user);
+    WorkRecordBook getRecordBook(int id);
 
-    User getUser(String login);
-
-    WorkRecordBook getRecordBook(String login);
-
-    void delete(String login);
+    void delete(int id);
 
 
     interface Account {

@@ -44,7 +44,7 @@ public final class Authenticator {
         User user;
         DatabaseService databaseService = DatabaseService.getInstance();
         try {
-            user = databaseService.authenticate(login, password);
+            user = databaseService.findUser(login);
         } catch (DatabaseException e) {
             throw new AuthenticationException(AuthenticationException.Causes.ERROR);
         }
@@ -127,8 +127,6 @@ public final class Authenticator {
                     .setIssuedAt(Date.from(user.getCreated().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                     .signWith(SignatureAlgorithm.HS256, SECRET_KEY);
 
-            jwtBuilder.claim("user", user.getEmail());
-
             return jwtBuilder.compact();
         }
 
@@ -137,6 +135,10 @@ public final class Authenticator {
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(jwt)
                     .getBody();
+        }
+
+        public static int getId(String jwt) {
+            return Integer.parseInt(parseJwt(jwt).getId());
         }
 
         private static Properties loadProperties() {
