@@ -29,16 +29,16 @@ public class ProductMap {
         return Arrays.stream(items).map(e -> e.key).toList().toArray(result);
     }
 
-    public boolean isEmpty() {
-        return items.length == 0;
-    }
-
     public Item[] getItems() {
         return items;
     }
 
     public void setItems(Item[] items) {
         this.items = items;
+    }
+
+    public boolean isEmpty() {
+        return items.length == 0;
     }
 
     @Override

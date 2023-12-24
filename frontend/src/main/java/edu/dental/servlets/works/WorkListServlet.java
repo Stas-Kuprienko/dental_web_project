@@ -23,6 +23,11 @@ public class WorkListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String user = (String) request.getSession().getAttribute("user");
         String url = "http://localhost:8081/dental/api/dental-works?user=" + user;
         String json = getJson(url, request.getSession().getId());
@@ -30,16 +35,11 @@ public class WorkListServlet extends HttpServlet {
         request.setAttribute("works", works);
 
         //temporary
-        ProductMap mapDTO = Repository.getInstance().getMap(user);
+        ProductMap mapDTO = Repository.getInstance().getMap(0);
         request.setAttribute("map", mapDTO);
         // *** //
 
         request.getRequestDispatcher("/main/work-list/page").forward(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
     }
 
     private String getJson(String resource, String sessionId) throws IOException {

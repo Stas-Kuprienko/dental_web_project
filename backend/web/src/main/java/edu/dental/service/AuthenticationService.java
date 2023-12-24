@@ -4,6 +4,7 @@ import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
 
 public final class AuthenticationService {
@@ -18,7 +19,7 @@ public final class AuthenticationService {
         return jwt;
     }
 
-    public static String authorization(String login, String password) throws AuthenticationException {
+    public static UserDto authorization(String login, String password) throws AuthenticationException {
         User user = Authenticator.authenticate(login, password);
         String jwt = Authenticator.JwtUtils.generateJwtFromEntity(user);
         try {
@@ -26,7 +27,7 @@ public final class AuthenticationService {
         } catch (WorkRecordBookException e) {
             throw new AuthenticationException(AuthenticationException.Causes.ERROR);
         }
-        return jwt;
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), jwt);
     }
 
     public static int verification(String jwt) {

@@ -50,7 +50,7 @@ public class WorkViewPage {
 
         public OptionBuilder(HttpServletRequest request) {
             String login = (String) request.getSession().getAttribute("user");
-            ProductMap productMap = Repository.getInstance().getMap(login);
+            ProductMap productMap = Repository.getInstance().getMap(0);
             if (productMap == null || productMap.isEmpty()) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {

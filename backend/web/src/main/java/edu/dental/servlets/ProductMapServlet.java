@@ -1,6 +1,6 @@
 package edu.dental.servlets;
 
-import edu.dental.dto.DentalWork;
+import edu.dental.dto.ProductMap;
 import edu.dental.service.AuthenticationService;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.Repository;
@@ -11,10 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet("/dental-works")
-public class DentalWorkServlet extends HttpServlet {
+@WebServlet("/product-map")
+public class ProductMapServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -24,8 +23,8 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = AuthenticationService.verification(request.getParameter("jwt"));
-        List<DentalWork> works = Repository.getInstance().getDentalWorkDtoList(userId);
-        String json = JsonObjectParser.getInstance().parseToJson(works.toArray());
+        ProductMap map = Repository.getInstance().getProductMapDto(userId);
+        String json = JsonObjectParser.getInstance().parseToJson(map.getItems());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().print(json);

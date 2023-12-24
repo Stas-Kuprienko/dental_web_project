@@ -10,8 +10,18 @@
 <!--  </listener>-->
 
   <servlet>
-    <servlet-name>jsonDentalWorks</servlet-name>
+    <servlet-name>logIn</servlet-name>
+    <servlet-class>edu.dental.servlets.AuthorizationServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>dentalWorks</servlet-name>
     <servlet-class>edu.dental.servlets.DentalWorkServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>productMap</servlet-name>
+    <servlet-class>edu.dental.servlets.ProductMapServlet</servlet-class>
   </servlet>
 
 </web-app>

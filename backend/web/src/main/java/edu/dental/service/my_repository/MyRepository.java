@@ -2,6 +2,7 @@ package edu.dental.service.my_repository;
 
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWork;
+import edu.dental.dto.ProductMap;
 import edu.dental.entities.User;
 import edu.dental.service.Repository;
 
@@ -26,6 +27,11 @@ public final class MyRepository implements Repository {
     @Override
     public List<DentalWork> getDentalWorkDtoList(int id) {
         return get(id).recordBook.getRecords().stream().map(DentalWork::new).toList();
+    }
+
+    @Override
+    public ProductMap getProductMapDto(int id) {
+        return new ProductMap(get(id).recordBook.getProductMap());
     }
 
     @Override

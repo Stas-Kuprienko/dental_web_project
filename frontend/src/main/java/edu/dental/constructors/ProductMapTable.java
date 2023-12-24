@@ -18,7 +18,7 @@ public class ProductMapTable {
 
     public ProductMapTable(HttpServletRequest request) {
         String user = (String) request.getSession().getAttribute("user");
-        ProductMap map = Repository.getInstance().getMap(user);
+        ProductMap map = Repository.getInstance().getMap(0);
         this.iterator = map.iterator();
         String strId = request.getParameter("id");
         id = (strId == null || strId.isEmpty()) ? 0 : Integer.parseInt(strId);

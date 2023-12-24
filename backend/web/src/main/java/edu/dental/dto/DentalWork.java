@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class DentalWork {
 
-    private int id;
+    private final int id;
     private String patient;
     private String clinic;
     private Product[] products;
@@ -38,40 +38,36 @@ public class DentalWork {
         dw.getProducts().stream().map(Product::parse).toList().toArray(products);
     }
 
-    public int id() {
+    public int getId() {
         return id;
     }
 
-    public String patient() {
+    public String getPatient() {
         return patient;
     }
 
-    public String clinic() {
+    public String getClinic() {
         return clinic;
     }
 
-    public Product[] products() {
+    public Product[] getProducts() {
         return products;
     }
 
-    public String accepted() {
+    public String getAccepted() {
         return accepted;
     }
 
-    public String complete() {
+    public String getComplete() {
         return complete;
     }
 
-    public String comment() {
+    public String getComment() {
         return comment;
     }
 
-    public String status() {
+    public String getStatus() {
         return status;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setPatient(String patient) {

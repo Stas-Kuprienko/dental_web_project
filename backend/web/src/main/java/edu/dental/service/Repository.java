@@ -3,6 +3,7 @@ package edu.dental.service;
 import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWork;
+import edu.dental.dto.ProductMap;
 import edu.dental.entities.User;
 import edu.dental.service.my_repository.MyRepository;
 
@@ -19,6 +20,8 @@ public interface Repository {
     Account get(int id);
 
     List<DentalWork> getDentalWorkDtoList(int id);
+
+    ProductMap getProductMapDto(int id);
 
     User getUser(int id);
 
