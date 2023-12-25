@@ -6,6 +6,7 @@ import edu.dental.beans.UserDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,6 +35,12 @@ public class Repository {
     public void setAccount(UserDto user, List<DentalWork> works, ProductMap map) {
         Account account = new Account(user, map, works);
         RAM.put(user.id(), account);
+    }
+
+    public void addNew(UserDto userDto) {
+        List<DentalWork> workList = new ArrayList<>();
+        Account account = new Account(userDto, new ProductMap(), workList);
+        RAM.put(userDto.id(), account);
     }
 
     public void delete(int id) {

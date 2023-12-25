@@ -1,5 +1,10 @@
 package edu.dental.servlets.control;
 
+import edu.dental.WebAPI;
+import edu.dental.beans.UserDto;
+import edu.dental.service.JsonObjectParser;
+import edu.dental.service.Repository;
+import edu.dental.servlets.RequestSender;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,6 +16,11 @@ import java.io.IOException;
 @WebServlet("/new-user")
 public class Registration extends HttpServlet {
 
+    public final String paramName = "name";
+    public final String paramEmail = "email";
+    public final String paramPassword = "password";
+    public final String signUpUrl = "sign-up";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/sign-up").forward(request, response);
@@ -18,19 +28,26 @@ public class Registration extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String name = request.getParameter(paramName);
+        String email = request.getParameter(paramEmail);
+        String password = request.getParameter(paramPassword);
+        if (email == null || password == null) {
+            request.getRequestDispatcher("/sign-up").forward(request, response);
+        } else {
+            RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
 
-//        if (name != null && email != null && password != null) {
-//            try {
-//                User user = Repository.getInstance().signUp(name, email, password);
-//                request.getSession().setAttribute("user", user.getEmail());
-//                request.getRequestDispatcher("/main").forward(request, response);
-//            } catch (AuthenticationException e) {
-//                //TODO
-//                request.getRequestDispatcher("/error").forward(request, response);
-//            }
-//        }
+            queryFormer.add(paramName, name);
+            queryFormer.add(paramEmail, email);
+            queryFormer.add(paramPassword, password);
+            String requestParameters = queryFormer.form();
+
+            String jsonUser = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(signUpUrl, requestParameters);
+            UserDto user = JsonObjectParser.parser.fromJson(jsonUser, UserDto.class);
+
+            Repository.getInstance().addNew(user);
+            request.getSession().setAttribute(WebAPI.INSTANCE.sessionAttribute, user.id());
+
+            request.getRequestDispatcher("/main").forward(request, response);
+        }
     }
 }

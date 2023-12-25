@@ -15,6 +15,11 @@
   </listener>
 
   <servlet>
+    <servlet-name>signUp</servlet-name>
+    <servlet-class>edu.dental.servlets.RegistrationServlet</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>logIn</servlet-name>
     <servlet-class>edu.dental.servlets.AuthorizationServlet</servlet-class>
   </servlet>

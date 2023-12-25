@@ -5,15 +5,15 @@
 <web-app>
   <display-name>dental-mechanic</display-name>
 
-<!--  <filter>-->
-<!--    <filter-name>mainFilter</filter-name>-->
-<!--    <filter-class>edu.dental.servlets.control.MainFilter</filter-class>-->
-<!--  </filter>-->
+  <filter>
+    <filter-name>mainFilter</filter-name>
+    <filter-class>edu.dental.servlets.control.MainFilter</filter-class>
+  </filter>
 
-<!--  <filter>-->
-<!--    <filter-name>enterFilter</filter-name>-->
-<!--    <filter-class>edu.dental.servlets.control.EnterFilter</filter-class>-->
-<!--  </filter>-->
+  <filter>
+    <filter-name>enterFilter</filter-name>
+    <filter-class>edu.dental.servlets.control.EnterFilter</filter-class>
+  </filter>
 
   <servlet>
     <servlet-name>signUp</servlet-name>

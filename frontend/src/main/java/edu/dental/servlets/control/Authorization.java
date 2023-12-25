@@ -55,10 +55,11 @@ public class Authorization extends HttpServlet {
             List<DentalWork> works = List.of(JsonObjectParser.parser.fromJson(jsonWorks, DentalWork[].class));
 
             String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(productMapUrl, tokenParameter);
-            ProductMap map = new ProductMap(JsonObjectParser.parser.fromJson(jsonMap, ProductMap.Item[].class));
+            List<ProductMap.Item> items = List.of(JsonObjectParser.parser.fromJson(jsonMap, ProductMap.Item[].class));
+            ProductMap map = new ProductMap(items);
 
             Repository.getInstance().setAccount(user, works, map);
-            request.getSession().setAttribute("user", user.id());
+            request.getSession().setAttribute(WebAPI.INSTANCE.sessionAttribute, user.id());
 
             request.getRequestDispatcher("/main").forward(request, response);
         }

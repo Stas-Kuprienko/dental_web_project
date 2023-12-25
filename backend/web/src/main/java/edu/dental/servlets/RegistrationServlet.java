@@ -12,8 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/log-in")
-public class AuthorizationServlet extends HttpServlet {
+@WebServlet("/sign-up")
+public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -22,10 +22,11 @@ public class AuthorizationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String name = request.getParameter("name");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         try {
-            UserDto user = AuthenticationService.authorization(email, password);
+            UserDto user = AuthenticationService.registration(name, email, password);
             String jsonUser = JsonObjectParser.getInstance().parseToJson(user);
             response.setContentType("text/plain");
             response.setCharacterEncoding("UTF-8");

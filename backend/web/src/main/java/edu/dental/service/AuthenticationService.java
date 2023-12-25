@@ -12,11 +12,11 @@ public final class AuthenticationService {
     private AuthenticationService() {}
 
 
-    public static String registration(String name, String email, String password) throws AuthenticationException {
+    public static UserDto registration(String name, String email, String password) throws AuthenticationException {
         User user = Authenticator.create(name, email, password);
         String jwt = Authenticator.JwtUtils.generateJwtFromEntity(user);
         Repository.getInstance().put(user, WorkRecordBook.createNew(user.getId()));
-        return jwt;
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), jwt);
     }
 
     public static UserDto authorization(String login, String password) throws AuthenticationException {

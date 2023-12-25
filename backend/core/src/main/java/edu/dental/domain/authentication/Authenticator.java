@@ -107,11 +107,15 @@ public final class Authenticator {
     }
 
     public static class JwtUtils {
+
         private JwtUtils() {}
+        static {
+            SECRET_KEY = loadProperties().getProperty("key");
+        }
 
         private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\secret_key.properties";
+        private static final String SECRET_KEY;
 
-        private static final String SECRET_KEY = "secret";
 
         public static String generateJwtFromEntity(User user) {
             JwtBuilder jwtBuilder = Jwts.builder()

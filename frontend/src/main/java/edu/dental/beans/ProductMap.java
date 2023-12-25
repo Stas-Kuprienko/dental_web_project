@@ -1,35 +1,37 @@
 package edu.dental.beans;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
 
 public class ProductMap {
 
-    private Item[] items;
+    private List<Item> items;
 
-    public ProductMap(Item[] items) {
+    public ProductMap(List<Item> items) {
         this.items = items;
+    }
+    public ProductMap() {
+        this.items = new ArrayList<>();
     }
 
     public Iterator<Item> iterator() {
-        return Arrays.stream(items).iterator();
+        return items.iterator();
     }
 
     public String[] getKeys() {
-        String[] result = new String[items.length];
-        return Arrays.stream(items).map(e -> e.key).toList().toArray(result);
+        String[] result = new String[items.size()];
+        return items.stream().map(e -> e.key).toList().toArray(result);
     }
 
     public boolean isEmpty() {
-        return items.length == 0;
+        return items.isEmpty();
     }
 
     public Item[] getItems() {
-        return items;
+        Item[] result = new Item[items.size()];
+        return items.toArray(result);
     }
 
-    public void setItems(Item[] items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 
@@ -38,18 +40,18 @@ public class ProductMap {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductMap that = (ProductMap) o;
-        return Arrays.equals(items, that.items);
+        return Objects.equals(items, that.items);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(items);
+        return Objects.hash(items);
     }
 
     @Override
     public String toString() {
         return "ProductMap{" +
-                "items=" + Arrays.toString(items) +
+                "items=" + items +
                 '}';
     }
 

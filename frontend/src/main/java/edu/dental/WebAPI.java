@@ -6,6 +6,8 @@ public enum WebAPI {
 
     INSTANCE;
 
+    public final String sessionAttribute = "user";
+
     private static final String apiUrl = "http://localhost:8080/dental-api/";
 
     private final RequestSender requestSender;

@@ -1,8 +1,10 @@
 package edu.dental.constructors;
 
+import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.beans.ProductMap;
+import edu.dental.service.Repository;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
@@ -83,9 +85,8 @@ public class WorkListTable {
         private final Iterator<String> map;
 
         private Header(HttpServletRequest request) {
-            String login = (String) request.getSession().getAttribute("user");
-            //TODO !!!!!!!!!!
-            ProductMap productMap = null;
+            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+            ProductMap productMap = Repository.getInstance().getMap(userId);
             if (productMap == null || productMap.isEmpty()) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {
