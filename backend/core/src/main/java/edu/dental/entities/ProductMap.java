@@ -11,8 +11,8 @@ public interface ProductMap extends Map<String, Integer> {
         return APIManager.INSTANCE.getProductMap();
     }
 
-    static ProductMap getInstance(User user) {
-        return APIManager.INSTANCE.getProductMap(user);
+    static ProductMap getInstance(int userId) {
+        return APIManager.INSTANCE.getProductMap(userId);
     }
 
     Product createProduct(String title, int quantity);

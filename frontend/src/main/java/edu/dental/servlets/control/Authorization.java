@@ -22,8 +22,9 @@ public class Authorization extends HttpServlet {
     public final String paramEmail = "email";
     public final String paramPassword = "password";
     public final String logInUrl = "log-in";
-    public final String dentalWorkUrl = "dental-works";
-    public final String productMapUrl = "product-map";
+    public final String paramToken = "token";
+    public final String dentalWorkUrl = "main/dental-works";
+    public final String productMapUrl = "main/product-map";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,6 +39,7 @@ public class Authorization extends HttpServlet {
             request.getRequestDispatcher("/").forward(request, response);
         } else {
             RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+
             queryFormer.add(paramEmail, email);
             queryFormer.add(paramPassword, password);
             String requestParameters = queryFormer.form();
@@ -45,10 +47,14 @@ public class Authorization extends HttpServlet {
             String jsonUser = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(logInUrl, requestParameters);
             UserDto user = JsonObjectParser.parser.fromJson(jsonUser, UserDto.class);
 
-            String jsonWorks = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(dentalWorkUrl, user.jwt());
+            queryFormer.reset();
+            queryFormer.add(paramToken, user.jwt());
+            String tokenParameter = queryFormer.form();
+
+            String jsonWorks = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(dentalWorkUrl, tokenParameter);
             List<DentalWork> works = List.of(JsonObjectParser.parser.fromJson(jsonWorks, DentalWork[].class));
 
-            String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(productMapUrl, user.jwt());
+            String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(productMapUrl, tokenParameter);
             ProductMap map = new ProductMap(JsonObjectParser.parser.fromJson(jsonMap, ProductMap.Item[].class));
 
             Repository.getInstance().setAccount(user, works, map);

@@ -98,14 +98,14 @@ public enum APIManager {
         }
     }
 
-    public ProductMap getProductMap(User user) {
+    public ProductMap getProductMap(int userId) {
         try {
             @SuppressWarnings("unchecked")
             Class<? extends ProductMapDAO> clas =
                     (Class<? extends ProductMapDAO>) Class.forName(getClassName(ProductMapDAO.class));
-            Constructor<?> constructor = clas.getDeclaredConstructor(User.class);
+            Constructor<?> constructor = clas.getDeclaredConstructor(int.class);
             constructor.setAccessible(true);
-            ProductMapDAO mapDAO = (ProductMapDAO) constructor.newInstance(user);
+            ProductMapDAO mapDAO = (ProductMapDAO) constructor.newInstance(userId);
             ProductMap productMap = mapDAO.get();
             constructor.setAccessible(false);
             return productMap;

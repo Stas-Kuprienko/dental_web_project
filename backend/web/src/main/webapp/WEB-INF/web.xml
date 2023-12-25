@@ -5,9 +5,14 @@
 <web-app>
   <display-name>dental-api</display-name>
 
-<!--  <listener>-->
-<!--    <listener-class>edu.dental.service.ContextInitializer</listener-class>-->
-<!--  </listener>-->
+  <filter>
+    <filter-name>filterService</filter-name>
+    <filter-class>edu.dental.service.FilterService</filter-class>
+  </filter>
+
+  <listener>
+    <listener-class>edu.dental.service.ContextInitializer</listener-class>
+  </listener>
 
   <servlet>
     <servlet-name>logIn</servlet-name>

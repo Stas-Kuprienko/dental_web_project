@@ -23,7 +23,7 @@ public final class AuthenticationService {
         User user = Authenticator.authenticate(login, password);
         String jwt = Authenticator.JwtUtils.generateJwtFromEntity(user);
         try {
-            Repository.getInstance().put(user, WorkRecordBook.getInstance(user));
+            Repository.getInstance().put(user, WorkRecordBook.getInstance(user.getId()));
         } catch (WorkRecordBookException e) {
             throw new AuthenticationException(AuthenticationException.Causes.ERROR);
         }

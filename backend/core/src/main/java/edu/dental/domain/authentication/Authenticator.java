@@ -74,13 +74,7 @@ public final class Authenticator {
      * @return The {@link User} object if verification was successful, or null if not.
      */
     public static boolean verification(User user, String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] password2 = md.digest(password.getBytes());
-            return MessageDigest.isEqual(user.getPassword(), password2);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        return verification(user, password.getBytes());
     }
 
     /**
@@ -91,7 +85,7 @@ public final class Authenticator {
     public static boolean verification(User user, byte[] password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            return MessageDigest.isEqual(user.getPassword(), password);
+            return MessageDigest.isEqual(user.getPassword(), md.digest(password));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
@@ -115,15 +109,13 @@ public final class Authenticator {
     public static class JwtUtils {
         private JwtUtils() {}
 
-        private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\src\\main\\resources\\secret_key.properties";
+        private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\secret_key.properties";
 
-        private static final Properties prop = loadProperties();
-
-        private static final String SECRET_KEY = prop.getProperty("key");
+        private static final String SECRET_KEY = "secret";
 
         public static String generateJwtFromEntity(User user) {
             JwtBuilder jwtBuilder = Jwts.builder()
-                    .setSubject(String.valueOf(user.getId()))
+                    .setId(String.valueOf(user.getId()))
                     .setIssuedAt(Date.from(user.getCreated().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                     .signWith(SignatureAlgorithm.HS256, SECRET_KEY);
 

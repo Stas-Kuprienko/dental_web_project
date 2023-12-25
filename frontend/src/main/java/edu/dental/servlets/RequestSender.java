@@ -77,6 +77,10 @@ public class RequestSender {
             }
         }
 
+        public void reset() {
+            this.entries.clear();
+        }
+
         private record Entry(String key, String value) {}
     }
 }
