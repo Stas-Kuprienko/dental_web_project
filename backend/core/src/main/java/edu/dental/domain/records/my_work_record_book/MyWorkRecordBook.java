@@ -1,5 +1,7 @@
 package edu.dental.domain.records.my_work_record_book;
 
+import edu.dental.database.DatabaseException;
+import edu.dental.database.DatabaseService;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.entities.DentalWork;
@@ -43,24 +45,67 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             p = productMap.createProduct(product, quantity);
         } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+            throw new WorkRecordBookException(e.getMessage(), e);
         }
         DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).setComplete(complete).build();
         dentalWork.getProducts().add(p);
+        try {
+            DatabaseService.getInstance().getDentalWorkDAO().put(dentalWork);
+        } catch (DatabaseException e) {
+            throw new WorkRecordBookException(e.getMessage(), e);
+        }
         records.add(dentalWork);
         return dentalWork;
     }
 
     @Override
-    public DentalWork createRecord(String patient, String clinic) {
+    public DentalWork createRecord(String patient, String clinic) throws WorkRecordBookException {
         DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).build();
+        try {
+            DatabaseService.getInstance().getDentalWorkDAO().put(dentalWork);
+        } catch (DatabaseException e) {
+            throw new WorkRecordBookException(e.getMessage(), e);
+        }
         records.add(dentalWork);
         return dentalWork;
+    }
+
+    @Override
+    public boolean addProductItem(String title, int price) throws WorkRecordBookException {
+        try {
+            int id = DatabaseService.getInstance().getProductMapDAO(userId).put(title, price);
+            return productMap.put(title, price, id);
+        } catch (DatabaseException e) {
+            throw new WorkRecordBookException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Integer editProductItem(String title, int price) throws WorkRecordBookException {
+        try {
+            int id = productMap.getId(title);
+            DatabaseService.getInstance().getProductMapDAO(userId).edit(id, price);
+            return productMap.put(title, price);
+        } catch (DatabaseException e) {
+            throw new WorkRecordBookException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public boolean deleteProductItem(String title) throws WorkRecordBookException {
+        try {
+            int id = productMap.remove(title);
+            return DatabaseService.getInstance().getProductMapDAO(userId).delete(id);
+        } catch (DatabaseException e) {
+            throw new WorkRecordBookException(e.getMessage(), e);
+        } catch (NullPointerException ignored) {
+            return false;
+        }
     }
 
     @Override
     public DentalWork addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException {
-        if (dentalWork == null) {
+        if (dentalWork == null || product == null) {
             throw new WorkRecordBookException("The given DentalWork object is null");
         }
         Product p;
@@ -76,31 +121,52 @@ public class MyWorkRecordBook implements WorkRecordBook {
             throw new WorkRecordBookException(e.getMessage(), e.getCause());
         }
         dentalWork.getProducts().add(p);
+        try {
+            DatabaseService.getInstance().getDentalWorkDAO().edit(dentalWork);
+        } catch (DatabaseException e) {
+            removeProduct(dentalWork, product);
+            throw new WorkRecordBookException(e.getMessage(), e);
+        }
         return dentalWork;
     }
 
     @Override
     public DentalWork removeProduct(DentalWork dentalWork, String product) throws WorkRecordBookException {
-        if ((dentalWork == null)||(product == null || product.isEmpty())) {
+        if ((dentalWork == null) || (product == null || product.isEmpty())) {
             throw new WorkRecordBookException("The given argument is null or empty.");
         }
         if (dentalWork.getProducts().isEmpty()) {
             return dentalWork;
         }
         product = product.toLowerCase();
+        Product removable = null;
         for (Product p : dentalWork.getProducts()) {
             if (p.title().equals(product)) {
                 dentalWork.getProducts().remove(p);
+                removable = p;
                 break;
+            }
+        }
+        if (removable != null) {
+            try {
+                DatabaseService.getInstance().getDentalWorkDAO().edit(dentalWork);
+            } catch (DatabaseException e) {
+                dentalWork.getProducts().add(removable);
+                throw new WorkRecordBookException(e.getMessage(), e);
             }
         }
         return dentalWork;
     }
 
     @Override
-    public boolean deleteRecord(DentalWork dentalWork) {
+    public boolean deleteRecord(DentalWork dentalWork) throws WorkRecordBookException {
         if (dentalWork == null) {
             return false;
+        }
+        try {
+            DatabaseService.getInstance().getDentalWorkDAO().delete(dentalWork.getId());
+        } catch (DatabaseException e) {
+            throw new WorkRecordBookException(e.getMessage(), e);
         }
         return records.remove(dentalWork);
     }

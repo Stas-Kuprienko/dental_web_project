@@ -6,7 +6,6 @@ import edu.dental.domain.APIManager;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
-import edu.dental.entities.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -62,7 +61,13 @@ public interface WorkRecordBook {
      * @param clinic the clinic of this work.
      * @return The created DentalWork object.
      */
-    DentalWork createRecord(String patient, String clinic);
+    DentalWork createRecord(String patient, String clinic) throws WorkRecordBookException;
+
+    boolean addProductItem(String title, int price) throws WorkRecordBookException;
+
+    Integer editProductItem(String title, int price) throws WorkRecordBookException;
+
+    boolean deleteProductItem(String title) throws WorkRecordBookException;
 
     /**
      * Create {@link Product product} object and add it into the given {@link DentalWork}.
@@ -89,7 +94,7 @@ public interface WorkRecordBook {
      * @param dentalWork the object to delete.
      * @return true if all successful.
      */
-    boolean deleteRecord(DentalWork dentalWork);
+    boolean deleteRecord(DentalWork dentalWork) throws WorkRecordBookException;
 
     /**
      * Search a {@link DentalWork} by {@code patient and clinic} fields.
