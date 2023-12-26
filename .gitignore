@@ -43,3 +43,7 @@ build/
 /backend/web/apache-tomcat-10.1.16/
 /frontend/apache-tomcat-10.1.16/
 /backend/web/src/main/java/Main.java
+/frontend/apache-tomcat-10.1.11/
+/backend/web/apache-tomcat-10.1.11/
+/.run/laptop_backend_web.run.xml
+/.run/laptop_frontend.run.xml

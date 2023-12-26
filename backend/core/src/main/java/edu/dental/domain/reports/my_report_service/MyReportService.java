@@ -31,15 +31,6 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public boolean saveReportToFile(String[] keysArray, List<DentalWork> works, String month, String year) throws ReportServiceException {
-        DataArrayTool dataArrayTool = new DataArrayTool(keysArray, (SimpleList<DentalWork>) works);
-        String[][] reportData = dataArrayTool.getResult();
-        String tableName = month + "_" + year;
-        IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
-        return fileTool.createFile().writeFile();
-    }
-
-    @Override
     public OutputStream saveReportToFile(OutputStream output, String[] keysArray, List<DentalWork> works) throws ReportServiceException {
         DataArrayTool dataArrayTool = new DataArrayTool(keysArray, (SimpleList<DentalWork>) works);
         String[][] reportData = dataArrayTool.getResult();
