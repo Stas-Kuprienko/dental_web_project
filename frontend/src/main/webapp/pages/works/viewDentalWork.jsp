@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.constructors.WorkViewPage" %>
+<%@ page import="edu.dental.jsp_printers.WorkViewPage" %>
 <% WorkViewPage view = new WorkViewPage(request); %>
 
 <html>

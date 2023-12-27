@@ -1,6 +1,10 @@
 package edu.dental.servlets.works;
 
+import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
+import edu.dental.beans.Product;
+import edu.dental.beans.ProductMap;
+import edu.dental.service.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,7 +25,7 @@ public class DentalWorkServlet extends HttpServlet {
         } else if (method != null && method.equals("delete")) {
             doDelete(request, response);
         } else {
-            String login = (String) request.getSession().getAttribute("user");
+            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
 
             String patient = request.getParameter("patient");
             String clinic = request.getParameter("clinic");
@@ -29,7 +33,7 @@ public class DentalWorkServlet extends HttpServlet {
             int quantity = Integer.parseInt(request.getParameter("quantity"));
             LocalDate complete = LocalDate.parse(request.getParameter("complete"));
 
-            int id = newDentalWork(login, patient, clinic, product, quantity, complete);
+            int id = newDentalWork(userId, patient, clinic, product, quantity, complete);
             request.setAttribute("id", id);
             doGet(request, response);
         }
@@ -37,17 +41,19 @@ public class DentalWorkServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String user = (String) request.getSession().getAttribute("user");
-        int id = request.getParameter("id") != null ?
-                Integer.parseInt(request.getParameter("id")) : (int) request.getAttribute("id");
-        DentalWork dto = null;
-        request.setAttribute("work", dto);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int workId = request.getParameter("id") != null ? Integer.parseInt(request.getParameter("id")) :
+                (int) request.getAttribute("id");
+        DentalWork work = Repository.INSTANCE.getWorks(userId).stream().filter(dw -> dw.id() == workId).toList().get(0);
+        request.setAttribute("work", work);
+        ProductMap map = Repository.INSTANCE.getMap(userId);
+        request.setAttribute("map", map.getKeys());
         request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String user = (String) request.getSession().getAttribute("user");
+        String user = (String) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
         int id = Integer.parseInt(request.getParameter("id"));
         String field = request.getParameter("field");
         String value = request.getParameter("value");
@@ -64,7 +70,7 @@ public class DentalWorkServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String user = (String) request.getSession().getAttribute("user");
+        String user = (String) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
         int id = Integer.parseInt(request.getParameter("id"));
         String product = request.getParameter("product");
         if (product != null) {
@@ -76,8 +82,9 @@ public class DentalWorkServlet extends HttpServlet {
         }
     }
 
-    private int newDentalWork(String login, String patient, String clinic, String product, int quantity, LocalDate complete) {
+    private int newDentalWork(int userId, String patient, String clinic, String product, int quantity, LocalDate complete) {
         DentalWork dw;
+
         return 0;
     }
 
@@ -94,7 +101,7 @@ public class DentalWorkServlet extends HttpServlet {
     private void deleteWorkRecord(String login, int id) {
     }
 
-    private String concatenate(String toModify, @SuppressWarnings("all") String toInsert) {
+    private String concatenate(String toModify, String toInsert) {
         char firstLetter = (char) (toModify.charAt(0) - 32);
         StringBuilder str = new StringBuilder(toModify);
         str.setCharAt(0, firstLetter);

@@ -20,10 +20,10 @@ public class WorkListServlet extends HttpServlet {
         int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
 
         DentalWork[] works = new DentalWork[]{};
-        works = Repository.getInstance().getWorks(userId).toArray(works);
+        works = Repository.INSTANCE.getWorks(userId).toArray(works);
         request.setAttribute("works", works);
 
-        ProductMap map = Repository.getInstance().getMap(userId);
+        ProductMap map = Repository.INSTANCE.getMap(userId);
         request.setAttribute("map", map);
 
         request.getRequestDispatcher("/main/work-list/page").forward(request, response);

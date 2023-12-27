@@ -4,22 +4,17 @@ import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserDto;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Repository {
+public enum Repository {
 
-    private Repository() {
+    INSTANCE;
+
+    Repository() {
         this.RAM = new ConcurrentHashMap<>();
     }
-    static {
-        instance = new Repository();
-    }
-
-    private static final Repository instance;
 
     private final ConcurrentHashMap<Integer, Account> RAM;
 
@@ -45,10 +40,6 @@ public class Repository {
 
     public void delete(int id) {
         RAM.remove(id);
-    }
-
-    public static Repository getInstance() {
-        return instance;
     }
 
     public record Account(UserDto user, ProductMap map, List<DentalWork> works) {}

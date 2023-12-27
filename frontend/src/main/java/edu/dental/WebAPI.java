@@ -1,6 +1,6 @@
 package edu.dental;
 
-import edu.dental.servlets.RequestSender;
+import edu.dental.service.RequestSender;
 
 public enum WebAPI {
 

@@ -1,4 +1,4 @@
-package edu.dental.constructors;
+package edu.dental.jsp_printers;
 
 import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static edu.dental.constructors.HtmlTag.*;
+import static edu.dental.jsp_printers.HtmlTag.*;
 
 public class WorkListTable {
 
@@ -66,7 +66,6 @@ public class WorkListTable {
     }
 
     private Product findProduct(DentalWork dw, String type) {
-        //TODO !!!!!!!!!!!!!
         if (dw.products().length == 0) {
             throw new NoSuchElementException("the given DentalWork(id=" + dw.id() + ") doesn't has products.");
         }
@@ -86,7 +85,7 @@ public class WorkListTable {
 
         private Header(HttpServletRequest request) {
             int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
-            ProductMap productMap = Repository.getInstance().getMap(userId);
+            ProductMap productMap = Repository.INSTANCE.getMap(userId);
             if (productMap == null || productMap.isEmpty()) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {

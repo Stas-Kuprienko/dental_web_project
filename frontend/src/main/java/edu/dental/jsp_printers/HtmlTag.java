@@ -1,4 +1,4 @@
-package edu.dental.constructors;
+package edu.dental.jsp_printers;
 
 public enum HtmlTag {
 

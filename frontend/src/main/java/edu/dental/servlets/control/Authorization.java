@@ -6,7 +6,7 @@ import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserDto;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.Repository;
-import edu.dental.servlets.RequestSender;
+import edu.dental.service.RequestSender;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -58,7 +58,7 @@ public class Authorization extends HttpServlet {
             List<ProductMap.Item> items = List.of(JsonObjectParser.parser.fromJson(jsonMap, ProductMap.Item[].class));
             ProductMap map = new ProductMap(items);
 
-            Repository.getInstance().setAccount(user, works, map);
+            Repository.INSTANCE.setAccount(user, works, map);
             request.getSession().setAttribute(WebAPI.INSTANCE.sessionAttribute, user.id());
 
             request.getRequestDispatcher("/main").forward(request, response);

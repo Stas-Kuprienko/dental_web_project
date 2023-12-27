@@ -26,7 +26,7 @@
 
   <servlet>
     <servlet-name>dentalWorks</servlet-name>
-    <servlet-class>edu.dental.servlets.DentalWorkServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.DentalWorkListServlet</servlet-class>
   </servlet>
 
   <servlet>

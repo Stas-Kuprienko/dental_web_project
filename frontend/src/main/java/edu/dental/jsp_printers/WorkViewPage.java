@@ -1,15 +1,13 @@
-package edu.dental.constructors;
+package edu.dental.jsp_printers;
 
-import edu.dental.beans.Product;
-import edu.dental.beans.ProductMap;
 import edu.dental.beans.DentalWork;
-import edu.dental.service.Repository;
+import edu.dental.beans.Product;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static edu.dental.constructors.HtmlTag.OPTION;
+import static edu.dental.jsp_printers.HtmlTag.OPTION;
 
 public class WorkViewPage {
 
@@ -19,7 +17,6 @@ public class WorkViewPage {
     private final Iterator<Product> products;
 
     public WorkViewPage(HttpServletRequest request) {
-        String user = (String) request.getSession(false).getAttribute("user");
         this.work = (DentalWork) request.getAttribute("work");
         this.products = Arrays.stream(work.products()).iterator();
         this.option = new OptionBuilder(request);
@@ -49,13 +46,9 @@ public class WorkViewPage {
         private final StringBuilder str;
 
         public OptionBuilder(HttpServletRequest request) {
-            String login = (String) request.getSession().getAttribute("user");
-            ProductMap productMap = Repository.getInstance().getMap(0);
-            if (productMap == null || productMap.isEmpty()) {
-                this.map = Arrays.stream(new String[] {" "}).iterator();
-            } else {
-                this.map = Arrays.stream(productMap.getKeys()).iterator();
-            }
+            String[] productMap = (String[]) request.getAttribute("map");
+            this.map = productMap != null ? Arrays.stream(productMap).iterator() :
+                                            Arrays.stream(new String[]{""}).iterator();
             str = new StringBuilder();
         }
 
