@@ -39,4 +39,9 @@
     <servlet-class>edu.dental.servlets.ProductMapServlet</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>reportDownload</servlet-name>
+    <servlet-class>edu.dental.servlets.ReportDownloader</servlet-class>
+  </servlet>
+
 </web-app>

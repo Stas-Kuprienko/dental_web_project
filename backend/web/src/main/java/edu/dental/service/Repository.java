@@ -15,7 +15,7 @@ public interface Repository {
         return WebAPI.INSTANCE.getRepository();
     }
 
-    MyRepository.Account put(User user, WorkRecordBook recordBook);
+    Repository.Account put(User user, WorkRecordBook recordBook);
 
     Account get(int id);
 

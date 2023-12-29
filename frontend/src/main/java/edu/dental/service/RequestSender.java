@@ -1,9 +1,6 @@
 package edu.dental.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -65,6 +62,37 @@ public class RequestSender {
     public String sendHttpDeleteRequest(String resource, String requestBody) throws IOException {
         String method = "DELETE";
         return sendHttpRequest(method, resource, requestBody);
+    }
+
+    public void download(String jwt, String resource, OutputStream output) throws IOException {
+        InputStream inputStream = null;
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(this.url + resource);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Authorization", "Bearer " + jwt);
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                inputStream = new BufferedInputStream(connection.getInputStream());
+
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+            }
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 
     private String sendHttpRequest(String method, String resource, String requestBody) throws IOException {

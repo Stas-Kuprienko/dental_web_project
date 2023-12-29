@@ -47,7 +47,7 @@ public class DentalWorkServlet extends HttpServlet {
         DentalWork dw;
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
         try {
-            if (patient != null && !patient.isEmpty()) {
+            if (product != null && !product.isEmpty()) {
                 dw = new DentalWork(recordBook.createRecord(patient, clinic, product, quantity, LocalDate.parse(complete)));
             } else {
                 dw = new DentalWork(recordBook.createRecord(patient, clinic));

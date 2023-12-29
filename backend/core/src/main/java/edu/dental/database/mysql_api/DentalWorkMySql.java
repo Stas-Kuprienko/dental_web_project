@@ -17,7 +17,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     public final String TABLE = TableInitializer.DENTAL_WORK;
 
     private static final String FIELDS =
-            "id, user_id, report_id, patient, clinic, accepted, complete, status, comment, user_id";
+            "id, report_id, patient, clinic, accepted, complete, status, comment, user_id";
 
     DentalWorkMySql() {}
 
@@ -138,7 +138,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     public boolean edit(DentalWork object) throws DatabaseException {
         StringBuilder sets = new StringBuilder();
         String[] fields = FIELDS.split(", ");
-        for (int i = 2; i < fields.length - 1; i++) {
+        for (int i = 1; i < fields.length - 1; i++) {
             sets.append(fields[i]).append("=?,");
         } sets.deleteCharAt(sets.length()-1);
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ? AND user_id = ?");
@@ -159,9 +159,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
                 statement.setNull(i++, Types.DATE);
             }
             statement.setString(i++, String.valueOf(object.getStatus()));
-            statement.setString(i++, object.getComment());
-            statement.setInt(i++, object.getId());
-            statement.setInt(i, object.getUserId());
+            statement.setString(i, object.getComment());
             return new ProductMySql(object.getId()).overwrite(object.getProducts())
                     && statement.executeUpdate() > 0;
         } catch (SQLException | ClassCastException e) {
@@ -264,7 +262,6 @@ public class DentalWorkMySql implements DentalWorkDAO {
                     byte i = 0;
                     DentalWork dentalWork = new DentalWork();
                     dentalWork.setId(resultSet.getInt(fields[i++]));
-                    dentalWork.setUserId(resultSet.getInt(fields[i++]));
                     dentalWork.setReportId(resultSet.getInt(fields[i++]));
                     dentalWork.setPatient(resultSet.getString(fields[i++]));
                     dentalWork.setClinic(resultSet.getString(fields[i++]));
@@ -276,7 +273,8 @@ public class DentalWorkMySql implements DentalWorkDAO {
                     String s = resultSet.getString(fields[i++]);
                     DentalWork.Status status = Enum.valueOf(DentalWork.Status.class, s);
                     dentalWork.setStatus(status);
-                    dentalWork.setComment(resultSet.getString(fields[i]));
+                    dentalWork.setComment(resultSet.getString(fields[i++]));
+                    dentalWork.setUserId(resultSet.getInt(fields[i]));
                     SimpleList<Product> products = (SimpleList<Product>)
                             new ProductMySql(dentalWork.getId()).instantiate(resultSet);
                     dentalWork.setProducts(products);

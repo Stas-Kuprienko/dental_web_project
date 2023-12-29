@@ -1,5 +1,7 @@
 package edu.dental.servlets.reports;
 
+import edu.dental.WebAPI;
+import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -7,24 +9,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 @WebServlet("/main/reports/download")
 public class ReportDownloader extends HttpServlet {
 
+    public final String reportsDownloadUrl = "main/reports/download";
+    public final String fileFormat = "test.xlsx";
+
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            OutputStream output = response.getOutputStream();
-            response.setContentType("application/msword");
-            String fileName = "";
-            response.setHeader("Content-Disposition","attachment; filename=\"" + fileName + "\"");
-//            saveReport((String) request.getSession().getAttribute("user"), output);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        String jwt = WebRepository.INSTANCE.getToken(userId);
+        response.setContentType("application/msword");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileFormat + "\"");
+        WebAPI.INSTANCE.requestSender().download(jwt, reportsDownloadUrl, response.getOutputStream());
     }
-
-
-//    private void saveReport(String login, OutputStream output) throws ReportServiceException {
-//        ReportService reportService = ReportService.getInstance();
-//        WorkRecordBook recordBook = WebRepository.getInstance().getRecordBook(login);
-//            reportService.saveReportToFile(output, recordBook.getMap().keysToArray(), recordBook.getList());
-//    }
 }

@@ -1,7 +1,9 @@
 package edu.dental.jsp_printers;
 
+import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
+import edu.dental.service.WebRepository;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
@@ -19,7 +21,8 @@ public class WorkViewPage {
     public WorkViewPage(HttpServletRequest request) {
         this.work = (DentalWork) request.getAttribute("work");
         this.products = Arrays.stream(work.products()).iterator();
-        this.option = new OptionBuilder(request);
+        String[] productMap = (String[]) request.getAttribute("map");
+        this.option = new OptionBuilder(productMap);
     }
 
     public String inputId() {
@@ -46,8 +49,15 @@ public class WorkViewPage {
         private final StringBuilder str;
 
         public OptionBuilder(HttpServletRequest request) {
-            String[] productMap = (String[]) request.getAttribute("map");
-            this.map = productMap != null ? Arrays.stream(productMap).iterator() :
+            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+            String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
+            this.map = map != null ? Arrays.stream(map).iterator() :
+                    Arrays.stream(new String[]{""}).iterator();
+            str = new StringBuilder();
+        }
+
+        public OptionBuilder(String[] map) {
+            this.map = map != null ? Arrays.stream(map).iterator() :
                                             Arrays.stream(new String[]{""}).iterator();
             str = new StringBuilder();
         }

@@ -83,8 +83,7 @@ public class UserMySql implements UserDAO {
             request.getPreparedStatement().setString(1, login);
             resultSet = request.getPreparedStatement().executeQuery();
             return (SimpleList<User>) new UserInstantiation(resultSet).build();
-        } catch (SQLException | IOException |
-                 ArrayIndexOutOfBoundsException| NullPointerException | ClassCastException e) {
+        } catch (SQLException | IOException | NullPointerException e) {
             //TODO logger
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
