@@ -2,7 +2,7 @@ package edu.dental.servlets.products;
 
 //import edu.dental.database.DatabaseException;
 //import edu.dental.database.DatabaseService;
-//import edu.dental.web.Repository;
+//import edu.dental.web.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -68,21 +68,21 @@ public class ProductServlet extends HttpServlet {
 
 
 //    private void newProduct(String user, String title, int price) throws DatabaseException {
-//        Repository.Account account = Repository.getInstance().get(user);
+//        WebRepository.Account account = WebRepository.getInstance().get(user);
 //        DatabaseService database = DatabaseService.getInstance();
 //        int id = database.getProductMapDAO(account.user()).put(title, price);
 //        account.recordBook().getMap().put(title, price, id);
 //    }
 //
 //    private void updateProduct(String user, int id, String title, int price) throws DatabaseException {
-//        Repository.Account account = Repository.getInstance().get(user);
+//        WebRepository.Account account = WebRepository.getInstance().get(user);
 //        DatabaseService database = DatabaseService.getInstance();
 //        database.getProductMapDAO(account.user()).edit(id, price);
 //        account.recordBook().getMap().put(title, price);
 //    }
 //
 //    private void deleteProduct(String user, int id, String title) throws DatabaseException {
-//        Repository.Account account = Repository.getInstance().get(user);
+//        WebRepository.Account account = WebRepository.getInstance().get(user);
 //        DatabaseService database = DatabaseService.getInstance();
 //        database.getProductMapDAO(account.user()).delete(id);
 //        account.recordBook().getMap().remove(title);

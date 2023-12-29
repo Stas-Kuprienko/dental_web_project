@@ -1,7 +1,7 @@
 package edu.dental.jsp_printers;
 
 import edu.dental.beans.ProductMap;
-import edu.dental.service.Repository;
+import edu.dental.service.WebRepository;
 import jakarta.servlet.http.HttpServletRequest;
 
 
@@ -18,7 +18,7 @@ public class ProductMapTable {
 
     public ProductMapTable(HttpServletRequest request) {
         String user = (String) request.getSession().getAttribute("user");
-        ProductMap map = Repository.INSTANCE.getMap(0);
+        ProductMap map = WebRepository.INSTANCE.getMap(0);
         this.iterator = map.iterator();
         String strId = request.getParameter("id");
         id = (strId == null || strId.isEmpty()) ? 0 : Integer.parseInt(strId);

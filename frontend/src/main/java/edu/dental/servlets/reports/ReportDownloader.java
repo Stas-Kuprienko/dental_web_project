@@ -24,7 +24,7 @@ public class ReportDownloader extends HttpServlet {
 
 //    private void saveReport(String login, OutputStream output) throws ReportServiceException {
 //        ReportService reportService = ReportService.getInstance();
-//        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(login);
+//        WorkRecordBook recordBook = WebRepository.getInstance().getRecordBook(login);
 //            reportService.saveReportToFile(output, recordBook.getMap().keysToArray(), recordBook.getList());
 //    }
 }

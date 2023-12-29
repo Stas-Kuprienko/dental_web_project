@@ -13,7 +13,7 @@ public enum WebAPI {
 
     INSTANCE;
 
-    public final String paramToken = "token";
+    public final String paramUser = "user";
 
     private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\service.properties";
 

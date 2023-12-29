@@ -2,7 +2,6 @@ package edu.dental.servlets;
 
 import edu.dental.WebAPI;
 import edu.dental.dto.DentalWork;
-import edu.dental.service.AuthenticationService;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.Repository;
 import jakarta.servlet.ServletException;
@@ -24,7 +23,7 @@ public class DentalWorkListServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = AuthenticationService.verification(request.getParameter(WebAPI.INSTANCE.paramToken));
+        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
         List<DentalWork> works = Repository.getInstance().getDentalWorkDtoList(userId);
         String json = JsonObjectParser.getInstance().parseToJson(works.toArray());
         response.setContentType("application/json");

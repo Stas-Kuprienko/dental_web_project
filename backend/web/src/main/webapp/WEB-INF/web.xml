@@ -30,6 +30,11 @@
   </servlet>
 
   <servlet>
+    <servlet-name>dentalWork</servlet-name>
+    <servlet-class>edu.dental.servlets.DentalWorkServlet</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>productMap</servlet-name>
     <servlet-class>edu.dental.servlets.ProductMapServlet</servlet-class>
   </servlet>

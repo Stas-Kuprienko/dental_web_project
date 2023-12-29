@@ -3,7 +3,7 @@ package edu.dental.servlets.control;
 import edu.dental.WebAPI;
 import edu.dental.beans.UserDto;
 import edu.dental.service.JsonObjectParser;
-import edu.dental.service.Repository;
+import edu.dental.service.WebRepository;
 import edu.dental.service.RequestSender;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -44,7 +44,7 @@ public class Registration extends HttpServlet {
             String jsonUser = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(signUpUrl, requestParameters);
             UserDto user = JsonObjectParser.parser.fromJson(jsonUser, UserDto.class);
 
-            Repository.INSTANCE.addNew(user);
+            WebRepository.INSTANCE.addNew(user);
             request.getSession().setAttribute(WebAPI.INSTANCE.sessionAttribute, user.id());
 
             request.getRequestDispatcher("/main").forward(request, response);

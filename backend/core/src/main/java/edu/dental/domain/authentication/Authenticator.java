@@ -137,6 +137,10 @@ public final class Authenticator {
             return Integer.parseInt(parseJwt(jwt).getId());
         }
 
+        public static boolean isSigned(String jwt) {
+            return Jwts.parser().isSigned(jwt);
+        }
+
         private static Properties loadProperties() {
             try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
                 Properties prop = new Properties();

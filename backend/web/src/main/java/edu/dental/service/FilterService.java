@@ -14,11 +14,17 @@ public class FilterService implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+        String authorizationType = "Bearer ";
 
-        if (request.getParameter(WebAPI.INSTANCE.paramToken) == null) {
-            response.sendError(401);
-        } else {
+        String authorization = request.getHeader("Authorization");
+
+        if (authorization != null && authorization.startsWith(authorizationType)) {
+            String jwt = authorization.substring(authorizationType.length());
+            int userId = AuthenticationService.verification(jwt);
+            request.setAttribute(WebAPI.INSTANCE.paramUser, userId);
             chain.doFilter(request, response);
+        } else {
+            response.sendError(403);
         }
     }
 }

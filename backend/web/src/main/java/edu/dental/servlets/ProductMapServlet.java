@@ -23,7 +23,7 @@ public class ProductMapServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = AuthenticationService.verification(request.getParameter(WebAPI.INSTANCE.paramToken));
+        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
         ProductMap map = Repository.getInstance().getProductMapDto(userId);
         String json = JsonObjectParser.getInstance().parseToJson(map.getItems());
         response.setContentType("application/json");

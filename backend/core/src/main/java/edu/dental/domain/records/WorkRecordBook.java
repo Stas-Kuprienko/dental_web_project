@@ -69,32 +69,40 @@ public interface WorkRecordBook {
 
     boolean deleteProductItem(String title) throws WorkRecordBookException;
 
+    void editRecord(int id, String field, String value) throws WorkRecordBookException;
+
+    void editRecord(DentalWork dw, String field, String value) throws WorkRecordBookException;
+
     /**
      * Create {@link Product product} object and add it into the given {@link DentalWork}.
+     *
      * @param dentalWork the {@link DentalWork} object to adding a {@link Product product}.
-     * @param product the product type title to add (should be containing in {@link Map}).
-     * @param quantity the quantity of a product items.
-     * @return the modified given DentalWork object back.
+     * @param product    the product type title to add (should be containing in {@link Map}).
+     * @param quantity   the quantity of a product items.
      * @throws WorkRecordBookException if a given arguments is incorrect or the given product type
-     *  is not contain in {@link Map}.
+     *                                 is not contain in {@link Map}.
      */
-    DentalWork addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException;
+    void addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException;
 
     /**
      * Remove {@link Product product} object from the given {@linkplain  DentalWork#getProducts() record}.
+     *
      * @param dentalWork the {@link DentalWork} object to remove a {@link Product product}.
-     * @param product the product type title to remove (should be containing in {@link Map}).
-     * @return the modified given DentalWork object back.
+     * @param product    the product type title to remove (should be containing in {@link Map}).
      * @throws WorkRecordBookException if a given arguments is null.
      */
-    DentalWork removeProduct(DentalWork dentalWork, String product) throws WorkRecordBookException;
+    void removeProduct(DentalWork dentalWork, String product) throws WorkRecordBookException;
+
+    void removeProduct(int id, String product) throws WorkRecordBookException;
 
     /**
      * Delete {@link DentalWork} object from the instance {@link List} field.
+     *
      * @param dentalWork the object to delete.
-     * @return true if all successful.
      */
-    boolean deleteRecord(DentalWork dentalWork) throws WorkRecordBookException;
+    void deleteRecord(DentalWork dentalWork) throws WorkRecordBookException;
+
+    void deleteRecord(int id) throws WorkRecordBookException;
 
     /**
      * Search a {@link DentalWork} by {@code patient and clinic} fields.

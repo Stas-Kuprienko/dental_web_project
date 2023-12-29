@@ -4,7 +4,7 @@ import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.beans.ProductMap;
-import edu.dental.service.Repository;
+import edu.dental.service.WebRepository;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
@@ -85,7 +85,7 @@ public class WorkListTable {
 
         private Header(HttpServletRequest request) {
             int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
-            ProductMap productMap = Repository.INSTANCE.getMap(userId);
+            ProductMap productMap = WebRepository.INSTANCE.getMap(userId);
             if (productMap == null || productMap.isEmpty()) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {

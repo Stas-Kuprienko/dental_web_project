@@ -5,7 +5,7 @@ import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserDto;
 import edu.dental.service.JsonObjectParser;
-import edu.dental.service.Repository;
+import edu.dental.service.WebRepository;
 import edu.dental.service.RequestSender;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,7 +23,7 @@ public class Authorization extends HttpServlet {
     public final String paramPassword = "password";
     public final String logInUrl = "log-in";
     public final String paramToken = "token";
-    public final String dentalWorkUrl = "main/dental-works";
+    public final String dentalWorkListUrl = "main/dental-works";
     public final String productMapUrl = "main/product-map";
 
     @Override
@@ -47,18 +47,14 @@ public class Authorization extends HttpServlet {
             String jsonUser = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(logInUrl, requestParameters);
             UserDto user = JsonObjectParser.parser.fromJson(jsonUser, UserDto.class);
 
-            queryFormer.reset();
-            queryFormer.add(paramToken, user.jwt());
-            String tokenParameter = queryFormer.form();
-
-            String jsonWorks = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(dentalWorkUrl, tokenParameter);
+            String jsonWorks = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(user.jwt(), dentalWorkListUrl, null);
             List<DentalWork> works = List.of(JsonObjectParser.parser.fromJson(jsonWorks, DentalWork[].class));
 
-            String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(productMapUrl, tokenParameter);
+            String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(user.jwt(), productMapUrl, null);
             List<ProductMap.Item> items = List.of(JsonObjectParser.parser.fromJson(jsonMap, ProductMap.Item[].class));
             ProductMap map = new ProductMap(items);
 
-            Repository.INSTANCE.setAccount(user, works, map);
+            WebRepository.INSTANCE.setAccount(user, works, map);
             request.getSession().setAttribute(WebAPI.INSTANCE.sessionAttribute, user.id());
 
             request.getRequestDispatcher("/main").forward(request, response);

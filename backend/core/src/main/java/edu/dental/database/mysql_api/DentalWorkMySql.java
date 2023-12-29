@@ -138,7 +138,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     public boolean edit(DentalWork object) throws DatabaseException {
         StringBuilder sets = new StringBuilder();
         String[] fields = FIELDS.split(", ");
-        for (int i = 1; i < fields.length - 1; i++) {
+        for (int i = 2; i < fields.length - 1; i++) {
             sets.append(fields[i]).append("=?,");
         } sets.deleteCharAt(sets.length()-1);
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ? AND user_id = ?");
