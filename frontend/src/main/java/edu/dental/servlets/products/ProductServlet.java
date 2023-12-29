@@ -1,8 +1,11 @@
 package edu.dental.servlets.products;
 
-//import edu.dental.database.DatabaseException;
-//import edu.dental.database.DatabaseService;
-//import edu.dental.web.WebRepository;
+import edu.dental.WebAPI;
+import edu.dental.beans.DentalWork;
+import edu.dental.beans.ProductMap;
+import edu.dental.service.JsonObjectParser;
+import edu.dental.service.RequestSender;
+import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,8 +17,17 @@ import java.io.IOException;
 @WebServlet("/main/product-map")
 public class ProductServlet extends HttpServlet {
 
+    public final String productMapUrl = "main/product-map";
+    public final String idParam = "id";
+    public final String titleParam = "title";
+    public final String priceParam = "price";
+
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        ProductMap.Item[] items = WebRepository.INSTANCE.getMap(userId).getItems();
+        request.setAttribute("map", items);
         request.getRequestDispatcher("/main/product-map/page").forward(request, response);
     }
 
@@ -27,15 +39,12 @@ public class ProductServlet extends HttpServlet {
         } else if (method != null && method.equals("delete")) {
             doDelete(request, response);
         }else {
-            String title = request.getParameter("title");
-            int price = Integer.parseInt(request.getParameter("price"));
-            String user = (String) request.getSession().getAttribute("user");
-//            try {
-//                newProduct(user, title, price);
-//                doGet(request, response);
-//            } catch (DatabaseException e) {
-//                response.sendError(500);
-//            }
+            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+            String title = request.getParameter(titleParam);
+            int price = Integer.parseInt(request.getParameter(priceParam));
+
+            newProduct(userId, title, price);
+
         }
     }
 
@@ -67,12 +76,19 @@ public class ProductServlet extends HttpServlet {
     }
 
 
-//    private void newProduct(String user, String title, int price) throws DatabaseException {
-//        WebRepository.Account account = WebRepository.getInstance().get(user);
-//        DatabaseService database = DatabaseService.getInstance();
-//        int id = database.getProductMapDAO(account.user()).put(title, price);
-//        account.recordBook().getMap().put(title, price, id);
-//    }
+    private void newProduct(int userId, String title, int price) throws IOException {
+        String jwt = WebRepository.INSTANCE.getToken(userId);
+        ProductMap.Item item;
+
+        RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+        queryFormer.add(titleParam, title);
+        queryFormer.add(priceParam, price);
+        String requestParam = queryFormer.form();
+
+        String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, productMapUrl, requestParam);
+        item = JsonObjectParser.parser.fromJson(json, ProductMap.Item.class);
+        WebRepository.INSTANCE.getMap(userId).add(item);
+    }
 //
 //    private void updateProduct(String user, int id, String title, int price) throws DatabaseException {
 //        WebRepository.Account account = WebRepository.getInstance().get(user);

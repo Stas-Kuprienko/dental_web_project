@@ -67,6 +67,11 @@
 
   <servlet>
     <servlet-name>productMap</servlet-name>
+    <servlet-class>edu.dental.servlets.products.ProductServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>viewProductMap</servlet-name>
     <jsp-file>/pages/products/productMap.jsp</jsp-file>
   </servlet>
 
@@ -106,7 +111,7 @@
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>productMap</servlet-name>
+    <servlet-name>viewProductMap</servlet-name>
     <url-pattern>/main/product-map/page</url-pattern>
   </servlet-mapping>
 

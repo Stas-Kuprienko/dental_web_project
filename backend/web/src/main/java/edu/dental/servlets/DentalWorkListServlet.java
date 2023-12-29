@@ -18,11 +18,6 @@ public class DentalWorkListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendError(405);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
         List<DentalWork> works = Repository.getInstance().getDentalWorkDtoList(userId);
         String json = JsonObjectParser.getInstance().parseToJson(works.toArray());
@@ -30,5 +25,9 @@ public class DentalWorkListServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.getWriter().print(json);
         response.getWriter().flush();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
 }

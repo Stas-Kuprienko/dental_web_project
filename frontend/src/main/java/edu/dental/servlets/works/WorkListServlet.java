@@ -2,7 +2,6 @@ package edu.dental.servlets.works;
 
 import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
-import edu.dental.beans.ProductMap;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,7 +22,7 @@ public class WorkListServlet extends HttpServlet {
         works = WebRepository.INSTANCE.getWorks(userId).toArray(works);
         request.setAttribute("works", works);
 
-        ProductMap map = WebRepository.INSTANCE.getMap(userId);
+        String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
         request.setAttribute("map", map);
 
         request.getRequestDispatcher("/main/work-list/page").forward(request, response);

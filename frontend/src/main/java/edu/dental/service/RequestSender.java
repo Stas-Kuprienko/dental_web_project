@@ -17,6 +17,36 @@ public class RequestSender {
         this.url = url;
     }
 
+    public String sendHttpGetRequest(String jwt, String resource) throws IOException {
+        HttpURLConnection connection = null;
+        BufferedReader reader = null;
+        try {
+            URL url = new URL(this.url + resource);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Authorization", "Bearer " + jwt);
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            int responseCode = connection.getResponseCode();
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            return response.toString();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+            if (reader != null) {
+                reader.close();
+            }
+        }
+    }
+
     public String sendHttpPostRequest(String resource, String requestBody) throws IOException {
         String method = "POST";
         return sendHttpRequest(method, resource, requestBody);

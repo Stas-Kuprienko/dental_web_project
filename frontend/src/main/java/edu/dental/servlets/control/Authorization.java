@@ -47,10 +47,10 @@ public class Authorization extends HttpServlet {
             String jsonUser = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(logInUrl, requestParameters);
             UserDto user = JsonObjectParser.parser.fromJson(jsonUser, UserDto.class);
 
-            String jsonWorks = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(user.jwt(), dentalWorkListUrl, null);
+            String jsonWorks = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(user.jwt(), dentalWorkListUrl);
             List<DentalWork> works = List.of(JsonObjectParser.parser.fromJson(jsonWorks, DentalWork[].class));
 
-            String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(user.jwt(), productMapUrl, null);
+            String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(user.jwt(), productMapUrl);
             List<ProductMap.Item> items = List.of(JsonObjectParser.parser.fromJson(jsonMap, ProductMap.Item[].class));
             ProductMap map = new ProductMap(items);
 

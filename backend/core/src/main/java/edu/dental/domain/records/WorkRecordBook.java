@@ -3,6 +3,7 @@ package edu.dental.domain.records;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.domain.APIManager;
+import edu.dental.domain.records.my_work_record_book.MyProductMap;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
@@ -63,7 +64,7 @@ public interface WorkRecordBook {
      */
     DentalWork createRecord(String patient, String clinic) throws WorkRecordBookException;
 
-    boolean addProductItem(String title, int price) throws WorkRecordBookException;
+    ProductMap.Item addProductItem(String title, int price) throws WorkRecordBookException;
 
     Integer editProductItem(String title, int price) throws WorkRecordBookException;
 

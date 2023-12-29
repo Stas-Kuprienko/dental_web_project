@@ -256,18 +256,8 @@ public class MyProductMap implements ProductMap {
                 '}';
     }
 
-    private int getIndex(String key) {
-        key = key.toLowerCase();
-        int index = key.hashCode() % CAPACITY;
-        return index < 0 ? index * (-1) : index;
-    }
-
-    private boolean isFilled() {
-        int max = 75;
-        return (size*100)/(CAPACITY*100) > max;
-    }
-
-    private Item getItem(String key) {
+    @Override
+    public Item getItem(String key) {
         if (key == null || key.isEmpty()) {
             throw new NullPointerException("the given key is null or empty");
         }
@@ -282,6 +272,17 @@ public class MyProductMap implements ProductMap {
             index = (index + 1) % CAPACITY;
         } throw new NoSuchElementException("the specified entry ('"
                 + key + "') is not found");
+    }
+
+    private int getIndex(String key) {
+        key = key.toLowerCase();
+        int index = key.hashCode() % CAPACITY;
+        return index < 0 ? index * (-1) : index;
+    }
+
+    private boolean isFilled() {
+        int max = 75;
+        return (size*100)/(CAPACITY*100) > max;
     }
 
     private void grow() {

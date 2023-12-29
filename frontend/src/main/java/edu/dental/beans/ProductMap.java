@@ -4,7 +4,7 @@ import java.util.*;
 
 public class ProductMap {
 
-    private List<Item> items;
+    private final List<Item> items;
 
     public ProductMap(List<Item> items) {
         this.items = items;
@@ -22,6 +22,10 @@ public class ProductMap {
         return items.stream().map(e -> e.key).toList().toArray(result);
     }
 
+    public boolean add(Item item) {
+        return this.items.add(item);
+    }
+
     public boolean isEmpty() {
         return items.isEmpty();
     }
@@ -29,10 +33,6 @@ public class ProductMap {
     public Item[] getItems() {
         Item[] result = new Item[items.size()];
         return items.toArray(result);
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
     }
 
     @Override

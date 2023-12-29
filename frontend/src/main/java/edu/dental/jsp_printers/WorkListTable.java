@@ -1,10 +1,7 @@
 package edu.dental.jsp_printers;
 
-import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
-import edu.dental.beans.ProductMap;
-import edu.dental.service.WebRepository;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
@@ -24,8 +21,7 @@ public class WorkListTable {
 
     public WorkListTable(HttpServletRequest request) {
         this.tableHead = new Header(request);
-        ProductMap map = (ProductMap) request.getAttribute("map");
-        this.map = map.getKeys();
+        this.map = (String[]) request.getAttribute("map");
         DentalWork[] works = (DentalWork[]) request.getAttribute("works");
         this.iterator = Arrays.stream(works).iterator();
     }
@@ -84,12 +80,11 @@ public class WorkListTable {
         private final Iterator<String> map;
 
         private Header(HttpServletRequest request) {
-            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
-            ProductMap productMap = WebRepository.INSTANCE.getMap(userId);
-            if (productMap == null || productMap.isEmpty()) {
+            String[] map = (String[]) request.getAttribute("map");
+            if (map == null || map.length == 0) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {
-                this.map = Arrays.stream(productMap.getKeys()).iterator();
+                this.map = Arrays.stream(map).iterator();
             }
         }
 

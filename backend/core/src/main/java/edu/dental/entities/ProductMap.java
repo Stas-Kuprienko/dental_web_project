@@ -1,6 +1,7 @@
 package edu.dental.entities;
 
 import edu.dental.domain.APIManager;
+import edu.dental.domain.records.my_work_record_book.MyProductMap;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -90,6 +91,8 @@ public interface ProductMap extends Map<String, Integer> {
     Item[] toArray();
 
     Iterator<Item> iterator();
+
+    ProductMap.Item getItem(String key);
 
     interface Item extends Map.Entry<String, Integer>, IDHaving {
     }

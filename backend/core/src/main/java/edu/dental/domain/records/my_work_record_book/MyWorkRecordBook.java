@@ -75,10 +75,11 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public boolean addProductItem(String title, int price) throws WorkRecordBookException {
+    public ProductMap.Item addProductItem(String title, int price) throws WorkRecordBookException {
         try {
             int id = DatabaseService.getInstance().getProductMapDAO(userId).put(title, price);
-            return productMap.put(title, price, id);
+            productMap.put(title, price, id);
+            return productMap.getItem(title);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e.getMessage(), e);
         }
