@@ -159,7 +159,9 @@ public class DentalWorkMySql implements DentalWorkDAO {
                 statement.setNull(i++, Types.DATE);
             }
             statement.setString(i++, String.valueOf(object.getStatus()));
-            statement.setString(i, object.getComment());
+            statement.setString(i++, object.getComment());
+            statement.setInt(i++, object.getId());
+            statement.setInt(i, object.getUserId());
             return new ProductMySql(object.getId()).overwrite(object.getProducts())
                     && statement.executeUpdate() > 0;
         } catch (SQLException | ClassCastException e) {

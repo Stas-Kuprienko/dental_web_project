@@ -83,7 +83,7 @@ public class DentalWorkServlet extends HttpServlet {
             }
         }
         String requestParam = queryFormer.form();
-        editWork(userId, id, requestParam);
+        editWork(userId, requestParam);
         request.setAttribute(idParam, id);
         doGet(request, response);
     }
@@ -121,7 +121,7 @@ public class DentalWorkServlet extends HttpServlet {
         return dw.id();
     }
 
-    private void editWork(int userId, int id, String requestParam) throws IOException {
+    private void editWork(int userId, String requestParam) throws IOException {
         DentalWork dentalWork;
 
         String jwt = WebRepository.INSTANCE.getToken(userId);
