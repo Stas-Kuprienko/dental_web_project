@@ -45,10 +45,13 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String method = request.getParameter("method");
-        if (method != null && method.equals("put")) {
-            doPut(request, response);
-        } else if (method != null && method.equals("delete")) {
-            doDelete(request, response);
+        if (method != null) {
+            if (method.equals("put")) {
+                doPut(request, response);
+            } else if (method.equals("delete")) {
+                doDelete(request, response);
+            }
+            response.sendError(400);
         } else {
             int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
 
@@ -138,12 +141,10 @@ public class DentalWorkServlet extends HttpServlet {
         queryFormer.add(productParam, product);
         DentalWork dentalWork;
 
-        String json = WebAPI.INSTANCE.requestSender().sendHttpPutRequest(jwt, dentalWorkUrl, queryFormer.form());
+        String json = WebAPI.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, dentalWorkUrl, queryFormer.form());
 
         dentalWork = JsonObjectParser.parser.fromJson(json, DentalWork.class);
-        List<DentalWork> works = WebRepository.INSTANCE.getWorks(userId);
-        int index = works.indexOf(works.stream().filter(dw -> dw.id() == id).findAny().orElseThrow());
-        works.set(index, dentalWork);
+        WebRepository.INSTANCE.updateDentalWorkList(userId, dentalWork);
     }
 
 

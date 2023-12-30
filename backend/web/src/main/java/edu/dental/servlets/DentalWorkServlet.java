@@ -93,8 +93,10 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
-        int id = Integer.parseInt(request.getParameter(idParam));
-        String product = request.getParameter(productParam);
+        HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
+
+        int id = Integer.parseInt(parameters.get(idParam));
+        String product = parameters.get(productParam);
         try {
             if (product != null) {
                 WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);

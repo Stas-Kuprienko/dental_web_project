@@ -59,9 +59,9 @@ public class RequestSender {
         return sendHttpRequest(jwt, method, resource, requestBody);
     }
 
-    public String sendHttpDeleteRequest(String resource, String requestBody) throws IOException {
+    public String sendHttpDeleteRequest(String jwt, String resource, String requestBody) throws IOException {
         String method = "DELETE";
-        return sendHttpRequest(method, resource, requestBody);
+        return sendHttpRequest(jwt, method, resource, requestBody);
     }
 
     public void download(String jwt, String resource, OutputStream output) throws IOException {
