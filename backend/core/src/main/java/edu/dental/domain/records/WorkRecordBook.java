@@ -3,7 +3,6 @@ package edu.dental.domain.records;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.domain.APIManager;
-import edu.dental.domain.records.my_work_record_book.MyProductMap;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
@@ -135,13 +134,7 @@ public interface WorkRecordBook {
         return null;
     }
 
-    /**
-     * Sort {@link DentalWork} objects in the instance {@link List} field by {@linkplain DentalWork#getStatus()}
-     *  and {@linkplain DentalWork#getComplete()} values. If record is suited, it's set {@code closed}, removing from the instance list
-     *  and add into new {@link List list}.
-     * @return the {@link List} object of sorted closed records.
-     */
-    List<DentalWork> sorting(int month);
+    SorterTool<DentalWork> getSorter();
 
     int getUserId();
 

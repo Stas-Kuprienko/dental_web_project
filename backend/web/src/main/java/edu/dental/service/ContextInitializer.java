@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
-//@WebListener("/")
+@WebListener("/")
 public class ContextInitializer implements ServletContextListener {
 
     @Override
@@ -58,6 +58,7 @@ public class ContextInitializer implements ServletContextListener {
             //TODO logger
             throw new RuntimeException();
         }
+        System.out.println(this.getClass().getSimpleName());
     }
 
     private boolean checkDB() throws SQLException {

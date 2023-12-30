@@ -22,7 +22,6 @@ public class Authorization extends HttpServlet {
     public final String paramEmail = "email";
     public final String paramPassword = "password";
     public final String logInUrl = "log-in";
-    public final String paramToken = "token";
     public final String dentalWorkListUrl = "main/dental-works";
     public final String productMapUrl = "main/product-map";
 

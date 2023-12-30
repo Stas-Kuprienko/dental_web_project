@@ -2,6 +2,7 @@ package edu.dental.domain.records.my_work_record_book;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
+import edu.dental.domain.records.SorterTool;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.entities.DentalWork;
@@ -247,10 +248,8 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public SimpleList<DentalWork> sorting(int month) {
-        //TODO
-        Sorter sorter = new Sorter(records);
-        return (SimpleList<DentalWork>) sorter.doIt(month);
+    public Sorter getSorter() {
+        return new Sorter(records, userId);
     }
 
     @Override
