@@ -34,32 +34,37 @@ public class ProductServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String method = request.getParameter("method");
-        if (method != null && method.equals("put")) {
-            doPut(request, response);
-        } else if (method != null && method.equals("delete")) {
-            doDelete(request, response);
-        }else {
+        if (method != null) {
+            if (method.equals("put")) {
+                doPut(request, response);
+            } else if (method.equals("delete")) {
+                doDelete(request, response);
+            }
+            response.sendError(400);
+        } else {
             int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
             String title = request.getParameter(titleParam);
             int price = Integer.parseInt(request.getParameter(priceParam));
 
             newProduct(userId, title, price);
-
+            doGet(request, response);
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String title = request.getParameter("title");
-        int price = Integer.parseInt(request.getParameter("price"));
-        String user = (String) request.getSession().getAttribute("user");
-//        try {
-//            updateProduct(user, id, title, price);
-//            doGet(request, response);
-//        } catch (DatabaseException e) {
-//            response.sendError(500);
-//        }
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        String jwt = WebRepository.INSTANCE.getToken(userId);
+        String title = request.getParameter(titleParam);
+        int price = Integer.parseInt(request.getParameter(priceParam));
+        RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+        queryFormer.add(titleParam, title);
+        queryFormer.add(priceParam, price);
+        String requestParam = queryFormer.form();
+        String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpPutRequest(jwt, productMapUrl, requestParam);
+        ProductMap.Item[] items = JsonObjectParser.parser.fromJson(jsonMap, ProductMap.Item[].class);
+        WebRepository.INSTANCE.setProductMap(userId, items);
+        doGet(request, response);
     }
 
     @Override

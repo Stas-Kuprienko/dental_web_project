@@ -6,6 +6,7 @@ import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.ProductMap;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.Repository;
+import edu.dental.service.RequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,9 +14,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @WebServlet("/main/product-map")
 public class ProductMapServlet extends HttpServlet {
+
+    public final String idParam = "id";
+    public final String titleParam = "title";
+    public final String priceParam = "price";
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -48,4 +55,28 @@ public class ProductMapServlet extends HttpServlet {
             response.sendError(400);
         }
     }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
+
+        String title = parameters.get(titleParam);
+        int price = Integer.parseInt(parameters.get(priceParam));
+        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
+        try {
+            recordBook.editProductItem(title, price);
+            doGet(request, response);
+        } catch (WorkRecordBookException e) {
+            //TODO
+            response.sendError(500);
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    }
+
+
 }

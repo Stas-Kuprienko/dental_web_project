@@ -45,7 +45,8 @@ public class ProductMapTable {
         if (item.id() == id) {
             str.append(A_TR_WITHOUT_HREF.o);
             DIV_TD.line(str, item.key());
-            str.append(String.format(HtmlTag.PRODUCT_VIEW.FORM.sample, item.key(), item.id(), item.key(), item.id()));
+            str.append(String.format(HtmlTag.PRODUCT_VIEW.FORM.sample,
+                    item.value(), item.key(), item.id(), item.key(), item.id()));
         } else {
             str.append(String.format(A_TR.o, href, item.id()));
             DIV_TD.line(str, item.key());

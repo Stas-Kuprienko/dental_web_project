@@ -26,6 +26,10 @@ public enum WebRepository {
         return RAM.get(id).productMap;
     }
 
+    public void setProductMap(int id, ProductMap.Item[] items) {
+        RAM.get(id).setProductMap(items);
+    }
+
     public List<DentalWork> getWorks(int id) {
         return RAM.get(id).dentalWorks;
     }
@@ -75,6 +79,10 @@ public enum WebRepository {
 
         private void deleteWork(int id) {
             dentalWorks.stream().filter(dw -> dw.id() == id).findAny().ifPresent(dentalWorks::remove);
+        }
+
+        private void setProductMap(ProductMap.Item[] items) {
+            this.productMap.setItems(List.of(items));
         }
     }
 }

@@ -101,7 +101,7 @@ public enum HtmlTag {
         FORM("""
             <div class="td" style="width: 40%%;">
             <form style="display: inline-block;" method="post" action="/dental/main/product-map">
-                <input style="width:96px;" type="number" name="price" value="">
+                <input style="width:96px;" type="number" name="price" value="%s">
                 <input type="submit" value="save">
                 <input type="hidden" name="title" value="%s">
                 <input type="hidden" name="id" value="%s">

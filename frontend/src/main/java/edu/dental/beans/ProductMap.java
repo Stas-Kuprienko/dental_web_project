@@ -4,10 +4,10 @@ import java.util.*;
 
 public class ProductMap {
 
-    private final List<Item> items;
+    private List<Item> items;
 
     public ProductMap(List<Item> items) {
-        this.items = items;
+        this.items = new ArrayList<>(items);
     }
     public ProductMap() {
         this.items = new ArrayList<>();
@@ -33,6 +33,10 @@ public class ProductMap {
     public Item[] getItems() {
         Item[] result = new Item[items.size()];
         return items.toArray(result);
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
     @Override
