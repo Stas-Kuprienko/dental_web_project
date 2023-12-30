@@ -98,9 +98,7 @@
       <label for="product">product:</label>
       <select id="product" name="value">
         <option value=""></option>
-        <% while(view.option.hasNext()) { %>
-        <%=view.option.next()%>
-        <% } %>
+        <% while(view.option.hasNext()) {%> <%=view.option.next()%> <%} %>
       </select>
       <label for="quantity">quantity:</label>
       <input style="width: 64px;" type="number" id="quantity" name="quantity" value="" max="32">
@@ -109,9 +107,7 @@
       <%=view.buttonId()%>
     </form>
     <form method="post" action="/dental/main/dental-work">
-      <% while(view.hasNextProduct()) { %>
-      <%=view.nextProduct()%>
-      <% } %>
+      <% while(view.hasNextProduct()) {%> <%=view.nextProduct()%> <%} %>
       <input type="hidden" name="method" value="delete">
     </form>
   </div>  <div class="work">

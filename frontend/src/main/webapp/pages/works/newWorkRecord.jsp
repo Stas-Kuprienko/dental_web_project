@@ -29,9 +29,7 @@
     <label for="product">product:</label><br>
     <select id="product" name="product" style="width: 230px; height: 30px; font-size: 22px;">
         <option value=""></option>
-        <% while(option.hasNext()) { %>
-        <%=option.next()%>
-        <% } %>
+        <% while(option.hasNext()) {%> <%=option.next()%> <%} %>
     </select><br>
     <label for="quantity">quantity:</label><br>
     <input type="number" id="quantity" name="quantity" value="0" max="32"><br>

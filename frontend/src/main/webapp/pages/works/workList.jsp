@@ -27,7 +27,7 @@
         </strong>
     </h3>
 	<h4 style="float: left;">
-        <label style="background-color: #002d73; border: 5px solid #002d73">CLOSED</label>&emsp;
+        <label style="background-color: #002d73; border: 5px solid #002d73">CLOSED</label> &emsp;
         <label style="background-color: #075700; border: 5px solid #075700"> PAID </label>
     </h4>
 	<div class="table">
@@ -35,17 +35,17 @@
             <div class="tr">
             <div class="th">PATIENT</div>
             <div class="th">CLINIC</div>
-            <% while (td.tableHead.hasNext()) { %>
-            <div class="th"><%=td.tableHead.next()%></div>
-            <% } %>
+            <% while (td.tableHead.hasNext()) {%>
+            <div class="th">
+                <%=td.tableHead.next()%>
+            </div> <%} %>
             <div class="th">COMPLETE</div>
             <div class="th">ACCEPT</div>
         </div>
     </div>
     <div class="tbody">
-        <% while (td.hasNext()) { %>
-        <%=td.next()%>
-        <% } %>
+    <% while (td.hasNext()) {%>
+        <%=td.next()%> <%} %>
 	</div></div>
 </section><br>
 <a class="sorting" href="/dental/main/work-list/sorting">
