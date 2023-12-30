@@ -1,5 +1,6 @@
 package edu.dental.servlets.works;
 
+import edu.dental.WebAPI;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,12 +14,12 @@ public class WorkSorting extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String user = (String) request.getSession().getAttribute("user");
-        workSorting(user);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        //TODO
         request.getRequestDispatcher("/main/work-list").forward(request, response);
     }
 
-    private void workSorting(String login) {
+    private void workSorting() {
 
     }
 }
