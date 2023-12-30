@@ -46,6 +46,11 @@ public enum WebRepository {
         account.updateWorks(dw);
     }
 
+    public void deleteDentalWork(int userId, int id) {
+        Account account = RAM.get(userId);
+        account.deleteWork(id);
+    }
+
     public void delete(int id) {
         RAM.remove(id);
     }
@@ -66,6 +71,10 @@ public enum WebRepository {
         private void updateWorks(DentalWork dentalWork) {
             dentalWorks.stream().filter(dw -> dw.id() == dentalWork.id()).findAny().ifPresent(dentalWorks::remove);
             dentalWorks.add(dentalWork);
+        }
+
+        private void deleteWork(int id) {
+            dentalWorks.stream().filter(dw -> dw.id() == id).findAny().ifPresent(dentalWorks::remove);
         }
     }
 }

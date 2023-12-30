@@ -4,8 +4,8 @@ import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.service.JsonObjectParser;
-import edu.dental.service.WebRepository;
 import edu.dental.service.RequestSender;
+import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
 @WebServlet("/main/dental-work")
 public class DentalWorkServlet extends HttpServlet {
@@ -153,9 +152,8 @@ public class DentalWorkServlet extends HttpServlet {
         RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
         queryFormer.add(idParam, id);
 
-        WebAPI.INSTANCE.requestSender().sendHttpPutRequest(jwt, dentalWorkUrl, queryFormer.form());
+        WebAPI.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, dentalWorkUrl, queryFormer.form());
 
-        List<DentalWork> works = WebRepository.INSTANCE.getWorks(userId);
-        works.remove(works.stream().filter(dw -> dw.id() == id).findAny().orElseThrow());
+        WebRepository.INSTANCE.deleteDentalWork(userId, id);
     }
 }
