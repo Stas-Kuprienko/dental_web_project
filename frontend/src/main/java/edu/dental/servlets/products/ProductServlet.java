@@ -1,7 +1,6 @@
 package edu.dental.servlets.products;
 
 import edu.dental.WebAPI;
-import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.RequestSender;
@@ -18,7 +17,6 @@ import java.io.IOException;
 public class ProductServlet extends HttpServlet {
 
     public final String productMapUrl = "main/product-map";
-    public final String idParam = "id";
     public final String titleParam = "title";
     public final String priceParam = "price";
 
@@ -54,30 +52,18 @@ public class ProductServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
-        String jwt = WebRepository.INSTANCE.getToken(userId);
         String title = request.getParameter(titleParam);
         int price = Integer.parseInt(request.getParameter(priceParam));
-        RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
-        queryFormer.add(titleParam, title);
-        queryFormer.add(priceParam, price);
-        String requestParam = queryFormer.form();
-        String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpPutRequest(jwt, productMapUrl, requestParam);
-        ProductMap.Item[] items = JsonObjectParser.parser.fromJson(jsonMap, ProductMap.Item[].class);
-        WebRepository.INSTANCE.setProductMap(userId, items);
+        editProduct(userId, title, price);
         doGet(request, response);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String title = request.getParameter("title");
-        String user = (String) request.getSession().getAttribute("user");
-//        try {
-//            deleteProduct(user, id, title);
-//            doGet(request, response);
-//        } catch (DatabaseException e) {
-//            response.sendError(500);
-//        }
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        String title = request.getParameter(titleParam);
+        deleteProduct(userId, title);
+        doGet(request, response);
     }
 
 
@@ -94,18 +80,23 @@ public class ProductServlet extends HttpServlet {
         item = JsonObjectParser.parser.fromJson(json, ProductMap.Item.class);
         WebRepository.INSTANCE.getMap(userId).add(item);
     }
-//
-//    private void updateProduct(String user, int id, String title, int price) throws DatabaseException {
-//        WebRepository.Account account = WebRepository.getInstance().get(user);
-//        DatabaseService database = DatabaseService.getInstance();
-//        database.getProductMapDAO(account.user()).edit(id, price);
-//        account.recordBook().getMap().put(title, price);
-//    }
-//
-//    private void deleteProduct(String user, int id, String title) throws DatabaseException {
-//        WebRepository.Account account = WebRepository.getInstance().get(user);
-//        DatabaseService database = DatabaseService.getInstance();
-//        database.getProductMapDAO(account.user()).delete(id);
-//        account.recordBook().getMap().remove(title);
-//    }
+
+    private void editProduct(int userId, String title, int price) throws IOException {
+        String jwt = WebRepository.INSTANCE.getToken(userId);
+        RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+        queryFormer.add(titleParam, title);
+        queryFormer.add(priceParam, price);
+        String requestParam = queryFormer.form();
+        WebAPI.INSTANCE.requestSender().sendHttpPutRequest(jwt, productMapUrl, requestParam);
+        WebRepository.INSTANCE.getMap(userId).update(title, price);
+    }
+
+    private void deleteProduct(int userId, String title) throws IOException {
+        String jwt = WebRepository.INSTANCE.getToken(userId);
+        RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+        queryFormer.add(titleParam, title);
+        String requestParam = queryFormer.form();
+        WebAPI.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, productMapUrl, requestParam);
+        WebRepository.INSTANCE.getMap(userId).remove(title);
+    }
 }

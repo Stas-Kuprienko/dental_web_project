@@ -57,7 +57,7 @@ public class ProductMapServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
         HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
 
@@ -66,7 +66,7 @@ public class ProductMapServlet extends HttpServlet {
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
         try {
             recordBook.editProductItem(title, price);
-            doGet(request, response);
+            response.getWriter().flush();
         } catch (WorkRecordBookException e) {
             //TODO
             response.sendError(500);
@@ -74,8 +74,19 @@ public class ProductMapServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
 
+        String title = parameters.get(titleParam);
+        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
+        try {
+            recordBook.deleteProductItem(title);
+            response.getWriter().flush();
+        } catch (WorkRecordBookException e) {
+            //TODO
+            response.sendError(500);
+        }
     }
 
 

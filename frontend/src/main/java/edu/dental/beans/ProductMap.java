@@ -13,9 +13,6 @@ public class ProductMap {
         this.items = new ArrayList<>();
     }
 
-    public Iterator<Item> iterator() {
-        return items.iterator();
-    }
 
     public String[] getKeys() {
         String[] result = new String[items.size()];
@@ -24,6 +21,19 @@ public class ProductMap {
 
     public boolean add(Item item) {
         return this.items.add(item);
+    }
+
+    public void update(String key, int value) {
+        Item item = items.stream().filter(e -> e.key.equals(key)).findAny().orElse(null);
+        if (item != null) {
+            int id = item.id();
+            items.remove(item);
+            items.add(new Item(id, key, value));
+        }
+    }
+
+    public void remove(String key) {
+        items.stream().filter(e -> e.key.equals(key)).findAny().ifPresent(items::remove);
     }
 
     public boolean isEmpty() {
