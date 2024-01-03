@@ -30,6 +30,10 @@ public enum WebRepository {
         return RAM.get(id).dentalWorks;
     }
 
+    public void setWorks(int id, List<DentalWork> list) {
+        RAM.get(id).setDentalWorks(list);
+    }
+
     public void setAccount(UserDto user, List<DentalWork> works, ProductMap map) {
         Account account = new Account(user, map, works);
         RAM.put(user.id(), account);
@@ -60,11 +64,15 @@ public enum WebRepository {
 
         private final UserDto user;
         private final ProductMap productMap;
-        private final List<DentalWork> dentalWorks;
+        private List<DentalWork> dentalWorks;
 
         public Account(UserDto user, ProductMap productMap, List<DentalWork> dentalWorks) {
             this.user = user;
             this.productMap = productMap;
+            this.dentalWorks = new ArrayList<>(dentalWorks);
+        }
+
+        private void setDentalWorks(List<DentalWork> dentalWorks) {
             this.dentalWorks = new ArrayList<>(dentalWorks);
         }
 

@@ -11,6 +11,7 @@ import java.util.Iterator;
 
 import static edu.dental.jsp_printers.HtmlTag.OPTION;
 
+@SuppressWarnings("unused")
 public class WorkViewPage {
 
     public final OptionBuilder option;

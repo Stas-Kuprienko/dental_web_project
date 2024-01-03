@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface SorterTool <T> {
 
-    List<T> doIt(int month) throws WorkRecordBookException;
+    List<T> doIt(int year, int month) throws WorkRecordBookException;
 }

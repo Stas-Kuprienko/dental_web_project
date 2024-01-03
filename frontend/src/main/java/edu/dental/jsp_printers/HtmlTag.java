@@ -87,7 +87,14 @@ public enum HtmlTag {
                   <div class="td" style="width: 100%%;">%s</div>
                   <input type="hidden" name="id" value="%s">
                   <button type="submit" name="product" value="%s" onclick="return confirm('Are you sure?')">delete</button>
-                </a>""");
+                </a>"""),
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        FORM_FOR_SORTING("""
+                <form action="/dental/main/work-list/sort?year=%s&month=%s">""");
+
 
         public final String sample;
 

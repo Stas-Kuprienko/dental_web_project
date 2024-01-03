@@ -4,22 +4,27 @@ import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static edu.dental.jsp_printers.HtmlTag.*;
 
+@SuppressWarnings("unused")
 public class WorkListTable {
 
     private static final String href = "dental-work";
 
     public final Header tableHead;
 
+    private final DatesTool datesTool;
     private final String[] map;
     private final Iterator<DentalWork> iterator;
 
     public WorkListTable(HttpServletRequest request) {
+        this.datesTool = new DatesTool();
         this.tableHead = new Header(request);
         this.map = (String[]) request.getAttribute("map");
         DentalWork[] works = (DentalWork[]) request.getAttribute("works");
@@ -27,9 +32,8 @@ public class WorkListTable {
     }
 
 
-    public static String month() {
-        //TODO !!!!!!!
-        return "";
+    public String month() {
+        return datesTool.getMonthToString() + " - " + datesTool.year;
     }
 
     public boolean hasNext() {
@@ -59,6 +63,14 @@ public class WorkListTable {
         DIV_TD.line(str, String.valueOf(dw.accepted()));
         str.append(tagA.c);
         return str.toString();
+    }
+
+    public String form_for_sorting_current_month() {
+        return String.format(WORK_VIEW.FORM_FOR_SORTING.sample, datesTool.year, datesTool.getMonth());
+    }
+
+    public String form_for_sorting_previous_month() {
+        return String.format(WORK_VIEW.FORM_FOR_SORTING.sample, datesTool.getYearOfPreviousMonth(), datesTool.getPreviousMonth());
     }
 
     private Product findProduct(DentalWork dw, String type) {
@@ -94,6 +106,37 @@ public class WorkListTable {
 
         public String next() {
             return map.next().toUpperCase();
+        }
+    }
+
+    @SuppressWarnings("all")
+    private final class DatesTool {
+
+        private final LocalDate now;
+
+        private DatesTool() {
+            this.now = LocalDate.now();
+            this.month = now.getMonth();
+            this.year = now.getYear();
+        }
+
+        private final Month month;
+        private final int year;
+
+        private String getMonthToString() {
+            return month.toString();
+        }
+
+        private int getMonth() {
+            return month.getValue();
+        }
+
+        private int getPreviousMonth() {
+            return month.minus(1).getValue();
+        }
+
+        private int getYearOfPreviousMonth() {
+            return now.minusMonths(1).getYear();
         }
     }
 }

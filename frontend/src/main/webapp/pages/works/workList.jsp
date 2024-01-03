@@ -7,6 +7,16 @@
     <title>DENTAL MECHANIC SERVICE</title>
     <link href="/dental/css/style.css" rel="stylesheet" type="text/css"/>
 </head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		$('#sort-label').click(function(){
+			$('#sort-form').toggle();
+		});
+
+	});
+</script>
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
     <a href="/dental/main/new-work">NEW WORK</a>
@@ -23,7 +33,7 @@
 <section>
     <h3>
         <strong>
-            <%=WorkListTable.month()%>
+            <%=td.month()%>
         </strong>
     </h3>
 	<h4 style="float: left;">
@@ -48,8 +58,15 @@
         <%=td.next()%> <%} %>
 	</div></div>
 </section><br>
-<a class="sorting" href="/dental/main/work-list/sorting">
-    <button type="submit">SORTING</button>
-</a>
+	<div class="sorting">
+        <a class="button" id="sort-label"> SORTING </a><br><br>
+        <a class="button" id="sort-form" style="display:none">
+            <%=td.form_for_sorting_current_month()%>
+                <input class="medium-button" type="submit" value="current">
+            </form>
+            <%=td.form_for_sorting_previous_month()%>
+                <input class="medium-button" type="submit" value="previous">
+            </form>
+        </a></div>
 </body>
 </html>

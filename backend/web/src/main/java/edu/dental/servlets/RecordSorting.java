@@ -11,15 +11,16 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/main/sort")
+@WebServlet("/main/work-list/sort")
 public class RecordSorting extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int year = Integer.parseInt(request.getParameter("year"));
         int month = Integer.parseInt(request.getParameter("month"));
         try {
-            Repository.getInstance().getRecordBook(userId).getSorter().doIt(month);
+            Repository.getInstance().getRecordBook(userId).getSorter().doIt(year, month);
         } catch (WorkRecordBookException e) {
             response.sendError(500);
         }

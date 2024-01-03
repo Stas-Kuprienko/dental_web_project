@@ -219,6 +219,12 @@
         width: 100px;
     }
 
+    .medium-button {
+        font-size: 24px;
+        font-weight: bold;
+        min-height: 32px;
+        width: auto;
+    }
 
     .edit form {
         line-height:1.7em;
@@ -281,8 +287,10 @@
         display: box;
         border: 2px solid dimGrey;
         width: 128px;
-        height: 64px;
+        height: auto;
         float: right;
+        color: black;
+        background-color: #fffed4;
     }
 
     .sorting button {
@@ -293,5 +301,5 @@
     }
 
     .sorting:hover {
-        background: dimGrey;
+        background: #e0e0ba;
     }
