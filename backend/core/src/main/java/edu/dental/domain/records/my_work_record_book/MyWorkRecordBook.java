@@ -2,7 +2,6 @@ package edu.dental.domain.records.my_work_record_book;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
-import edu.dental.domain.records.SorterTool;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.entities.DentalWork;
