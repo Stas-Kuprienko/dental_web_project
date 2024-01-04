@@ -6,17 +6,17 @@ import java.util.Objects;
 /**
  * The class represent the product object and contains entries id, title, price and quantity of product items.
  */
-public record Product(int entryId, String title, byte quantity, int price) implements Serializable {
+public record ProductDto(int entryId, String title, byte quantity, int price) implements Serializable {
 
-    public static Product parse(edu.dental.entities.Product product) {
-        return new Product(product.entryId(), product.title(), product.quantity(), product.price());
+    public static ProductDto parse(edu.dental.entities.Product product) {
+        return new ProductDto(product.entryId(), product.title(), product.quantity(), product.price());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
+        ProductDto product = (ProductDto) o;
         return quantity == product.quantity && price == product.price && Objects.equals(title, product.title);
     }
 
@@ -27,7 +27,7 @@ public record Product(int entryId, String title, byte quantity, int price) imple
 
     @Override
     public String toString() {
-        return "\n Product{" +
+        return "\n ProductDto{" +
                 "\n -title='" + title + '\'' +
                 ", \n -quantity=" + quantity +
                 ", \n -price=" + price +

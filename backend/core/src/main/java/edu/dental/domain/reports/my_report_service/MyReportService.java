@@ -39,10 +39,10 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public MonthlyReport getReportFromDB(User user, String month, String year) throws ReportServiceException {
+    public MonthlyReport getReportFromDB(int userId, String month, String year) throws ReportServiceException {
         try {
             DatabaseService db = APIManager.INSTANCE.getDatabaseService();
-            List<DentalWork> records = db.getDentalWorkDAO().getAllMonthly(user.getId(), month, year);
+            List<DentalWork> records = db.getDentalWorkDAO().getAllMonthly(userId, month, year);
             return new MonthlyReport(year, month, records);
         } catch (DatabaseException | ClassCastException e) {
             //TODO loggers
@@ -51,12 +51,12 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public boolean saveSalariesToFile(User user) throws ReportServiceException {
+    public boolean saveSalariesToFile(int userId) throws ReportServiceException {
         ReportDAO report = APIManager.INSTANCE.getDatabaseService().getReportDAO();
         try {
-            SalaryRecord[] salaries = report.countAllSalaries(user.getId());
+            SalaryRecord[] salaries = report.countAllSalaries(userId);
             DataArrayTool arrayTool = new DataArrayTool(salaries);
-            String nameTable = user.getName() + "_salaries_list";
+            String nameTable = "salaries_list";
             IFileTool fileTool = new XLSXFilesTool(nameTable, arrayTool.getResult());
             return fileTool.createFile().writeFile();
         } catch (DatabaseException e) {

@@ -17,9 +17,9 @@ public interface ReportService {
 
     OutputStream saveReportToFile(OutputStream output, String[] keysArray, List<DentalWork> works) throws ReportServiceException;
 
-    MonthlyReport getReportFromDB(User user, String month, String year) throws ReportServiceException;
+    MonthlyReport getReportFromDB(int userId, String month, String year) throws ReportServiceException;
 
-    boolean saveSalariesToFile(User user) throws ReportServiceException;
+    boolean saveSalariesToFile(int userId) throws ReportServiceException;
 
     String getFileFormat();
 }

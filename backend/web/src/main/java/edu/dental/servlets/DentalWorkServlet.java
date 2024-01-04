@@ -3,7 +3,7 @@ package edu.dental.servlets;
 import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.dto.DentalWork;
+import edu.dental.dto.DentalWorkDto;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.Repository;
 import edu.dental.service.RequestReader;
@@ -44,13 +44,13 @@ public class DentalWorkServlet extends HttpServlet {
         int quantity = Integer.parseInt(request.getParameter(quantityParam));
         String complete = request.getParameter(completeParam);
 
-        DentalWork dw;
+        DentalWorkDto dw;
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
         try {
             if (product != null && !product.isEmpty()) {
-                dw = new DentalWork(recordBook.createRecord(patient, clinic, product, quantity, LocalDate.parse(complete)));
+                dw = new DentalWorkDto(recordBook.createRecord(patient, clinic, product, quantity, LocalDate.parse(complete)));
             } else {
-                dw = new DentalWork(recordBook.createRecord(patient, clinic));
+                dw = new DentalWorkDto(recordBook.createRecord(patient, clinic));
             }
             String json = JsonObjectParser.getInstance().parseToJson(dw);
             response.setContentType("application/json");
@@ -79,7 +79,7 @@ public class DentalWorkServlet extends HttpServlet {
                 editDentalWork(userId, id, field, value);
             }
             WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
-            DentalWork dw = new DentalWork(recordBook.getByID(id));
+            DentalWorkDto dw = new DentalWorkDto(recordBook.getByID(id));
             String json = JsonObjectParser.getInstance().parseToJson(dw);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -101,7 +101,7 @@ public class DentalWorkServlet extends HttpServlet {
             if (product != null) {
                 WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
                 recordBook.removeProduct(id, product);
-                DentalWork dw = new DentalWork(recordBook.getByID(id));
+                DentalWorkDto dw = new DentalWorkDto(recordBook.getByID(id));
                 String json = JsonObjectParser.getInstance().parseToJson(dw);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");

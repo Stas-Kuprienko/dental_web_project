@@ -4,15 +4,15 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
-public class ProductMap {
+public class ProductMapDto {
 
     private Item[] items;
 
-    public ProductMap(Item[] items) {
+    public ProductMapDto(Item[] items) {
         this.items = items;
     }
 
-    public ProductMap(edu.dental.entities.ProductMap map) {
+    public ProductMapDto(edu.dental.entities.ProductMap map) {
         this.items = new Item[map.size()];
         edu.dental.entities.ProductMap.Item[] items = map.toArray();
         for (int i = 0; i < map.size(); i++) {
@@ -45,7 +45,7 @@ public class ProductMap {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProductMap that = (ProductMap) o;
+        ProductMapDto that = (ProductMapDto) o;
         return Arrays.equals(items, that.items);
     }
 
@@ -56,7 +56,7 @@ public class ProductMap {
 
     @Override
     public String toString() {
-        return "ProductMap{" +
+        return "ProductMapDto{" +
                 "items=" + Arrays.toString(items) +
                 '}';
     }

@@ -3,7 +3,7 @@ package edu.dental.servlets;
 import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.dto.ProductMap;
+import edu.dental.dto.ProductMapDto;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.Repository;
 import edu.dental.service.RequestReader;
@@ -27,7 +27,7 @@ public class ProductMapServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
-        ProductMap map = Repository.getInstance().getProductMapDto(userId);
+        ProductMapDto map = Repository.getInstance().getProductMapDto(userId);
         String json = JsonObjectParser.getInstance().parseToJson(map.getItems());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -41,10 +41,10 @@ public class ProductMapServlet extends HttpServlet {
         String title = request.getParameter("title");
         int price = Integer.parseInt(request.getParameter("price"));
 
-        ProductMap.Item item;
+        ProductMapDto.Item item;
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
         try {
-            item = new ProductMap.Item(recordBook.addProductItem(title, price));
+            item = new ProductMapDto.Item(recordBook.addProductItem(title, price));
             String json = JsonObjectParser.getInstance().parseToJson(item);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

@@ -33,7 +33,8 @@ public class WorkSorting extends HttpServlet {
         request.getRequestDispatcher("/main/work-list").forward(request, response);
     }
 
-    private void workSorting() {
-
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
     }
 }

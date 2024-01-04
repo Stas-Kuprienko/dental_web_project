@@ -2,17 +2,17 @@ package edu.dental.dto;
 
 import java.util.Objects;
 
-public record SalaryRecord(int year, String month, int amount) {
+public record SalaryRecordDto(int year, String month, int amount) {
 
-    public static SalaryRecord parse(edu.dental.entities.SalaryRecord record) {
-        return new SalaryRecord(record.year(), record.month(), record.amount());
+    public static SalaryRecordDto parse(edu.dental.entities.SalaryRecord record) {
+        return new SalaryRecordDto(record.year(), record.month(), record.amount());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SalaryRecord that = (SalaryRecord) o;
+        SalaryRecordDto that = (SalaryRecordDto) o;
         return year == that.year && Objects.equals(month, that.month);
     }
 
@@ -23,7 +23,7 @@ public record SalaryRecord(int year, String month, int amount) {
 
     @Override
     public String toString() {
-        return "SalaryRecord{" +
+        return "SalaryRecordDto{" +
                 "year=" + year +
                 ", month='" + month + '\'' +
                 ", amount=" + amount +

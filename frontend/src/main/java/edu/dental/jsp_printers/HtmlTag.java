@@ -92,8 +92,15 @@ public enum HtmlTag {
         /**
          * Necessary using by {@linkplain String#format(String, Object...)}.
          */
-        FORM_FOR_SORTING("""
-                <form action="/dental/main/work-list/sort?year=%s&month=%s">""");
+        INPUT_FOR_SORTING("""
+                <input type="hidden" name="year" value="%s">
+                <input type="hidden" name="month" value="%s">"""),
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        FORM_FOR_MONTH("""
+                <input type="month" name="year-month" value="%s-%s">""");
 
 
         public final String sample;

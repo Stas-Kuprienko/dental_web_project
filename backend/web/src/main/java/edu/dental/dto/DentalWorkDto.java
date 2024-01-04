@@ -3,19 +3,19 @@ package edu.dental.dto;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class DentalWork {
+public class DentalWorkDto {
 
     private final int id;
     private String patient;
     private String clinic;
-    private Product[] products;
+    private ProductDto[] products;
     private String accepted;
     private String complete;
     private String comment;
     private String status;
 
-    public DentalWork(int id, String patient, String clinic, Product[] products,
-                      String accepted, String complete, String comment, String status) {
+    public DentalWorkDto(int id, String patient, String clinic, ProductDto[] products,
+                         String accepted, String complete, String comment, String status) {
         this.id = id;
         this.patient = patient;
         this.clinic = clinic;
@@ -26,7 +26,7 @@ public class DentalWork {
         this.status = status;
     }
 
-    public DentalWork(edu.dental.entities.DentalWork dw) {
+    public DentalWorkDto(edu.dental.entities.DentalWork dw) {
         this.id = dw.getId();
         this.patient = dw.getPatient();
         this.clinic = dw.getClinic();
@@ -34,8 +34,8 @@ public class DentalWork {
         this.complete = dw.getComplete() != null ? dw.getComplete().toString() : "";
         this.comment = dw.getComment() != null ? dw.getComment() : "";
         this.status = dw.getStatus().toString();
-        this.products = new Product[dw.getProducts().size()];
-        dw.getProducts().stream().map(Product::parse).toList().toArray(products);
+        this.products = new ProductDto[dw.getProducts().size()];
+        dw.getProducts().stream().map(ProductDto::parse).toList().toArray(products);
     }
 
     public int getId() {
@@ -50,7 +50,7 @@ public class DentalWork {
         return clinic;
     }
 
-    public Product[] getProducts() {
+    public ProductDto[] getProducts() {
         return products;
     }
 
@@ -78,7 +78,7 @@ public class DentalWork {
         this.clinic = clinic;
     }
 
-    public void setProducts(Product[] products) {
+    public void setProducts(ProductDto[] products) {
         this.products = products;
     }
 
@@ -106,8 +106,11 @@ public class DentalWork {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DentalWork that = (DentalWork) o;
-        return id == that.id && Objects.equals(patient, that.patient) && Objects.equals(clinic, that.clinic) && Arrays.equals(products, that.products) && Objects.equals(accepted, that.accepted) && Objects.equals(complete, that.complete) && Objects.equals(comment, that.comment) && Objects.equals(status, that.status);
+        DentalWorkDto that = (DentalWorkDto) o;
+        return id == that.id && Objects.equals(patient, that.patient) &&
+                Objects.equals(clinic, that.clinic) && Arrays.equals(products, that.products) &&
+                Objects.equals(accepted, that.accepted) && Objects.equals(complete, that.complete) &&
+                Objects.equals(comment, that.comment) && Objects.equals(status, that.status);
     }
 
     @Override
@@ -119,7 +122,7 @@ public class DentalWork {
 
     @Override
     public String toString() {
-        return "DentalWork{" +
+        return "DentalWorkDto{" +
                 "id=" + id +
                 ", patient='" + patient + '\'' +
                 ", clinic='" + clinic + '\'' +

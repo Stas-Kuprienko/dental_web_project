@@ -281,25 +281,19 @@
         background-color: rgba(0, 0, 0, 0.4);
     }
 
-    .sorting {
+    .under-table {
         padding: 1%;
         margin: auto;
         display: box;
         border: 2px solid dimGrey;
-        width: 128px;
+        width: 16%;
         height: auto;
+        min-height: 56px;
         float: right;
         color: black;
         background-color: #fffed4;
     }
 
-    .sorting button {
-        cursor:pointer;
-        width: 124px;
-        height: 60px;
-        display: block;
-    }
-
-    .sorting:hover {
+    .under-table:hover {
         background: #e0e0ba;
     }

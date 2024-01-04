@@ -24,7 +24,13 @@ public class WorkListTable {
     private final Iterator<DentalWork> iterator;
 
     public WorkListTable(HttpServletRequest request) {
-        this.datesTool = new DatesTool();
+        String year_month = (String) request.getAttribute("year-month");
+        if (year_month == null || year_month.isEmpty()) {
+            this.datesTool = new DatesTool();
+        } else {
+            String[] year_month_split = year_month.split("-");
+            this.datesTool = new DatesTool(year_month_split[0], year_month_split[1]);
+        }
         this.tableHead = new Header(request);
         this.map = (String[]) request.getAttribute("map");
         DentalWork[] works = (DentalWork[]) request.getAttribute("works");
@@ -33,7 +39,7 @@ public class WorkListTable {
 
 
     public String month() {
-        return datesTool.getMonthToString() + " - " + datesTool.year;
+        return datesTool.getMonthToString() + " - " + datesTool.getYear();
     }
 
     public boolean hasNext() {
@@ -65,12 +71,18 @@ public class WorkListTable {
         return str.toString();
     }
 
-    public String form_for_sorting_current_month() {
-        return String.format(WORK_VIEW.FORM_FOR_SORTING.sample, datesTool.year, datesTool.getMonth());
+    public String input_for_sorting_current_month() {
+        return String.format(WORK_VIEW.INPUT_FOR_SORTING.sample, datesTool.getCurrentYear(), datesTool.getCurrentMonth());
     }
 
-    public String form_for_sorting_previous_month() {
-        return String.format(WORK_VIEW.FORM_FOR_SORTING.sample, datesTool.getYearOfPreviousMonth(), datesTool.getPreviousMonth());
+    public String input_for_sorting_previous_month() {
+        return String.format(WORK_VIEW.INPUT_FOR_SORTING.sample, datesTool.getYearOfPreviousMonth(), datesTool.getPreviousMonth());
+    }
+
+    public String form_get_works_by_month() {
+        int month = datesTool.getCurrentMonth();
+        String monthStr = month < 10 ? "0" + month : "" + month;
+        return String.format(WORK_VIEW.FORM_FOR_MONTH.sample, datesTool.getCurrentYear(), monthStr);
     }
 
     private Product findProduct(DentalWork dw, String type) {
@@ -120,6 +132,12 @@ public class WorkListTable {
             this.year = now.getYear();
         }
 
+        private DatesTool(String year, String month) {
+            this.now = LocalDate.now();
+            this.month = Month.of(Integer.parseInt(month));
+            this.year = Integer.parseInt(year);
+        }
+
         private final Month month;
         private final int year;
 
@@ -127,16 +145,32 @@ public class WorkListTable {
             return month.toString();
         }
 
+        private String getCurrentMonthToString() {
+            return now.getMonth().toString();
+        }
+
         private int getMonth() {
             return month.getValue();
         }
 
+        private int getCurrentMonth() {
+            return now.getMonthValue();
+        }
+
         private int getPreviousMonth() {
-            return month.minus(1).getValue();
+            return now.minusMonths(1).getMonthValue();
         }
 
         private int getYearOfPreviousMonth() {
             return now.minusMonths(1).getYear();
+        }
+
+        private int getYear() {
+            return year;
+        }
+
+        private int getCurrentYear() {
+            return now.getYear();
         }
     }
 }

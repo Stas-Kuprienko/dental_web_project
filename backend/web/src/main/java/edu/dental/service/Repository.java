@@ -2,10 +2,9 @@ package edu.dental.service;
 
 import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.dto.DentalWork;
-import edu.dental.dto.ProductMap;
+import edu.dental.dto.DentalWorkDto;
+import edu.dental.dto.ProductMapDto;
 import edu.dental.entities.User;
-import edu.dental.service.my_repository.MyRepository;
 
 import java.util.List;
 
@@ -19,9 +18,9 @@ public interface Repository {
 
     Account get(int id);
 
-    List<DentalWork> getDentalWorkDtoList(int id);
+    List<DentalWorkDto> getDentalWorkDtoList(int id);
 
-    ProductMap getProductMapDto(int id);
+    ProductMapDto getProductMapDto(int id);
 
     User getUser(int id);
 

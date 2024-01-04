@@ -16,6 +16,13 @@
 		});
 
 	});
+	$(document).ready(function(){
+
+    		$('#monthly-label').click(function(){
+    			$('#monthly-form').toggle();
+    		});
+
+    	});
 </script>
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
@@ -58,14 +65,25 @@
         <%=td.next()%> <%} %>
 	</div></div>
 </section><br>
-	<div class="sorting">
-        <a class="button" id="sort-label"> SORTING </a><br><br>
-        <a class="button" id="sort-form" style="display:none">
-            <%=td.form_for_sorting_current_month()%>
-                <input class="medium-button" type="submit" value="current">
+    <div class="under-table">
+        <a id="monthly-label"> GET BY MONTH </a><br><br>
+        <a id="monthly-form" style="display:none;">
+            <form action="/dental/main/work-list">
+                <input type="month" name="year-month" value="2024-01">
+                <input class="medium-button" style="height:auto;" type="submit" value="get">
             </form>
-            <%=td.form_for_sorting_previous_month()%>
+        </a>
+    </div>
+	<div class="under-table">
+        <a id="sort-label"> SORTING </a><br><br>
+        <a id="sort-form" style="display:none;">
+            <form method="get" action="/dental/main/work-list/sort">
+                <input class="medium-button" type="submit" value="current">
+                <%=td.input_for_sorting_current_month()%>
+            </form>
+            <form method="get" action="/dental/main/work-list/sort">
                 <input class="medium-button" type="submit" value="previous">
+                <%=td.input_for_sorting_previous_month()%>
             </form>
         </a></div>
 </body>
