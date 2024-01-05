@@ -8,11 +8,11 @@
   <link href="/dental/css/style.css" rel="stylesheet" type="text/css"/>
 </head>
 <nav class="menu">
-  <header><strong>DENTAL MECHANIC SERVICE</strong></header>
-  <a href="/dental/main/new-work">NEW WORK</a>
-  <a href="/dental/main/work-list">WORK LIST</a>
-  <a href="/dental/main/product-map">PRODUCT MAP</a>
-  <a href="/dental/main/reports">REPORTS</a>
+    <header><strong>DENTAL MECHANIC SERVICE</strong></header>
+    <a href="/dental/main/new-work">NEW WORK</a>
+    <a href="/dental/main/work-list">WORK LIST</a>
+    <a href="/dental/main/product-map">PRODUCT MAP</a>
+    <a href="/dental/main/account">ACCOUNT</a>
 </nav>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript">

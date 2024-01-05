@@ -5,15 +5,14 @@ import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.ReportDAO;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.reports.IFileTool;
-import edu.dental.domain.reports.MonthlyReport;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.SalaryRecord;
-import edu.dental.entities.User;
 import utils.collections.SimpleList;
 
 import java.io.OutputStream;
+import java.time.Month;
 import java.util.List;
 
 public class MyReportService implements ReportService {
@@ -22,28 +21,24 @@ public class MyReportService implements ReportService {
 
 
     @Override
-    public boolean saveReportToFile(String[] keysArray, MonthlyReport report) throws ReportServiceException {
-        DataArrayTool dataArrayTool = new DataArrayTool(keysArray, (SimpleList<DentalWork>) report.dentalWorks());
-        String[][] reportData = dataArrayTool.getResult();
-        String tableName = report.month() + "_" + report.year();
-        IFileTool fileTool = new XLSXFilesTool(tableName, reportData);
-        return fileTool.createFile().writeFile();
-    }
-
-    @Override
-    public OutputStream saveReportToFile(OutputStream output, String[] keysArray, List<DentalWork> works) throws ReportServiceException {
-        DataArrayTool dataArrayTool = new DataArrayTool(keysArray, (SimpleList<DentalWork>) works);
+    public OutputStream writeReportToOutput(OutputStream output, String[] keys, List<DentalWork> works) throws ReportServiceException {
+        DataArrayTool dataArrayTool = new DataArrayTool(keys, (SimpleList<DentalWork>) works);
         String[][] reportData = dataArrayTool.getResult();
         IFileTool fileTool = new XLSXFilesTool(reportData);
         return fileTool.createFile().writeFile(output);
     }
 
     @Override
-    public MonthlyReport getReportFromDB(int userId, String month, String year) throws ReportServiceException {
+    public List<DentalWork> getReportFromDB(int userId, int monthValue, int year) throws ReportServiceException {
+        String month = Month.of(monthValue).toString();
+        return getReportFromDB(userId, month, String.valueOf(year));
+    }
+
+    @Override
+    public List<DentalWork> getReportFromDB(int userId, String month, String year) throws ReportServiceException {
         try {
             DatabaseService db = APIManager.INSTANCE.getDatabaseService();
-            List<DentalWork> records = db.getDentalWorkDAO().getAllMonthly(userId, month, year);
-            return new MonthlyReport(year, month, records);
+            return db.getDentalWorkDAO().getAllMonthly(userId, month, year);
         } catch (DatabaseException | ClassCastException e) {
             //TODO loggers
             throw new ReportServiceException(e.getMessage(), e.getCause());
@@ -55,9 +50,9 @@ public class MyReportService implements ReportService {
         ReportDAO report = APIManager.INSTANCE.getDatabaseService().getReportDAO();
         try {
             SalaryRecord[] salaries = report.countAllSalaries(userId);
-            DataArrayTool arrayTool = new DataArrayTool(salaries);
+            DataArrayTool dataTool = new DataArrayTool(salaries);
             String nameTable = "salaries_list";
-            IFileTool fileTool = new XLSXFilesTool(nameTable, arrayTool.getResult());
+            IFileTool fileTool = new XLSXFilesTool(nameTable, dataTool.getResult());
             return fileTool.createFile().writeFile();
         } catch (DatabaseException e) {
             throw new ReportServiceException(e.getMessage(), e.getCause());

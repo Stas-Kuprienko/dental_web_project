@@ -11,12 +11,7 @@
     <a href="/dental/main/new-work">NEW WORK</a>
     <a href="/dental/main/work-list">WORK LIST</a>
     <a href="/dental/main/product-map">PRODUCT MAP</a>
-    <a href="/dental/main/reports">REPORTS</a>
-    <a style="float: right;" href="/dental/main/user">
-        <button style="height: 50%; width: 100%; font-size: 20px;">
-            ACCOUNT
-        </button>
-    </a>
+    <a href="/dental/main/account">ACCOUNT</a>
 </nav>
 <body>
 <section>

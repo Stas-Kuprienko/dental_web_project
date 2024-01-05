@@ -35,6 +35,7 @@ public class WorkListTable {
         this.map = (String[]) request.getAttribute("map");
         DentalWork[] works = (DentalWork[]) request.getAttribute("works");
         this.iterator = Arrays.stream(works).iterator();
+        request.removeAttribute("year-month");
     }
 
 
@@ -82,7 +83,11 @@ public class WorkListTable {
     public String form_get_works_by_month() {
         int month = datesTool.getCurrentMonth();
         String monthStr = month < 10 ? "0" + month : "" + month;
-        return String.format(WORK_VIEW.FORM_FOR_MONTH.sample, datesTool.getCurrentYear(), monthStr);
+        return String.format(WORK_VIEW.FORM_FOR_MONTH.sample, datesTool.getYear(), monthStr);
+    }
+
+    public String hidden_input_for_downloading() {
+        return String.format(WORK_VIEW.INPUT_FOR_SORTING.sample, datesTool.getYear(), datesTool.getMonth());
     }
 
     private Product findProduct(DentalWork dw, String type) {

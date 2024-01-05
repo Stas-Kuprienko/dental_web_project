@@ -2,6 +2,8 @@ package edu.dental.servlets;
 
 import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.dto.DentalWorkDto;
+import edu.dental.service.JsonObjectParser;
 import edu.dental.service.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/main/work-list/sort")
 public class RecordSorting extends HttpServlet {
@@ -21,9 +24,14 @@ public class RecordSorting extends HttpServlet {
         int month = Integer.parseInt(request.getParameter("month"));
         try {
             Repository.getInstance().getRecordBook(userId).getSorter().doIt(year, month);
+            List<DentalWorkDto> works = Repository.getInstance().getDentalWorkDtoList(userId);
+            String json = JsonObjectParser.getInstance().parseToJson(works.toArray());
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().print(json);
+            response.getWriter().flush();
         } catch (WorkRecordBookException e) {
             response.sendError(500);
         }
-        request.getRequestDispatcher("/main/dental-works").forward(request, response);
     }
 }
