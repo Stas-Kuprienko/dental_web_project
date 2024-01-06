@@ -35,6 +35,7 @@ public class WorkSorting extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //TODO write setting paid status to work list
         doGet(request, response);
     }
 }

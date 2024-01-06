@@ -1,11 +1,24 @@
 package edu.dental.dto;
 
+import edu.dental.entities.SalaryRecord;
+
 import java.util.Objects;
 
 public record SalaryRecordDto(int year, String month, int amount) {
 
     public static SalaryRecordDto parse(edu.dental.entities.SalaryRecord record) {
         return new SalaryRecordDto(record.year(), record.month(), record.amount());
+    }
+
+    public static SalaryRecordDto[] parseArray(SalaryRecord[] records) {
+        SalaryRecordDto[] result = new SalaryRecordDto[records.length];
+        int i = 0;
+        SalaryRecord record;
+        while (i < records.length) {
+            record = records[i];
+            result[i++] = SalaryRecordDto.parse(record);
+        }
+        return result;
     }
 
     @Override

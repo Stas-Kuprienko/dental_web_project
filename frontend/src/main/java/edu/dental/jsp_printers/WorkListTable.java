@@ -86,7 +86,7 @@ public class WorkListTable {
         return String.format(WORK_VIEW.FORM_FOR_MONTH.sample, datesTool.getYear(), monthStr);
     }
 
-    public String hidden_input_for_downloading() {
+    public String hidden_input_year_and_month() {
         return String.format(WORK_VIEW.INPUT_FOR_SORTING.sample, datesTool.getYear(), datesTool.getMonth());
     }
 

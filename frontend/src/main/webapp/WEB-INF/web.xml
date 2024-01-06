@@ -76,8 +76,13 @@
   </servlet>
 
   <servlet>
-    <servlet-name>reportMenu</servlet-name>
-    <jsp-file>/pages/reports/reportMenu.html</jsp-file>
+    <servlet-name>salaryPage</servlet-name>
+    <jsp-file>/pages/salaries/salaryList.jsp</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>salaryCount</servlet-name>
+    <servlet-class>edu.dental.servlets.reports.SalaryCounter</servlet-class>
   </servlet>
 
   <servlet>
@@ -121,8 +126,8 @@
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>reportMenu</servlet-name>
-    <url-pattern>/main/reports</url-pattern>
+    <servlet-name>salaryPage</servlet-name>
+    <url-pattern>/main/salary/page</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

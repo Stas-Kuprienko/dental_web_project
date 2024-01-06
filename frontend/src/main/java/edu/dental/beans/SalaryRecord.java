@@ -1,8 +1,14 @@
 package edu.dental.beans;
 
+import java.time.Month;
 import java.util.Objects;
 
 public record SalaryRecord(int year, String month, int amount) {
+
+    public int getMonthValue() {
+        //TODO - temporary, need to fix!
+        return Month.valueOf(month.toUpperCase()).getValue();
+    }
 
     @Override
     public boolean equals(Object o) {

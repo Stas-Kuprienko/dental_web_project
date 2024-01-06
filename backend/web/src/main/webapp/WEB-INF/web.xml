@@ -54,4 +54,9 @@
     <servlet-class>edu.dental.servlets.WorkRecordSearchServlet</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>salaryCount</servlet-name>
+    <servlet-class>edu.dental.servlets.SalaryCountServlet</servlet-class>
+  </servlet>
+
 </web-app>

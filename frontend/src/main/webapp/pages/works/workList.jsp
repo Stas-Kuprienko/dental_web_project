@@ -16,6 +16,13 @@
     		});
 
     	});
+	$(document).ready(function(){
+
+    		$('#salary-label').click(function(){
+    			$('#salary-form').toggle();
+    		});
+
+    	});
     $(document).ready(function(){
 
 		$('#sort-label').click(function(){
@@ -69,6 +76,18 @@
 </section>
 </body>
 <nav class="low-menu">
+    <a id="salary-label">
+        <button> count salary </button>
+    </a>
+    <div id="salary-form" style="display:none;">
+        <form method="post" action="/dental/main/salary" style="float:left;">
+            <input class="medium-button" type="submit" value="current">
+            <%=td.hidden_input_year_and_month()%> &emsp;
+        </form>
+        <form method="post" action="/dental/main/salary" style="float:left;">
+            <input class="medium-button" type="submit" value="all time">
+        </form>
+    </div>
     <a id="search-label">
         <button> search record </button>
     </a>
@@ -98,13 +117,17 @@
         </form>
         <form method="get" action="/dental/main/work-list/sort" style="float:left;">
             <input class="medium-button" type="submit" value="previous">
-            <%=td.input_for_sorting_previous_month()%>
+            <%=td.input_for_sorting_previous_month()%> &emsp;
+        </form>
+        <form method="post" action="/dental/main/work-list/sort" style="float:left;">
+            <input class="medium-button" type="submit" value="all paid">
+            <%=td.hidden_input_year_and_month()%>
         </form>
     </div>
     <a>
         <form method="get" action="/dental/main/reports/download">
             <input class="low-button" type="submit" value="download">
-            <%=td.hidden_input_for_downloading()%>
+            <%=td.hidden_input_year_and_month()%>
         </form>
     </a>
 </nav>

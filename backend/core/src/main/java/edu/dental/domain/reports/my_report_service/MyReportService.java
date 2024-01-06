@@ -3,8 +3,7 @@ package edu.dental.domain.reports.my_report_service;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.DentalWorkDAO;
-import edu.dental.database.dao.ReportDAO;
-import edu.dental.domain.APIManager;
+import edu.dental.database.dao.SalaryRecordDAO;
 import edu.dental.domain.reports.IFileTool;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
@@ -39,7 +38,7 @@ public class MyReportService implements ReportService {
     @Override
     public List<DentalWork> getReportFromDB(int userId, String month, String year) throws ReportServiceException {
         try {
-            DatabaseService db = APIManager.INSTANCE.getDatabaseService();
+            DatabaseService db = DatabaseService.getInstance();
             return db.getDentalWorkDAO().getAllMonthly(userId, month, year);
         } catch (DatabaseException | ClassCastException e) {
             //TODO loggers
@@ -73,16 +72,37 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public boolean saveSalariesToFile(int userId) throws ReportServiceException {
-        ReportDAO report = APIManager.INSTANCE.getDatabaseService().getReportDAO();
+    public OutputStream writeSalariesToOutput(int userId, OutputStream output) throws ReportServiceException {
+        SalaryRecordDAO dao = DatabaseService.getInstance().getSalaryRecordDAO();
         try {
-            SalaryRecord[] salaries = report.countAllSalaries(userId);
+            SalaryRecord[] salaries = dao.countAllSalaries(userId);
             DataArrayTool dataTool = new DataArrayTool(salaries);
             String nameTable = "salaries_list";
             IFileTool fileTool = new XLSXFilesTool(nameTable, dataTool.getResult());
-            return fileTool.createFile().writeFile();
+            return fileTool.createFile().writeFile(output);
         } catch (DatabaseException e) {
             throw new ReportServiceException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Override
+    public SalaryRecord countSalaryForMonth(int userId, String year, String monthValue) throws ReportServiceException {
+        String month = Month.of(Integer.parseInt(monthValue)).toString();
+        SalaryRecordDAO dao = DatabaseService.getInstance().getSalaryRecordDAO();
+        try {
+            return dao.countSalaryForMonth(userId, year, month);
+        } catch (DatabaseException e) {
+            throw new ReportServiceException(e);
+        }
+    }
+
+    @Override
+    public SalaryRecord[] countAllSalaries(int userId) throws ReportServiceException {
+        SalaryRecordDAO dao = DatabaseService.getInstance().getSalaryRecordDAO();
+        try {
+            return dao.countAllSalaries(userId);
+        } catch (DatabaseException e) {
+            throw new ReportServiceException(e);
         }
     }
 

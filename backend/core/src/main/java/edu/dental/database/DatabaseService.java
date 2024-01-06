@@ -22,5 +22,5 @@ public interface DatabaseService {
 
     ProductDAO getProductDAO(int workId);
 
-    ReportDAO getReportDAO();
+    SalaryRecordDAO getSalaryRecordDAO();
 }

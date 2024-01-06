@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 @WebServlet("/main/work-list")
 public class WorkListServlet extends HttpServlet {
@@ -51,11 +52,21 @@ public class WorkListServlet extends HttpServlet {
         String[] year_month_split = year_month.split("-");
         String year = year_month_split[0];
         String month = year_month_split[1];
-
-        String jsonWorks = WebAPI.INSTANCE.requestSender()
-                .sendHttpGetRequest(jwt, dentalWorksUrl + String.format(parameters, year, month));
-        DentalWork[] works = JsonObjectParser.parser.fromJson(jsonWorks, DentalWork[].class);
+        LocalDate now = LocalDate.now();
+        DentalWork[] works;
+        if (now.getYear() == Integer.parseInt(year) && now.getMonthValue() == Integer.parseInt(month)) {
+            works = new DentalWork[]{};
+            works = WebRepository.INSTANCE.getWorks(userId).toArray(works);
+        } else {
+            String jsonWorks = WebAPI.INSTANCE.requestSender()
+                    .sendHttpGetRequest(jwt, dentalWorksUrl + String.format(parameters, year, month));
+            works = JsonObjectParser.parser.fromJson(jsonWorks, DentalWork[].class);
+        }
         request.setAttribute("works", works);
         request.setAttribute("year-month", year_month);
+    }
+
+    private boolean checkYearAndMonth() {
+        return false;
     }
 }

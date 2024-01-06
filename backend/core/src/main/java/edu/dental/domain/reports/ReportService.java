@@ -2,6 +2,7 @@ package edu.dental.domain.reports;
 
 import edu.dental.domain.APIManager;
 import edu.dental.entities.DentalWork;
+import edu.dental.entities.SalaryRecord;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -22,7 +23,11 @@ public interface ReportService {
 
     DentalWork getByIDFromDatabase(int userId, int workId) throws ReportServiceException;
 
-    boolean saveSalariesToFile(int userId) throws ReportServiceException;
+    OutputStream writeSalariesToOutput(int userId, OutputStream output) throws ReportServiceException;
+
+    SalaryRecord countSalaryForMonth(int userId, String year, String monthValue) throws ReportServiceException;
+
+    SalaryRecord[] countAllSalaries(int userId) throws ReportServiceException;
 
     String getFileFormat();
 }

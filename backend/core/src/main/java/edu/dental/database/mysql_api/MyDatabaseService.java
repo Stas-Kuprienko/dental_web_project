@@ -4,12 +4,7 @@ import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.*;
-import edu.dental.entities.SalaryRecord;
 import edu.dental.entities.User;
-import utils.collections.SimpleList;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class MyDatabaseService implements DatabaseService {
 
@@ -46,7 +41,7 @@ public class MyDatabaseService implements DatabaseService {
     }
 
     @Override
-    public ReportDAO getReportDAO() {
-        return new ReportMySql();
+    public SalaryRecordDAO getSalaryRecordDAO() {
+        return new SalaryRecordMySql();
     }
 }

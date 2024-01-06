@@ -53,6 +53,17 @@ public enum MySqlSamples {
                 JOIN report ON dental_work.report_id = report.id
             	WHERE dental_work.user_id = ?
                 GROUP BY dental_work.report_id;
+            """),
+
+    MONTH_SALARY("""
+            SELECT report.month,
+                report.year,
+                SUM(product.price * product.quantity) AS amount
+                FROM dental_work
+                JOIN product ON product.work_id = dental_work.id
+                JOIN report ON dental_work.report_id = report.id
+                WHERE dental_work.user_id = ? AND year = ? AND month = ?
+                GROUP BY dental_work.report_id;
             """);
 
     public final String QUERY;

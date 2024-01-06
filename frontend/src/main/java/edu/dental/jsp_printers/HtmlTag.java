@@ -65,6 +65,11 @@ public enum HtmlTag {
         return str;
     }
 
+    public StringBuilder lineFormat(StringBuilder str, String formatValue, String value) {
+        str.append(String.format(o, formatValue)).append(value).append(c).append("\n\t\t");
+        return str;
+    }
+
     public enum WORK_VIEW {
 
         /**
