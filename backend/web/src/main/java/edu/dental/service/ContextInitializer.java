@@ -58,7 +58,7 @@ public class ContextInitializer implements ServletContextListener {
             //TODO logger
             throw new RuntimeException();
         }
-        System.out.println(this.getClass().getSimpleName());
+        System.out.println("context ready");
     }
 
     private boolean checkDB() throws SQLException {
@@ -75,5 +75,6 @@ public class ContextInitializer implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent sce) {
         ServletContextListener.super.contextDestroyed(sce);
         ConnectionPool.deregister();
+        System.out.println("context destroyed");
     }
 }

@@ -56,6 +56,12 @@ public final class ConnectionPool {
     }
 
     public static synchronized void deregister() {
+        try {
+            closeConnections();
+        } catch (SQLException e) {
+            //TODO logger
+            throw new RuntimeException(e);
+        }
         Enumeration<Driver> drivers = DriverManager.getDrivers();
         while (drivers.hasMoreElements()) {
             try {
@@ -63,6 +69,19 @@ public final class ConnectionPool {
             } catch (SQLException e) {
                 //TODO logger
                 throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private static synchronized void closeConnections() throws SQLException {
+        if (!instance.using.isEmpty()) {
+            for (Connection c : instance.using) {
+                c.close();
+            }
+        }
+        if (!instance.free.isEmpty()) {
+            for (Connection c : instance.free) {
+                c.close();
             }
         }
     }
