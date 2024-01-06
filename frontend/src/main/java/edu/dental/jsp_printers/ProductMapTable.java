@@ -10,7 +10,7 @@ import static edu.dental.jsp_printers.HtmlTag.*;
 
 public class ProductMapTable {
 
-    private static final String href = "product-map";
+    private static final String href = "product-map?id=";
 
     private final Iterator<ProductMap.Item> iterator;
     private final int id;
@@ -32,7 +32,7 @@ public class ProductMapTable {
         }
         ProductMap.Item item = iterator.next();
         StringBuilder str = new StringBuilder();
-        str.append(String.format(A_TR.o, href, item.id()));
+        str.append(String.format(A_TR.o, href + item.id()));
         DIV_TD.line(str, item.key());
         DIV_TD.line(str, String.valueOf(item.value()));
         str.append(A_TR.c);
@@ -48,7 +48,7 @@ public class ProductMapTable {
             str.append(String.format(HtmlTag.PRODUCT_VIEW.FORM.sample,
                     item.value(), item.key(), item.id(), item.key(), item.id()));
         } else {
-            str.append(String.format(A_TR.o, href, item.id()));
+            str.append(String.format(A_TR.o, href + item.id()));
             DIV_TD.line(str, item.key());
             DIV_TD.line(str, String.valueOf(item.value()));
         }

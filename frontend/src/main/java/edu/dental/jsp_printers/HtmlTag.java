@@ -22,21 +22,21 @@ public enum HtmlTag {
      * Necessary using by {@linkplain String#format(String, Object...)}.
      */
     A_TR("""
-            <a class="tr" href="/dental/main/%s?id=%s">""",
+            <a class="tr" href="/dental/main/%s">""",
             "</a>"),
 
     /**
      * Necessary using by {@linkplain String#format(String, Object...)}.
      */
     A_TR_CLOSED("""
-            <a class="tr-closed" href="/dental/main/%s?id=%s">""",
+            <a class="tr-closed" href="/dental/main/%s">""",
             "</a>"),
 
     /**
      * Necessary using by {@linkplain String#format(String, Object...)}.
      */
     A_TR_PAID("""
-            <a class="tr-paid" href="/dental/main/%s?id=%s">""",
+            <a class="tr-paid" href="/dental/main/%s">""",
             "</a>"),
 
     DIV_TD("""

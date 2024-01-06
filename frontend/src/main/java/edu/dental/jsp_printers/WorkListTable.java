@@ -15,7 +15,7 @@ import static edu.dental.jsp_printers.HtmlTag.*;
 @SuppressWarnings("unused")
 public class WorkListTable {
 
-    private static final String href = "dental-work";
+    private static final String href = "dental-work?id=";
 
     public final Header tableHead;
 
@@ -53,7 +53,7 @@ public class WorkListTable {
         HtmlTag tagA = dw.status().equals(DentalWork.Status.MAKE.toString()) ? A_TR
                 : dw.status().equals(DentalWork.Status.CLOSED.toString()) ? A_TR_CLOSED
                 : A_TR_PAID;
-        str.append(String.format(tagA.o, href, dw.id())).append("\n\t\t");
+        str.append(String.format(tagA.o, href + dw.id())).append("\n\t\t");
         DIV_TD.line(str, dw.patient());
         DIV_TD.line(str, dw.clinic());
         if (dw.products().length == 0) {
