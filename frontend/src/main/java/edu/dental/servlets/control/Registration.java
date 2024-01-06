@@ -4,7 +4,7 @@ import edu.dental.WebAPI;
 import edu.dental.beans.UserDto;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.WebRepository;
-import edu.dental.service.RequestSender;
+import edu.dental.service.HttpRequestSender;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -34,7 +34,7 @@ public class Registration extends HttpServlet {
         if (email == null || password == null) {
             request.getRequestDispatcher("/sign-up").forward(request, response);
         } else {
-            RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+            HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
 
             queryFormer.add(paramName, name);
             queryFormer.add(paramEmail, email);

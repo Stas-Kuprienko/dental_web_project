@@ -6,12 +6,17 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public class RequestSender {
+public class HttpRequestSender {
 
     private final String url;
 
-    public RequestSender(String url) {
+    public HttpRequestSender(String url) {
         this.url = url;
+    }
+
+    public String sendHttpGetRequest(String jwt, String resource, String request) throws IOException {
+        //TODO !!!
+        return null;
     }
 
     public String sendHttpGetRequest(String jwt, String resource) throws IOException {

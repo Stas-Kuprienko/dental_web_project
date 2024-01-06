@@ -73,7 +73,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     @Override
     public List<DentalWork> getAll(int userId) throws DatabaseException {
         String where = String.format("%s.user_id = %s AND %s.report_id IS NULL",
-                TableInitializer.DENTAL_WORK, userId, TableInitializer.DENTAL_WORK);
+                TABLE, userId, TABLE);
         String query = String.format(MySqlSamples.SELECT_DENTAL_WORK.QUERY, where);
         SimpleList<DentalWork> dentalWorks;
         try (Request request = new Request(query)) {
@@ -120,13 +120,15 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
     @Override
-    public SimpleList<DentalWork> search(Object... args) throws DatabaseException {
-        String where = "patient = ? AND clinic = ?";
-        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
-        try (Request request = new Request(query)) {
-            request.getPreparedStatement().setString(1, (String) args[0]);
-            request.getPreparedStatement().setString(2, (String) args[1]);
-            ResultSet resultSet = request.getPreparedStatement().executeQuery();
+    public SimpleList<DentalWork> search(int userId, String[] fields, String[] args) throws DatabaseException {
+        String where = buildSearchQuery(fields, args);
+        if (where == null) {
+            throw new DatabaseException("Incorrect search parameters");
+        }
+        where += TABLE + ".user_id = " + userId;
+        String query = String.format(MySqlSamples.SELECT_DENTAL_WORK.QUERY, where);
+        try (Request request = new Request()) {
+            ResultSet resultSet = request.getStatement().executeQuery(query);
             return (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
         } catch (SQLException | IOException | NullPointerException | ClassCastException e) {
             //TODO loggers
@@ -243,6 +245,18 @@ public class DentalWorkMySql implements DentalWorkDAO {
         values = String.format(values, dw.getPatient(), dw.getClinic(), dw.getAccepted(),
                 dw.getComplete(), dw.getStatus(), dw.getComment(), dw.getReportId());
         return String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
+    }
+
+    private String buildSearchQuery(String[] fields, String[] args) {
+        if (fields.length != args.length) {
+            return null;
+        }
+        String queryFormat = TABLE + ".%s = '%s' AND ";
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < fields.length; i++) {
+            result.append(String.format(queryFormat, fields[i], args[i]));
+        }
+        return result.toString();
     }
 
 

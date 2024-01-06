@@ -2,6 +2,7 @@ package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
+import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.database.dao.ReportDAO;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.reports.IFileTool;
@@ -42,6 +43,16 @@ public class MyReportService implements ReportService {
         } catch (DatabaseException | ClassCastException e) {
             //TODO loggers
             throw new ReportServiceException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Override
+    public List<DentalWork> searchRecords(int userId, String[] fields, String[] args) throws ReportServiceException {
+        DentalWorkDAO dao = DatabaseService.getInstance().getDentalWorkDAO();
+        try {
+            return dao.search(userId, fields, args);
+        } catch (DatabaseException e) {
+            throw new ReportServiceException(e.getMessage(), e);
         }
     }
 

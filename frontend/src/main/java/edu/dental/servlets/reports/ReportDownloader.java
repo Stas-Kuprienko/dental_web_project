@@ -1,7 +1,7 @@
 package edu.dental.servlets.reports;
 
 import edu.dental.WebAPI;
-import edu.dental.service.RequestSender;
+import edu.dental.service.HttpRequestSender;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -42,7 +42,7 @@ public class ReportDownloader extends HttpServlet {
             if (Integer.parseInt(year) == now.getYear() && Integer.parseInt(month) == now.getMonthValue()) {
                 return reportsDownloadUrl;
             } else {
-                RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+                HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
                 queryFormer.add("year", year);
                 queryFormer.add("month", month);
                 return reportsDownloadUrl + "?" + queryFormer.form();

@@ -11,6 +11,13 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 
+    		$('#search-label').click(function(){
+    			$('#search-form').toggle();
+    		});
+
+    	});
+    $(document).ready(function(){
+
 		$('#sort-label').click(function(){
 			$('#sort-form').toggle();
 		});
@@ -62,6 +69,16 @@
 </section>
 </body>
 <nav class="low-menu">
+    <a id="search-label">
+        <button> search record </button>
+    </a>
+    <div id="search-form" style="display:none;">
+        <form method="post" action="/dental/main/dental-works/search" style="float:left;">
+            <input type="text" name="patient" placeholder="patient" style="display:block;"> &emsp;
+            <input type="text" name="clinic" placeholder="clinic" style="display:block;">
+            <input class="medium-button" type="submit" value="find" style="display:block;">
+        </form>
+    </div>
     <a id="monthly-label">
         <button> another month </button>
     </a>

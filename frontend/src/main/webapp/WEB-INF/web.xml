@@ -85,6 +85,11 @@
     <servlet-class>edu.dental.servlets.reports.ReportDownloader</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>searchRecords</servlet-name>
+    <servlet-class>edu.dental.servlets.works.WorkRecordSearch</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>signUp</servlet-name>
     <url-pattern>/sign-up</url-pattern>

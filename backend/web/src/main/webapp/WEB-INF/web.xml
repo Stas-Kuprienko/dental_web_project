@@ -41,12 +41,17 @@
 
   <servlet>
     <servlet-name>workSort</servlet-name>
-    <servlet-class>edu.dental.servlets.RecordSorting</servlet-class>
+    <servlet-class>edu.dental.servlets.WorkRecordSortServlet</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>reportDownload</servlet-name>
     <servlet-class>edu.dental.servlets.ReportDownloader</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>searchRecords</servlet-name>
+    <servlet-class>edu.dental.servlets.WorkRecordSearchServlet</servlet-class>
   </servlet>
 
 </web-app>

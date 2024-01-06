@@ -3,7 +3,7 @@ package edu.dental.servlets.products;
 import edu.dental.WebAPI;
 import edu.dental.beans.ProductMap;
 import edu.dental.service.JsonObjectParser;
-import edu.dental.service.RequestSender;
+import edu.dental.service.HttpRequestSender;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -71,7 +71,7 @@ public class ProductServlet extends HttpServlet {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         ProductMap.Item item;
 
-        RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
         queryFormer.add(titleParam, title);
         queryFormer.add(priceParam, price);
         String requestParam = queryFormer.form();
@@ -83,7 +83,7 @@ public class ProductServlet extends HttpServlet {
 
     private void editProduct(int userId, String title, int price) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
         queryFormer.add(titleParam, title);
         queryFormer.add(priceParam, price);
         String requestParam = queryFormer.form();
@@ -93,7 +93,7 @@ public class ProductServlet extends HttpServlet {
 
     private void deleteProduct(int userId, String title) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
         queryFormer.add(titleParam, title);
         String requestParam = queryFormer.form();
         WebAPI.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, productMapUrl, requestParam);

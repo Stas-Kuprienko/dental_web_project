@@ -6,7 +6,7 @@ import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserDto;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.WebRepository;
-import edu.dental.service.RequestSender;
+import edu.dental.service.HttpRequestSender;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -37,7 +37,7 @@ public class Authorization extends HttpServlet {
         if (email == null || password == null) {
             request.getRequestDispatcher("/").forward(request, response);
         } else {
-            RequestSender.QueryFormer queryFormer = new RequestSender.QueryFormer();
+            HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
 
             queryFormer.add(paramEmail, email);
             queryFormer.add(paramPassword, password);

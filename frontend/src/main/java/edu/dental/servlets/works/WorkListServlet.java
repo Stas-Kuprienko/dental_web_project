@@ -49,8 +49,8 @@ public class WorkListServlet extends HttpServlet {
     private void setRequiredWorkList(int userId, String year_month, HttpServletRequest request) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         String[] year_month_split = year_month.split("-");
-        int year = Integer.parseInt(year_month_split[0]);
-        int month = Integer.parseInt(year_month_split[1]);
+        String year = year_month_split[0];
+        String month = year_month_split[1];
 
         String jsonWorks = WebAPI.INSTANCE.requestSender()
                 .sendHttpGetRequest(jwt, dentalWorksUrl + String.format(parameters, year, month));

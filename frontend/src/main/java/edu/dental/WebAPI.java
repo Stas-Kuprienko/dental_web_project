@@ -1,6 +1,6 @@
 package edu.dental;
 
-import edu.dental.service.RequestSender;
+import edu.dental.service.HttpRequestSender;
 
 public enum WebAPI {
 
@@ -10,15 +10,15 @@ public enum WebAPI {
 
     private static final String apiUrl = "http://localhost:8080/dental-api/";
 
-    private final RequestSender requestSender;
+    private final HttpRequestSender requestSender;
 
 
     WebAPI() {
-        this.requestSender = new RequestSender(apiUrl);
+        this.requestSender = new HttpRequestSender(apiUrl);
     }
 
 
-    public RequestSender requestSender() {
+    public HttpRequestSender requestSender() {
         return requestSender;
     }
 }
