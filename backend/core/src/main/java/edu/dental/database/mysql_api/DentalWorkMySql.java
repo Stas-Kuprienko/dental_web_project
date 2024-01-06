@@ -89,7 +89,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     @Override
     public List<DentalWork> getAllMonthly(int userId, String month, String year) throws DatabaseException {
         String getReportId = "(SELECT id FROM " + TableInitializer.REPORT +" WHERE month = ? AND year = ?)";
-        String where = TableInitializer.DENTAL_WORK + ".user_id = " + userId + " AND report_id = " + getReportId;
+        String where = TABLE + ".user_id = " + userId + " AND report_id = " + getReportId;
         String query = String.format(MySqlSamples.SELECT_DENTAL_WORK.QUERY, where);
         SimpleList<DentalWork> dentalWorks;
         try (Request request = new Request(query)) {
@@ -106,10 +106,12 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
     @Override
-    public DentalWork get(int id) throws DatabaseException {
-        String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
+    public DentalWork get(int userId, int id) throws DatabaseException {
+        String where = TABLE + ".id = ? AND " + TABLE + ".user_id = ?";
+        String query = String.format(MySqlSamples.SELECT_DENTAL_WORK.QUERY, where);
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
+            request.getPreparedStatement().setInt(2, userId);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             SimpleList<DentalWork> list = (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
             return list.get(0);
@@ -239,6 +241,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
     }
+
 
     private String buildInsertQuery(DentalWork dw) {
         String values = "DEFAULT, '%s', '%s', '%s', '%s', '%s', '%s', %s";

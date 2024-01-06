@@ -3,6 +3,8 @@ package edu.dental.servlets;
 import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.reports.ReportService;
+import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.service.JsonObjectParser;
 import edu.dental.service.Repository;
@@ -32,7 +34,24 @@ public class DentalWorkServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendError(405);
+        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int workId = Integer.parseInt(request.getParameter(idParam));
+        DentalWorkDto work;
+        try {
+            work = new DentalWorkDto(Repository.getInstance().getRecordBook(userId).getByID(workId));
+        } catch (WorkRecordBookException ignored) {
+            try {
+                work = new DentalWorkDto(ReportService.getInstance().getByIDFromDatabase(userId, workId));
+            } catch (ReportServiceException ex) {
+                response.sendError(400);
+                return;
+            }
+        }
+        String json = JsonObjectParser.getInstance().parseToJson(work);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().print(json);
+        response.getWriter().flush();
     }
 
     @Override

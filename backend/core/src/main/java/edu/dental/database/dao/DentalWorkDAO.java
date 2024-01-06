@@ -17,7 +17,7 @@ public interface DentalWorkDAO {
 
     List<DentalWork> getAllMonthly(int userId, String month, String year) throws DatabaseException;
 
-    DentalWork get(int id) throws DatabaseException;
+    DentalWork get(int userId, int id) throws DatabaseException;
 
     List<DentalWork> search(int userId, String[] fields, String[] args) throws DatabaseException;
 

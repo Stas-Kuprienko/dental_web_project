@@ -15,6 +15,7 @@ import utils.collections.SimpleList;
 import java.io.OutputStream;
 import java.time.Month;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class MyReportService implements ReportService {
 
@@ -53,6 +54,21 @@ public class MyReportService implements ReportService {
             return dao.search(userId, fields, args);
         } catch (DatabaseException e) {
             throw new ReportServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public DentalWork getByIDFromDatabase(int userId, int workId) throws ReportServiceException {
+        DentalWorkDAO dao = DatabaseService.getInstance().getDentalWorkDAO();
+        try {
+            DentalWork dentalWork = dao.get(userId, workId);
+            if (dentalWork == null) {
+                throw new ReportServiceException(new NoSuchElementException());
+            } else {
+                return dentalWork;
+            }
+        } catch (DatabaseException e) {
+            throw new ReportServiceException(e);
         }
     }
 

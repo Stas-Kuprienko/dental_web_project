@@ -3,8 +3,8 @@ package edu.dental.servlets.works;
 import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
-import edu.dental.service.JsonObjectParser;
 import edu.dental.service.HttpRequestSender;
+import edu.dental.service.JsonObjectParser;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 @WebServlet("/main/dental-work")
@@ -81,15 +80,20 @@ public class DentalWorkServlet extends HttpServlet {
     }
 
 
-    private void setWorkToRequest(HttpServletRequest request, int userId) {
+    private void setWorkToRequest(HttpServletRequest request, int userId) throws IOException {
         int workId = request.getParameter(idParam) != null ? Integer.parseInt(request.getParameter(idParam)) :
                 (int) request.getAttribute(idParam);
         DentalWork work;
         try {
             work = WebRepository.INSTANCE.getWorks(userId).stream().filter(dw -> dw.id() == workId).findAny().orElseThrow();
         } catch (NoSuchElementException e) {
-            DentalWork[] works = (DentalWork[]) request.getAttribute("works");
-            work = Arrays.stream(works).filter(dw -> dw.id() == workId).findAny().orElseThrow();
+            HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+            queryFormer.add(idParam, workId);
+            String requestParam = queryFormer.form();
+
+            String jwt = WebRepository.INSTANCE.getToken(userId);
+            String json = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(jwt, dentalWorkUrl + "?" + requestParam);
+            work = JsonObjectParser.parser.fromJson(json, DentalWork.class);
         }
         request.setAttribute("work", work);
     }

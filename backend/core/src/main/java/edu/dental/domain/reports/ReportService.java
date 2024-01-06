@@ -20,6 +20,8 @@ public interface ReportService {
 
     List<DentalWork> searchRecords(int userId, String[] fields, String[] args) throws ReportServiceException;
 
+    DentalWork getByIDFromDatabase(int userId, int workId) throws ReportServiceException;
+
     boolean saveSalariesToFile(int userId) throws ReportServiceException;
 
     String getFileFormat();
