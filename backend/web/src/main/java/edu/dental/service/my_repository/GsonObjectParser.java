@@ -2,7 +2,7 @@ package edu.dental.service.my_repository;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import edu.dental.service.JsonObjectParser;
+import edu.dental.service.tools.JsonObjectParser;
 
 public class GsonObjectParser implements JsonObjectParser {
 

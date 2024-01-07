@@ -5,7 +5,7 @@ import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
-import edu.dental.service.JsonObjectParser;
+import edu.dental.service.tools.JsonObjectParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

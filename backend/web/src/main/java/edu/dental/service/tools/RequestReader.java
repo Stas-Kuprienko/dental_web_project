@@ -1,4 +1,4 @@
-package edu.dental.service;
+package edu.dental.service.tools;
 
 import jakarta.servlet.http.HttpServletRequest;
 

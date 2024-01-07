@@ -33,4 +33,8 @@ public final class AuthenticationService {
     public static int verification(String jwt) {
         return Authenticator.JwtUtils.getId(jwt);
     }
+
+    public static User getUser(String jwt) throws AuthenticationException {
+        return Authenticator.getUser(jwt);
+    }
 }

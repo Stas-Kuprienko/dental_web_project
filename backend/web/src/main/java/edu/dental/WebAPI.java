@@ -1,6 +1,6 @@
 package edu.dental;
 
-import edu.dental.service.JsonObjectParser;
+import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.Repository;
 
 import java.io.FileInputStream;

@@ -5,10 +5,7 @@ import edu.dental.database.DatabaseService;
 import edu.dental.domain.APIManager;
 import edu.dental.entities.User;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -106,6 +103,19 @@ public final class Authenticator {
         }
     }
 
+    public static User getUser(String jwt) throws AuthenticationException {
+        try {
+            int id = JwtUtils.getId(jwt);
+            if (id <= 0) {
+                throw new AuthenticationException("Incorrect token");
+            } else {
+                return DatabaseService.getInstance().getUserDAO().get(id);
+            }
+        } catch (JwtException | DatabaseException e) {
+            throw new AuthenticationException(e.getMessage());
+        }
+    }
+
     public static class JwtUtils {
 
         private JwtUtils() {}
@@ -134,7 +144,12 @@ public final class Authenticator {
         }
 
         public static int getId(String jwt) {
-            return Integer.parseInt(parseJwt(jwt).getId());
+            try {
+                return Integer.parseInt(parseJwt(jwt).getId());
+            } catch (JwtException e) {
+                //TODO loggers
+                return 0;
+            }
         }
 
         public static boolean isSigned(String jwt) {

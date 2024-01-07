@@ -14,9 +14,15 @@ public interface Repository {
         return WebAPI.INSTANCE.getRepository();
     }
 
+    void startMonitor();
+
+    void updateAccountLastAction(int userId);
+
     Repository.Account put(User user, WorkRecordBook recordBook);
 
     Account get(int id);
+
+    boolean put(User user);
 
     List<DentalWorkDto> getDentalWorkDtoList(int id);
 
@@ -30,6 +36,8 @@ public interface Repository {
 
 
     interface Account {
+        long lastAction();
+        void updateTime();
         User user();
         WorkRecordBook recordBook();
     }

@@ -3,7 +3,7 @@ package edu.dental.servlets;
 import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
-import edu.dental.service.JsonObjectParser;
+import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.Repository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

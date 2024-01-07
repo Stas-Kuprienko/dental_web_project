@@ -7,6 +7,7 @@ import edu.dental.domain.APIManager;
 import edu.dental.entities.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.reports.ReportService;
+import edu.dental.service.tools.JsonObjectParser;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -58,6 +59,7 @@ public class ContextInitializer implements ServletContextListener {
             //TODO logger
             throw new RuntimeException();
         }
+        WebAPI.INSTANCE.getRepository().startMonitor();
         System.out.println("context ready");
     }
 
@@ -75,6 +77,7 @@ public class ContextInitializer implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent sce) {
         ServletContextListener.super.contextDestroyed(sce);
         ConnectionPool.deregister();
+        AbstractLifecycleMonitor.shutdown();
         System.out.println("context destroyed");
     }
 }
