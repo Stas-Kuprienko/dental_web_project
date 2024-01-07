@@ -52,7 +52,7 @@ public enum MySqlSamples {
                 JOIN product ON product.work_id = dental_work.id
                 JOIN report ON dental_work.report_id = report.id
             	WHERE dental_work.user_id = ?
-                GROUP BY dental_work.report_id;
+                GROUP BY dental_work.report_id, report.month, report.year;
             """),
 
     MONTH_SALARY("""

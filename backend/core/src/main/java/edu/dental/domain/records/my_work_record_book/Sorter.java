@@ -61,15 +61,15 @@ public class Sorter implements SorterTool<DentalWork> {
             try {
                 setStatusToDatabase(closed);
             } catch (DatabaseException e) {
-                revertStatus(closed);
-                throw e;
+                revertStatus(closed); throw e;
             }
+        }
+        if (!result.isEmpty()) {
             try {
                 LocalDate previousMonth = LocalDate.now().minusMonths(1);
                 setReportIdToDatabase(result, previousMonth.getYear(), previousMonth.getMonthValue());
             } catch (DatabaseException e) {
-                revertReport(result);
-                throw e;
+                revertReport(result); throw e;
             }
         }
         return result;
@@ -77,7 +77,7 @@ public class Sorter implements SorterTool<DentalWork> {
 
     private SimpleList<DentalWork> sortAnyPreviousMonth(List<DentalWork> list, int year, int month) throws DatabaseException {
         LocalDate now = LocalDate.now();
-        if(month == now.getMonthValue() && year == now.getYear()) {
+        if (month == now.getMonthValue() && year == now.getYear()) {
             return sortCurrentMonth(list);
         }
         SimpleList<DentalWork> result = new SimpleList<>();
@@ -87,7 +87,7 @@ public class Sorter implements SorterTool<DentalWork> {
         while (iterator.hasNext()) {
             dw = iterator.next();
 
-            if ( dw.getComplete().getYear() < year ||
+            if (dw.getComplete().getYear() < year ||
                     dw.getComplete().getYear() == year && dw.getComplete().getMonthValue() <= month) {
 
                 if (dw.getStatus().ordinal() < 1) {
@@ -99,18 +99,10 @@ public class Sorter implements SorterTool<DentalWork> {
             }
         }
         if (!closed.isEmpty()) {
-            try {
-                setStatusToDatabase(closed);
-            } catch (DatabaseException e) {
-                revertStatus(closed);
-                throw e;
-            }
-            try {
-                setReportIdToDatabase(result, year, month);
-            } catch (DatabaseException e) {
-                revertReport(result);
-                throw e;
-            }
+            setStatusToDatabase(closed);
+        }
+        if (!result.isEmpty()) {
+            setReportIdToDatabase(result, year, month);
         }
         return result;
     }
@@ -118,7 +110,12 @@ public class Sorter implements SorterTool<DentalWork> {
 
     private void setStatusToDatabase(SimpleList<DentalWork> list) throws DatabaseException {
         DentalWorkDAO dao = DatabaseService.getInstance().getDentalWorkDAO();
-        boolean result = dao.setFieldValue(userId, list, "status", DentalWork.Status.CLOSED);
+        boolean result;
+        try {
+            result = dao.setFieldValue(userId, list, "status", DentalWork.Status.CLOSED);
+        } catch (DatabaseException e) {
+            revertStatus(list); throw e;
+        }
         if (!result) {
             revertStatus(list);
         }
@@ -131,7 +128,12 @@ public class Sorter implements SorterTool<DentalWork> {
 
     private void setReportIdToDatabase(SimpleList<DentalWork> list, int year, int month) throws DatabaseException {
         DentalWorkDAO dao = DatabaseService.getInstance().getDentalWorkDAO();
-        int result = dao.setReportId(list, Month.of(month).toString(), Integer.toString(year));
+        int result;
+        try {
+            result = dao.setReportId(list, Month.of(month).toString(), Integer.toString(year));
+        } catch (DatabaseException e) {
+            revertReport(list); throw e;
+        }
         if (result <= 0) {
             revertReport(list);
         }

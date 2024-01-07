@@ -26,9 +26,11 @@ public class SalaryRecordMySql implements SalaryRecordDAO {
     }
 
     @Override
-    public SalaryRecord countSalaryForMonth(int userId, String year, String month) throws DatabaseException {
+    public SalaryRecord countSalaryForMonth(int userId, int year, String month) throws DatabaseException {
         try (Request request = new Request(MySqlSamples.MONTH_SALARY.QUERY)) {
             request.getPreparedStatement().setInt(1, userId);
+            request.getPreparedStatement().setInt(2, year);
+            request.getPreparedStatement().setString(3, month);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             return instantiating(resultSet).get(0);
         } catch (SQLException e) {

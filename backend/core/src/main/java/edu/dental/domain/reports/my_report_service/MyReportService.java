@@ -87,10 +87,11 @@ public class MyReportService implements ReportService {
 
     @Override
     public SalaryRecord countSalaryForMonth(int userId, String year, String monthValue) throws ReportServiceException {
-        String month = Month.of(Integer.parseInt(monthValue)).toString();
+        String month = Month.of(Integer.parseInt(monthValue)).toString().toLowerCase();
+        int yearInt = Integer.parseInt(year);
         SalaryRecordDAO dao = DatabaseService.getInstance().getSalaryRecordDAO();
         try {
-            return dao.countSalaryForMonth(userId, year, month);
+            return dao.countSalaryForMonth(userId, yearInt, month);
         } catch (DatabaseException e) {
             throw new ReportServiceException(e);
         }

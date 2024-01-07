@@ -9,7 +9,7 @@ public interface SalaryRecordDAO {
 
     SalaryRecord[] countAllSalaries(int userId) throws DatabaseException;
 
-    SalaryRecord countSalaryForMonth(int userId, String year, String month) throws DatabaseException;
+    SalaryRecord countSalaryForMonth(int userId, int year, String month) throws DatabaseException;
 
 
     class Request extends DAORequest {
