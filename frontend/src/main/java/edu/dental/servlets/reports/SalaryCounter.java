@@ -1,8 +1,6 @@
 package edu.dental.servlets.reports;
 
 import edu.dental.WebAPI;
-import edu.dental.beans.DentalWork;
-import edu.dental.beans.Product;
 import edu.dental.beans.SalaryRecord;
 import edu.dental.service.HttpRequestSender;
 import edu.dental.service.JsonObjectParser;
@@ -15,8 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.List;
 
 @WebServlet("/main/salary")
 public class SalaryCounter extends HttpServlet {
@@ -52,23 +48,15 @@ public class SalaryCounter extends HttpServlet {
         } else {
             LocalDate now = LocalDate.now();
             if (Integer.parseInt(year) == now.getYear() && Integer.parseInt(month) == now.getMonthValue()) {
-                return countCurrent(userId, year, month);
+                return countCurrent(userId);
             } else {
                 return countAnother(userId, year, month);
             }
         }
     }
 
-    private SalaryRecord[] countCurrent(int userId, String year, String month) {
-        List<DentalWork> works = WebRepository.INSTANCE.getWorks(userId);
-        int amount = 0;
-        for (DentalWork dw : works) {
-            for (Product p : dw.products()) {
-                amount += p.price() * p.quantity();
-            }
-        }
-        String monthStr = Month.of(Integer.parseInt(month)).toString();
-        SalaryRecord record = new SalaryRecord(Integer.parseInt(year), monthStr, amount);
+    private SalaryRecord[] countCurrent(int userId) {
+        SalaryRecord record = WebRepository.INSTANCE.getSalaryRecord(userId);
         return new SalaryRecord[] {record};
     }
 

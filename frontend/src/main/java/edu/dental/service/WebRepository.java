@@ -1,9 +1,8 @@
 package edu.dental.service;
 
-import edu.dental.beans.DentalWork;
-import edu.dental.beans.ProductMap;
-import edu.dental.beans.UserDto;
+import edu.dental.beans.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,6 +58,13 @@ public enum WebRepository {
         RAM.remove(id);
     }
 
+    public SalaryRecord getSalaryRecord(int userId) {
+        int amount = RAM.get(userId).countSalary();
+        LocalDate now = LocalDate.now();
+        String month = now.getMonth().toString().toLowerCase();
+        return new SalaryRecord(now.getYear(), month, amount);
+    }
+
 
     public static class Account {
 
@@ -83,6 +89,16 @@ public enum WebRepository {
 
         private void deleteWork(int id) {
             dentalWorks.stream().filter(dw -> dw.id() == id).findAny().ifPresent(dentalWorks::remove);
+        }
+
+        private int countSalary() {
+            int amount = 0;
+            for (DentalWork dw : dentalWorks) {
+                for (Product p : dw.products()) {
+                    amount += p.price() * p.quantity();
+                }
+            }
+            return amount;
         }
     }
 }
