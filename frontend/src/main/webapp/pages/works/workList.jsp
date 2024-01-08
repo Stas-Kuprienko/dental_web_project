@@ -12,28 +12,28 @@
 	$(document).ready(function(){
 
     		$('#search-label').click(function(){
-    			$('#search-form').toggle();
+    			$('#search-form').toggle("show");
     		});
 
     	});
 	$(document).ready(function(){
 
     		$('#salary-label').click(function(){
-    			$('#salary-form').toggle();
+    			$('#salary-form').toggle("show");
     		});
 
     	});
     $(document).ready(function(){
 
 		$('#sort-label').click(function(){
-			$('#sort-form').toggle();
+			$('#sort-form').toggle("show");
 		});
 
 	});
 	$(document).ready(function(){
 
     		$('#monthly-label').click(function(){
-    			$('#monthly-form').toggle();
+    			$('#monthly-form').toggle("show");
     		});
 
     	});
@@ -44,6 +44,9 @@
     <a href="/dental/main/work-list">WORK LIST</a>
     <a href="/dental/main/product-map">PRODUCT MAP</a>
     <a href="/dental/main/account">ACCOUNT</a>
+    <a style="float:right;" href="/dental/main/log-out" onclick="return confirm('LOG OUT?')">
+            <button>log out</button>
+        </a>
 </nav>
 <body>
 <section>

@@ -36,7 +36,7 @@
 
   <servlet>
     <servlet-name>Main</servlet-name>
-    <jsp-file>/pages/main.html</jsp-file>
+    <jsp-file>/pages/main/main.html</jsp-file>
   </servlet>
 
   <servlet>

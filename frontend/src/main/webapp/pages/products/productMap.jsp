@@ -12,7 +12,7 @@
 	$(document).ready(function(){
 
 		$('#product-new').click(function(){
-			$('#product-form').toggle();
+			$('#product-form').toggle("show");
 		});
 
 	});
@@ -23,6 +23,9 @@
     <a href="/dental/main/work-list">WORK LIST</a>
     <a href="/dental/main/product-map">PRODUCT MAP</a>
     <a href="/dental/main/account">ACCOUNT</a>
+    <a style="float:right;" href="/dental/main/log-out" onclick="return confirm('LOG OUT?')">
+            <button>log out</button>
+        </a>
 </nav>
 <body>
 <section>

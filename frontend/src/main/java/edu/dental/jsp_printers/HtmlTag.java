@@ -105,7 +105,13 @@ public enum HtmlTag {
          * Necessary using by {@linkplain String#format(String, Object...)}.
          */
         FORM_FOR_MONTH("""
-                <input type="month" name="year-month" value="%s-%s">""");
+                <input type="month" name="year-month" value="%s-%s">"""),
+
+        /**
+         * Necessary using by {@linkplain String#format(String, Object...)}.
+         */
+        FORM_INPUT_TEXT_VALUE("""
+                <input type="text" name="value" value="%s"/>""");
 
 
         public final String sample;

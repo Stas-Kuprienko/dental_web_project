@@ -30,6 +30,10 @@ public enum WebRepository {
         return RAM.get(id).user.jwt();
     }
 
+    public UserDto getUser(int id) {
+        return RAM.get(id).user;
+    }
+
     public ProductMap getMap(int id) {
         return RAM.get(id).productMap;
     }
