@@ -16,7 +16,7 @@ public final class AuthenticationService {
         User user = Authenticator.create(name, email, password);
         String jwt = Authenticator.JwtUtils.generateJwtFromEntity(user);
         Repository.getInstance().put(user, WorkRecordBook.createNew(user.getId()));
-        return new UserDto(user.getId(), user.getName(), user.getEmail(), jwt);
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getCreated().toString(), jwt);
     }
 
     public static UserDto authorization(String login, String password) throws AuthenticationException {
@@ -27,7 +27,7 @@ public final class AuthenticationService {
         } catch (WorkRecordBookException e) {
             throw new AuthenticationException(AuthenticationException.Causes.ERROR);
         }
-        return new UserDto(user.getId(), user.getName(), user.getEmail(), jwt);
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getCreated().toString(), jwt);
     }
 
     public static int verification(String jwt) {
@@ -40,6 +40,6 @@ public final class AuthenticationService {
 
     public static UserDto getUserDto(String jwt) throws AuthenticationException {
         User user = Authenticator.getUser(jwt);
-        return new UserDto(user.getId(), user.getName(), user.getEmail(), jwt);
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getCreated().toString(), jwt);
     }
 }

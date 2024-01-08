@@ -2,7 +2,7 @@ package edu.dental.dto;
 
 import java.util.Objects;
 
-public record UserDto(int id, String name, String email, String jwt) {
+public record UserDto(int id, String name, String email, String created, String jwt) {
 
     @Override
     public boolean equals(Object o) {
