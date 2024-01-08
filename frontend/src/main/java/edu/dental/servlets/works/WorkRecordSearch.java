@@ -2,7 +2,6 @@ package edu.dental.servlets.works;
 
 import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
-import edu.dental.service.JsonObjectParser;
 import edu.dental.service.HttpRequestSender;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
@@ -32,7 +31,7 @@ public class WorkRecordSearch extends HttpServlet {
         queryFormer.add(clinicParam, clinic);
         String requestBody = queryFormer.form();
         String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, recordSearchUrl, requestBody);
-        DentalWork[] works = JsonObjectParser.parser.fromJson(json, DentalWork[].class);
+        DentalWork[] works = WebAPI.INSTANCE.parseFromJson(json, DentalWork[].class);
         String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
         request.setAttribute("works", works);
         request.setAttribute("map", map);

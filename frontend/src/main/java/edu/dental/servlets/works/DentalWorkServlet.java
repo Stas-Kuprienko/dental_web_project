@@ -4,7 +4,6 @@ import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.service.HttpRequestSender;
-import edu.dental.service.JsonObjectParser;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -93,7 +92,7 @@ public class DentalWorkServlet extends HttpServlet {
 
             String jwt = WebRepository.INSTANCE.getToken(userId);
             String json = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(jwt, dentalWorkUrl + "?" + requestParam);
-            work = JsonObjectParser.parser.fromJson(json, DentalWork.class);
+            work = WebAPI.INSTANCE.parseFromJson(json, DentalWork.class);
         }
         request.setAttribute("work", work);
     }
@@ -124,7 +123,7 @@ public class DentalWorkServlet extends HttpServlet {
 
         String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, dentalWorkUrl, requestParam);
 
-        dw = JsonObjectParser.parser.fromJson(json, DentalWork.class);
+        dw = WebAPI.INSTANCE.parseFromJson(json, DentalWork.class);
         WebRepository.INSTANCE.getWorks(userId).add(dw);
         return dw.id();
     }
@@ -138,7 +137,7 @@ public class DentalWorkServlet extends HttpServlet {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         String json = WebAPI.INSTANCE.requestSender().sendHttpPutRequest(jwt, dentalWorkUrl, requestParam);
 
-        DentalWork dentalWork = JsonObjectParser.parser.fromJson(json, DentalWork.class);
+        DentalWork dentalWork = WebAPI.INSTANCE.parseFromJson(json, DentalWork.class);
         WebRepository.INSTANCE.updateDentalWorkList(userId, dentalWork);
         request.setAttribute(idParam, id);
     }
@@ -168,7 +167,7 @@ public class DentalWorkServlet extends HttpServlet {
 
         String json = WebAPI.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, dentalWorkUrl, queryFormer.form());
 
-        dentalWork = JsonObjectParser.parser.fromJson(json, DentalWork.class);
+        dentalWork = WebAPI.INSTANCE.parseFromJson(json, DentalWork.class);
         WebRepository.INSTANCE.updateDentalWorkList(userId, dentalWork);
     }
 

@@ -3,7 +3,6 @@ package edu.dental.servlets.reports;
 import edu.dental.WebAPI;
 import edu.dental.beans.SalaryRecord;
 import edu.dental.service.HttpRequestSender;
-import edu.dental.service.JsonObjectParser;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -63,7 +62,7 @@ public class SalaryCounter extends HttpServlet {
     private SalaryRecord[] countAll(int userId) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, salaryCountUrl, "");
-        return JsonObjectParser.parser.fromJson(json, SalaryRecord[].class);
+        return WebAPI.INSTANCE.parseFromJson(json, SalaryRecord[].class);
     }
 
     private SalaryRecord[] countAnother(int userId, String year, String month) throws IOException {
@@ -73,6 +72,6 @@ public class SalaryCounter extends HttpServlet {
         queryFormer.add("month", month);
         String requestParam = queryFormer.form();
         String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, salaryCountUrl, requestParam);
-        return JsonObjectParser.parser.fromJson(json, SalaryRecord[].class);
+        return WebAPI.INSTANCE.parseFromJson(json, SalaryRecord[].class);
     }
 }

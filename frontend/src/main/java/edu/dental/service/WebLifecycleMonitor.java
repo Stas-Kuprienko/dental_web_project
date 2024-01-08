@@ -16,7 +16,7 @@ public enum WebLifecycleMonitor {
         this.scheduleService = Executors.newSingleThreadScheduledExecutor();
     }
 
-    public void revision(ConcurrentHashMap<Integer, ? extends Monitorable> map) {
+    public void revision(ConcurrentHashMap <Integer, ? extends Monitorable> map) {
         Inspector<? extends Monitorable> inspector = new Inspector<>(map);
         scheduleService.schedule(inspector, lifecycle, TimeUnit.MILLISECONDS);
     }

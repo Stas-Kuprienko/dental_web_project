@@ -5,7 +5,6 @@ import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserDto;
 import edu.dental.service.HttpRequestSender;
-import edu.dental.service.JsonObjectParser;
 import edu.dental.service.WebRepository;
 
 import java.io.IOException;
@@ -48,13 +47,13 @@ public final class Reception {
 
     private UserDto get(String requestParameters) throws IOException {
         String jsonUser = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(logInUrl, requestParameters);
-        UserDto user = JsonObjectParser.parser.fromJson(jsonUser, UserDto.class);
+        UserDto user = WebAPI.INSTANCE.parseFromJson(jsonUser, UserDto.class);
 
         String jsonWorks = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(user.jwt(), dentalWorkListUrl);
-        List<DentalWork> works = List.of(JsonObjectParser.parser.fromJson(jsonWorks, DentalWork[].class));
+        List<DentalWork> works = List.of(WebAPI.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class));
 
         String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(user.jwt(), productMapUrl);
-        List<ProductMap.Item> items = List.of(JsonObjectParser.parser.fromJson(jsonMap, ProductMap.Item[].class));
+        List<ProductMap.Item> items = List.of(WebAPI.INSTANCE.parseFromJson(jsonMap, ProductMap.Item[].class));
         ProductMap map = new ProductMap(items);
 
         WebRepository.INSTANCE.setAccount(user, works, map);

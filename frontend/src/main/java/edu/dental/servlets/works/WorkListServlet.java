@@ -2,7 +2,6 @@ package edu.dental.servlets.works;
 
 import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
-import edu.dental.service.JsonObjectParser;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -60,7 +59,7 @@ public class WorkListServlet extends HttpServlet {
         } else {
             String jsonWorks = WebAPI.INSTANCE.requestSender()
                     .sendHttpGetRequest(jwt, dentalWorksUrl + String.format(parameters, year, month));
-            works = JsonObjectParser.parser.fromJson(jsonWorks, DentalWork[].class);
+            works = WebAPI.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
         }
         request.setAttribute("works", works);
         request.setAttribute("year-month", year_month);

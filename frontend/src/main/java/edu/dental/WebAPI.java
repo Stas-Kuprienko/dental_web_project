@@ -23,11 +23,11 @@ public enum WebAPI {
     }
 
 
-    public String parseToJson(Object o) {
-        return parser.toJson(o);
+    public <T> String parseToJson(T object) {
+        return parser.toJson(object);
     }
 
-    public Object parseFromJson(String json, Class<?> clas) {
+    public <T> T parseFromJson(String json, Class<T> clas) {
         return parser.fromJson(json, clas);
     }
 

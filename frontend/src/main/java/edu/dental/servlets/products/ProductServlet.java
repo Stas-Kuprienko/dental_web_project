@@ -2,7 +2,6 @@ package edu.dental.servlets.products;
 
 import edu.dental.WebAPI;
 import edu.dental.beans.ProductMap;
-import edu.dental.service.JsonObjectParser;
 import edu.dental.service.HttpRequestSender;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
@@ -77,7 +76,7 @@ public class ProductServlet extends HttpServlet {
         String requestParam = queryFormer.form();
 
         String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, productMapUrl, requestParam);
-        item = JsonObjectParser.parser.fromJson(json, ProductMap.Item.class);
+        item = WebAPI.INSTANCE.parseFromJson(json, ProductMap.Item.class);
         WebRepository.INSTANCE.getMap(userId).add(item);
     }
 
