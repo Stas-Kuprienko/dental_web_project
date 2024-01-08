@@ -37,7 +37,7 @@ public interface Repository {
 
     interface Account {
         long lastAction();
-        void updateTime();
+        void updateLastTime();
         User user();
         WorkRecordBook recordBook();
     }

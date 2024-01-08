@@ -5,21 +5,16 @@ import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
 import edu.dental.entities.User;
-import edu.dental.service.AbstractLifecycleMonitor;
+import edu.dental.service.LifecycleMonitor;
 import edu.dental.service.Repository;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 public final class MyRepository implements Repository {
 
-    private static final int lifecycle = 1;
-    private final AccountLifecycleMonitor monitor;
-
     private MyRepository() {
         RAM = new ConcurrentHashMap<>();
-        monitor = new AccountLifecycleMonitor(lifecycle);
     }
 
     private final ConcurrentHashMap<Integer, Account> RAM;
@@ -27,12 +22,12 @@ public final class MyRepository implements Repository {
 
     @Override
     public void startMonitor() {
-        this.monitor.revision();
+        LifecycleMonitor.INSTANCE.revision(RAM);
     }
 
     @Override
     public void updateAccountLastAction(int userId) {
-        RAM.get(userId).updateTime();
+        RAM.get(userId).updateLastTime();
     }
 
     public Account put(User user, WorkRecordBook recordBook) {
@@ -86,24 +81,24 @@ public final class MyRepository implements Repository {
 
     public static class Account implements Repository.Account {
 
-        private long time;
+        private long lastTime;
         private final User user;
         private final  WorkRecordBook recordBook;
 
         private Account(User user, WorkRecordBook recordBook) {
             this.user = user;
             this.recordBook = recordBook;
-            this.time = System.currentTimeMillis();
+            this.lastTime = System.currentTimeMillis();
         }
 
         @Override
         public long lastAction() {
-            return time;
+            return lastTime;
         }
 
         @Override
-        public void updateTime() {
-            this.time = System.currentTimeMillis();
+        public void updateLastTime() {
+            this.lastTime = System.currentTimeMillis();
         }
 
         @Override
@@ -114,33 +109,6 @@ public final class MyRepository implements Repository {
         @Override
         public WorkRecordBook recordBook() {
             return recordBook;
-        }
-    }
-
-
-    private class AccountLifecycleMonitor extends AbstractLifecycleMonitor {
-
-        public AccountLifecycleMonitor(int minute) {
-            super(minute);
-        }
-
-        @Override
-        public void revision() {
-            Runnable runnable = this.new Commandant();
-            scheduleService.schedule(runnable, lifecycle, TimeUnit.MILLISECONDS);
-        }
-
-        private class Commandant implements Runnable {
-
-            @Override
-            public void run() {
-                for (Account a : RAM.values()) {
-                    if ((System.currentTimeMillis() - a.lastAction()) > lifecycle) {
-                        RAM.remove(a.user().getId());
-                    }
-                }
-                revision();
-            }
         }
     }
 }

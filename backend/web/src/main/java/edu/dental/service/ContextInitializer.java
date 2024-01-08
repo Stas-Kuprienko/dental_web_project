@@ -77,7 +77,7 @@ public class ContextInitializer implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent sce) {
         ServletContextListener.super.contextDestroyed(sce);
         ConnectionPool.deregister();
-        AbstractLifecycleMonitor.shutdown();
+        LifecycleMonitor.INSTANCE.shutdown();
         System.out.println("context destroyed");
     }
 }
