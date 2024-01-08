@@ -35,10 +35,13 @@ public interface Repository {
     void delete(int id);
 
 
-    interface Account {
-        long lastAction();
-        void updateLastTime();
-        User user();
-        WorkRecordBook recordBook();
+    abstract class Account extends Monitorable{
+
+        protected Account(int key) {
+            super(key);
+        }
+
+        abstract public User user();
+        abstract public WorkRecordBook recordBook();
     }
 }

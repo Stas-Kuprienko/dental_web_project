@@ -21,7 +21,7 @@ public class WorkSorting extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         String jwt = WebRepository.INSTANCE.getToken(userId);
         int year = request.getParameter("year") != null ? Integer.parseInt(request.getParameter("year")) :
                 (int) request.getAttribute("year");

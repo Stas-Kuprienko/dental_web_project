@@ -20,7 +20,7 @@ public class EnterFilter implements Filter {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute(WebAPI.INSTANCE.sessionAttribute) == null) {
+        if (session == null || session.getAttribute(WebAPI.INSTANCE.sessionUser) == null) {
             chain.doFilter(request, response);
         } else {
             request.getRequestDispatcher("/main").forward(request, response);

@@ -21,7 +21,7 @@ public class WorkListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         String year_month = request.getParameter("year-month");
         if (year_month == null || year_month.isEmpty()) {
             DentalWork[] works = new DentalWork[]{};

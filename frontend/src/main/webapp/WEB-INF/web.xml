@@ -15,6 +15,10 @@
     <filter-class>edu.dental.servlets.control.EnterFilter</filter-class>
   </filter>
 
+  <listener>
+    <listener-class>edu.dental.service.ContextService</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>signUp</servlet-name>
     <jsp-file>/pages/signUp.html</jsp-file>

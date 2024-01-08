@@ -22,7 +22,7 @@ public class WorkRecordSearch extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         String jwt = WebRepository.INSTANCE.getToken(userId);
         String patient = request.getParameter(patientParam);
         String clinic = request.getParameter(clinicParam);

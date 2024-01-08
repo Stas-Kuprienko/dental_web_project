@@ -27,7 +27,7 @@ public final class MyRepository implements Repository {
 
     @Override
     public void updateAccountLastAction(int userId) {
-        RAM.get(userId).updateLastTime();
+        RAM.get(userId).updateLastAction();
     }
 
     public Account put(User user, WorkRecordBook recordBook) {
@@ -60,12 +60,12 @@ public final class MyRepository implements Repository {
 
     @Override
     public User getUser(int id) {
-        return RAM.get(id).user;
+        return RAM.get(id).user();
     }
 
     @Override
     public WorkRecordBook getRecordBook(int id) {
-        return RAM.get(id).recordBook;
+        return RAM.get(id).recordBook();
     }
 
     @Override
@@ -79,34 +79,21 @@ public final class MyRepository implements Repository {
     }
 
 
-    public static class Account implements Repository.Account {
+    public static class Account extends Repository.Account {
 
-        private long lastTime;
         private final User user;
         private final  WorkRecordBook recordBook;
 
         private Account(User user, WorkRecordBook recordBook) {
+            super(user.getId());
             this.user = user;
             this.recordBook = recordBook;
-            this.lastTime = System.currentTimeMillis();
         }
 
-        @Override
-        public long lastAction() {
-            return lastTime;
-        }
-
-        @Override
-        public void updateLastTime() {
-            this.lastTime = System.currentTimeMillis();
-        }
-
-        @Override
         public User user() {
             return user;
         }
 
-        @Override
         public WorkRecordBook recordBook() {
             return recordBook;
         }

@@ -45,7 +45,7 @@ public class Registration extends HttpServlet {
             UserDto user = JsonObjectParser.parser.fromJson(jsonUser, UserDto.class);
 
             WebRepository.INSTANCE.addNew(user);
-            request.getSession().setAttribute(WebAPI.INSTANCE.sessionAttribute, user.id());
+            request.getSession().setAttribute(WebAPI.INSTANCE.sessionUser, user.id());
 
             request.getRequestDispatcher("/main").forward(request, response);
         }

@@ -23,7 +23,7 @@ public class SalaryCounter extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         String jwt = WebRepository.INSTANCE.getToken(userId);
         String fileName = "salary_list";
         response.setContentType("application/msword");
@@ -33,7 +33,7 @@ public class SalaryCounter extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         String year = request.getParameter("year");
         String month = request.getParameter("month");
         SalaryRecord[] records = getSalaryRecords(userId, year, month);

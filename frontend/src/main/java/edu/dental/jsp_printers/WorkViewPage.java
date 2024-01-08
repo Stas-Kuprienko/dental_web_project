@@ -50,7 +50,7 @@ public class WorkViewPage {
         private final StringBuilder str;
 
         public OptionBuilder(HttpServletRequest request) {
-            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
             String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
             this.map = map != null ? Arrays.stream(map).iterator() :
                     Arrays.stream(new String[]{""}).iterator();

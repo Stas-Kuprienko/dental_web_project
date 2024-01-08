@@ -23,7 +23,7 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         ProductMap.Item[] items = WebRepository.INSTANCE.getMap(userId).getItems();
         request.setAttribute("map", items);
         request.getRequestDispatcher("/main/product-map/page").forward(request, response);
@@ -40,7 +40,7 @@ public class ProductServlet extends HttpServlet {
             }
             response.sendError(400);
         } else {
-            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
             String title = request.getParameter(titleParam);
             int price = Integer.parseInt(request.getParameter(priceParam));
 
@@ -51,7 +51,7 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         String title = request.getParameter(titleParam);
         int price = Integer.parseInt(request.getParameter(priceParam));
         editProduct(userId, title, price);
@@ -60,7 +60,7 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         String title = request.getParameter(titleParam);
         deleteProduct(userId, title);
         doGet(request, response);

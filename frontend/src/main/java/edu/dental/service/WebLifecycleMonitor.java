@@ -5,16 +5,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public enum LifecycleMonitor {
+public enum WebLifecycleMonitor {
 
     INSTANCE;
 
-    public final long lifecycle;
+    public static final long lifecycle = TimeUnit.MINUTES.toMillis(30);
     private final ScheduledExecutorService scheduleService;
 
-    LifecycleMonitor() {
+    WebLifecycleMonitor() {
         this.scheduleService = Executors.newSingleThreadScheduledExecutor();
-        this.lifecycle = TimeUnit.MINUTES.toMillis(30);
     }
 
     public void revision(ConcurrentHashMap<Integer, ? extends Monitorable> map) {
@@ -26,8 +25,7 @@ public enum LifecycleMonitor {
         scheduleService.shutdown();
     }
 
-
-    private class Inspector <T extends Monitorable> implements Runnable {
+    private class Inspector<T extends Monitorable> implements Runnable {
 
         private final ConcurrentHashMap<Integer, T> map;
 
@@ -37,9 +35,9 @@ public enum LifecycleMonitor {
 
         @Override
         public void run() {
-            for (T a : map.values()) {
-                if ((System.currentTimeMillis() - a.lastAction()) > lifecycle) {
-                    map.remove(a.getKey());
+            for (T t : map.values()) {
+                if ((System.currentTimeMillis() - t.lastAction()) > lifecycle) {
+                    map.remove(t.getKey());
                 }
             }
             revision(map);

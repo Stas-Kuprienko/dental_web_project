@@ -22,10 +22,16 @@ public class AuthorizationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        UserDto user;
+        String token = request.getParameter("token");
         try {
-            UserDto user = AuthenticationService.authorization(email, password);
+            if (token == null || token.isEmpty()) {
+                String email = request.getParameter("email");
+                String password = request.getParameter("password");
+                user = AuthenticationService.authorization(email, password);
+            } else {
+                user = AuthenticationService.getUserDto(token);
+            }
             String jsonUser = JsonObjectParser.getInstance().parseToJson(user);
             response.setContentType("text/plain");
             response.setCharacterEncoding("UTF-8");

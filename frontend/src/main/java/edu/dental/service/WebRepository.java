@@ -17,6 +17,15 @@ public enum WebRepository {
 
     private final ConcurrentHashMap<Integer, Account> RAM;
 
+
+    public void startMonitor() {
+        WebLifecycleMonitor.INSTANCE.revision(RAM);
+    }
+
+    public void updateAccountLastAction(int userId) {
+        RAM.get(userId).updateLastAction();
+    }
+
     public String getToken(int id) {
         return RAM.get(id).user.jwt();
     }
@@ -54,6 +63,11 @@ public enum WebRepository {
         account.deleteWork(id);
     }
 
+    public boolean isExist(int userId) {
+        Account account = RAM.get(userId);
+        return (account != null && account.user.id() == userId);
+    }
+
     public void delete(int id) {
         RAM.remove(id);
     }
@@ -66,13 +80,14 @@ public enum WebRepository {
     }
 
 
-    public static class Account {
+    public static class Account extends Monitorable {
 
         private final UserDto user;
         private final ProductMap productMap;
         private List<DentalWork> dentalWorks;
 
         public Account(UserDto user, ProductMap productMap, List<DentalWork> dentalWorks) {
+            super(user.id());
             this.user = user;
             this.productMap = productMap;
             this.dentalWorks = new ArrayList<>(dentalWorks);

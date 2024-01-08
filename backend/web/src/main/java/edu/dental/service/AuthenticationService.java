@@ -37,4 +37,9 @@ public final class AuthenticationService {
     public static User getUser(String jwt) throws AuthenticationException {
         return Authenticator.getUser(jwt);
     }
+
+    public static UserDto getUserDto(String jwt) throws AuthenticationException {
+        User user = Authenticator.getUser(jwt);
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), jwt);
+    }
 }

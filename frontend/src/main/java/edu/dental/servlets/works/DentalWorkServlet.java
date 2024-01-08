@@ -32,7 +32,7 @@ public class DentalWorkServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         setWorkToRequest(request, userId);
         ProductMap map = WebRepository.INSTANCE.getMap(userId);
         request.setAttribute("map", map.getKeys());
@@ -66,7 +66,7 @@ public class DentalWorkServlet extends HttpServlet {
     }
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         int id = Integer.parseInt(request.getParameter(idParam));
         String product = request.getParameter(productParam);
         if (product != null) {
@@ -99,7 +99,7 @@ public class DentalWorkServlet extends HttpServlet {
     }
 
     private void newDentalWork(HttpServletRequest request) throws IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
 
         String patient = request.getParameter(patientParam);
         String clinic = request.getParameter(clinicParam);
@@ -130,7 +130,7 @@ public class DentalWorkServlet extends HttpServlet {
     }
 
     private void editWork(HttpServletRequest request) throws IOException, NullPointerException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionAttribute);
+        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
         int id = Integer.parseInt(request.getParameter(idParam));
         String field = request.getParameter(fieldParam);
         String value = request.getParameter(valueParam);
