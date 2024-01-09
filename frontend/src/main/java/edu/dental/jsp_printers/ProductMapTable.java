@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import static edu.dental.jsp_printers.HtmlTag.*;
 
+@SuppressWarnings("unused")
 public class ProductMapTable {
 
     private static final String href = "product-map?id=";

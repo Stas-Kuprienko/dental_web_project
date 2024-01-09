@@ -5,6 +5,7 @@ import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
 import edu.dental.entities.User;
+import edu.dental.service.monitor.Monitorable;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public interface Repository {
     void delete(int id);
 
 
-    abstract class Account extends Monitorable{
+    abstract class Account extends Monitorable {
 
         protected Account(int key) {
             super(key);

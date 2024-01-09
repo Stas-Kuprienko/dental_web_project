@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import static edu.dental.jsp_printers.HtmlTag.*;
 
+@SuppressWarnings("unused")
 public class SalaryListTable {
 
     private static final String href = "work-list?year-month=";

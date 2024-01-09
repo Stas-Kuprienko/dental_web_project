@@ -19,7 +19,6 @@ import java.util.HashMap;
 @WebServlet("/main/product-map")
 public class ProductMapServlet extends HttpServlet {
 
-    public final String idParam = "id";
     public final String titleParam = "title";
     public final String priceParam = "price";
 
@@ -38,8 +37,8 @@ public class ProductMapServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
-        String title = request.getParameter("title");
-        int price = Integer.parseInt(request.getParameter("price"));
+        String title = request.getParameter(titleParam);
+        int price = Integer.parseInt(request.getParameter(priceParam));
 
         ProductMapDto.Item item;
         WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);

@@ -2,7 +2,7 @@ package edu.dental.servlets;
 
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.dto.UserDto;
-import edu.dental.service.AuthenticationService;
+import edu.dental.service.security.AuthenticationService;
 import edu.dental.service.tools.JsonObjectParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

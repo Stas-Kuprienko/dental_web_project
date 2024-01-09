@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import static edu.dental.jsp_printers.HtmlTag.*;
 
+@SuppressWarnings("unused")
 public class AccountPagePrinter {
 
     private static final String href = "account";

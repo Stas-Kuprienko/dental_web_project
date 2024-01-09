@@ -5,7 +5,7 @@ import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
 import edu.dental.entities.User;
-import edu.dental.service.LifecycleMonitor;
+import edu.dental.service.monitor.LifecycleMonitor;
 import edu.dental.service.Repository;
 
 import java.util.List;

@@ -2,6 +2,7 @@ package edu.dental.servlets.control;
 
 import edu.dental.WebAPI;
 import edu.dental.beans.UserDto;
+import edu.dental.service.Reception;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

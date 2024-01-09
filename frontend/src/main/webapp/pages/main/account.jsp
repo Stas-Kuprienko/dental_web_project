@@ -43,22 +43,20 @@
 <body>
 <section>
     <div class="work">
-        <label style="font-size:80%;">NAME:</label><br>
+        <label style="font-size:80%;">USER:</label><br>
         <label id="name-label"> <%=user.name() %> </label>
-        <form id="name-form" method="post" action="/dental/main/dental-work" style="display:none">
+        <form id="name-form" method="post" action="/dental/main/account" style="display:none">
             <%=printer.value(user.name()) %>
             <input type="hidden" name="field" value="name">
-            <input type="hidden" name="method" value="put">
             <input type="submit" value="save">
         </form>
     </div>
     <div class="work">
         <label style="font-size:80%;">EMAIL:</label><br>
         <label id="email-label"> <%=user.email() %> </label>
-        <form id="email-form" method="post" action="/dental/main/dental-work" style="display:none">
+        <form id="email-form" method="post" action="/dental/main/account" style="display:none">
             <%=printer.value(user.email()) %>
             <input type="hidden" name="field" value="email">
-            <input type="hidden" name="method" value="put">
             <input type="submit" value="save">
         </form>
     </div>
@@ -68,12 +66,19 @@
     </div>
     <div class="work">
         <label id="password-label" style="font-size:80%;">change password</label><br>
-        <form id="password-form" method="post" action="/dental/main/dental-work" style="display:none">
+        <form id="password-form" method="post" action="/dental/main/account" style="display:none">
             <input type="password" name="value" value=""/>
-
+            <input type="hidden" name="field" value="password">
             <input type="submit" value="save" onclick="return confirm('CHANGE PASSWORD?')">
         </form>
     </div>
+    <br><br>
+    <a>
+        <form method="post" action="/dental/main/account">
+            <input type="submit" value="delete account" onclick="return confirm('ARE YOU SURE?')">
+            <input type="hidden" name="method" value="delete">
+        </form>
+    </a>
 </section>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package edu.dental.service;
+package edu.dental.service.monitor;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;

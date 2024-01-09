@@ -7,6 +7,7 @@ import edu.dental.domain.APIManager;
 import edu.dental.entities.ProductMap;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.reports.ReportService;
+import edu.dental.service.monitor.LifecycleMonitor;
 import edu.dental.service.tools.JsonObjectParser;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;

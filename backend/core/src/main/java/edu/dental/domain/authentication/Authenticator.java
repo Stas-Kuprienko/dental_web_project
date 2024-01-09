@@ -2,6 +2,7 @@ package edu.dental.domain.authentication;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
+import edu.dental.database.dao.UserDAO;
 import edu.dental.domain.APIManager;
 import edu.dental.entities.User;
 
@@ -71,21 +72,21 @@ public final class Authenticator {
      * @return The {@link User} object if verification was successful, or null if not.
      */
     public static boolean verification(User user, String password) {
-        return verification(user, password.getBytes());
-    }
-
-    /**
-     * Verification the user's password when logging in.
-     * @param password The user's password.
-     * @return The {@link User} object if verification was successful, or null if not.
-     */
-    public static boolean verification(User user, byte[] password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            return MessageDigest.isEqual(user.getPassword(), md.digest(password));
+            return MessageDigest.isEqual(user.getPassword(), md.digest(password.getBytes()));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Verification the user's encoded {@link MessageDigest MD5} password bytes.
+     * @param password The user's password, encoded MD5.
+     * @return The {@link User} object if verification was successful, or null if not.
+     */
+    public static boolean verification(User user, byte[] password) {
+        return MessageDigest.isEqual(user.getPassword(), password);
     }
 
     /**
@@ -113,6 +114,39 @@ public final class Authenticator {
             }
         } catch (JwtException | DatabaseException e) {
             throw new AuthenticationException(e.getMessage());
+        }
+    }
+
+    public static boolean updatePassword(User user, String password) throws AuthenticationException {
+        if (verification(user, user.getPassword())) {
+            try {
+                byte[] passHash = passwordHash(password);
+                return DatabaseService.getInstance().getUserDAO().updatePassword(user.getId(), passHash);
+            } catch (DatabaseException e) {
+                throw new AuthenticationException(AuthenticationException.Causes.ERROR);
+            }
+        } else {
+            throw new AuthenticationException(AuthenticationException.Causes.PASS);
+        }
+    }
+
+    public static boolean updateUser(User user) throws AuthenticationException {
+        UserDAO dao = DatabaseService.getInstance().getUserDAO();
+        try {
+            return dao.update(user);
+        } catch (DatabaseException e) {
+            throw new AuthenticationException(e.getMessage(), AuthenticationException.Causes.ERROR);
+        }
+    }
+
+    public static void deleteUser(User user) throws AuthenticationException {
+        UserDAO dao = DatabaseService.getInstance().getUserDAO();
+        try {
+            if (!dao.delete(user.getId())) {
+                throw new AuthenticationException(AuthenticationException.Causes.ERROR);
+            }
+        } catch (DatabaseException e) {
+            throw new AuthenticationException(AuthenticationException.Causes.ERROR);
         }
     }
 

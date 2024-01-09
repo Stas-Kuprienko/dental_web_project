@@ -34,6 +34,10 @@ public enum WebRepository {
         return RAM.get(id).user;
     }
 
+    public void updateUser(UserDto user) {
+        RAM.get(user.id()).setUser(user);
+    }
+
     public ProductMap getMap(int id) {
         return RAM.get(id).productMap;
     }
@@ -86,7 +90,7 @@ public enum WebRepository {
 
     public static class Account extends Monitorable {
 
-        private final UserDto user;
+        private UserDto user;
         private final ProductMap productMap;
         private List<DentalWork> dentalWorks;
 
@@ -95,6 +99,10 @@ public enum WebRepository {
             this.user = user;
             this.productMap = productMap;
             this.dentalWorks = new ArrayList<>(dentalWorks);
+        }
+
+        private void setUser(UserDto user) {
+            this.user = user;
         }
 
         private void setDentalWorks(List<DentalWork> dentalWorks) {

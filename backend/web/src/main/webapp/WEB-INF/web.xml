@@ -7,7 +7,7 @@
 
   <filter>
     <filter-name>filterService</filter-name>
-    <filter-class>edu.dental.service.FilterService</filter-class>
+    <filter-class>edu.dental.service.security.FilterService</filter-class>
   </filter>
 
   <listener>
@@ -22,6 +22,11 @@
   <servlet>
     <servlet-name>logIn</servlet-name>
     <servlet-class>edu.dental.servlets.AuthorizationServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>account</servlet-name>
+    <servlet-class>edu.dental.servlets.AccountServlet</servlet-class>
   </servlet>
 
   <servlet>

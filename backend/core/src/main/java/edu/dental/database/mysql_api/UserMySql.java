@@ -16,7 +16,7 @@ public class UserMySql implements UserDAO {
 
     public static final String TABLE = TableInitializer.USER;
 
-    public static final String FIELDS = "id, name, email, password, created";
+    public static final String FIELDS = "id, name, email, created, password";
 
     UserMySql() {}
 
@@ -31,8 +31,8 @@ public class UserMySql implements UserDAO {
             PreparedStatement statement = request.getPreparedStatement();
             statement.setString(i++, object.getName());
             statement.setString(i++, object.getEmail());
-            statement.setBlob(i++, new SerialBlob(object.getPassword()));
-            statement.setDate(i, Date.valueOf(object.getCreated()));
+            statement.setDate(i++, Date.valueOf(object.getCreated()));
+            statement.setBlob(i, new SerialBlob(object.getPassword()));
             statement.executeUpdate();
             return request.setID(object);
         } catch (SQLException e) {
@@ -90,10 +90,10 @@ public class UserMySql implements UserDAO {
     }
 
     @Override
-    public boolean edit(User object) throws DatabaseException {
+    public boolean update(User object) throws DatabaseException {
         StringBuilder sets = new StringBuilder();
         String[] fields = FIELDS.split(", ");
-        for (int i = 1; i < fields.length; i++) {
+        for (int i = 1; i < fields.length - 1; i++) {
             sets.append(fields[i]).append("=?,");
         } sets.deleteCharAt(sets.length()-1);
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ?");
@@ -101,12 +101,24 @@ public class UserMySql implements UserDAO {
             byte i = 1;
             request.getPreparedStatement().setString(i++, object.getName());
             request.getPreparedStatement().setString(i++, object.getEmail());
-            request.getPreparedStatement().setBlob(i++, new SerialBlob(object.getPassword()));
             request.getPreparedStatement().setDate(i++, Date.valueOf(object.getCreated()));
             request.getPreparedStatement().setInt(i, object.getId());
-            return request.getPreparedStatement().execute();
+            return request.getPreparedStatement().executeUpdate() == 1;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Override
+    public boolean updatePassword(int id, byte[] password) throws DatabaseException {
+        String set = "password = ?";
+        String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, set, "id = ?");
+        try (Request request = new Request(query)) {
+            request.getPreparedStatement().setBlob(1, new SerialBlob(password));
+            request.getPreparedStatement().setInt(2, id);
+            return request.getPreparedStatement().executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
         }
     }
 
@@ -115,7 +127,7 @@ public class UserMySql implements UserDAO {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ?");
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
-            return request.getPreparedStatement().execute();
+            return request.getPreparedStatement().executeUpdate() == 1;
         } catch (SQLException e) {
             //TODO logger
             throw new DatabaseException(e.getMessage(), e.getCause());

@@ -40,7 +40,7 @@ public class MySqlInitializer implements TableInitializer {
             	id INT NOT NULL AUTO_INCREMENT,
             	title VARCHAR(31) NOT NULL UNIQUE,
             	price INT NOT NULL,
-            	FOREIGN KEY (user_id) REFERENCES user(id),
+            	CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
             	PRIMARY KEY (id, user_id, title)
                 );""", TableInitializer.PRODUCT_MAP);
 
@@ -67,7 +67,7 @@ public class MySqlInitializer implements TableInitializer {
                 quantity SMALLINT DEFAULT 0,
                 price INT DEFAULT 0,
                 CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES dental_work(id) ON DELETE CASCADE,
-                FOREIGN KEY (title) REFERENCES product_map (id),
+                CONSTRAINT FOREIGN KEY (title) REFERENCES product_map (id) ON DELETE CASCADE,
                 PRIMARY KEY (work_id, title)
                 );""", TableInitializer.PRODUCT);
 

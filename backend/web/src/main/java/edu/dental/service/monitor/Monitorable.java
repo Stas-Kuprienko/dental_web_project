@@ -1,4 +1,4 @@
-package edu.dental.service;
+package edu.dental.service.monitor;
 
 public abstract class Monitorable {
 

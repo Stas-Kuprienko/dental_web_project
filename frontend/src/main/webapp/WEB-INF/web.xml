@@ -100,8 +100,18 @@
   </servlet>
 
   <servlet>
+    <servlet-name>accountServlet</servlet-name>
+    <servlet-class>edu.dental.servlets.account.AccountServlet</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>accountPage</servlet-name>
     <jsp-file>/pages/main/account.jsp</jsp-file>
+  </servlet>
+
+  <servlet>
+    <servlet-name>logOut</servlet-name>
+    <servlet-class>edu.dental.servlets.control.LogOut</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -141,7 +151,7 @@
 
   <servlet-mapping>
     <servlet-name>accountPage</servlet-name>
-    <url-pattern>/main/account</url-pattern>
+    <url-pattern>/main/account/page</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

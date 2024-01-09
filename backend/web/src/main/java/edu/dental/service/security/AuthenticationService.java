@@ -1,4 +1,4 @@
-package edu.dental.service;
+package edu.dental.service.security;
 
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
@@ -6,6 +6,7 @@ import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
+import edu.dental.service.Repository;
 
 public final class AuthenticationService {
 
@@ -32,6 +33,16 @@ public final class AuthenticationService {
 
     public static int verification(String jwt) {
         return Authenticator.JwtUtils.getId(jwt);
+    }
+
+    public static boolean updatePassword(User user, String password) throws AuthenticationException {
+        if (Authenticator.updatePassword(user, password)) {
+            byte[] passHash = Authenticator.passwordHash(password);
+            user.setPassword(passHash);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static User getUser(String jwt) throws AuthenticationException {

@@ -1,5 +1,6 @@
 package edu.dental.servlets.control;
 
+import edu.dental.WebAPI;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,14 +11,24 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/logout")
+@WebServlet("/main/log-out")
 public class LogOut extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        WebRepository.INSTANCE.delete((Integer) session.getAttribute("user"));
+        WebRepository.INSTANCE.delete((Integer) session.getAttribute(WebAPI.INSTANCE.sessionUser));
         session.invalidate();
         request.getRequestDispatcher("/").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
     }
 }

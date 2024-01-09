@@ -1,11 +1,9 @@
-package edu.dental.servlets.control;
+package edu.dental.service;
 
 import edu.dental.WebAPI;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserDto;
-import edu.dental.service.HttpRequestSender;
-import edu.dental.service.WebRepository;
 
 import java.io.IOException;
 import java.util.List;
