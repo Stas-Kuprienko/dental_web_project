@@ -16,8 +16,6 @@ public interface UserDAO {
 
     boolean update(User object) throws DatabaseException;
 
-    boolean updatePassword(int id, byte[] password) throws DatabaseException;
-
     boolean delete(int id) throws DatabaseException;
 
 

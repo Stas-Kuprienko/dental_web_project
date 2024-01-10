@@ -1,5 +1,7 @@
 package edu.dental.service.security;
 
+import edu.dental.domain.account.AccountException;
+import edu.dental.domain.account.AccountService;
 import edu.dental.domain.authentication.AuthenticationException;
 import edu.dental.domain.authentication.Authenticator;
 import edu.dental.domain.records.WorkRecordBook;
@@ -13,8 +15,8 @@ public final class AuthenticationService {
     private AuthenticationService() {}
 
 
-    public static UserDto registration(String name, String email, String password) throws AuthenticationException {
-        User user = Authenticator.create(name, email, password);
+    public static UserDto registration(String name, String email, String password) throws AccountException {
+        User user = AccountService.getInstance().create(name, email, password);
         String jwt = Authenticator.JwtUtils.generateJwtFromEntity(user);
         Repository.getInstance().put(user, WorkRecordBook.createNew(user.getId()));
         return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getCreated().toString(), jwt);
@@ -36,13 +38,9 @@ public final class AuthenticationService {
     }
 
     public static boolean updatePassword(User user, String password) throws AuthenticationException {
-        if (Authenticator.updatePassword(user, password)) {
             byte[] passHash = Authenticator.passwordHash(password);
             user.setPassword(passHash);
             return true;
-        } else {
-            return false;
-        }
     }
 
     public static User getUser(String jwt) throws AuthenticationException {

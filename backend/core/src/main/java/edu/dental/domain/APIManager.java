@@ -3,11 +3,11 @@ package edu.dental.domain;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.ProductMapDAO;
-import edu.dental.entities.DentalWork;
-import edu.dental.entities.User;
-import edu.dental.entities.ProductMap;
+import edu.dental.domain.account.AccountService;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.reports.ReportService;
+import edu.dental.entities.DentalWork;
+import edu.dental.entities.ProductMap;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,6 +25,7 @@ public enum APIManager {
     private final Properties service;
 
     private final DatabaseService databaseService;
+    private final AccountService accountService;
     private final ReportService reportService;
 
 
@@ -37,6 +38,7 @@ public enum APIManager {
             throw new RuntimeException(e);
         }
         this.databaseService = init(DatabaseService.class);
+        this.accountService = init(AccountService.class);
         this.reportService = init(ReportService.class);
     }
 
@@ -118,6 +120,10 @@ public enum APIManager {
 
     public ReportService getReportService() {
         return reportService;
+    }
+
+    public AccountService getAccountService() {
+        return accountService;
     }
 
     public DatabaseService getDatabaseService() {

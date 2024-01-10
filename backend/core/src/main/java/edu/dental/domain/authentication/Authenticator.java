@@ -3,7 +3,6 @@ package edu.dental.domain.authentication;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.UserDAO;
-import edu.dental.domain.APIManager;
 import edu.dental.entities.User;
 
 import io.jsonwebtoken.*;
@@ -53,17 +52,6 @@ public final class Authenticator {
             throw new AuthenticationException(AuthenticationException.Causes.PASS);
         }
         return user;
-    }
-
-    public static User create(String name, String login, String password) throws AuthenticationException {
-        User user = new User(name, login, password);
-        try {
-            if (APIManager.INSTANCE.getDatabaseService().getUserDAO().put(user)) {
-                return user;
-            } else throw new AuthenticationException(AuthenticationException.Causes.ERROR);
-        } catch (DatabaseException e) {
-            throw new AuthenticationException(AuthenticationException.Causes.ERROR);
-        }
     }
 
     /**
@@ -117,14 +105,19 @@ public final class Authenticator {
         }
     }
 
-    public static boolean updatePassword(User user, String password) throws AuthenticationException {
+    public static int verifyTokenToId(String jwt) throws AuthenticationException {
+        int id = JwtUtils.getId(jwt);
+        if (id <= 0) {
+            throw new AuthenticationException("");
+        } else {
+            return id;
+        }
+    }
+
+    public static void updatePassword(User user, String password) throws AuthenticationException {
         if (verification(user, user.getPassword())) {
-            try {
-                byte[] passHash = passwordHash(password);
-                return DatabaseService.getInstance().getUserDAO().updatePassword(user.getId(), passHash);
-            } catch (DatabaseException e) {
-                throw new AuthenticationException(AuthenticationException.Causes.ERROR);
-            }
+            byte[] passHash = passwordHash(password);
+            user.setPassword(passHash);
         } else {
             throw new AuthenticationException(AuthenticationException.Causes.PASS);
         }
