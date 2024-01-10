@@ -1,6 +1,6 @@
 package edu.dental.servlets.control;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,7 +17,7 @@ public class LogOut extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        WebRepository.INSTANCE.delete((Integer) session.getAttribute(WebAPI.INSTANCE.sessionUser));
+        WebRepository.INSTANCE.delete((Integer) session.getAttribute(WebUtility.INSTANCE.sessionUser));
         session.invalidate();
         request.getRequestDispatcher("/").forward(request, response);
     }

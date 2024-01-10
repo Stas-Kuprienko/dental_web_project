@@ -1,8 +1,7 @@
 package edu.dental.servlets.reports;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import edu.dental.beans.SalaryRecord;
-import edu.dental.service.HttpRequestSender;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,17 +21,17 @@ public class SalaryCounter extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         String jwt = WebRepository.INSTANCE.getToken(userId);
         String fileName = "salary_list";
         response.setContentType("application/msword");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
-        WebAPI.INSTANCE.requestSender().download(jwt, salaryCountUrl, response.getOutputStream());
+        WebUtility.INSTANCE.requestSender().download(jwt, salaryCountUrl, response.getOutputStream());
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         String year = request.getParameter("year");
         String month = request.getParameter("month");
         SalaryRecord[] records = getSalaryRecords(userId, year, month);
@@ -61,17 +60,17 @@ public class SalaryCounter extends HttpServlet {
 
     private SalaryRecord[] countAll(int userId) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, salaryCountUrl, "");
-        return WebAPI.INSTANCE.parseFromJson(json, SalaryRecord[].class);
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, salaryCountUrl, "");
+        return WebUtility.INSTANCE.parseFromJson(json, SalaryRecord[].class);
     }
 
     private SalaryRecord[] countAnother(int userId, String year, String month) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add("year", year);
         queryFormer.add("month", month);
         String requestParam = queryFormer.form();
-        String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, salaryCountUrl, requestParam);
-        return WebAPI.INSTANCE.parseFromJson(json, SalaryRecord[].class);
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, salaryCountUrl, requestParam);
+        return WebUtility.INSTANCE.parseFromJson(json, SalaryRecord[].class);
     }
 }

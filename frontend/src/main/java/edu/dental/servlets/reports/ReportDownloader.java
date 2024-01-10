@@ -1,7 +1,6 @@
 package edu.dental.servlets.reports;
 
-import edu.dental.WebAPI;
-import edu.dental.service.HttpRequestSender;
+import edu.dental.WebUtility;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,7 +21,7 @@ public class ReportDownloader extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         String jwt = WebRepository.INSTANCE.getToken(userId);
         String year = request.getParameter("year");
         String month = request.getParameter("month");
@@ -30,7 +29,7 @@ public class ReportDownloader extends HttpServlet {
         String fileName = getFileName(year, month);
         response.setContentType("application/msword");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
-        WebAPI.INSTANCE.requestSender().download(jwt, resource, response.getOutputStream());
+        WebUtility.INSTANCE.requestSender().download(jwt, resource, response.getOutputStream());
     }
 
 
@@ -42,7 +41,7 @@ public class ReportDownloader extends HttpServlet {
             if (Integer.parseInt(year) == now.getYear() && Integer.parseInt(month) == now.getMonthValue()) {
                 return reportsDownloadUrl;
             } else {
-                HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+                WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
                 queryFormer.add("year", year);
                 queryFormer.add("month", month);
                 return reportsDownloadUrl + "?" + queryFormer.form();

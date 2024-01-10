@@ -1,6 +1,6 @@
 package edu.dental.servlets.works;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
@@ -20,7 +20,7 @@ public class WorkListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         String year_month = request.getParameter("year-month");
         if (year_month == null || year_month.isEmpty()) {
             DentalWork[] works = new DentalWork[]{};
@@ -57,9 +57,9 @@ public class WorkListServlet extends HttpServlet {
             works = new DentalWork[]{};
             works = WebRepository.INSTANCE.getWorks(userId).toArray(works);
         } else {
-            String jsonWorks = WebAPI.INSTANCE.requestSender()
+            String jsonWorks = WebUtility.INSTANCE.requestSender()
                     .sendHttpGetRequest(jwt, dentalWorksUrl + String.format(parameters, year, month));
-            works = WebAPI.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
+            works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
         }
         request.setAttribute("works", works);
         request.setAttribute("year-month", year_month);

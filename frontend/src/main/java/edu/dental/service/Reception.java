@@ -1,6 +1,6 @@
 package edu.dental.service;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserDto;
@@ -25,7 +25,7 @@ public final class Reception {
 
 
     public UserDto getByLogin(String email, String password) throws IOException {
-        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
 
         queryFormer.add(paramEmail, email);
         queryFormer.add(paramPassword, password);
@@ -35,7 +35,7 @@ public final class Reception {
     }
 
     public UserDto getByToken(String token) throws IOException {
-        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
 
         queryFormer.add(paramToken, token);
         String requestParameters = queryFormer.form();
@@ -44,14 +44,14 @@ public final class Reception {
     }
 
     private UserDto get(String requestParameters) throws IOException {
-        String jsonUser = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(logInUrl, requestParameters);
-        UserDto user = WebAPI.INSTANCE.parseFromJson(jsonUser, UserDto.class);
+        String jsonUser = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(logInUrl, requestParameters);
+        UserDto user = WebUtility.INSTANCE.parseFromJson(jsonUser, UserDto.class);
 
-        String jsonWorks = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(user.jwt(), dentalWorkListUrl);
-        List<DentalWork> works = List.of(WebAPI.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class));
+        String jsonWorks = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(user.jwt(), dentalWorkListUrl);
+        List<DentalWork> works = List.of(WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class));
 
-        String jsonMap = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(user.jwt(), productMapUrl);
-        List<ProductMap.Item> items = List.of(WebAPI.INSTANCE.parseFromJson(jsonMap, ProductMap.Item[].class));
+        String jsonMap = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(user.jwt(), productMapUrl);
+        List<ProductMap.Item> items = List.of(WebUtility.INSTANCE.parseFromJson(jsonMap, ProductMap.Item[].class));
         ProductMap map = new ProductMap(items);
 
         WebRepository.INSTANCE.setAccount(user, works, map);

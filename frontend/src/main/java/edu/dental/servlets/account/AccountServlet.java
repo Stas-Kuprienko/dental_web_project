@@ -1,8 +1,7 @@
 package edu.dental.servlets.account;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import edu.dental.beans.UserDto;
-import edu.dental.service.HttpRequestSender;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,7 +33,7 @@ public class AccountServlet extends HttpServlet {
         if (method != null && method.equals("delete")) {
             doDelete(request, response);
         } else {
-            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
             String field = request.getParameter(fieldParam);
             String value = request.getParameter(valueParam);
             switch (field) {
@@ -49,10 +48,10 @@ public class AccountServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         String jwt = WebRepository.INSTANCE.getToken(userId);
         try {
-            WebAPI.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, accountUrl, "");
+            WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, accountUrl, "");
             request.getRequestDispatcher("/main/log-out").forward(request, response);
         } catch (Exception e) {
             response.sendError(400);
@@ -63,13 +62,13 @@ public class AccountServlet extends HttpServlet {
     private void setUserValue(int userId, String field, String value) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
 
-        HttpRequestSender.QueryFormer former = new HttpRequestSender.QueryFormer();
+        WebUtility.QueryFormer former = new WebUtility.QueryFormer();
         former.add(fieldParam, field);
         former.add(valueParam, value);
         String requestParam = former.form();
 
-        String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, accountUrl, requestParam);
-        UserDto user = WebAPI.INSTANCE.parseFromJson(json, UserDto.class);
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, accountUrl, requestParam);
+        UserDto user = WebUtility.INSTANCE.parseFromJson(json, UserDto.class);
         WebRepository.INSTANCE.updateUser(user);
     }
 }

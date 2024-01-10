@@ -1,9 +1,8 @@
 package edu.dental.servlets.works;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
-import edu.dental.service.HttpRequestSender;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -31,7 +30,7 @@ public class DentalWorkServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         setWorkToRequest(request, userId);
         ProductMap map = WebRepository.INSTANCE.getMap(userId);
         request.setAttribute("map", map.getKeys());
@@ -65,7 +64,7 @@ public class DentalWorkServlet extends HttpServlet {
     }
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         int id = Integer.parseInt(request.getParameter(idParam));
         String product = request.getParameter(productParam);
         if (product != null) {
@@ -86,19 +85,19 @@ public class DentalWorkServlet extends HttpServlet {
         try {
             work = WebRepository.INSTANCE.getWorks(userId).stream().filter(dw -> dw.id() == workId).findAny().orElseThrow();
         } catch (NoSuchElementException e) {
-            HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+            WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
             queryFormer.add(idParam, workId);
             String requestParam = queryFormer.form();
 
             String jwt = WebRepository.INSTANCE.getToken(userId);
-            String json = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(jwt, dentalWorkUrl + "?" + requestParam);
-            work = WebAPI.INSTANCE.parseFromJson(json, DentalWork.class);
+            String json = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(jwt, dentalWorkUrl + "?" + requestParam);
+            work = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         }
         request.setAttribute("work", work);
     }
 
     private void newDentalWork(HttpServletRequest request) throws IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
 
         String patient = request.getParameter(patientParam);
         String clinic = request.getParameter(clinicParam);
@@ -113,7 +112,7 @@ public class DentalWorkServlet extends HttpServlet {
     private int createDentalWork(int userId, String patient, String clinic, String product, int quantity, LocalDate complete) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         DentalWork dw;
-        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(patientParam, patient);
         queryFormer.add(clinicParam, clinic);
         queryFormer.add(productParam, product);
@@ -121,29 +120,29 @@ public class DentalWorkServlet extends HttpServlet {
         queryFormer.add(completeParam, complete);
         String requestParam = queryFormer.form();
 
-        String json = WebAPI.INSTANCE.requestSender().sendHttpPostRequest(jwt, dentalWorkUrl, requestParam);
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, dentalWorkUrl, requestParam);
 
-        dw = WebAPI.INSTANCE.parseFromJson(json, DentalWork.class);
+        dw = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         WebRepository.INSTANCE.getWorks(userId).add(dw);
         return dw.id();
     }
 
     private void editWork(HttpServletRequest request) throws IOException, NullPointerException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         int id = Integer.parseInt(request.getParameter(idParam));
         String field = request.getParameter(fieldParam);
         String value = request.getParameter(valueParam);
         String requestParam = buildRequestParameters(request, id, field, value);
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        String json = WebAPI.INSTANCE.requestSender().sendHttpPutRequest(jwt, dentalWorkUrl, requestParam);
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPutRequest(jwt, dentalWorkUrl, requestParam);
 
-        DentalWork dentalWork = WebAPI.INSTANCE.parseFromJson(json, DentalWork.class);
+        DentalWork dentalWork = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         WebRepository.INSTANCE.updateDentalWorkList(userId, dentalWork);
         request.setAttribute(idParam, id);
     }
 
     private String buildRequestParameters(HttpServletRequest request, int id, String field, String value) throws NullPointerException {
-        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(idParam, id);
         queryFormer.add(fieldParam, field);
         queryFormer.add(valueParam, value);
@@ -160,24 +159,24 @@ public class DentalWorkServlet extends HttpServlet {
 
     private void deleteProductFromWork(int userId, int id, String product) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(idParam, id);
         queryFormer.add(productParam, product);
         DentalWork dentalWork;
 
-        String json = WebAPI.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, dentalWorkUrl, queryFormer.form());
+        String json = WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, dentalWorkUrl, queryFormer.form());
 
-        dentalWork = WebAPI.INSTANCE.parseFromJson(json, DentalWork.class);
+        dentalWork = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         WebRepository.INSTANCE.updateDentalWorkList(userId, dentalWork);
     }
 
 
     private void deleteWorkRecord(int userId, int id) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        HttpRequestSender.QueryFormer queryFormer = new HttpRequestSender.QueryFormer();
+        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(idParam, id);
 
-        WebAPI.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, dentalWorkUrl, queryFormer.form());
+        WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, dentalWorkUrl, queryFormer.form());
 
         WebRepository.INSTANCE.deleteDentalWork(userId, id);
     }

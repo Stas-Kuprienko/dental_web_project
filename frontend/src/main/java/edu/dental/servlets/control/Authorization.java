@@ -1,6 +1,6 @@
 package edu.dental.servlets.control;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import edu.dental.beans.UserDto;
 import edu.dental.service.Reception;
 import jakarta.servlet.ServletException;
@@ -32,8 +32,8 @@ public class Authorization extends HttpServlet {
         } else {
             UserDto user = Reception.getInstance().getByLogin(email, password);
 
-            request.getSession().setAttribute(WebAPI.INSTANCE.sessionUser, user.id());
-            request.getSession().setAttribute(WebAPI.INSTANCE.sessionToken, user.jwt());
+            request.getSession().setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
+            request.getSession().setAttribute(WebUtility.INSTANCE.sessionToken, user.jwt());
 
             request.getRequestDispatcher("/main").forward(request, response);
         }

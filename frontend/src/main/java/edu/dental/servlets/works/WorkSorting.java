@@ -1,6 +1,6 @@
 package edu.dental.servlets.works;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
@@ -20,14 +20,14 @@ public class WorkSorting extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         String jwt = WebRepository.INSTANCE.getToken(userId);
         int year = request.getParameter("year") != null ? Integer.parseInt(request.getParameter("year")) :
                 (int) request.getAttribute("year");
         int month = request.getParameter("month") != null ? Integer.parseInt(request.getParameter("month")) :
                 (int) request.getAttribute("month");
-        String jsonWorks = WebAPI.INSTANCE.requestSender().sendHttpGetRequest(jwt, sortUrl + String.format(parameters, year, month));
-        List<DentalWork> works = List.of(WebAPI.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class));
+        String jsonWorks = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(jwt, sortUrl + String.format(parameters, year, month));
+        List<DentalWork> works = List.of(WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class));
         WebRepository.INSTANCE.setWorks(userId, works);
         request.getRequestDispatcher("/main/work-list").forward(request, response);
     }

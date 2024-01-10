@@ -1,6 +1,6 @@
 package edu.dental.servlets.control;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ public class EnterFilter implements Filter {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute(WebAPI.INSTANCE.sessionUser) == null) {
+        if (session == null || session.getAttribute(WebUtility.INSTANCE.sessionUser) == null) {
             chain.doFilter(request, response);
         } else {
             request.getRequestDispatcher("/main").forward(request, response);

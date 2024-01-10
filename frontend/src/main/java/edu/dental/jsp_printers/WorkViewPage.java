@@ -1,6 +1,6 @@
 package edu.dental.jsp_printers;
 
-import edu.dental.WebAPI;
+import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.service.WebRepository;
@@ -50,7 +50,7 @@ public class WorkViewPage {
         private final StringBuilder str;
 
         public OptionBuilder(HttpServletRequest request) {
-            int userId = (int) request.getSession().getAttribute(WebAPI.INSTANCE.sessionUser);
+            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
             String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
             this.map = map != null ? Arrays.stream(map).iterator() :
                     Arrays.stream(new String[]{""}).iterator();
