@@ -46,7 +46,7 @@
         <label style="font-size:80%;">USER:</label><br>
         <label id="name-label"> <%=user.name() %> </label>
         <form id="name-form" method="post" action="/dental/main/account" style="display:none">
-            <%=printer.value(user.name()) %>
+            <input type="text" name="value" value=""/>
             <input type="hidden" name="field" value="name">
             <input type="submit" value="save">
         </form>
@@ -55,7 +55,7 @@
         <label style="font-size:80%;">EMAIL:</label><br>
         <label id="email-label"> <%=user.email() %> </label>
         <form id="email-form" method="post" action="/dental/main/account" style="display:none">
-            <%=printer.value(user.email()) %>
+            <input type="text" name="value" value=""/>
             <input type="hidden" name="field" value="email">
             <input type="submit" value="save">
         </form>
