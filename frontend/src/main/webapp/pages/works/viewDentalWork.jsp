@@ -131,11 +131,13 @@
     <input type="submit" value="save">
   </form></div>
   <div class="work">
-    <label style="font-size:80%;">comment:</label><br>
-    <button id="comment-label">input</button>
+    <label style="font-size:80%;">comment:</label> &emsp;
+    <button id="comment-label">input</button><br>
     <label> <%=view.work.comment() %> </label>
     <form id="comment-form" method="post" action="/dental/main/dental-work" style="display:none">
-      <textarea name="value"></textarea>
+      <textarea name="value">
+        <%=view.work.comment() %>
+      </textarea>
       <input type="hidden" name="field" value="comment">
       <input type="hidden" name="method" value="put">
       <%=view.inputId()%>
