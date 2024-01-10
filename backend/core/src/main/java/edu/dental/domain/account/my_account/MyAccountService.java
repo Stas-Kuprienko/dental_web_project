@@ -6,11 +6,56 @@ import edu.dental.database.dao.UserDAO;
 import edu.dental.domain.APIManager;
 import edu.dental.domain.account.AccountException;
 import edu.dental.domain.account.AccountService;
-import edu.dental.domain.authentication.AuthenticationException;
-import edu.dental.domain.authentication.Authenticator;
 import edu.dental.entities.User;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class MyAccountService implements AccountService {
+
+    private MyAccountService() {}
+
+
+    /**
+     * Verification the user's password when logging in.
+     * @param password The user's password.
+     * @return The {@link User} object if verification was successful, or null if not.
+     */
+    @Override
+    public boolean verification(User user, String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            return MessageDigest.isEqual(user.getPassword(), md.digest(password.getBytes()));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Verification the user's encoded {@link MessageDigest MD5} password bytes.
+     * @param password The user's password, encoded MD5.
+     * @return The {@link User} object if verification was successful, or null if not.
+     */
+    @Override
+    public boolean verification(User user, byte[] password) {
+        return MessageDigest.isEqual(user.getPassword(), password);
+    }
+
+    /**
+     * Get the {@link MessageDigest MD5} hash of the password.
+     * @param password The user's password string.
+     * @return byte array of the password hash.
+     */
+    @Override
+    public byte[] passwordHash(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            return md.digest(password.getBytes());
+        } catch (NoSuchAlgorithmException e) {
+            //TODO logger
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public User create(String name, String login, String password) throws AccountException {
@@ -50,25 +95,18 @@ public class MyAccountService implements AccountService {
         if (user == null) {
             throw new AccountException();
         }
-        if (!(Authenticator.verification(user, password))) {
+        if (!verification(user, password)) {
             throw new AccountException();
         }
         return user;
     }
 
     @Override
-    public User get(String token) throws AccountException {
+    public User get(int id) throws AccountException {
         try {
-            int id = Authenticator.verifyTokenToId(token);
-            if (id <= 0) {
-                throw new AccountException();
-            } else {
-                return DatabaseService.getInstance().getUserDAO().get(id);
-            }
+            return DatabaseService.getInstance().getUserDAO().get(id);
         } catch (DatabaseException e) {
             throw new AccountException();
-        } catch (AuthenticationException e) {
-            throw new AccountException(e);
         }
     }
 
@@ -86,9 +124,12 @@ public class MyAccountService implements AccountService {
     public boolean updatePassword(User user, String newPassword) throws AccountException {
         byte[] oldValue = user.getPassword();
         try {
-            Authenticator.updatePassword(user, newPassword);
-            return DatabaseService.getInstance().getUserDAO().update(user);
-        } catch (AuthenticationException | DatabaseException e) {
+            if (verification(user, user.getPassword())) {
+                byte[] passHash = passwordHash(newPassword);
+                user.setPassword(passHash);
+                return DatabaseService.getInstance().getUserDAO().update(user);
+            } else return false;
+        } catch (DatabaseException e) {
             user.setPassword(oldValue);
             throw new AccountException(e);
         }

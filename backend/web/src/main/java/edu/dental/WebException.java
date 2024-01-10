@@ -1,6 +1,8 @@
-package edu.dental.service;
+package edu.dental;
 
 public class WebException extends Exception {
+
+    //TODO
 
     public WebException(CODE code) {
         this.code = code;

@@ -1,6 +1,6 @@
 package edu.dental.entities;
 
-import edu.dental.domain.authentication.Authenticator;
+import edu.dental.domain.account.AccountService;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public class User implements Serializable, IDHaving {
         this.created = LocalDate.now();
         this.name = name;
         this.email = email;
-        this.password = Authenticator.passwordHash(password);
+        this.password = AccountService.getInstance().passwordHash(password);
     }
 
     /**

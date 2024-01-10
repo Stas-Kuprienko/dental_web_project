@@ -1,9 +1,9 @@
-package edu.dental.service.security;
+package edu.dental.security;
 
 import edu.dental.WebAPI;
 import edu.dental.entities.User;
 import edu.dental.service.Repository;
-import edu.dental.service.WebException;
+import edu.dental.WebException;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
