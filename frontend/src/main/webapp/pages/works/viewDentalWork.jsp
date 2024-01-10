@@ -144,7 +144,7 @@
   <div class="work">
     <label  style="font-size:80%;">created:</label><br>
      <%=view.work.accepted() %> <br><br>
-    <form action="/dental/main/photo">
+    <form action="/dental/main/photo" style="display:none">
       <button style="width:auto;" type="submit">OPEN PHOTOS</button>
       <%=view.inputId()%>
     </form>
