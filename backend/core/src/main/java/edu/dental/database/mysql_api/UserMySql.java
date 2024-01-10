@@ -33,8 +33,9 @@ public class UserMySql implements UserDAO {
             statement.setString(i++, object.getEmail());
             statement.setDate(i++, Date.valueOf(object.getCreated()));
             statement.setBlob(i, new SerialBlob(object.getPassword()));
-            statement.executeUpdate();
-            return request.setID(object);
+            if (statement.executeUpdate() > 0) {
+                return request.setID(object);
+            } else return false;
         } catch (SQLException e) {
             //TODO logger
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -104,7 +105,7 @@ public class UserMySql implements UserDAO {
             request.getPreparedStatement().setDate(i++, Date.valueOf(object.getCreated()));
             request.getPreparedStatement().setBlob(i++, new SerialBlob(object.getPassword()));
             request.getPreparedStatement().setInt(i, object.getId());
-            return request.getPreparedStatement().executeUpdate() == 1;
+            return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -115,7 +116,7 @@ public class UserMySql implements UserDAO {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ?");
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, id);
-            return request.getPreparedStatement().executeUpdate() == 1;
+            return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
             //TODO logger
             throw new DatabaseException(e.getMessage(), e.getCause());

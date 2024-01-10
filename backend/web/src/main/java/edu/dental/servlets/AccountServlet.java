@@ -1,11 +1,12 @@
 package edu.dental.servlets;
 
 import edu.dental.WebAPI;
-import edu.dental.domain.authentication.AuthenticationException;
-import edu.dental.domain.authentication.Authenticator;
+import edu.dental.domain.account.AccountException;
+import edu.dental.domain.account.AccountService;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
 import edu.dental.service.Repository;
+import edu.dental.service.WebException;
 import edu.dental.service.security.AuthenticationService;
 import edu.dental.service.tools.JsonObjectParser;
 import jakarta.servlet.ServletException;
@@ -49,8 +50,8 @@ public class AccountServlet extends HttpServlet {
                     response.getWriter().print(json);
                     response.getWriter().flush();
                 }
-            } catch (AuthenticationException e) {
-                response.sendError(e.cause.code);
+            } catch (WebException e) {
+                response.sendError(e.code.i);
             }
         }
         }
@@ -60,17 +61,17 @@ public class AccountServlet extends HttpServlet {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
         User user = Repository.getInstance().getUser(userId);
         try {
-            Authenticator.deleteUser(user);
+            AccountService.getInstance().deleteUser(user);
             Repository.getInstance().delete(userId);
             //TODO
             response.setStatus(200);
-        } catch (AuthenticationException e) {
-            response.sendError(e.cause.code);
+        } catch (AccountException e) {
+            response.sendError(500);
         }
     }
 
 
-    private String update(int userId, String field, String value) throws AuthenticationException {
+    private String update(int userId, String field, String value) throws WebException {
         User user = Repository.getInstance().getUser(userId);
         UserDto dto;
         switch (field) {
@@ -84,34 +85,37 @@ public class AccountServlet extends HttpServlet {
         return JsonObjectParser.getInstance().parseToJson(dto);
     }
 
-    private UserDto setName(User user, String name) throws AuthenticationException {
+    private UserDto setName(User user, String name) throws WebException {
         String oldValue = user.getName();
         user.setName(name);
         try {
-            Authenticator.updateUser(user);
+            AccountService.getInstance().update(user);
             return UserDto.parse(user);
-        } catch (AuthenticationException e) {
+        } catch (AccountException e) {
             user.setName(oldValue);
-            throw e;
+            //TODO
+            throw new WebException(e.getMessage(), WebException.CODE.SERVER_ERROR);
         }
     }
 
 
-    private UserDto setEmail(User user, String email) throws AuthenticationException {
+    private UserDto setEmail(User user, String email) throws WebException {
         String oldValue = user.getEmail();
         user.setEmail(email);
         try {
-            Authenticator.updateUser(user);
+            AccountService.getInstance().update(user);
             return UserDto.parse(user);
-        } catch (AuthenticationException e) {
+        } catch (AccountException e) {
             user.setEmail(oldValue);
-            throw e;
+            //TODO
+            throw new WebException(e.getMessage(), WebException.CODE.SERVER_ERROR);
         }
     }
 
-    private UserDto setPassword(User user, String password) throws AuthenticationException {
+    private UserDto setPassword(User user, String password) throws WebException {
         if (!AuthenticationService.updatePassword(user, password)) {
-           throw new AuthenticationException(AuthenticationException.Causes.ERROR);
+            //TODO
+           throw new WebException(WebException.CODE.BAD_REQUEST);
         } else {
             return UserDto.parse(user);
         }

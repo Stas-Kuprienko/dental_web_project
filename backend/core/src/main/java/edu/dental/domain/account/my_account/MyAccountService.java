@@ -90,7 +90,7 @@ public class MyAccountService implements AccountService {
             return DatabaseService.getInstance().getUserDAO().update(user);
         } catch (AuthenticationException | DatabaseException e) {
             user.setPassword(oldValue);
-            throw new AccountException();
+            throw new AccountException(e);
         }
     }
 

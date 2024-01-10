@@ -1,10 +1,6 @@
 package edu.dental.domain.authentication;
 
-import edu.dental.database.DatabaseException;
-import edu.dental.database.DatabaseService;
-import edu.dental.database.dao.UserDAO;
 import edu.dental.entities.User;
-
 import io.jsonwebtoken.*;
 
 import java.io.FileInputStream;
@@ -22,37 +18,6 @@ public final class Authenticator {
 
     private Authenticator() {}
 
-
-    /**
-     * The user authentication in system.
-     * @param login    The user's account login.
-     * @param password The password to verify.
-     * @return The {@link User} object, if authentication was successful.
-     * @throws AuthenticationException Causes of throwing
-     *  - specified user is not found;
-     *  - Database exception;
-     *  - incorrect password;
-     *  - a given argument is null.
-     */
-    public static User authenticate(String login, String password) throws AuthenticationException {
-        if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
-            throw new AuthenticationException(AuthenticationException.Causes.NULL);
-        }
-        User user;
-        DatabaseService databaseService = DatabaseService.getInstance();
-        try {
-            user = databaseService.findUser(login);
-        } catch (DatabaseException e) {
-            throw new AuthenticationException(AuthenticationException.Causes.ERROR);
-        }
-        if (user == null) {
-            throw new AuthenticationException(AuthenticationException.Causes.NO);
-        }
-        if (!(verification(user, password))) {
-            throw new AuthenticationException(AuthenticationException.Causes.PASS);
-        }
-        return user;
-    }
 
     /**
      * Verification the user's password when logging in.
@@ -92,22 +57,10 @@ public final class Authenticator {
         }
     }
 
-    public static User getUser(String jwt) throws AuthenticationException {
-        try {
-            int id = JwtUtils.getId(jwt);
-            if (id <= 0) {
-                throw new AuthenticationException("Incorrect token");
-            } else {
-                return DatabaseService.getInstance().getUserDAO().get(id);
-            }
-        } catch (JwtException | DatabaseException e) {
-            throw new AuthenticationException(e.getMessage());
-        }
-    }
-
     public static int verifyTokenToId(String jwt) throws AuthenticationException {
         int id = JwtUtils.getId(jwt);
         if (id <= 0) {
+            //TODO
             throw new AuthenticationException("");
         } else {
             return id;
@@ -120,26 +73,6 @@ public final class Authenticator {
             user.setPassword(passHash);
         } else {
             throw new AuthenticationException(AuthenticationException.Causes.PASS);
-        }
-    }
-
-    public static boolean updateUser(User user) throws AuthenticationException {
-        UserDAO dao = DatabaseService.getInstance().getUserDAO();
-        try {
-            return dao.update(user);
-        } catch (DatabaseException e) {
-            throw new AuthenticationException(e.getMessage(), AuthenticationException.Causes.ERROR);
-        }
-    }
-
-    public static void deleteUser(User user) throws AuthenticationException {
-        UserDAO dao = DatabaseService.getInstance().getUserDAO();
-        try {
-            if (!dao.delete(user.getId())) {
-                throw new AuthenticationException(AuthenticationException.Causes.ERROR);
-            }
-        } catch (DatabaseException e) {
-            throw new AuthenticationException(AuthenticationException.Causes.ERROR);
         }
     }
 

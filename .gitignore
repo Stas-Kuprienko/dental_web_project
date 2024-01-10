@@ -47,3 +47,4 @@ build/
 /backend/web/apache-tomcat-10.1.11/
 /.run/laptop_backend_web.run.xml
 /.run/laptop_frontend.run.xml
+/backend/core/src/main/resources/log4j2.xml
