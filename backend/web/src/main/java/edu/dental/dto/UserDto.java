@@ -7,8 +7,14 @@ import java.util.Objects;
 
 public record UserDto(int id, String name, String email, String created, String jwt) {
 
+    static {
+        tokenUtils = AuthenticationService.getInstance().tokenUtils();
+    }
+
+    private static final AuthenticationService.TokenUtils tokenUtils;
+
     public static UserDto parse(User user) {
-        String jwt = AuthenticationService.JwtUtils.generateJwtFromEntity(user);
+        String jwt = tokenUtils.generateJwtFromEntity(user);
         return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getCreated().toString(), jwt);
     }
 
@@ -17,7 +23,8 @@ public record UserDto(int id, String name, String email, String created, String 
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDto userDto = (UserDto) o;
-        return Objects.equals(name, userDto.name) && Objects.equals(email, userDto.email) && Objects.equals(jwt, userDto.jwt);
+        return Objects.equals(name, userDto.name) &&
+                Objects.equals(email, userDto.email) && Objects.equals(jwt, userDto.jwt);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package edu.dental;
 
+import edu.dental.security.AuthenticationService;
 import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.Repository;
 
@@ -19,6 +20,7 @@ public enum WebAPI {
 
     private final Properties service;
 
+    private final AuthenticationService authenticationService;
     private final Repository repository;
     private final JsonObjectParser jsonObjectParser;
 
@@ -31,10 +33,15 @@ public enum WebAPI {
             //TODO loggers
             throw new RuntimeException(e);
         }
+        this.authenticationService = init(AuthenticationService.class);
         this.repository = init(Repository.class);
         this.jsonObjectParser = init(JsonObjectParser.class);
     }
 
+
+    public AuthenticationService getAuthenticationService() {
+        return authenticationService;
+    }
 
     public Repository getRepository() {
         return repository;

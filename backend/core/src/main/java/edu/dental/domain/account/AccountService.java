@@ -17,7 +17,7 @@ public interface AccountService {
 
     User create(String name, String login, String password) throws AccountException;
 
-    User get(String login, String password) throws AccountException;
+    User authenticate(String login, String password) throws AccountException;
 
     User get(int id) throws AccountException;
 

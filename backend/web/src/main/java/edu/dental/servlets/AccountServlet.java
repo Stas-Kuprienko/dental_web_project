@@ -113,7 +113,7 @@ public class AccountServlet extends HttpServlet {
     }
 
     private UserDto setPassword(User user, String password) throws WebException {
-        if (!AuthenticationService.updatePassword(user, password)) {
+        if (!AuthenticationService.getInstance().updatePassword(user, password)) {
             //TODO
            throw new WebException(WebException.CODE.BAD_REQUEST);
         } else {

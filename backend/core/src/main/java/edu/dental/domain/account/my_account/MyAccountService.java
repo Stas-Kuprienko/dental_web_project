@@ -13,7 +13,16 @@ import java.security.NoSuchAlgorithmException;
 
 public class MyAccountService implements AccountService {
 
-    private MyAccountService() {}
+    private MyAccountService() {
+        try {
+            this.MD5 = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            //TODO
+            throw new RuntimeException(e);
+        }
+    }
+
+    private final MessageDigest MD5;
 
 
     /**
@@ -23,12 +32,7 @@ public class MyAccountService implements AccountService {
      */
     @Override
     public boolean verification(User user, String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            return MessageDigest.isEqual(user.getPassword(), md.digest(password.getBytes()));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        return MessageDigest.isEqual(user.getPassword(), MD5.digest(password.getBytes()));
     }
 
     /**
@@ -48,18 +52,13 @@ public class MyAccountService implements AccountService {
      */
     @Override
     public byte[] passwordHash(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            return md.digest(password.getBytes());
-        } catch (NoSuchAlgorithmException e) {
-            //TODO logger
-            throw new RuntimeException(e);
-        }
+        return MD5.digest(password.getBytes());
     }
 
     @Override
     public User create(String name, String login, String password) throws AccountException {
-        User user = new User(name, login, password);
+        byte[] passHashByte = MD5.digest(password.getBytes());
+        User user = new User(name, login, passHashByte);
         try {
             if (APIManager.INSTANCE.getDatabaseService().getUserDAO().put(user)) {
                 return user;
@@ -81,7 +80,7 @@ public class MyAccountService implements AccountService {
      *  - a given argument is null.
      */
     @Override
-    public User get(String login, String password) throws AccountException {
+    public User authenticate(String login, String password) throws AccountException {
         if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
             throw new AccountException();
         }
@@ -124,11 +123,9 @@ public class MyAccountService implements AccountService {
     public boolean updatePassword(User user, String newPassword) throws AccountException {
         byte[] oldValue = user.getPassword();
         try {
-            if (verification(user, user.getPassword())) {
-                byte[] passHash = passwordHash(newPassword);
-                user.setPassword(passHash);
-                return DatabaseService.getInstance().getUserDAO().update(user);
-            } else return false;
+            byte[] passHash = MD5.digest(newPassword.getBytes());
+            user.setPassword(passHash);
+            return DatabaseService.getInstance().getUserDAO().update(user);
         } catch (DatabaseException e) {
             user.setPassword(oldValue);
             throw new AccountException(e);

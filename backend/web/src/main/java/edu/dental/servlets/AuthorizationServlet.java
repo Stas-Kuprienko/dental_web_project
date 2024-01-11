@@ -29,9 +29,9 @@ public class AuthorizationServlet extends HttpServlet {
             if (token == null || token.isEmpty()) {
                 String email = request.getParameter("email");
                 String password = request.getParameter("password");
-                user = AuthenticationService.authorization(email, password);
+                user = AuthenticationService.getInstance().authorization(email, password);
             } else {
-                user = AuthenticationService.getUserDto(token);
+                user = AuthenticationService.getInstance().getUserDto(token);
             }
             String jsonUser = JsonObjectParser.getInstance().parseToJson(user);
             response.setContentType("text/plain");

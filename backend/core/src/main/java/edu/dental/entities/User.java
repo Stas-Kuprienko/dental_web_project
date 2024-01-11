@@ -1,7 +1,5 @@
 package edu.dental.entities;
 
-import edu.dental.domain.account.AccountService;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -28,16 +26,16 @@ public class User implements Serializable, IDHaving {
      * @param email    Login for the user authorization.
      * @param password The password for access to the account
      */
-    public User(String name, String email, String password) {
+    public User(String name, String email, byte[] password) {
         if ((name == null || name.isEmpty())
                 || (email == null || email.isEmpty())
-                || (password == null || password.isEmpty())) {
+                || (password == null || password.length == 0)) {
             throw new IllegalArgumentException();
         }
         this.created = LocalDate.now();
         this.name = name;
         this.email = email;
-        this.password = AccountService.getInstance().passwordHash(password);
+        this.password = password;
     }
 
     /**
