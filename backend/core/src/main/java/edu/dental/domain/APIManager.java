@@ -24,9 +24,9 @@ public enum APIManager {
 
     private final Properties service;
 
-    private final DatabaseService databaseService;
-    private final AccountService accountService;
-    private final ReportService reportService;
+    private DatabaseService databaseService;
+    private AccountService accountService;
+    private ReportService reportService;
 
 
     APIManager() {
@@ -37,9 +37,6 @@ public enum APIManager {
             //TODO loggers
             throw new RuntimeException(e);
         }
-        this.databaseService = init(DatabaseService.class);
-        this.accountService = init(AccountService.class);
-        this.reportService = init(ReportService.class);
     }
 
 
@@ -118,25 +115,29 @@ public enum APIManager {
         }
     }
 
-    public ReportService getReportService() {
+    public synchronized ReportService getReportService() {
+        if (reportService == null) {
+            reportService = init(ReportService.class);
+        }
         return reportService;
     }
 
-    public AccountService getAccountService() {
+    public synchronized AccountService getAccountService() {
+        if (accountService == null) {
+            accountService = init(AccountService.class);
+        }
         return accountService;
     }
 
-    public DatabaseService getDatabaseService() {
+    public synchronized DatabaseService getDatabaseService() {
+        if (databaseService == null) {
+            databaseService = init(DatabaseService.class);
+        }
         return databaseService;
     }
 
-
-    private <T> String getClassName(Class<T> clas) {
-        return service.getProperty(clas.getSimpleName());
-    }
-
     @SuppressWarnings("unchecked")
-    private <T> T init(Class<T> clas) {
+    public <T> T init(Class<T> clas) {
         Constructor<?> constructor = null;
         try {
             Class<?> c = Class.forName(getClassName(clas));
@@ -152,5 +153,9 @@ public enum APIManager {
                 constructor.setAccessible(false);
             }
         }
+    }
+
+    private <T> String getClassName(Class<T> clas) {
+        return service.getProperty(clas.getSimpleName());
     }
 }

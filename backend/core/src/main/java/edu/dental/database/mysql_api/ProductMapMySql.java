@@ -105,9 +105,10 @@ public class ProductMapMySql implements ProductMapDAO {
     public boolean delete(int id) throws DatabaseException {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "id = ? AND user_id = ?");
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setInt(1, id);
-            request.getPreparedStatement().setInt(2, userId);
-            return request.getPreparedStatement().executeUpdate() > 0;
+            PreparedStatement statement = request.getPreparedStatement();
+            statement.setInt(1, id);
+            statement.setInt(2, userId);
+            return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -117,10 +118,11 @@ public class ProductMapMySql implements ProductMapDAO {
         String where = "title = ? AND price = ? AND user_id = ?";
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, where);
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setString(1, title);
-            request.getPreparedStatement().setInt(2, price);
-            request.getPreparedStatement().setInt(3, userId);
-            return request.getPreparedStatement().executeUpdate() > 0;
+            PreparedStatement statement = request.getPreparedStatement();
+            statement.setString(1, title);
+            statement.setInt(2, price);
+            statement.setInt(3, userId);
+            return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }

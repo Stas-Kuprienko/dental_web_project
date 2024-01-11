@@ -2,8 +2,6 @@ package edu.dental.domain.account.my_account;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
-import edu.dental.database.dao.UserDAO;
-import edu.dental.domain.APIManager;
 import edu.dental.domain.account.AccountException;
 import edu.dental.domain.account.AccountService;
 import edu.dental.entities.User;
@@ -16,6 +14,7 @@ public class MyAccountService implements AccountService {
     private MyAccountService() {
         try {
             this.MD5 = MessageDigest.getInstance("MD5");
+            this.databaseService = DatabaseService.getInstance();
         } catch (NoSuchAlgorithmException e) {
             //TODO
             throw new RuntimeException(e);
@@ -23,6 +22,7 @@ public class MyAccountService implements AccountService {
     }
 
     private final MessageDigest MD5;
+    private final DatabaseService databaseService;
 
 
     /**
@@ -60,7 +60,7 @@ public class MyAccountService implements AccountService {
         byte[] passHashByte = MD5.digest(password.getBytes());
         User user = new User(name, login, passHashByte);
         try {
-            if (APIManager.INSTANCE.getDatabaseService().getUserDAO().put(user)) {
+            if (databaseService.getUserDAO().put(user)) {
                 return user;
             } else throw new AccountException();
         } catch (DatabaseException e) {
@@ -85,7 +85,6 @@ public class MyAccountService implements AccountService {
             throw new AccountException();
         }
         User user;
-        DatabaseService databaseService = DatabaseService.getInstance();
         try {
             user = databaseService.findUser(login);
         } catch (DatabaseException e) {
@@ -103,7 +102,7 @@ public class MyAccountService implements AccountService {
     @Override
     public User get(int id) throws AccountException {
         try {
-            return DatabaseService.getInstance().getUserDAO().get(id);
+            return databaseService.getUserDAO().get(id);
         } catch (DatabaseException e) {
             throw new AccountException();
         }
@@ -111,9 +110,8 @@ public class MyAccountService implements AccountService {
 
     @Override
     public boolean update(User user) throws AccountException {
-        UserDAO dao = DatabaseService.getInstance().getUserDAO();
         try {
-            return dao.update(user);
+            return databaseService.getUserDAO().update(user);
         } catch (DatabaseException e) {
             throw new AccountException();
         }
@@ -125,7 +123,7 @@ public class MyAccountService implements AccountService {
         try {
             byte[] passHash = MD5.digest(newPassword.getBytes());
             user.setPassword(passHash);
-            return DatabaseService.getInstance().getUserDAO().update(user);
+            return databaseService.getUserDAO().update(user);
         } catch (DatabaseException e) {
             user.setPassword(oldValue);
             throw new AccountException(e);
@@ -134,9 +132,8 @@ public class MyAccountService implements AccountService {
 
     @Override
     public boolean deleteUser(User user) throws AccountException {
-        UserDAO dao = DatabaseService.getInstance().getUserDAO();
         try {
-            return dao.delete(user.getId());
+            return databaseService.getUserDAO().delete(user.getId());
         } catch (DatabaseException e) {
             throw new AccountException(e);
         }

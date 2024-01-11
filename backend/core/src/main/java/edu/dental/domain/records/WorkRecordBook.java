@@ -19,6 +19,8 @@ import java.util.NoSuchElementException;
  */
 public interface WorkRecordBook {
 
+    DatabaseService database = DatabaseService.getInstance();
+
     static WorkRecordBook createNew(int userId) {
         return APIManager.INSTANCE.getWorkRecordBook(userId);
     }
@@ -28,11 +30,10 @@ public interface WorkRecordBook {
     }
 
     static WorkRecordBook getInstance(int userId) throws WorkRecordBookException {
-        DatabaseService db = APIManager.INSTANCE.getDatabaseService();
         List<DentalWork> works;
         ProductMap map;
         try {
-            works = db.getDentalWorkDAO().getAll(userId);
+            works = database.getDentalWorkDAO().getAll(userId);
             //TODO
             map = APIManager.INSTANCE.getProductMap(userId);
         } catch (DatabaseException e) {
@@ -69,9 +70,9 @@ public interface WorkRecordBook {
 
     boolean deleteProductItem(String title) throws WorkRecordBookException;
 
-    void editRecord(int id, String field, String value) throws WorkRecordBookException;
+    DentalWork editRecord(int id, String field, String value) throws WorkRecordBookException;
 
-    void editRecord(DentalWork dw, String field, String value) throws WorkRecordBookException;
+    DentalWork editRecord(DentalWork dw, String field, String value) throws WorkRecordBookException;
 
     /**
      * Create {@link Product product} object and add it into the given {@link DentalWork}.
@@ -79,10 +80,11 @@ public interface WorkRecordBook {
      * @param dentalWork the {@link DentalWork} object to adding a {@link Product product}.
      * @param product    the product type title to add (should be containing in {@link Map}).
      * @param quantity   the quantity of a product items.
+     * @return
      * @throws WorkRecordBookException if a given arguments is incorrect or the given product type
      *                                 is not contain in {@link Map}.
      */
-    void addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException;
+    DentalWork addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException;
 
     /**
      * Remove {@link Product product} object from the given {@linkplain  DentalWork#getProducts() record}.

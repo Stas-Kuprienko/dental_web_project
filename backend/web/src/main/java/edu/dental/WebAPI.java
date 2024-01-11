@@ -1,76 +1,39 @@
 package edu.dental;
 
+import edu.dental.domain.APIManager;
 import edu.dental.security.AuthenticationService;
-import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.Repository;
+import edu.dental.service.tools.JsonObjectParser;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
 
 public enum WebAPI {
 
     INSTANCE;
 
-    public final String paramUser = "user";
+    private AuthenticationService authenticationService;
+    private Repository repository;
+    private JsonObjectParser jsonObjectParser;
 
-    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\service.properties";
+    WebAPI() {}
 
-    private final Properties service;
-
-    private final AuthenticationService authenticationService;
-    private final Repository repository;
-    private final JsonObjectParser jsonObjectParser;
-
-
-    WebAPI() {
-        service = new Properties();
-        try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
-            service.load(fileInput);
-        } catch (IOException e) {
-            //TODO loggers
-            throw new RuntimeException(e);
+    public synchronized AuthenticationService getAuthenticationService() {
+        if (authenticationService == null) {
+            authenticationService = APIManager.INSTANCE.init(AuthenticationService.class);
         }
-        this.authenticationService = init(AuthenticationService.class);
-        this.repository = init(Repository.class);
-        this.jsonObjectParser = init(JsonObjectParser.class);
-    }
-
-
-    public AuthenticationService getAuthenticationService() {
         return authenticationService;
     }
 
-    public Repository getRepository() {
+    public synchronized Repository getRepository() {
+        if (repository == null) {
+            repository = APIManager.INSTANCE.init(Repository.class);
+        }
         return repository;
     }
 
-    public JsonObjectParser getJsonParser() {
-        return jsonObjectParser;
-    }
-
-    private <T> String getClassName(Class<T> clas) {
-        return service.getProperty(clas.getSimpleName());
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T init(Class<T> clas) {
-        Constructor<?> constructor = null;
-        try {
-            Class<?> c = Class.forName(getClassName(clas));
-            constructor = c.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            return (T) constructor.newInstance();
-        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException
-                 | IllegalAccessException | ClassNotFoundException e) {
-            //TODO logger
-            throw new RuntimeException(e);
-        } finally {
-            if (constructor != null) {
-                constructor.setAccessible(false);
-            }
+    public synchronized JsonObjectParser getJsonParser() {
+        if (jsonObjectParser == null) {
+            jsonObjectParser = APIManager.INSTANCE.init(JsonObjectParser.class);
         }
+        return jsonObjectParser;
     }
 }

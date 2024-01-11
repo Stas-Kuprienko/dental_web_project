@@ -1,6 +1,5 @@
 package edu.dental.servlets;
 
-import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.service.tools.JsonObjectParser;
@@ -28,7 +27,7 @@ public class WorkRecordSortServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         int year = Integer.parseInt(request.getParameter("year"));
         int month = Integer.parseInt(request.getParameter("month"));
         try {

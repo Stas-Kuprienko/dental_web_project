@@ -21,6 +21,8 @@ import java.util.NoSuchElementException;
  */
 public class MyWorkRecordBook implements WorkRecordBook {
 
+    private final DatabaseService databaseService;
+
     private final int userId;
 
     private final SimpleList<DentalWork> records;
@@ -32,6 +34,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         this.userId = userId;
         this.records = (SimpleList<DentalWork>) records;
         this.productMap = (MyProductMap) productMap;
+        this.databaseService = DatabaseService.getInstance();
     }
 
     @SuppressWarnings("unused")
@@ -39,6 +42,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         this.userId = userId;
         this.records = new SimpleList<>();
         this.productMap = new MyProductMap();
+        this.databaseService = DatabaseService.getInstance();
     }
 
     @Override
@@ -53,7 +57,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         dentalWork.getProducts().add(p);
         dentalWork.setUserId(userId);
         try {
-            DatabaseService.getInstance().getDentalWorkDAO().put(dentalWork);
+            databaseService.getDentalWorkDAO().put(dentalWork);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e.getMessage(), e);
         }
@@ -66,7 +70,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).build();
         dentalWork.setUserId(userId);
         try {
-            DatabaseService.getInstance().getDentalWorkDAO().put(dentalWork);
+            databaseService.getDentalWorkDAO().put(dentalWork);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e.getMessage(), e);
         }
@@ -77,7 +81,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     @Override
     public ProductMap.Item addProductItem(String title, int price) throws WorkRecordBookException {
         try {
-            int id = DatabaseService.getInstance().getProductMapDAO(userId).put(title, price);
+            int id = databaseService.getProductMapDAO(userId).put(title, price);
             productMap.put(title, price, id);
             return productMap.getItem(title);
         } catch (DatabaseException e) {
@@ -89,7 +93,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     public Integer editProductItem(String title, int price) throws WorkRecordBookException {
         try {
             int id = productMap.getId(title);
-            DatabaseService.getInstance().getProductMapDAO(userId).edit(id, price);
+            databaseService.getProductMapDAO(userId).edit(id, price);
             return productMap.put(title, price);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e.getMessage(), e);
@@ -100,7 +104,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     public boolean deleteProductItem(String title) throws WorkRecordBookException {
         try {
             int id = productMap.remove(title);
-            return DatabaseService.getInstance().getProductMapDAO(userId).delete(id);
+            return databaseService.getProductMapDAO(userId).delete(id);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e.getMessage(), e);
         } catch (NullPointerException ignored) {
@@ -109,20 +113,20 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public void editRecord(int id, String field, String value) throws WorkRecordBookException {
+    public DentalWork editRecord(int id, String field, String value) throws WorkRecordBookException {
         DentalWork dw = getByID(id);
-        editRecord(dw, field, value);
+        return editRecord(dw, field, value);
     }
 
     @Override
-    public void editRecord(DentalWork dw, String field, String value) throws WorkRecordBookException {
+    public DentalWork editRecord(DentalWork dw, String field, String value) throws WorkRecordBookException {
         String oldValue = getValueFromWork(dw, field);
         Method setter = null;
         try {
             String setterName = concatenateSetMethod(field, "set");
             setter = DentalWork.class.getMethod(setterName, String.class);
             setter.invoke(dw, value);
-            DatabaseService.getInstance().getDentalWorkDAO().edit(dw);
+            databaseService.getDentalWorkDAO().edit(dw);
         } catch (DatabaseException e) {
             try {
                 setter.invoke(dw, oldValue);
@@ -133,10 +137,11 @@ public class MyWorkRecordBook implements WorkRecordBook {
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new WorkRecordBookException(e.getMessage(), e);
         }
+        return dw;
     }
 
     @Override
-    public void addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException {
+    public DentalWork addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException {
         if (dentalWork == null || product == null) {
             throw new WorkRecordBookException("The given DentalWork object is null");
         }
@@ -154,11 +159,12 @@ public class MyWorkRecordBook implements WorkRecordBook {
         }
         dentalWork.getProducts().add(p);
         try {
-            DatabaseService.getInstance().getDentalWorkDAO().edit(dentalWork);
+            databaseService.getDentalWorkDAO().edit(dentalWork);
         } catch (DatabaseException e) {
             removeProduct(dentalWork, product);
             throw new WorkRecordBookException(e.getMessage(), e);
         }
+        return dentalWork;
     }
 
     @Override
@@ -180,7 +186,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         }
         if (removable != null) {
             try {
-                DatabaseService.getInstance().getDentalWorkDAO().edit(dentalWork);
+                databaseService.getDentalWorkDAO().edit(dentalWork);
             } catch (DatabaseException e) {
                 dentalWork.getProducts().add(removable);
                 throw new WorkRecordBookException(e.getMessage(), e);
@@ -200,7 +206,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
             return;
         }
         try {
-            DatabaseService.getInstance().getDentalWorkDAO().delete(dentalWork.getId());
+            databaseService.getDentalWorkDAO().delete(dentalWork.getId());
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e.getMessage(), e);
         }

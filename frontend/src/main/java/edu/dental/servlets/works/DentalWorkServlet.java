@@ -128,6 +128,8 @@ public class DentalWorkServlet extends HttpServlet {
     }
 
     private void editWork(HttpServletRequest request) throws IOException, NullPointerException {
+
+        //TODO fix saving in record book after updating
         int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         int id = Integer.parseInt(request.getParameter(idParam));
         String field = request.getParameter(fieldParam);

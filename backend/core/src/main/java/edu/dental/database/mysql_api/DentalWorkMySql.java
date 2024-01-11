@@ -110,9 +110,10 @@ public class DentalWorkMySql implements DentalWorkDAO {
         String where = TABLE + ".id = ? AND " + TABLE + ".user_id = ?";
         String query = String.format(MySqlSamples.SELECT_DENTAL_WORK.QUERY, where);
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setInt(1, id);
-            request.getPreparedStatement().setInt(2, userId);
-            ResultSet resultSet = request.getPreparedStatement().executeQuery();
+            PreparedStatement statement = request.getPreparedStatement();
+            statement.setInt(1, id);
+            statement.setInt(2, userId);
+            ResultSet resultSet = statement.executeQuery();
             SimpleList<DentalWork> list = (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | IOException | NullPointerException e) {

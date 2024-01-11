@@ -99,13 +99,14 @@ public class UserMySql implements UserDAO {
         } sets.deleteCharAt(sets.length()-1);
         String query = String.format(MySqlSamples.UPDATE.QUERY, TABLE, sets,"id = ?");
         try (Request request = new Request(query)) {
+            PreparedStatement statement = request.getPreparedStatement();
             byte i = 1;
-            request.getPreparedStatement().setString(i++, object.getName());
-            request.getPreparedStatement().setString(i++, object.getEmail());
-            request.getPreparedStatement().setDate(i++, Date.valueOf(object.getCreated()));
-            request.getPreparedStatement().setBlob(i++, new SerialBlob(object.getPassword()));
-            request.getPreparedStatement().setInt(i, object.getId());
-            return request.getPreparedStatement().executeUpdate() > 0;
+            statement.setString(i++, object.getName());
+            statement.setString(i++, object.getEmail());
+            statement.setDate(i++, Date.valueOf(object.getCreated()));
+            statement.setBlob(i++, new SerialBlob(object.getPassword()));
+            statement.setInt(i, object.getId());
+            return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }

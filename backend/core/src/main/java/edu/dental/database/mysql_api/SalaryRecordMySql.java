@@ -5,6 +5,7 @@ import edu.dental.database.dao.SalaryRecordDAO;
 import edu.dental.entities.SalaryRecord;
 import utils.collections.SimpleList;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -28,10 +29,11 @@ public class SalaryRecordMySql implements SalaryRecordDAO {
     @Override
     public SalaryRecord countSalaryForMonth(int userId, int year, String month) throws DatabaseException {
         try (Request request = new Request(MySqlSamples.MONTH_SALARY.QUERY)) {
-            request.getPreparedStatement().setInt(1, userId);
-            request.getPreparedStatement().setInt(2, year);
-            request.getPreparedStatement().setString(3, month);
-            ResultSet resultSet = request.getPreparedStatement().executeQuery();
+            PreparedStatement statement = request.getPreparedStatement();
+            statement.setInt(1, userId);
+            statement.setInt(2, year);
+            statement.setString(3, month);
+            ResultSet resultSet = statement.executeQuery();
             return instantiating(resultSet).get(0);
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.fillInStackTrace());

@@ -1,7 +1,7 @@
 package edu.dental.security;
 
-import edu.dental.WebAPI;
 import edu.dental.WebException;
+import edu.dental.service.Repository;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ public class FilterService implements Filter {
 
         try {
             userId = filterVerification.verify(request);
-            request.setAttribute(WebAPI.INSTANCE.paramUser, userId);
+            request.setAttribute(Repository.paramUser, userId);
             chain.doFilter(request, response);
         } catch (WebException e) {
             response.sendError(e.code.i);

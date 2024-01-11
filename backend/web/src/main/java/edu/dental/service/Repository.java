@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface Repository {
 
+    String paramUser = "user";
+
     static Repository getInstance() {
         return WebAPI.INSTANCE.getRepository();
     }

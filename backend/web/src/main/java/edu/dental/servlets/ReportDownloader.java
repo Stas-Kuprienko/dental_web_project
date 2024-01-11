@@ -1,6 +1,5 @@
 package edu.dental.servlets;
 
-import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
@@ -34,7 +33,7 @@ public class ReportDownloader extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         OutputStream output = response.getOutputStream();
         try {
-            int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+            int userId = (int) request.getAttribute(Repository.paramUser);
             String year = request.getParameter("year");
             String month = request.getParameter("month");
             List<DentalWork> works;

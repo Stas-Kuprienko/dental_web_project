@@ -1,10 +1,10 @@
 package edu.dental.servlets;
 
-import edu.dental.WebAPI;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
+import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -35,7 +35,7 @@ public class WorkRecordSearchServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         try {
             DentalWorkDto[] works = search(userId, request);
             String json = jsonObjectParser.parseToJson(works);

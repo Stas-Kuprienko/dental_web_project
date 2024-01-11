@@ -15,12 +15,14 @@ import java.util.ListIterator;
 
 public class Sorter implements SorterTool<DentalWork> {
 
+    private final DentalWorkDAO dao;
     private final List<DentalWork> works;
     private final int userId;
 
     public Sorter(List<DentalWork> works, int userId) {
         this.works = works;
         this.userId = userId;
+        this.dao = DatabaseService.getInstance().getDentalWorkDAO();
     }
 
     @Override
@@ -109,7 +111,6 @@ public class Sorter implements SorterTool<DentalWork> {
 
 
     private void setStatusToDatabase(SimpleList<DentalWork> list) throws DatabaseException {
-        DentalWorkDAO dao = DatabaseService.getInstance().getDentalWorkDAO();
         boolean result;
         try {
             result = dao.setFieldValue(userId, list, "status", DentalWork.Status.CLOSED);
@@ -127,7 +128,6 @@ public class Sorter implements SorterTool<DentalWork> {
     }
 
     private void setReportIdToDatabase(SimpleList<DentalWork> list, int year, int month) throws DatabaseException {
-        DentalWorkDAO dao = DatabaseService.getInstance().getDentalWorkDAO();
         int result;
         try {
             result = dao.setReportId(list, Month.of(month).toString(), Integer.toString(year));

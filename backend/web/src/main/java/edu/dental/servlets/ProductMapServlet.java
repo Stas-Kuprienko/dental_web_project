@@ -1,6 +1,5 @@
 package edu.dental.servlets;
 
-import edu.dental.WebAPI;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.ProductMapDto;
@@ -33,7 +32,7 @@ public class ProductMapServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         ProductMapDto map = repository.getProductMapDto(userId);
         String json = jsonObjectParser.parseToJson(map.getItems());
         response.setContentType("application/json");
@@ -44,7 +43,7 @@ public class ProductMapServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         String title = request.getParameter(titleParam);
         int price = Integer.parseInt(request.getParameter(priceParam));
 
@@ -65,7 +64,7 @@ public class ProductMapServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
 
         String title = parameters.get(titleParam);
@@ -82,7 +81,7 @@ public class ProductMapServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
 
         String title = parameters.get(titleParam);

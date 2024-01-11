@@ -1,9 +1,9 @@
 package edu.dental.servlets;
 
-import edu.dental.WebAPI;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.dto.SalaryRecordDto;
+import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,7 +29,7 @@ public class SalaryCountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         OutputStream output = response.getOutputStream();
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         response.setContentType("application/msword");
         String fileFormat = reportService.getFileFormat();
         String fileName = "salary_list";
@@ -43,7 +43,7 @@ public class SalaryCountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         String year = request.getParameter("year");
         String month = request.getParameter("month");
         try {

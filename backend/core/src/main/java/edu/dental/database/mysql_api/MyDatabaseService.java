@@ -1,7 +1,7 @@
 package edu.dental.database.mysql_api;
 
-import edu.dental.database.DatabaseService;
 import edu.dental.database.DatabaseException;
+import edu.dental.database.DatabaseService;
 import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.*;
 import edu.dental.entities.User;

@@ -1,6 +1,5 @@
 package edu.dental.servlets;
 
-import edu.dental.WebAPI;
 import edu.dental.domain.account.AccountException;
 import edu.dental.domain.account.AccountService;
 import edu.dental.dto.UserDto;
@@ -46,7 +45,7 @@ public class AccountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         String field = request.getParameter(fieldParam);
         String value = request.getParameter(valueParam);
         if (field == null || value == null || field.isEmpty() || value.isEmpty()) {
@@ -70,7 +69,7 @@ public class AccountServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
+        int userId = (int) request.getAttribute(Repository.paramUser);
         User user = repository.getUser(userId);
         try {
             accountService.deleteUser(user);

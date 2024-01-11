@@ -18,7 +18,11 @@ import java.util.NoSuchElementException;
 
 public class MyReportService implements ReportService {
 
-    private MyReportService() {}
+    private MyReportService() {
+        this.databaseService = DatabaseService.getInstance();
+    }
+
+    private final DatabaseService databaseService;
 
 
     @Override
@@ -38,8 +42,7 @@ public class MyReportService implements ReportService {
     @Override
     public List<DentalWork> getReportFromDB(int userId, String month, String year) throws ReportServiceException {
         try {
-            DatabaseService db = DatabaseService.getInstance();
-            return db.getDentalWorkDAO().getAllMonthly(userId, month, year);
+            return databaseService.getDentalWorkDAO().getAllMonthly(userId, month, year);
         } catch (DatabaseException | ClassCastException e) {
             //TODO loggers
             throw new ReportServiceException(e.getMessage(), e.getCause());
@@ -48,7 +51,7 @@ public class MyReportService implements ReportService {
 
     @Override
     public List<DentalWork> searchRecords(int userId, String[] fields, String[] args) throws ReportServiceException {
-        DentalWorkDAO dao = DatabaseService.getInstance().getDentalWorkDAO();
+        DentalWorkDAO dao = databaseService.getDentalWorkDAO();
         try {
             return dao.search(userId, fields, args);
         } catch (DatabaseException e) {
@@ -58,7 +61,7 @@ public class MyReportService implements ReportService {
 
     @Override
     public DentalWork getByIDFromDatabase(int userId, int workId) throws ReportServiceException {
-        DentalWorkDAO dao = DatabaseService.getInstance().getDentalWorkDAO();
+        DentalWorkDAO dao = databaseService.getDentalWorkDAO();
         try {
             DentalWork dentalWork = dao.get(userId, workId);
             if (dentalWork == null) {
@@ -73,7 +76,7 @@ public class MyReportService implements ReportService {
 
     @Override
     public OutputStream writeSalariesToOutput(int userId, OutputStream output) throws ReportServiceException {
-        SalaryRecordDAO dao = DatabaseService.getInstance().getSalaryRecordDAO();
+        SalaryRecordDAO dao = databaseService.getSalaryRecordDAO();
         try {
             SalaryRecord[] salaries = dao.countAllSalaries(userId);
             DataArrayTool dataTool = new DataArrayTool(salaries);
@@ -89,7 +92,7 @@ public class MyReportService implements ReportService {
     public SalaryRecord countSalaryForMonth(int userId, String year, String monthValue) throws ReportServiceException {
         String month = Month.of(Integer.parseInt(monthValue)).toString().toLowerCase();
         int yearInt = Integer.parseInt(year);
-        SalaryRecordDAO dao = DatabaseService.getInstance().getSalaryRecordDAO();
+        SalaryRecordDAO dao = databaseService.getSalaryRecordDAO();
         try {
             return dao.countSalaryForMonth(userId, yearInt, month);
         } catch (DatabaseException e) {
@@ -99,7 +102,7 @@ public class MyReportService implements ReportService {
 
     @Override
     public SalaryRecord[] countAllSalaries(int userId) throws ReportServiceException {
-        SalaryRecordDAO dao = DatabaseService.getInstance().getSalaryRecordDAO();
+        SalaryRecordDAO dao = databaseService.getSalaryRecordDAO();
         try {
             return dao.countAllSalaries(userId);
         } catch (DatabaseException e) {

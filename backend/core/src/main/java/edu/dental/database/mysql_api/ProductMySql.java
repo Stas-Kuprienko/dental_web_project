@@ -100,10 +100,11 @@ public class ProductMySql implements ProductDAO {
     public List<Product> search(String title, int quantity) throws DatabaseException {
         String query = MySqlSamples.SELECT_PRODUCT.QUERY;
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setString(1, title);
-            request.getPreparedStatement().setInt(2, workId);
-            request.getPreparedStatement().setByte(3, (byte) quantity);
-            ResultSet resultSet = request.getPreparedStatement().executeQuery();
+            PreparedStatement statement = request.getPreparedStatement();
+            statement.setString(1, title);
+            statement.setInt(2, workId);
+            statement.setByte(3, (byte) quantity);
+            ResultSet resultSet = statement.executeQuery();
             return new ProductInstantiation(resultSet).build();
         } catch (SQLException | NullPointerException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
@@ -135,9 +136,10 @@ public class ProductMySql implements ProductDAO {
     public boolean delete(String title) throws DatabaseException {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = ? AND title = ?");
         try (Request request = new Request(query)) {
-            request.getPreparedStatement().setInt(1, workId);
-            request.getPreparedStatement().setString(2,title);
-            return request.getPreparedStatement().execute();
+            PreparedStatement statement = request.getPreparedStatement();
+            statement.setInt(1, workId);
+            statement.setString(2,title);
+            return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }
@@ -148,7 +150,7 @@ public class ProductMySql implements ProductDAO {
         String query = String.format(MySqlSamples.DELETE.QUERY, TABLE, "work_id = ?");
         try (Request request = new Request(query)) {
             request.getPreparedStatement().setInt(1, workId);
-            return request.getPreparedStatement().execute();
+            return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.getCause());
         }

@@ -6,10 +6,6 @@ import edu.dental.entities.User;
 
 public interface DatabaseService {
 
-    static DatabaseService getInstance() {
-        return APIManager.INSTANCE.getDatabaseService();
-    }
-
     TableInitializer getTableInitializer();
 
     User findUser(String login) throws DatabaseException;
@@ -23,4 +19,8 @@ public interface DatabaseService {
     ProductDAO getProductDAO(int workId);
 
     SalaryRecordDAO getSalaryRecordDAO();
+
+    static DatabaseService getInstance() {
+        return APIManager.INSTANCE.getDatabaseService();
+    }
 }
