@@ -26,6 +26,18 @@ public class AccountServlet extends HttpServlet {
     public final String fieldParam = "field";
     public final String valueParam = "value";
 
+    private AccountService accountService;
+    private Repository repository;
+    private JsonObjectParser jsonObjectParser;
+    private AuthenticationService authenticationService;
+
+    @Override
+    public void init() throws ServletException {
+        this.accountService = AccountService.getInstance();
+        this.repository = Repository.getInstance();
+        this.jsonObjectParser = JsonObjectParser.getInstance();
+        this.authenticationService = AuthenticationService.getInstance();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -59,10 +71,10 @@ public class AccountServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
-        User user = Repository.getInstance().getUser(userId);
+        User user = repository.getUser(userId);
         try {
-            AccountService.getInstance().deleteUser(user);
-            Repository.getInstance().delete(userId);
+            accountService.deleteUser(user);
+            repository.delete(userId);
             //TODO
             response.setStatus(200);
         } catch (AccountException e) {
@@ -72,7 +84,7 @@ public class AccountServlet extends HttpServlet {
 
 
     private String update(int userId, String field, String value) throws WebException {
-        User user = Repository.getInstance().getUser(userId);
+        User user = repository.getUser(userId);
         UserDto dto;
         switch (field) {
             case nameField -> dto = setName(user, value);
@@ -82,14 +94,14 @@ public class AccountServlet extends HttpServlet {
                 return null;
             }
         }
-        return JsonObjectParser.getInstance().parseToJson(dto);
+        return jsonObjectParser.parseToJson(dto);
     }
 
     private UserDto setName(User user, String name) throws WebException {
         String oldValue = user.getName();
         user.setName(name);
         try {
-            AccountService.getInstance().update(user);
+            accountService.update(user);
             return UserDto.parse(user);
         } catch (AccountException e) {
             user.setName(oldValue);
@@ -103,7 +115,7 @@ public class AccountServlet extends HttpServlet {
         String oldValue = user.getEmail();
         user.setEmail(email);
         try {
-            AccountService.getInstance().update(user);
+            accountService.update(user);
             return UserDto.parse(user);
         } catch (AccountException e) {
             user.setEmail(oldValue);
@@ -113,7 +125,7 @@ public class AccountServlet extends HttpServlet {
     }
 
     private UserDto setPassword(User user, String password) throws WebException {
-        if (!AuthenticationService.getInstance().updatePassword(user, password)) {
+        if (!authenticationService.updatePassword(user, password)) {
             //TODO
            throw new WebException(WebException.CODE.BAD_REQUEST);
         } else {

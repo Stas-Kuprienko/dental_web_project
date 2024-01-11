@@ -21,6 +21,15 @@ import java.util.List;
 @WebServlet("/main/reports/download")
 public class ReportDownloader extends HttpServlet {
 
+    private ReportService reportService;
+    private Repository repository;
+
+    @Override
+    public void init() throws ServletException {
+        this.repository = Repository.getInstance();
+        this.reportService = ReportService.getInstance();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         OutputStream output = response.getOutputStream();
@@ -28,16 +37,15 @@ public class ReportDownloader extends HttpServlet {
             int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
             String year = request.getParameter("year");
             String month = request.getParameter("month");
-            ReportService reportService = ReportService.getInstance();
             List<DentalWork> works;
-            WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
+            WorkRecordBook recordBook = repository.getRecordBook(userId);
             if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
                 works = recordBook.getRecords();
             } else {
                 works = reportService.getReportFromDB(userId, Integer.parseInt(month), Integer.parseInt(year));
             }
             response.setContentType("application/msword");
-            String fileFormat = ReportService.getInstance().getFileFormat();
+            String fileFormat = reportService.getFileFormat();
             String fileName = getFileName(year, month);
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + "\"");
             reportService.writeReportToOutput(output, recordBook.getProductMap().keysToArray(), works);

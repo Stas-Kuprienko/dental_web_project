@@ -61,7 +61,7 @@ public class ContextInitializer implements ServletContextListener {
             throw new RuntimeException();
         }
         WebAPI.INSTANCE.getRepository().startMonitor();
-        System.out.println("context ready");
+        System.out.println("server ready");
     }
 
     private boolean checkDB() throws SQLException {

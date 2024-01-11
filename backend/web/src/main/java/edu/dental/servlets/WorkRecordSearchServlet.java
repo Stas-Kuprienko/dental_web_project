@@ -19,18 +19,26 @@ import java.util.List;
 @WebServlet("/main/dental-works/search")
 public class WorkRecordSearchServlet extends HttpServlet {
 
-    public final String patientParam = "patient";
-    public final String clinicParam = "clinic";
+    private final String patientParam = "patient";
+    private final String clinicParam = "clinic";
 
-    public final String[] searchFields = {patientParam, clinicParam};
+    private final String[] searchFields = {patientParam, clinicParam};
 
+    private JsonObjectParser jsonObjectParser;
+    private ReportService reportService;
+
+    @Override
+    public void init() throws ServletException {
+        this.jsonObjectParser = JsonObjectParser.getInstance();
+        this.reportService = ReportService.getInstance();
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
         try {
             DentalWorkDto[] works = search(userId, request);
-            String json = JsonObjectParser.getInstance().parseToJson(works);
+            String json = jsonObjectParser.parseToJson(works);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
@@ -62,7 +70,7 @@ public class WorkRecordSearchServlet extends HttpServlet {
         String[] arr2 = new String[]{};
         List<DentalWork> dentalWorks;
 
-        dentalWorks = ReportService.getInstance().searchRecords(userId, fields.toArray(arr1), args.toArray(arr2));
+        dentalWorks = reportService.searchRecords(userId, fields.toArray(arr1), args.toArray(arr2));
         DentalWorkDto[] dto = new DentalWorkDto[dentalWorks.size()];
 
         return dentalWorks.stream().map(DentalWorkDto::new).toList().toArray(dto);

@@ -22,12 +22,20 @@ public class ProductMapServlet extends HttpServlet {
     public final String titleParam = "title";
     public final String priceParam = "price";
 
+    private Repository repository;
+    private JsonObjectParser jsonObjectParser;
+
+    @Override
+    public void init() throws ServletException {
+        this.repository = Repository.getInstance();
+        this.jsonObjectParser = JsonObjectParser.getInstance();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(WebAPI.INSTANCE.paramUser);
-        ProductMapDto map = Repository.getInstance().getProductMapDto(userId);
-        String json = JsonObjectParser.getInstance().parseToJson(map.getItems());
+        ProductMapDto map = repository.getProductMapDto(userId);
+        String json = jsonObjectParser.parseToJson(map.getItems());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().print(json);
@@ -41,10 +49,10 @@ public class ProductMapServlet extends HttpServlet {
         int price = Integer.parseInt(request.getParameter(priceParam));
 
         ProductMapDto.Item item;
-        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
+        WorkRecordBook recordBook = repository.getRecordBook(userId);
         try {
             item = new ProductMapDto.Item(recordBook.addProductItem(title, price));
-            String json = JsonObjectParser.getInstance().parseToJson(item);
+            String json = jsonObjectParser.parseToJson(item);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
@@ -62,7 +70,7 @@ public class ProductMapServlet extends HttpServlet {
 
         String title = parameters.get(titleParam);
         int price = Integer.parseInt(parameters.get(priceParam));
-        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
+        WorkRecordBook recordBook = repository.getRecordBook(userId);
         try {
             recordBook.editProductItem(title, price);
             response.getWriter().flush();
@@ -78,7 +86,7 @@ public class ProductMapServlet extends HttpServlet {
         HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
 
         String title = parameters.get(titleParam);
-        WorkRecordBook recordBook = Repository.getInstance().getRecordBook(userId);
+        WorkRecordBook recordBook = repository.getRecordBook(userId);
         try {
             recordBook.deleteProductItem(title);
             response.getWriter().flush();

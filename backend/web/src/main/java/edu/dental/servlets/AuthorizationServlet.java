@@ -16,6 +16,15 @@ import java.io.IOException;
 @WebServlet("/log-in")
 public class AuthorizationServlet extends HttpServlet {
 
+    private AuthenticationService authenticationService;
+    private JsonObjectParser jsonObjectParser;
+
+    @Override
+    public void init() throws ServletException {
+        this.authenticationService = AuthenticationService.getInstance();
+        this.jsonObjectParser = JsonObjectParser.getInstance();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.sendError(405);
@@ -29,11 +38,11 @@ public class AuthorizationServlet extends HttpServlet {
             if (token == null || token.isEmpty()) {
                 String email = request.getParameter("email");
                 String password = request.getParameter("password");
-                user = AuthenticationService.getInstance().authorization(email, password);
+                user = authenticationService.authorization(email, password);
             } else {
-                user = AuthenticationService.getInstance().getUserDto(token);
+                user = authenticationService.getUserDto(token);
             }
-            String jsonUser = JsonObjectParser.getInstance().parseToJson(user);
+            String jsonUser = jsonObjectParser.parseToJson(user);
             response.setContentType("text/plain");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(jsonUser);
