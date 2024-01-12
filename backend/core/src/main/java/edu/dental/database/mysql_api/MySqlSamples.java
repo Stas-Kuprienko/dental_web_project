@@ -44,7 +44,7 @@ public enum MySqlSamples {
                 AND quantity = ?;
             """),
 
-    ALL_SALARIES("""
+    ALL_PROFITS("""
             SELECT report.month,
                 report.year,
                 SUM(product.price * product.quantity) AS amount
@@ -55,7 +55,7 @@ public enum MySqlSamples {
                 GROUP BY dental_work.report_id, report.month, report.year;
             """),
 
-    MONTH_SALARY("""
+    MONTH_PROFIT("""
             SELECT report.month,
                 report.year,
                 SUM(product.price * product.quantity) AS amount

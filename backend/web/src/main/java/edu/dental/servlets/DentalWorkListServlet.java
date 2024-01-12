@@ -1,11 +1,11 @@
 package edu.dental.servlets;
 
-import edu.dental.domain.reports.ReportService;
-import edu.dental.domain.reports.ReportServiceException;
+import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
-import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.Repository;
+import edu.dental.service.tools.JsonObjectParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,13 +20,11 @@ public class DentalWorkListServlet extends HttpServlet {
 
     private JsonObjectParser jsonObjectParser;
     private Repository repository;
-    private ReportService reportService;
 
     @Override
     public void init() throws ServletException {
         this.jsonObjectParser = JsonObjectParser.getInstance();
         this.repository = Repository.getInstance();
-        this.reportService = ReportService.getInstance();
     }
 
     @Override
@@ -41,7 +39,7 @@ public class DentalWorkListServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (ReportServiceException e) {
+        } catch (WorkRecordBookException e) {
             //TODO
             response.sendError(500);
         }
@@ -52,13 +50,14 @@ public class DentalWorkListServlet extends HttpServlet {
     }
 
 
-    private List<DentalWorkDto> getDentalWorks(int userId, String year, String month) throws ReportServiceException {
+    private List<DentalWorkDto> getDentalWorks(int userId, String year, String month) throws WorkRecordBookException {
         if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
             return repository.getDentalWorkDtoList(userId);
         } else {
             int yearInt = Integer.parseInt(year);
             int monthInt = Integer.parseInt(month);
-            List<DentalWork> works = reportService.getReportFromDB(userId, monthInt, yearInt);
+            WorkRecordBook recordBook = repository.getRecordBook(userId);
+            List<DentalWork> works = recordBook.getWorksByMonth(monthInt, yearInt);
             return works.stream().map(DentalWorkDto::new).toList();
         }
     }

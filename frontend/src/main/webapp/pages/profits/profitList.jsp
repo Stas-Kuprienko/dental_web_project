@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.jsp_printers.SalaryListTable" %>
-<% SalaryListTable td = new SalaryListTable(request); %>
+<%@ page import="edu.dental.jsp_printers.ProfitListPrinter" %>
+<% ProfitListPrinter td = new ProfitListPrinter(request); %>
 <html>
 <head>
     <title>DENTAL MECHANIC SERVICE</title>
@@ -23,7 +23,7 @@
             <div class="tr">
                 <div class="th">YEAR</div>
                 <div class="th">MONTH</div>
-                <div class="th">SALARY</div>
+                <div class="th">PROFIT</div>
             </div>
         </div>
         <div class="tbody">
@@ -35,7 +35,7 @@
 </body>
 <nav class="low-menu">
     <a>
-        <form method="get" action="/dental/main/salary">
+        <form method="get" action="/dental/main/profit">
             <input class="low-button" type="submit" value="download statistics">
         </form>
     </a>

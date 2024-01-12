@@ -13,9 +13,10 @@ public class DentalWorkDto {
     private String complete;
     private String comment;
     private String status;
+    private int reportId;
 
     public DentalWorkDto(int id, String patient, String clinic, ProductDto[] products,
-                         String accepted, String complete, String comment, String status) {
+                         String accepted, String complete, String comment, String status, int reportId) {
         this.id = id;
         this.patient = patient;
         this.clinic = clinic;
@@ -24,6 +25,7 @@ public class DentalWorkDto {
         this.complete = complete;
         this.comment = comment;
         this.status = status;
+        this.reportId = reportId;
     }
 
     public DentalWorkDto(edu.dental.entities.DentalWork dw) {
@@ -34,6 +36,7 @@ public class DentalWorkDto {
         this.complete = dw.getComplete() != null ? dw.getComplete().toString() : "";
         this.comment = dw.getComment() != null ? dw.getComment() : "";
         this.status = dw.getStatus().toString();
+        this.reportId = dw.getReportId();
         this.products = new ProductDto[dw.getProducts().size()];
         dw.getProducts().stream().map(ProductDto::parse).toList().toArray(products);
     }
@@ -98,6 +101,14 @@ public class DentalWorkDto {
         this.status = status;
     }
 
+    public int getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
+    }
+
     public enum Status {
         MAKE, CLOSED, PAID
     }
@@ -115,9 +126,7 @@ public class DentalWorkDto {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, patient, clinic, accepted, complete, comment, status);
-        result = 31 * result + Arrays.hashCode(products);
-        return result;
+        return Objects.hash(id, accepted);
     }
 
     @Override

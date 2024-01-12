@@ -13,9 +13,10 @@ public class DentalWork {
     private String complete;
     private String comment;
     private String status;
+    private int reportId;
 
     public DentalWork(int id, String patient, String clinic, Product[] products,
-                      String accepted, String complete, String comment, String status) {
+                      String accepted, String complete, String comment, String status, int reportId) {
         this.id = id;
         this.patient = patient;
         this.clinic = clinic;
@@ -24,6 +25,7 @@ public class DentalWork {
         this.complete = complete;
         this.comment = comment;
         this.status = status;
+        this.reportId = reportId;
     }
 
     public int id() {
@@ -86,6 +88,14 @@ public class DentalWork {
         this.status = status;
     }
 
+    public int getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
+    }
+
     public enum Status {
         MAKE, CLOSED, PAID
     }
@@ -103,9 +113,7 @@ public class DentalWork {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, patient, clinic, accepted, complete, comment, status);
-        result = 31 * result + Arrays.hashCode(products);
-        return result;
+        return Objects.hash(id, accepted);
     }
 
     @Override

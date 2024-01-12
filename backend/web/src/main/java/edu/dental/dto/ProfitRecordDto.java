@@ -1,22 +1,22 @@
 package edu.dental.dto;
 
-import edu.dental.entities.SalaryRecord;
+import edu.dental.entities.ProfitRecord;
 
 import java.util.Objects;
 
-public record SalaryRecordDto(int year, String month, int amount) {
+public record ProfitRecordDto(int year, String month, int amount) {
 
-    public static SalaryRecordDto parse(edu.dental.entities.SalaryRecord record) {
-        return new SalaryRecordDto(record.year(), record.month(), record.amount());
+    public static ProfitRecordDto parse(ProfitRecord record) {
+        return new ProfitRecordDto(record.year(), record.month(), record.amount());
     }
 
-    public static SalaryRecordDto[] parseArray(SalaryRecord[] records) {
-        SalaryRecordDto[] result = new SalaryRecordDto[records.length];
+    public static ProfitRecordDto[] parseArray(ProfitRecord[] records) {
+        ProfitRecordDto[] result = new ProfitRecordDto[records.length];
         int i = 0;
-        SalaryRecord record;
+        ProfitRecord record;
         while (i < records.length) {
             record = records[i];
-            result[i++] = SalaryRecordDto.parse(record);
+            result[i++] = ProfitRecordDto.parse(record);
         }
         return result;
     }
@@ -25,7 +25,7 @@ public record SalaryRecordDto(int year, String month, int amount) {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SalaryRecordDto that = (SalaryRecordDto) o;
+        ProfitRecordDto that = (ProfitRecordDto) o;
         return year == that.year && Objects.equals(month, that.month);
     }
 
@@ -36,7 +36,7 @@ public record SalaryRecordDto(int year, String month, int amount) {
 
     @Override
     public String toString() {
-        return "SalaryRecordDto{" +
+        return "ProfitRecordDto{" +
                 "year=" + year +
                 ", month='" + month + '\'' +
                 ", amount=" + amount +

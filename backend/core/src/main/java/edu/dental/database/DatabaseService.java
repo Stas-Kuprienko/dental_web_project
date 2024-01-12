@@ -18,7 +18,7 @@ public interface DatabaseService {
 
     ProductDAO getProductDAO(int workId);
 
-    SalaryRecordDAO getSalaryRecordDAO();
+    ProfitRecordDAO getProfitRecordDAO();
 
     static DatabaseService getInstance() {
         return APIManager.INSTANCE.getDatabaseService();

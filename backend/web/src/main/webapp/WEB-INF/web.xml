@@ -60,8 +60,8 @@
   </servlet>
 
   <servlet>
-    <servlet-name>salaryCount</servlet-name>
-    <servlet-class>edu.dental.servlets.SalaryCountServlet</servlet-class>
+    <servlet-name>profitCount</servlet-name>
+    <servlet-class>edu.dental.servlets.ProfitCountServlet</servlet-class>
   </servlet>
 
 </web-app>

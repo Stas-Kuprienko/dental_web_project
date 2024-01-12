@@ -6,14 +6,14 @@ import edu.dental.domain.APIManager;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
+import edu.dental.entities.ProfitRecord;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 /**
- * The {@code WorkRecordBook} represents object is used for managing {@link DentalWork records}.
+ * The {@code WorkRecordBook} represents object is used for managing {@link DentalWork dental works}.
  * The implementation must contain a field - {@link List} of records
  *  and can {@code create, add, remove, search, sorting} for these objects.
  */
@@ -115,28 +115,25 @@ public interface WorkRecordBook {
      */
     DentalWork searchRecord(String patient, String clinic) throws WorkRecordBookException;
 
+    DentalWork getById(int id, boolean includeDatabase) throws WorkRecordBookException;
+
     /**
      * Search a {@link DentalWork} by {@code id} fields.
      * @param id the id of required record.
      * @return the required {@link DentalWork} object.
      * @throws WorkRecordBookException if a given argument is incorrect or null, and if such object is not found.
      */
-    DentalWork getByID(int id) throws WorkRecordBookException;
+    DentalWork getById(int id);
 
-    static Product findProduct(DentalWork dw, String type) {
-        if (dw.getProducts().isEmpty()) {
-            throw new NoSuchElementException("the given DentalWork(id=" + dw.getId() + ") doesn't has products.");
-        }
-        type = type.toLowerCase();
-        for (Product p : dw.getProducts()) {
-            if (p.title().equals(type)) {
-                return p;
-            }
-        }
-        return null;
-    }
+    List<DentalWork> getWorksByMonth(int monthValue, int year) throws WorkRecordBookException;
 
-    SorterTool<DentalWork> getSorter();
+    List<DentalWork> searchRecordsInDatabase(String[] fields, String[] args) throws WorkRecordBookException;
+
+    void sorting(SorterTool<DentalWork> sorter) throws WorkRecordBookException;
+
+    ProfitRecord countProfitForMonth(int year, int monthValue) throws WorkRecordBookException;
+
+    ProfitRecord[] countAllProfits() throws WorkRecordBookException;
 
     int getUserId();
 

@@ -1,6 +1,7 @@
 package edu.dental.servlets;
 
 import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.entities.DentalWork;
@@ -41,14 +42,14 @@ public class ReportDownloader extends HttpServlet {
             if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
                 works = recordBook.getRecords();
             } else {
-                works = reportService.getReportFromDB(userId, Integer.parseInt(month), Integer.parseInt(year));
+                works = recordBook.getWorksByMonth(Integer.parseInt(month), Integer.parseInt(year));
             }
             response.setContentType("application/msword");
             String fileFormat = reportService.getFileFormat();
             String fileName = getFileName(year, month);
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + "\"");
             reportService.writeReportToOutput(output, recordBook.getProductMap().keysToArray(), works);
-        } catch (ReportServiceException e) {
+        } catch (ReportServiceException | WorkRecordBookException e) {
             response.sendError(500);
         }
     }

@@ -80,11 +80,11 @@ public enum WebRepository {
         RAM.remove(id);
     }
 
-    public SalaryRecord getSalaryRecord(int userId) {
-        int amount = RAM.get(userId).countSalary();
+    public ProfitRecord getProfitRecord(int userId) {
+        int amount = RAM.get(userId).countProfit();
         LocalDate now = LocalDate.now();
         String month = now.getMonth().toString().toLowerCase();
-        return new SalaryRecord(now.getYear(), month, amount);
+        return new ProfitRecord(now.getYear(), month, amount);
     }
 
 
@@ -118,7 +118,7 @@ public enum WebRepository {
             dentalWorks.stream().filter(dw -> dw.id() == id).findAny().ifPresent(dentalWorks::remove);
         }
 
-        private int countSalary() {
+        private int countProfit() {
             int amount = 0;
             for (DentalWork dw : dentalWorks) {
                 for (Product p : dw.products()) {

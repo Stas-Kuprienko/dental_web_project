@@ -57,8 +57,8 @@ public class GsonObjectParser implements JsonObjectParser {
             return ProductDto.parse(product);
         }
 
-        private SalaryRecordDto adapt(SalaryRecord sr) {
-            return SalaryRecordDto.parse(sr);
+        private ProfitRecordDto adapt(ProfitRecord sr) {
+            return ProfitRecordDto.parse(sr);
         }
     }
 }

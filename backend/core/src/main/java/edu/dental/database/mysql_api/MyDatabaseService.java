@@ -27,21 +27,21 @@ public class MyDatabaseService implements DatabaseService {
 
     @Override
     public ProductMapDAO getProductMapDAO(int userId) {
-            return new ProductMapMySql(userId);
+        return new ProductMapMySql(userId);
     }
 
     @Override
     public DentalWorkDAO getDentalWorkDAO() {
-            return new DentalWorkMySql();
+        return new DentalWorkMySql();
     }
 
     @Override
     public ProductDAO getProductDAO(int workId) {
-            return new ProductMySql(workId);
+        return new ProductMySql(workId);
     }
 
     @Override
-    public SalaryRecordDAO getSalaryRecordDAO() {
-        return new SalaryRecordMySql();
+    public ProfitRecordDAO getProfitRecordDAO() {
+        return new ProfitRecordMySql();
     }
 }

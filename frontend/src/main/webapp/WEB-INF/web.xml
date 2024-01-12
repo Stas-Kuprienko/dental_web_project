@@ -80,13 +80,13 @@
   </servlet>
 
   <servlet>
-    <servlet-name>salaryPage</servlet-name>
-    <jsp-file>/pages/salaries/salaryList.jsp</jsp-file>
+    <servlet-name>profitPage</servlet-name>
+    <jsp-file>/pages/profits/profitList.jsp</jsp-file>
   </servlet>
 
   <servlet>
-    <servlet-name>salaryCount</servlet-name>
-    <servlet-class>edu.dental.servlets.reports.SalaryCounter</servlet-class>
+    <servlet-name>profitCount</servlet-name>
+    <servlet-class>edu.dental.servlets.reports.ProfitCounter</servlet-class>
   </servlet>
 
   <servlet>
@@ -145,8 +145,8 @@
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>salaryPage</servlet-name>
-    <url-pattern>/main/salary/page</url-pattern>
+    <servlet-name>profitPage</servlet-name>
+    <url-pattern>/main/profit/page</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

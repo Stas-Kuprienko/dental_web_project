@@ -18,8 +18,8 @@
     	});
 	$(document).ready(function(){
 
-    		$('#salary-label').click(function(){
-    			$('#salary-form').toggle("show");
+    		$('#profit-label').click(function(){
+    			$('#profit-form').toggle("show");
     		});
 
     	});
@@ -79,15 +79,15 @@
 </section>
 </body>
 <nav class="low-menu">
-    <a id="salary-label">
-        <button> count salary </button>
+    <a id="profit-label">
+        <button> count profit </button>
     </a>
-    <div id="salary-form" style="display:none;">
-        <form method="post" action="/dental/main/salary" style="float:left;">
+    <div id="profit-form" style="display:none;">
+        <form method="post" action="/dental/main/profit" style="float:left;">
             <input class="medium-button" type="submit" value="current">
             <%=td.hidden_input_year_and_month()%> &emsp;
         </form>
-        <form method="post" action="/dental/main/salary" style="float:left;">
+        <form method="post" action="/dental/main/profit" style="float:left;">
             <input class="medium-button" type="submit" value="all time">
         </form>
     </div>

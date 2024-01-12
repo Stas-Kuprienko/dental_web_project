@@ -1,34 +1,34 @@
 package edu.dental.database.mysql_api;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.database.dao.SalaryRecordDAO;
-import edu.dental.entities.SalaryRecord;
+import edu.dental.database.dao.ProfitRecordDAO;
+import edu.dental.entities.ProfitRecord;
 import utils.collections.SimpleList;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SalaryRecordMySql implements SalaryRecordDAO {
+public class ProfitRecordMySql implements ProfitRecordDAO {
 
-    SalaryRecordMySql() {}
+    ProfitRecordMySql() {}
 
     @Override
-    public SalaryRecord[] countAllSalaries(int userId) throws DatabaseException {
+    public ProfitRecord[] countAllProfits(int userId) throws DatabaseException {
         //TODO
-        try (Request request = new Request(MySqlSamples.ALL_SALARIES.QUERY)) {
+        try (Request request = new Request(MySqlSamples.ALL_PROFITS.QUERY)) {
             request.getPreparedStatement().setInt(1, userId);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
-            SimpleList<SalaryRecord> records = instantiating(resultSet);
-            return records.toArray(new SalaryRecord[]{});
+            SimpleList<ProfitRecord> records = instantiating(resultSet);
+            return records.toArray(new ProfitRecord[]{});
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
         }
     }
 
     @Override
-    public SalaryRecord countSalaryForMonth(int userId, int year, String month) throws DatabaseException {
-        try (Request request = new Request(MySqlSamples.MONTH_SALARY.QUERY)) {
+    public ProfitRecord countProfitForMonth(int userId, int year, String month) throws DatabaseException {
+        try (Request request = new Request(MySqlSamples.MONTH_PROFIT.QUERY)) {
             PreparedStatement statement = request.getPreparedStatement();
             statement.setInt(1, userId);
             statement.setInt(2, year);
@@ -41,14 +41,14 @@ public class SalaryRecordMySql implements SalaryRecordDAO {
     }
 
 
-    private SimpleList<SalaryRecord> instantiating(ResultSet resultSet) throws SQLException {
+    private SimpleList<ProfitRecord> instantiating(ResultSet resultSet) throws SQLException {
         try (resultSet) {
-            SimpleList<SalaryRecord> records = new SimpleList<>();
+            SimpleList<ProfitRecord> records = new SimpleList<>();
             while (resultSet.next()) {
                 String month = resultSet.getString(1);
                 int year = resultSet.getInt(2);
                 int amount = resultSet.getInt(3);
-                SalaryRecord salary = new SalaryRecord(year, month, amount);
+                ProfitRecord salary = new ProfitRecord(year, month, amount);
                 records.add(salary);
             }
             return records;

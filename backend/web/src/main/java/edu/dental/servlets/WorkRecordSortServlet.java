@@ -1,7 +1,10 @@
 package edu.dental.servlets;
 
+import edu.dental.domain.records.SorterTool;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.records.my_work_record_book.Sorter;
 import edu.dental.dto.DentalWorkDto;
+import edu.dental.entities.DentalWork;
 import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.Repository;
 import jakarta.servlet.ServletException;
@@ -31,7 +34,8 @@ public class WorkRecordSortServlet extends HttpServlet {
         int year = Integer.parseInt(request.getParameter("year"));
         int month = Integer.parseInt(request.getParameter("month"));
         try {
-            repository.getRecordBook(userId).getSorter().doIt(year, month);
+            SorterTool<DentalWork> sorter = new Sorter(userId, month, year);
+            repository.getRecordBook(userId).sorting(sorter);
             List<DentalWorkDto> works = repository.getDentalWorkDtoList(userId);
             String json = jsonObjectParser.parseToJson(works.toArray());
             response.setContentType("application/json");

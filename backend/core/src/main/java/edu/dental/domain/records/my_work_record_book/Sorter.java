@@ -15,18 +15,28 @@ import java.util.ListIterator;
 
 public class Sorter implements SorterTool<DentalWork> {
 
+    private List<DentalWork> works;
     private final DentalWorkDAO dao;
-    private final List<DentalWork> works;
     private final int userId;
+    private final int month;
+    private final int year;
 
-    public Sorter(List<DentalWork> works, int userId) {
-        this.works = works;
-        this.userId = userId;
+
+    public Sorter(int userId, int month, int year) {
         this.dao = DatabaseService.getInstance().getDentalWorkDAO();
+        this.userId = userId;
+        this.month = month;
+        this.year = year;
+    }
+
+
+    @Override
+    public void push(List<DentalWork> works) {
+        this.works = works;
     }
 
     @Override
-    public List<DentalWork> doIt(int year, int month) throws WorkRecordBookException {
+    public List<DentalWork> doIt() throws WorkRecordBookException {
         LocalDate now = LocalDate.now();
         try {
             if (now.getMonth().getValue() == month && now.getYear() == year) {
@@ -38,7 +48,6 @@ public class Sorter implements SorterTool<DentalWork> {
             throw new WorkRecordBookException(e.getMessage(), e);
         }
     }
-
 
     private SimpleList<DentalWork> sortCurrentMonth(List<DentalWork> list) throws DatabaseException {
         SimpleList<DentalWork> result = new SimpleList<>();

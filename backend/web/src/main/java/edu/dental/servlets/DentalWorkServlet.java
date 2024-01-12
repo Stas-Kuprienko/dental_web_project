@@ -2,8 +2,6 @@ package edu.dental.servlets;
 
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.domain.reports.ReportService;
-import edu.dental.domain.reports.ReportServiceException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
@@ -32,13 +30,11 @@ public class DentalWorkServlet extends HttpServlet {
     public final String valueParam = "value";
 
     private Repository repository;
-    private ReportService reportService;
     private JsonObjectParser jsonObjectParser;
 
     @Override
     public void init() throws ServletException {
         this.repository = Repository.getInstance();
-        this.reportService = ReportService.getInstance();
         this.jsonObjectParser = JsonObjectParser.getInstance();
     }
 
@@ -48,21 +44,17 @@ public class DentalWorkServlet extends HttpServlet {
         int userId = (int) request.getAttribute(Repository.paramUser);
         int workId = Integer.parseInt(request.getParameter(idParam));
         DentalWorkDto work;
+        WorkRecordBook recordBook = repository.getRecordBook(userId);
         try {
-            work = new DentalWorkDto(repository.getRecordBook(userId).getByID(workId));
-        } catch (WorkRecordBookException ignored) {
-            try {
-                work = new DentalWorkDto(reportService.getByIDFromDatabase(userId, workId));
-            } catch (ReportServiceException ex) {
-                response.sendError(400);
-                return;
-            }
+            work = new DentalWorkDto(recordBook.getById(workId, true));
+            String json = jsonObjectParser.parseToJson(work);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().print(json);
+            response.getWriter().flush();
+        } catch (WorkRecordBookException e) {
+            response.sendError(500);
         }
-        String json = jsonObjectParser.parseToJson(work);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().print(json);
-        response.getWriter().flush();
     }
 
     @Override
@@ -114,7 +106,7 @@ public class DentalWorkServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (WorkRecordBookException | ReportServiceException e) {
+        } catch (WorkRecordBookException e) {
             response.sendError(500);
         }
     }
@@ -130,7 +122,7 @@ public class DentalWorkServlet extends HttpServlet {
             if (product != null) {
                 WorkRecordBook recordBook = repository.getRecordBook(userId);
                 recordBook.removeProduct(id, product);
-                DentalWorkDto dw = new DentalWorkDto(recordBook.getByID(id));
+                DentalWorkDto dw = new DentalWorkDto(recordBook.getById(id));
                 //TODO add search in db
                 String json = jsonObjectParser.parseToJson(dw);
                 response.setContentType("application/json");
@@ -146,26 +138,16 @@ public class DentalWorkServlet extends HttpServlet {
     }
 
 
-    private DentalWork editDentalWork(int userId, int id, String field, String value) throws WorkRecordBookException, ReportServiceException {
+    private DentalWork editDentalWork(int userId, int id, String field, String value) throws WorkRecordBookException {
         WorkRecordBook recordBook = repository.getRecordBook(userId);
-        DentalWork dw;
-        try {
-            dw = recordBook.getByID(id);
-        } catch (WorkRecordBookException ignored) {
-             dw = reportService.getByIDFromDatabase(userId, id);
-        }
+        DentalWork dw = recordBook.getById(id, true);
         return recordBook.editRecord(dw, field, value);
     }
 
-    private DentalWork addProductToWork(int userId, int id, String product, int quantity) throws WorkRecordBookException, ReportServiceException {
+    private DentalWork addProductToWork(int userId, int id, String product, int quantity) throws WorkRecordBookException {
         WorkRecordBook recordBook = repository.getRecordBook(userId);
-        recordBook.addProductToRecord(recordBook.getByID(id), product, quantity);
-        DentalWork dw;
-        try {
-            dw = recordBook.getByID(id);
-        } catch (WorkRecordBookException ignored) {
-            dw = reportService.getByIDFromDatabase(userId, id);
-        }
+        recordBook.addProductToRecord(recordBook.getById(id), product, quantity);
+        DentalWork dw = recordBook.getById(id, true);
         return recordBook.addProductToRecord(dw, product, quantity);
     }
 }

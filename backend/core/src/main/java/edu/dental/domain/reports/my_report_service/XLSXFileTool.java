@@ -1,6 +1,6 @@
 package edu.dental.domain.reports.my_report_service;
 
-import edu.dental.domain.reports.IFileTool;
+import edu.dental.domain.reports.SheetFileTool;
 import edu.dental.domain.reports.ReportServiceException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -8,37 +8,36 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.time.LocalDate;
 
-class XLSXFilesTool implements IFileTool {
+class XLSXFileTool implements SheetFileTool {
 
     public static final String fileFormat = ".xlsx";
 
     private static final String PATH_FOR_REPORTS = "src/main/resources/";
 
-
-    private final String[][] reportData;
     private final XSSFBox xssfBox;
 
-    XLSXFilesTool(String tableName, String[][] reportData) {
-        this.reportData = reportData;
-        this.xssfBox = new XSSFBox(tableName);
-    }
-
-    XLSXFilesTool(String[][] reportData) {
-        this.reportData = reportData;
+    XLSXFileTool() {
         this.xssfBox = new XSSFBox();
     }
 
 
     @Override
-    public IFileTool createFile() {
-        putDataInSheet(xssfBox, reportData);
-        return this;
+    public <T> void addSheet(T[][] sheetData) {
+        String[][] sheetDataStrArr = (String[][]) sheetData;
+        putDataInSheet(sheetDataStrArr);
     }
 
     @Override
     public boolean writeFile() throws ReportServiceException {
-        File file = new File(PATH_FOR_REPORTS + xssfBox.workbook.getSheetName(0).toLowerCase() + fileFormat);
+        String defaultFileName = "new_file_" + LocalDate.now();
+        return writeFile(defaultFileName);
+    }
+
+    @Override
+    public boolean writeFile(String fileName) throws ReportServiceException {
+        File file = new File(PATH_FOR_REPORTS + fileName + fileFormat);
         try(FileOutputStream fileOutput = new FileOutputStream(file); xssfBox) {
             xssfBox.workbook.write(fileOutput);
             return true;
@@ -58,15 +57,16 @@ class XLSXFilesTool implements IFileTool {
         return output;
     }
 
-    private void putDataInSheet(XSSFBox xssfBox, String[][] reportData) {
+    private void putDataInSheet(String[][] sheetData) {
+        XSSFSheet sheet = xssfBox.createSheet();
 
-        for (int i = 0; i < reportData.length; i++) {
-            xssfBox.row = xssfBox.sheet.createRow(i);
+        for (int i = 0; i < sheetData.length; i++) {
+            XSSFRow row = sheet.createRow(i);
 
             //iterate each row and set it to the table
-            for (int j = 0; j < reportData[i].length; j++) {
-                Cell cell = xssfBox.row.createCell(j);
-                cell.setCellValue(reportData[i][j]);
+            for (int j = 0; j < sheetData[i].length; j++) {
+                Cell cell = row.createCell(j);
+                cell.setCellValue(sheetData[i][j]);
             }
         }
     }
@@ -74,17 +74,17 @@ class XLSXFilesTool implements IFileTool {
     private static class XSSFBox implements AutoCloseable {
 
         private final XSSFWorkbook workbook;
-        private final XSSFSheet sheet;
-        private XSSFRow row;
 
         private XSSFBox() {
             this.workbook = new XSSFWorkbook();
-            this.sheet = workbook.createSheet();
         }
 
-        private XSSFBox(String tableName) {
-            this.workbook = new XSSFWorkbook();
-            this.sheet = workbook.createSheet(tableName);
+        private XSSFSheet createSheet(String listName) {
+            return this.workbook.createSheet(listName);
+        }
+
+        private XSSFSheet createSheet() {
+            return this.workbook.createSheet();
         }
 
         @Override

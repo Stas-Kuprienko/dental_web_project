@@ -1,7 +1,7 @@
 package edu.dental.servlets.reports;
 
 import edu.dental.WebUtility;
-import edu.dental.beans.SalaryRecord;
+import edu.dental.beans.ProfitRecord;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,10 +12,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 
-@WebServlet("/main/salary")
-public class SalaryCounter extends HttpServlet {
+@WebServlet("/main/profit")
+public class ProfitCounter extends HttpServlet {
 
-    public final String salaryCountUrl = "/main/salary";
+    public final String profitCountUrl = "/main/profit";
     public final String fileFormat = ".xlsx";
 
 
@@ -23,10 +23,10 @@ public class SalaryCounter extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        String fileName = "salary_list";
+        String fileName = "profit_list";
         response.setContentType("application/msword");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
-        WebUtility.INSTANCE.requestSender().download(jwt, salaryCountUrl, response.getOutputStream());
+        WebUtility.INSTANCE.requestSender().download(jwt, profitCountUrl, response.getOutputStream());
     }
 
     @Override
@@ -34,13 +34,13 @@ public class SalaryCounter extends HttpServlet {
         int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         String year = request.getParameter("year");
         String month = request.getParameter("month");
-        SalaryRecord[] records = getSalaryRecords(userId, year, month);
-        request.setAttribute("salary", records);
-        request.getRequestDispatcher("/main/salary/page").forward(request, response);
+        ProfitRecord[] records = getProfitRecords(userId, year, month);
+        request.setAttribute("profit", records);
+        request.getRequestDispatcher("/main/profit/page").forward(request, response);
     }
 
 
-    private SalaryRecord[] getSalaryRecords(int userId, String year, String month) throws IOException {
+    private ProfitRecord[] getProfitRecords(int userId, String year, String month) throws IOException {
         if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
             return countAll(userId);
         } else {
@@ -53,24 +53,24 @@ public class SalaryCounter extends HttpServlet {
         }
     }
 
-    private SalaryRecord[] countCurrent(int userId) {
-        SalaryRecord record = WebRepository.INSTANCE.getSalaryRecord(userId);
-        return new SalaryRecord[] {record};
+    private ProfitRecord[] countCurrent(int userId) {
+        ProfitRecord record = WebRepository.INSTANCE.getProfitRecord(userId);
+        return new ProfitRecord[] {record};
     }
 
-    private SalaryRecord[] countAll(int userId) throws IOException {
+    private ProfitRecord[] countAll(int userId) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, salaryCountUrl, "");
-        return WebUtility.INSTANCE.parseFromJson(json, SalaryRecord[].class);
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, profitCountUrl, "");
+        return WebUtility.INSTANCE.parseFromJson(json, ProfitRecord[].class);
     }
 
-    private SalaryRecord[] countAnother(int userId, String year, String month) throws IOException {
+    private ProfitRecord[] countAnother(int userId, String year, String month) throws IOException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add("year", year);
         queryFormer.add("month", month);
         String requestParam = queryFormer.form();
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, salaryCountUrl, requestParam);
-        return WebUtility.INSTANCE.parseFromJson(json, SalaryRecord[].class);
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, profitCountUrl, requestParam);
+        return WebUtility.INSTANCE.parseFromJson(json, ProfitRecord[].class);
     }
 }

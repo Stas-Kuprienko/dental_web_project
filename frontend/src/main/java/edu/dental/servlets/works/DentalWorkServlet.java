@@ -139,7 +139,9 @@ public class DentalWorkServlet extends HttpServlet {
         String json = WebUtility.INSTANCE.requestSender().sendHttpPutRequest(jwt, dentalWorkUrl, requestParam);
 
         DentalWork dentalWork = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
-        WebRepository.INSTANCE.updateDentalWorkList(userId, dentalWork);
+        if (dentalWork.getReportId() == 0) {
+            WebRepository.INSTANCE.updateDentalWorkList(userId, dentalWork);
+        }
         request.setAttribute(idParam, id);
     }
 

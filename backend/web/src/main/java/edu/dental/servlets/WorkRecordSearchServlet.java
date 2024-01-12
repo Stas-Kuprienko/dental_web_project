@@ -1,7 +1,7 @@
 package edu.dental.servlets;
 
-import edu.dental.domain.reports.ReportService;
-import edu.dental.domain.reports.ReportServiceException;
+import edu.dental.domain.records.WorkRecordBook;
+import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
@@ -24,13 +24,13 @@ public class WorkRecordSearchServlet extends HttpServlet {
 
     private final String[] searchFields = {patientParam, clinicParam};
 
+    private Repository repository;
     private JsonObjectParser jsonObjectParser;
-    private ReportService reportService;
 
     @Override
     public void init() throws ServletException {
+        this.repository = Repository.getInstance();
         this.jsonObjectParser = JsonObjectParser.getInstance();
-        this.reportService = ReportService.getInstance();
     }
 
     @Override
@@ -43,15 +43,13 @@ public class WorkRecordSearchServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (ReportServiceException e) {
+        } catch (WorkRecordBookException e) {
             response.sendError(500);
-        } catch (IllegalArgumentException e) {
-            response.sendError(400);
         }
     }
 
 
-    private DentalWorkDto[] search(int userId, HttpServletRequest request) throws ReportServiceException {
+    private DentalWorkDto[] search(int userId, HttpServletRequest request) throws WorkRecordBookException {
         ArrayList<String> fields = new ArrayList<>(searchFields.length);
         ArrayList<String> args = new ArrayList<>(searchFields.length);
 
@@ -63,14 +61,12 @@ public class WorkRecordSearchServlet extends HttpServlet {
                 args.add(arg);
             }
         }
-        if (fields.isEmpty() || args.isEmpty() || fields.size() != args.size()) {
-            throw new IllegalArgumentException();
-        }
         String[] arr1 = new String[]{};
         String[] arr2 = new String[]{};
         List<DentalWork> dentalWorks;
 
-        dentalWorks = reportService.searchRecords(userId, fields.toArray(arr1), args.toArray(arr2));
+        WorkRecordBook recordBook = repository.getRecordBook(userId);
+        dentalWorks = recordBook.searchRecordsInDatabase(fields.toArray(arr1), args.toArray(arr2));
         DentalWorkDto[] dto = new DentalWorkDto[dentalWorks.size()];
 
         return dentalWorks.stream().map(DentalWorkDto::new).toList().toArray(dto);

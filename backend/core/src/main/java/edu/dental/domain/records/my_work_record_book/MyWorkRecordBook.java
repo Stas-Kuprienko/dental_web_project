@@ -2,16 +2,20 @@ package edu.dental.domain.records.my_work_record_book;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
+import edu.dental.database.dao.ProfitRecordDAO;
+import edu.dental.domain.records.SorterTool;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
+import edu.dental.entities.ProfitRecord;
 import utils.collections.SimpleList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -114,7 +118,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
 
     @Override
     public DentalWork editRecord(int id, String field, String value) throws WorkRecordBookException {
-        DentalWork dw = getByID(id);
+        DentalWork dw = getById(id);
         return editRecord(dw, field, value);
     }
 
@@ -196,7 +200,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
 
     @Override
     public void removeProduct(int id, String product) throws WorkRecordBookException {
-        DentalWork dw = getByID(id);
+        DentalWork dw = getById(id);
         removeProduct(dw, product);
     }
 
@@ -215,7 +219,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
 
     @Override
     public void deleteRecord(int id) throws WorkRecordBookException {
-        deleteRecord(getByID(id));
+        deleteRecord(getById(id));
     }
 
     @Override
@@ -236,9 +240,23 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public DentalWork getByID(int id) throws WorkRecordBookException {
+    public DentalWork getById(int id, boolean includeDatabase) throws WorkRecordBookException {
+        DentalWork dw = getById(id);
+        if (dw == null && includeDatabase) {
+            try {
+                dw = databaseService.getDentalWorkDAO().get(userId, id);
+            } catch (DatabaseException e) {
+                //TODO
+                throw new WorkRecordBookException(e.getMessage());
+            }
+        }
+        return dw;
+    }
+
+    @Override
+    public DentalWork getById(int id) {
         if (records.size() == 0) {
-            throw new WorkRecordBookException("The DentalWork list is empty.");
+            return null;
         }
         DentalWork[] works = new DentalWork[records.size()];
         Arrays.sort(records.toArray(works));
@@ -246,15 +264,60 @@ public class MyWorkRecordBook implements WorkRecordBook {
         dw.setId(id);
         int i = Arrays.binarySearch(records.toArray(), dw);
         if (i < 0) {
-            throw new WorkRecordBookException("The required object is not found (id=" + id + ").");
+            return null;
         } else {
             return works[i];
         }
     }
 
     @Override
-    public Sorter getSorter() {
-        return new Sorter(records, userId);
+    public List<DentalWork> getWorksByMonth(int monthValue, int year) throws WorkRecordBookException {
+        try {
+            String month = Month.of(monthValue).toString();
+            return databaseService.getDentalWorkDAO().getAllMonthly(userId, month, year);
+        } catch (DatabaseException e) {
+            //TODO
+            throw new WorkRecordBookException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<DentalWork> searchRecordsInDatabase(String[] fields, String[] args) throws WorkRecordBookException {
+        if (fields.length != args.length || fields.length == 0) {
+            throw new WorkRecordBookException("arrays of arguments is not equals by length or empty");
+        }
+        try {
+            return databaseService.getDentalWorkDAO().search(userId, fields, args);
+        } catch (DatabaseException e) {
+            //TODO
+            throw new WorkRecordBookException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void sorting(SorterTool<DentalWork> sorter) throws WorkRecordBookException {
+        sorter.push(records);
+        sorter.doIt();
+    }
+
+    @Override
+    public ProfitRecord countProfitForMonth(int year, int monthValue) throws WorkRecordBookException {
+        String month = Month.of(monthValue).toString().toLowerCase();
+        ProfitRecordDAO dao = databaseService.getProfitRecordDAO();
+        try {
+            return dao.countProfitForMonth(userId, year, month);
+        } catch (DatabaseException e) {
+            throw new WorkRecordBookException(e.getMessage());
+        }
+    }
+
+    @Override
+    public ProfitRecord[] countAllProfits() throws WorkRecordBookException {
+        try {
+            return databaseService.getProfitRecordDAO().countAllProfits(userId);
+        } catch (DatabaseException e) {
+            throw new WorkRecordBookException(e.getMessage());
+        }
     }
 
     @Override

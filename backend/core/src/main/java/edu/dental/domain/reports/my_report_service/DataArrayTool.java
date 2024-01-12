@@ -2,24 +2,23 @@ package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
-import edu.dental.entities.SalaryRecord;
-import utils.collections.SimpleList;
+import edu.dental.entities.ProfitRecord;
 
-import java.util.Collection;
+import java.util.List;
 
 class DataArrayTool {
 
     private final String[] columns;
     private final String[][] result;
 
-    DataArrayTool(String[] keysArray, SimpleList<DentalWork> recordList) {
+    DataArrayTool(String[] keysArray, List<DentalWork> recordList) {
         this.columns = buildReportColumns(keysArray);
         this.result = buildReportTable(recordList);
     }
 
-    public DataArrayTool(SalaryRecord[] salaries) {
-        this.columns = buildSalaryColumns();
-        this.result = buildSalaryTable(salaries);
+    public DataArrayTool(ProfitRecord[] profitRecords) {
+        this.columns = buildProfitColumns();
+        this.result = buildProfitTable(profitRecords);
     }
 
     /**
@@ -38,7 +37,7 @@ class DataArrayTool {
         return columns;
     }
 
-    private String[][] buildReportTable(Collection<DentalWork> recordList) {
+    private String[][] buildReportTable(List<DentalWork> recordList) {
         String[][] result = new String[recordList.size() + 1][columns.length];
 
         //put head of the table
@@ -75,15 +74,15 @@ class DataArrayTool {
         return result;
     }
 
-    private String[] buildSalaryColumns() {
-        return new String[] {"YEAR", "MONTH", "SALARY"};
+    private String[] buildProfitColumns() {
+        return new String[] {"YEAR", "MONTH", "PROFIT"};
     }
 
-    private String[][] buildSalaryTable(SalaryRecord[] salaries) {
-        String[][] result = new String[salaries.length + 1][columns.length];
+    private String[][] buildProfitTable(ProfitRecord[] profitRecords) {
+        String[][] result = new String[profitRecords.length + 1][columns.length];
         result[0] = columns;
         int r = 1;
-        for (SalaryRecord sr : salaries) {
+        for (ProfitRecord sr : profitRecords) {
             String[] tableRow = new String[columns.length];
             int i = 0;
             tableRow[i++] = String.valueOf(sr.year());

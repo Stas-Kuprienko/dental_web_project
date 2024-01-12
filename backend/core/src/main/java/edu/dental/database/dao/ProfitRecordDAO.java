@@ -1,15 +1,15 @@
 package edu.dental.database.dao;
 
 import edu.dental.database.DatabaseException;
-import edu.dental.entities.SalaryRecord;
+import edu.dental.entities.ProfitRecord;
 
 import java.sql.SQLException;
 
-public interface SalaryRecordDAO {
+public interface ProfitRecordDAO {
 
-    SalaryRecord[] countAllSalaries(int userId) throws DatabaseException;
+    ProfitRecord[] countAllProfits(int userId) throws DatabaseException;
 
-    SalaryRecord countSalaryForMonth(int userId, int year, String month) throws DatabaseException;
+    ProfitRecord countProfitForMonth(int userId, int year, String month) throws DatabaseException;
 
 
     class Request extends DAORequest {
