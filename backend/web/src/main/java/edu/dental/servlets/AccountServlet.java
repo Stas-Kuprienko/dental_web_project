@@ -62,7 +62,7 @@ public class AccountServlet extends HttpServlet {
                     response.getWriter().flush();
                 }
             } catch (WebException e) {
-                response.sendError(e.code.i);
+                response.sendError(e.cause.code, e.message);
             }
         }
         }
@@ -74,10 +74,9 @@ public class AccountServlet extends HttpServlet {
         try {
             accountService.deleteUser(user);
             repository.delete(userId);
-            //TODO
             response.setStatus(200);
         } catch (AccountException e) {
-            response.sendError(500);
+            response.sendError(e.cause.code, e.message);
         }
     }
 
@@ -104,8 +103,7 @@ public class AccountServlet extends HttpServlet {
             return UserDto.parse(user);
         } catch (AccountException e) {
             user.setName(oldValue);
-            //TODO
-            throw new WebException(e.getMessage(), WebException.CODE.SERVER_ERROR);
+            throw new WebException(e.cause, e);
         }
     }
 
@@ -118,17 +116,12 @@ public class AccountServlet extends HttpServlet {
             return UserDto.parse(user);
         } catch (AccountException e) {
             user.setEmail(oldValue);
-            //TODO
-            throw new WebException(e.getMessage(), WebException.CODE.SERVER_ERROR);
+            throw new WebException(e.cause, e);
         }
     }
 
     private UserDto setPassword(User user, String password) throws WebException {
-        if (!authenticationService.updatePassword(user, password)) {
-            //TODO
-           throw new WebException(WebException.CODE.BAD_REQUEST);
-        } else {
-            return UserDto.parse(user);
-        }
+        authenticationService.updatePassword(user, password);
+        return UserDto.parse(user);
     }
 }

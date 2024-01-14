@@ -32,7 +32,7 @@ public class FilterService implements Filter {
             request.setAttribute(Repository.paramUser, userId);
             chain.doFilter(request, response);
         } catch (WebException e) {
-            response.sendError(e.code.i);
+            response.sendError(e.cause.code, e.message);
         }
     }
 }

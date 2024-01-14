@@ -1,5 +1,6 @@
 package edu.dental.servlets.control;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.UserDto;
 import edu.dental.service.WebRepository;
@@ -32,20 +33,22 @@ public class Registration extends HttpServlet {
         if (email == null || password == null) {
             request.getRequestDispatcher("/sign-up").forward(request, response);
         } else {
-            WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+            try {
+                WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
 
-            queryFormer.add(paramName, name);
-            queryFormer.add(paramEmail, email);
-            queryFormer.add(paramPassword, password);
-            String requestParameters = queryFormer.form();
+                queryFormer.add(paramName, name);
+                queryFormer.add(paramEmail, email);
+                queryFormer.add(paramPassword, password);
+                String requestParameters = queryFormer.form();
 
-            String jsonUser = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(signUpUrl, requestParameters);
-            UserDto user = WebUtility.INSTANCE.parseFromJson(jsonUser, UserDto.class);
-
-            WebRepository.INSTANCE.addNew(user);
-            request.getSession().setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
-
-            request.getRequestDispatcher("/main").forward(request, response);
+                String jsonUser = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(signUpUrl, requestParameters);
+                UserDto user = WebUtility.INSTANCE.parseFromJson(jsonUser, UserDto.class);
+                WebRepository.INSTANCE.addNew(user);
+                request.getSession().setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
+                request.getRequestDispatcher("/main").forward(request, response);
+            } catch (APIResponseException e) {
+                response.sendError(e.CODE, e.MESSAGE);
+            }
         }
     }
 }

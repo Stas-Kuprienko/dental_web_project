@@ -37,7 +37,7 @@ public interface WorkRecordBook {
             //TODO
             map = APIManager.INSTANCE.getProductMap(userId);
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+            throw new WorkRecordBookException(e);
         }
         return APIManager.INSTANCE.getWorkRecordBook(userId, works, map);
     }
@@ -66,10 +66,12 @@ public interface WorkRecordBook {
 
     ProductMap.Item addProductItem(String title, int price) throws WorkRecordBookException;
 
+    @SuppressWarnings("all")
     Integer editProductItem(String title, int price) throws WorkRecordBookException;
 
     boolean deleteProductItem(String title) throws WorkRecordBookException;
 
+    @SuppressWarnings("unused")
     DentalWork editRecord(int id, String field, String value) throws WorkRecordBookException;
 
     DentalWork editRecord(DentalWork dw, String field, String value) throws WorkRecordBookException;
@@ -80,7 +82,7 @@ public interface WorkRecordBook {
      * @param dentalWork the {@link DentalWork} object to adding a {@link Product product}.
      * @param product    the product type title to add (should be containing in {@link Map}).
      * @param quantity   the quantity of a product items.
-     * @return
+     * @return the updated given {@link DentalWork} object.
      * @throws WorkRecordBookException if a given arguments is incorrect or the given product type
      *                                 is not contain in {@link Map}.
      */
@@ -120,8 +122,7 @@ public interface WorkRecordBook {
     /**
      * Search a {@link DentalWork} by {@code id} fields.
      * @param id the id of required record.
-     * @return the required {@link DentalWork} object.
-     * @throws WorkRecordBookException if a given argument is incorrect or null, and if such object is not found.
+     * @return the required {@link DentalWork} object or null if not found.
      */
     DentalWork getById(int id);
 

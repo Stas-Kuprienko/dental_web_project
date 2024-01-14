@@ -44,7 +44,7 @@ public class MyAuthentication implements AuthenticationService {
             repository.put(user, WorkRecordBook.createNew(user.getId()));
             return UserDto.parse(user);
         } catch (AccountException e) {
-            throw new WebException(e.getMessage(), WebException.CODE.SERVER_ERROR);
+            throw new WebException(e.cause, e);
         }
     }
 
@@ -54,12 +54,12 @@ public class MyAuthentication implements AuthenticationService {
         try {
             user = accountService.authenticate(login, password);
         } catch (AccountException e) {
-            throw new WebException(e.getMessage(), WebException.CODE.BAD_REQUEST);
+            throw new WebException(e.cause, e);
         }
         try {
             repository.put(user, WorkRecordBook.getInstance(user.getId()));
         } catch (WorkRecordBookException e) {
-            throw new WebException(e.getMessage(), WebException.CODE.SERVER_ERROR);
+            throw new WebException(AccountException.CAUSE.BAD_REQUEST, e);
         }
         return UserDto.parse(user);
     }
@@ -75,7 +75,7 @@ public class MyAuthentication implements AuthenticationService {
             accountService.updatePassword(user, password);
             return true;
         } catch (AccountException e) {
-            throw new WebException(e.getMessage(), WebException.CODE.BAD_REQUEST);
+            throw new WebException(e.cause, e);
         }
     }
 
@@ -86,10 +86,10 @@ public class MyAuthentication implements AuthenticationService {
             if (id > 0) {
                 return accountService.get(id);
             } else {
-                throw new WebException(WebException.CODE.UNAUTHORIZED);
+                throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
             }
         } catch (AccountException e) {
-            throw new WebException(e.getMessage(), WebException.CODE.FORBIDDEN);
+            throw new WebException(e.cause, e);
         }
     }
 
@@ -102,10 +102,10 @@ public class MyAuthentication implements AuthenticationService {
                 user = accountService.get(id);
                 return UserDto.parse(user);
             } else {
-                throw new WebException(WebException.CODE.UNAUTHORIZED);
+                throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
             }
         } catch (AccountException e) {
-            throw new WebException(e.getMessage(), WebException.CODE.FORBIDDEN);
+            throw new WebException(e.cause, e);
         }
     }
 
@@ -198,7 +198,7 @@ public class MyAuthentication implements AuthenticationService {
                         }
                     }
                 }
-            } throw new WebException(WebException.CODE.FORBIDDEN);
+            } throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
         }
 
         private boolean isLoggedIn(int userId) {

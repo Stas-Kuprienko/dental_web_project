@@ -62,9 +62,9 @@ public class MyAccountService implements AccountService {
         try {
             if (databaseService.getUserDAO().put(user)) {
                 return user;
-            } else throw new AccountException();
+            } else throw new AccountException(AccountException.CAUSE.SERVER_ERROR, AccountException.MESSAGE.DATABASE_ERROR);
         } catch (DatabaseException e) {
-            throw new AccountException();
+            throw new AccountException(AccountException.CAUSE.SERVER_ERROR, e);
         }
     }
 
@@ -82,19 +82,19 @@ public class MyAccountService implements AccountService {
     @Override
     public User authenticate(String login, String password) throws AccountException {
         if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
-            throw new AccountException();
+            throw new AccountException(AccountException.CAUSE.BAD_REQUEST, new NullPointerException("argument is null"));
         }
         User user;
         try {
             user = databaseService.findUser(login);
         } catch (DatabaseException e) {
-            throw new AccountException();
+            throw new AccountException(AccountException.CAUSE.SERVER_ERROR, e);
         }
         if (user == null) {
-            throw new AccountException();
+            throw new AccountException(AccountException.CAUSE.NOT_FOUND, AccountException.MESSAGE.USER_NOT_FOUND);
         }
         if (!verification(user, password)) {
-            throw new AccountException();
+            throw new AccountException(AccountException.CAUSE.UNAUTHORIZED, AccountException.MESSAGE.PASSWORD_INVALID);
         }
         return user;
     }
@@ -104,7 +104,7 @@ public class MyAccountService implements AccountService {
         try {
             return databaseService.getUserDAO().get(id);
         } catch (DatabaseException e) {
-            throw new AccountException();
+            throw new AccountException(AccountException.CAUSE.SERVER_ERROR, e);
         }
     }
 
@@ -113,7 +113,7 @@ public class MyAccountService implements AccountService {
         try {
             return databaseService.getUserDAO().update(user);
         } catch (DatabaseException e) {
-            throw new AccountException();
+            throw new AccountException(AccountException.CAUSE.SERVER_ERROR, e);
         }
     }
 
@@ -126,7 +126,7 @@ public class MyAccountService implements AccountService {
             return databaseService.getUserDAO().update(user);
         } catch (DatabaseException e) {
             user.setPassword(oldValue);
-            throw new AccountException(e);
+            throw new AccountException(AccountException.CAUSE.SERVER_ERROR, e);
         }
     }
 
@@ -135,7 +135,7 @@ public class MyAccountService implements AccountService {
         try {
             return databaseService.getUserDAO().delete(user.getId());
         } catch (DatabaseException e) {
-            throw new AccountException(e);
+            throw new AccountException(AccountException.CAUSE.SERVER_ERROR, e);
         }
     }
 }

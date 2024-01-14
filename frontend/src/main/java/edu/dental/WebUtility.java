@@ -54,7 +54,7 @@ public enum WebUtility {
             return null;
         }
 
-        public String sendHttpGetRequest(String jwt, String resource) throws IOException {
+        public String sendHttpGetRequest(String jwt, String resource) throws IOException, APIResponseException {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             try {
@@ -67,13 +67,18 @@ public enum WebUtility {
                 connection.setRequestProperty("Content-Type", "application/json");
 
                 int responseCode = connection.getResponseCode();
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    return response.toString();
+                } else {
+                    String message = connection.getResponseMessage();
+                    throw new APIResponseException(responseCode, message);
                 }
-                return response.toString();
             } finally {
                 if (connection != null) {
                     connection.disconnect();
@@ -84,27 +89,27 @@ public enum WebUtility {
             }
         }
 
-        public String sendHttpPostRequest(String resource, String requestBody) throws IOException {
+        public String sendHttpPostRequest(String resource, String requestBody) throws IOException, APIResponseException {
             String method = "POST";
             return sendHttpRequest(method, resource, requestBody);
         }
 
-        public String sendHttpPostRequest(String jwt, String resource, String requestBody) throws IOException {
+        public String sendHttpPostRequest(String jwt, String resource, String requestBody) throws IOException, APIResponseException {
             String method = "POST";
             return sendHttpRequest(jwt, method, resource, requestBody);
         }
 
-        public String sendHttpPutRequest(String jwt, String resource, String requestBody) throws IOException {
+        public String sendHttpPutRequest(String jwt, String resource, String requestBody) throws IOException, APIResponseException {
             String method = "PUT";
             return sendHttpRequest(jwt, method, resource, requestBody);
         }
 
-        public String sendHttpDeleteRequest(String jwt, String resource, String requestBody) throws IOException {
+        public String sendHttpDeleteRequest(String jwt, String resource, String requestBody) throws IOException, APIResponseException {
             String method = "DELETE";
             return sendHttpRequest(jwt, method, resource, requestBody);
         }
 
-        public void download(String jwt, String resource, OutputStream output) throws IOException {
+        public void download(String jwt, String resource, OutputStream output) throws IOException, APIResponseException {
             InputStream inputStream = null;
             HttpURLConnection connection = null;
             try {
@@ -124,6 +129,9 @@ public enum WebUtility {
                     while ((bytesRead = inputStream.read(buffer)) != -1) {
                         output.write(buffer, 0, bytesRead);
                     }
+                } else {
+                    String message = connection.getResponseMessage();
+                    throw new APIResponseException(responseCode, message);
                 }
             } finally {
                 if (inputStream != null) {
@@ -135,7 +143,7 @@ public enum WebUtility {
             }
         }
 
-        private String sendHttpRequest(String method, String resource, String requestBody) throws IOException {
+        private String sendHttpRequest(String method, String resource, String requestBody) throws IOException, APIResponseException {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             try {
@@ -153,13 +161,18 @@ public enum WebUtility {
                 output.flush();
 
                 int responseCode = connection.getResponseCode();
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    return response.toString();
+                } else {
+                    String message = connection.getResponseMessage();
+                    throw new APIResponseException(responseCode, message);
                 }
-                return response.toString();
             } finally {
                 if (connection != null) {
                     connection.disconnect();
@@ -170,7 +183,7 @@ public enum WebUtility {
             }
         }
 
-        private String sendHttpRequest(String jwt, String method, String resource, String requestBody) throws IOException {
+        private String sendHttpRequest(String jwt, String method, String resource, String requestBody) throws IOException, APIResponseException {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             try {
@@ -194,13 +207,18 @@ public enum WebUtility {
                 output.flush();
 
                 int responseCode = connection.getResponseCode();
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    return response.toString();
+                } else {
+                    String message = connection.getResponseMessage();
+                    throw new APIResponseException(responseCode, message);
                 }
-                return response.toString();
             } finally {
                 if (connection != null) {
                     connection.disconnect();

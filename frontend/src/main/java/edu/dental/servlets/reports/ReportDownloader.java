@@ -1,5 +1,6 @@
 package edu.dental.servlets.reports;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
@@ -29,7 +30,11 @@ public class ReportDownloader extends HttpServlet {
         String fileName = getFileName(year, month);
         response.setContentType("application/msword");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
-        WebUtility.INSTANCE.requestSender().download(jwt, resource, response.getOutputStream());
+        try {
+            WebUtility.INSTANCE.requestSender().download(jwt, resource, response.getOutputStream());
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
+        }
     }
 
 

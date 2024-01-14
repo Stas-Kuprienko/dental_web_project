@@ -1,5 +1,6 @@
 package edu.dental.servlets.control;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.service.Reception;
 import edu.dental.service.WebRepository;
@@ -25,12 +26,16 @@ public class MainFilter implements Filter {
         if (session == null || session.getAttribute(WebUtility.INSTANCE.sessionUser) == null) {
             request.getRequestDispatcher("/").forward(request, response);
         } else {
-            int userId = (int) session.getAttribute(WebUtility.INSTANCE.sessionUser);
-            if (!WebRepository.INSTANCE.isExist(userId)) {
-                Reception.getInstance().getByToken((String) session.getAttribute(WebUtility.INSTANCE.sessionToken));
+            try {
+                int userId = (int) session.getAttribute(WebUtility.INSTANCE.sessionUser);
+                if (!WebRepository.INSTANCE.isExist(userId)) {
+                    Reception.getInstance().getByToken((String) session.getAttribute(WebUtility.INSTANCE.sessionToken));
+                }
+                WebRepository.INSTANCE.updateAccountLastAction(userId);
+                chain.doFilter(request, response);
+            } catch (APIResponseException e) {
+                response.sendError(e.CODE, e.MESSAGE);
             }
-            WebRepository.INSTANCE.updateAccountLastAction(userId);
-            chain.doFilter(request, response);
         }
     }
 }

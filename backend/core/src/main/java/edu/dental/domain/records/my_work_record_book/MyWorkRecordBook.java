@@ -55,7 +55,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             p = productMap.createProduct(product, quantity);
         } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         }
         DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).setComplete(complete).build();
         dentalWork.getProducts().add(p);
@@ -63,7 +63,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             databaseService.getDentalWorkDAO().put(dentalWork);
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         }
         records.add(dentalWork);
         return dentalWork;
@@ -76,7 +76,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             databaseService.getDentalWorkDAO().put(dentalWork);
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         }
         records.add(dentalWork);
         return dentalWork;
@@ -89,7 +89,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
             productMap.put(title, price, id);
             return productMap.getItem(title);
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         }
     }
 
@@ -100,7 +100,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
             databaseService.getProductMapDAO(userId).edit(id, price);
             return productMap.put(title, price);
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         }
     }
 
@@ -110,7 +110,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
             int id = productMap.remove(title);
             return databaseService.getProductMapDAO(userId).delete(id);
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         } catch (NullPointerException ignored) {
             return false;
         }
@@ -135,11 +135,11 @@ public class MyWorkRecordBook implements WorkRecordBook {
             try {
                 setter.invoke(dw, oldValue);
             } catch (IllegalAccessException | InvocationTargetException ex) {
-                throw new WorkRecordBookException(ex.getMessage(), ex);
+                throw new WorkRecordBookException(ex);
             }
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         }
         return dw;
     }
@@ -147,7 +147,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     @Override
     public DentalWork addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException {
         if (dentalWork == null || product == null) {
-            throw new WorkRecordBookException("The given DentalWork object is null");
+            throw new WorkRecordBookException(new NullPointerException("The given DentalWork object is null"));
         }
         Product p;
         try {
@@ -159,14 +159,14 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             p = productMap.createProduct(product, quantity);
         } catch (IllegalArgumentException | NoSuchElementException e) {
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+            throw new WorkRecordBookException(e);
         }
         dentalWork.getProducts().add(p);
         try {
             databaseService.getDentalWorkDAO().edit(dentalWork);
         } catch (DatabaseException e) {
             removeProduct(dentalWork, product);
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         }
         return dentalWork;
     }
@@ -174,7 +174,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     @Override
     public void removeProduct(DentalWork dentalWork, String product) throws WorkRecordBookException {
         if ((dentalWork == null) || (product == null || product.isEmpty())) {
-            throw new WorkRecordBookException("The given argument is null or empty.");
+            throw new WorkRecordBookException(new NullPointerException("The given argument is null or empty"));
         }
         if (dentalWork.getProducts().isEmpty()) {
             return;
@@ -193,7 +193,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
                 databaseService.getDentalWorkDAO().edit(dentalWork);
             } catch (DatabaseException e) {
                 dentalWork.getProducts().add(removable);
-                throw new WorkRecordBookException(e.getMessage(), e);
+                throw new WorkRecordBookException(e);
             }
         }
     }
@@ -212,7 +212,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             databaseService.getDentalWorkDAO().delete(dentalWork.getId());
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         }
         records.remove(dentalWork);
     }
@@ -233,9 +233,9 @@ public class MyWorkRecordBook implements WorkRecordBook {
             if (list.get(0).getClinic().equals(clinic)) {
                 return list.get(0);
             }
-            throw new WorkRecordBookException("such element is not found");
+            throw new WorkRecordBookException(new NoSuchElementException(patient + ", " + clinic));
         } catch (NoSuchElementException | NullPointerException e) {
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+            throw new WorkRecordBookException(e);
         }
     }
 
@@ -247,7 +247,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
                 dw = databaseService.getDentalWorkDAO().get(userId, id);
             } catch (DatabaseException e) {
                 //TODO
-                throw new WorkRecordBookException(e.getMessage());
+                throw new WorkRecordBookException(e);
             }
         }
         return dw;
@@ -277,20 +277,20 @@ public class MyWorkRecordBook implements WorkRecordBook {
             return databaseService.getDentalWorkDAO().getAllMonthly(userId, month, year);
         } catch (DatabaseException e) {
             //TODO
-            throw new WorkRecordBookException(e.getMessage());
+            throw new WorkRecordBookException(e);
         }
     }
 
     @Override
     public List<DentalWork> searchRecordsInDatabase(String[] fields, String[] args) throws WorkRecordBookException {
         if (fields.length != args.length || fields.length == 0) {
-            throw new WorkRecordBookException("arrays of arguments is not equals by length or empty");
+            throw new WorkRecordBookException(new IllegalArgumentException("arrays of arguments is not equals by length or empty"));
         }
         try {
             return databaseService.getDentalWorkDAO().search(userId, fields, args);
         } catch (DatabaseException e) {
             //TODO
-            throw new WorkRecordBookException(e.getMessage());
+            throw new WorkRecordBookException(e);
         }
     }
 
@@ -307,7 +307,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             return dao.countProfitForMonth(userId, year, month);
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage());
+            throw new WorkRecordBookException(e);
         }
     }
 
@@ -316,7 +316,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             return databaseService.getProfitRecordDAO().countAllProfits(userId);
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage());
+            throw new WorkRecordBookException(e);
         }
     }
 
@@ -341,7 +341,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
             Method getter = DentalWork.class.getMethod(getterName);
             return String.valueOf(getter.invoke(dw));
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new WorkRecordBookException(e.getMessage(), e.getCause());
+            throw new WorkRecordBookException(e);
         }
     }
 

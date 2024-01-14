@@ -1,5 +1,6 @@
 package edu.dental.servlets.works;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.service.WebRepository;
@@ -25,15 +26,19 @@ public class WorkRecordSearch extends HttpServlet {
         String patient = request.getParameter(patientParam);
         String clinic = request.getParameter(clinicParam);
 
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
-        queryFormer.add(patientParam, patient);
-        queryFormer.add(clinicParam, clinic);
-        String requestBody = queryFormer.form();
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, recordSearchUrl, requestBody);
-        DentalWork[] works = WebUtility.INSTANCE.parseFromJson(json, DentalWork[].class);
-        String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
-        request.setAttribute("works", works);
-        request.setAttribute("map", map);
-        request.getRequestDispatcher("/main/work-list/page").forward(request, response);
+        try {
+            WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+            queryFormer.add(patientParam, patient);
+            queryFormer.add(clinicParam, clinic);
+            String requestBody = queryFormer.form();
+            String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, recordSearchUrl, requestBody);
+            DentalWork[] works = WebUtility.INSTANCE.parseFromJson(json, DentalWork[].class);
+            String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
+            request.setAttribute("works", works);
+            request.setAttribute("map", map);
+            request.getRequestDispatcher("/main/work-list/page").forward(request, response);
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
+        }
     }
 }

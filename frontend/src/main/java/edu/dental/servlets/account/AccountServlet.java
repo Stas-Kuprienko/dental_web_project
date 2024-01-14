@@ -1,5 +1,6 @@
 package edu.dental.servlets.account;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.UserDto;
 import edu.dental.service.WebRepository;
@@ -33,16 +34,20 @@ public class AccountServlet extends HttpServlet {
         if (method != null && method.equals("delete")) {
             doDelete(request, response);
         } else {
-            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-            String field = request.getParameter(fieldParam);
-            String value = request.getParameter(valueParam);
-            switch (field) {
-                case nameField,
-                     emailField,
-                     passwordField -> setUserValue(userId, field, value);
-                default -> {}
+            try {
+                int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
+                String field = request.getParameter(fieldParam);
+                String value = request.getParameter(valueParam);
+                switch (field) {
+                    case nameField,
+                            emailField,
+                            passwordField -> setUserValue(userId, field, value);
+                    default -> {}
+                }
+                doGet(request, response);
+            } catch (APIResponseException e) {
+                response.sendError(e.CODE, e.MESSAGE);
             }
-            doGet(request, response);
         }
     }
 
@@ -59,7 +64,7 @@ public class AccountServlet extends HttpServlet {
     }
 
 
-    private void setUserValue(int userId, String field, String value) throws IOException {
+    private void setUserValue(int userId, String field, String value) throws IOException, APIResponseException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
 
         WebUtility.QueryFormer former = new WebUtility.QueryFormer();

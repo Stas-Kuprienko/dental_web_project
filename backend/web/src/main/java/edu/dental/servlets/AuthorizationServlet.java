@@ -48,7 +48,7 @@ public class AuthorizationServlet extends HttpServlet {
             response.getWriter().print(jsonUser);
             response.getWriter().flush();
         } catch (WebException e) {
-            response.sendError(e.code.i);
+            response.sendError(e.cause.code);
         }
     }
 }

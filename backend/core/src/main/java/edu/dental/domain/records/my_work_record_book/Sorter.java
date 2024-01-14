@@ -45,7 +45,7 @@ public class Sorter implements SorterTool<DentalWork> {
                 return sortAnyPreviousMonth(works, year, month);
             }
         } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e.getMessage(), e);
+            throw new WorkRecordBookException(e);
         }
     }
 

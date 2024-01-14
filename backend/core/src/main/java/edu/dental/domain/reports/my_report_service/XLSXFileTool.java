@@ -43,7 +43,7 @@ class XLSXFileTool implements SheetFileTool {
             return true;
         } catch (Exception e) {
             //TODO logger
-            throw new ReportServiceException(e.getMessage(), e);
+            throw new ReportServiceException(e);
         }
     }
 
@@ -52,7 +52,7 @@ class XLSXFileTool implements SheetFileTool {
         try (xssfBox) {
             xssfBox.workbook.write(output);
         } catch (Exception e) {
-            throw new ReportServiceException(e.getMessage(), e);
+            throw new ReportServiceException(e);
         }
         return output;
     }

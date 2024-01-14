@@ -1,5 +1,6 @@
 package edu.dental.servlets.products;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.ProductMap;
 import edu.dental.service.WebRepository;
@@ -38,34 +39,46 @@ public class ProductServlet extends HttpServlet {
             }
             response.sendError(400);
         } else {
-            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-            String title = request.getParameter(titleParam);
-            int price = Integer.parseInt(request.getParameter(priceParam));
+            try {
+                int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
+                String title = request.getParameter(titleParam);
+                int price = Integer.parseInt(request.getParameter(priceParam));
 
-            newProduct(userId, title, price);
-            doGet(request, response);
+                newProduct(userId, title, price);
+                doGet(request, response);
+            } catch (APIResponseException e) {
+                response.sendError(e.CODE, e.MESSAGE);
+            }
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-        String title = request.getParameter(titleParam);
-        int price = Integer.parseInt(request.getParameter(priceParam));
-        editProduct(userId, title, price);
-        doGet(request, response);
+        try {
+            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
+            String title = request.getParameter(titleParam);
+            int price = Integer.parseInt(request.getParameter(priceParam));
+            editProduct(userId, title, price);
+            doGet(request, response);
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
+        }
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-        String title = request.getParameter(titleParam);
-        deleteProduct(userId, title);
-        doGet(request, response);
+        try {
+            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
+            String title = request.getParameter(titleParam);
+            deleteProduct(userId, title);
+            doGet(request, response);
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
+        }
     }
 
 
-    private void newProduct(int userId, String title, int price) throws IOException {
+    private void newProduct(int userId, String title, int price) throws IOException, APIResponseException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         ProductMap.Item item;
 
@@ -79,7 +92,7 @@ public class ProductServlet extends HttpServlet {
         WebRepository.INSTANCE.getMap(userId).add(item);
     }
 
-    private void editProduct(int userId, String title, int price) throws IOException {
+    private void editProduct(int userId, String title, int price) throws IOException, APIResponseException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(titleParam, title);
@@ -89,7 +102,7 @@ public class ProductServlet extends HttpServlet {
         WebRepository.INSTANCE.getMap(userId).update(title, price);
     }
 
-    private void deleteProduct(int userId, String title) throws IOException {
+    private void deleteProduct(int userId, String title) throws IOException, APIResponseException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(titleParam, title);

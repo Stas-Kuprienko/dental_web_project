@@ -1,30 +1,32 @@
 package edu.dental;
 
+import edu.dental.domain.APIManager;
+import edu.dental.domain.account.AccountException;
+import jakarta.servlet.http.HttpServlet;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class WebException extends Exception {
 
-    //TODO
+    private static final Logger logger;
 
-    public WebException(CODE code) {
-        this.code = code;
+    static {
+        logger = Logger.getLogger(HttpServlet.class.getName());
+        logger.addHandler(APIManager.fileHandler);
+        logger.setLevel(Level.ALL);
     }
 
-    public WebException(String message, CODE code) {
-        super(message);
-        this.code = code;
+    public WebException(AccountException.CAUSE cause, Exception e) {
+        this.cause = cause;
+        this.message = e.getMessage();
     }
 
-    public final CODE code;
-
-    public enum CODE {
-        SERVER_ERROR(500),
-        BAD_REQUEST(400),
-        UNAUTHORIZED(401),
-        FORBIDDEN(403);
-
-
-        public final int i;
-        CODE(int i) {
-            this.i = i;
-        }
+    public WebException(AccountException.CAUSE cause, AccountException.MESSAGE message) {
+        this.cause = cause;
+        this.message = message.message;
     }
+
+    public final AccountException.CAUSE cause;
+    public final String message;
 }

@@ -1,5 +1,6 @@
 package edu.dental.service;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
@@ -24,7 +25,7 @@ public final class Reception {
     public final String productMapUrl = "main/product-map";
 
 
-    public UserDto getByLogin(String email, String password) throws IOException {
+    public UserDto getByLogin(String email, String password) throws IOException, APIResponseException {
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
 
         queryFormer.add(paramEmail, email);
@@ -34,7 +35,7 @@ public final class Reception {
         return get(requestParameters);
     }
 
-    public UserDto getByToken(String token) throws IOException {
+    public UserDto getByToken(String token) throws IOException, APIResponseException {
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
 
         queryFormer.add(paramToken, token);
@@ -43,7 +44,7 @@ public final class Reception {
         return get(requestParameters);
     }
 
-    private UserDto get(String requestParameters) throws IOException {
+    private UserDto get(String requestParameters) throws IOException, APIResponseException {
         String jsonUser = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(logInUrl, requestParameters);
         UserDto user = WebUtility.INSTANCE.parseFromJson(jsonUser, UserDto.class);
 

@@ -1,5 +1,6 @@
 package edu.dental.servlets.works;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.service.WebRepository;
@@ -46,7 +47,7 @@ public class WorkListServlet extends HttpServlet {
     }
 
 
-    private void setRequiredWorkList(int userId, String year_month, HttpServletRequest request) throws IOException {
+    private void setRequiredWorkList(int userId, String year_month, HttpServletRequest request) throws IOException, APIResponseException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         String[] year_month_split = year_month.split("-");
         String year = year_month_split[0];

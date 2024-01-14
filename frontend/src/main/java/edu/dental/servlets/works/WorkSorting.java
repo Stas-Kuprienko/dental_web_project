@@ -1,5 +1,6 @@
 package edu.dental.servlets.works;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.service.WebRepository;
@@ -26,7 +27,12 @@ public class WorkSorting extends HttpServlet {
                 (int) request.getAttribute("year");
         int month = request.getParameter("month") != null ? Integer.parseInt(request.getParameter("month")) :
                 (int) request.getAttribute("month");
-        String jsonWorks = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(jwt, sortUrl + String.format(parameters, year, month));
+        String jsonWorks = null;
+        try {
+            jsonWorks = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(jwt, sortUrl + String.format(parameters, year, month));
+        } catch (APIResponseException e) {
+            throw new RuntimeException(e);
+        }
         List<DentalWork> works = List.of(WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class));
         WebRepository.INSTANCE.setWorks(userId, works);
         request.getRequestDispatcher("/main/work-list").forward(request, response);

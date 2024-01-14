@@ -1,5 +1,6 @@
 package edu.dental.servlets.works;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
@@ -30,26 +31,34 @@ public class DentalWorkServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-        setWorkToRequest(request, userId);
-        ProductMap map = WebRepository.INSTANCE.getMap(userId);
-        request.setAttribute("map", map.getKeys());
-        request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
+        try {
+            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
+            setWorkToRequest(request, userId);
+            ProductMap map = WebRepository.INSTANCE.getMap(userId);
+            request.setAttribute("map", map.getKeys());
+            request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String method = request.getParameter("method");
-        if (method != null) {
-            if (method.equals("put")) {
-                doPut(request, response);
-            } else if (method.equals("delete")) {
-                doDelete(request, response);
+        try {
+            String method = request.getParameter("method");
+            if (method != null) {
+                if (method.equals("put")) {
+                    doPut(request, response);
+                } else if (method.equals("delete")) {
+                    doDelete(request, response);
+                }
+                response.sendError(400);
+            } else {
+                newDentalWork(request);
+                doGet(request, response);
             }
-            response.sendError(400);
-        } else {
-            newDentalWork(request);
-            doGet(request, response);
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
         }
     }
 
@@ -57,28 +66,34 @@ public class DentalWorkServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             editWork(request);
+            doGet(request, response);
         } catch (NullPointerException e) {
             response.sendError(400);
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
         }
-        doGet(request, response);
     }
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-        int id = Integer.parseInt(request.getParameter(idParam));
-        String product = request.getParameter(productParam);
-        if (product != null) {
-            deleteProductFromWork(userId, id, product);
-            request.setAttribute(idParam, id);
-            doGet(request, response);
-        } else {
-            deleteWorkRecord(userId, id);
-            request.getRequestDispatcher("/main/work-list").forward(request, response);
+        try {
+            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
+            int id = Integer.parseInt(request.getParameter(idParam));
+            String product = request.getParameter(productParam);
+            if (product != null) {
+                deleteProductFromWork(userId, id, product);
+                request.setAttribute(idParam, id);
+                doGet(request, response);
+            } else {
+                deleteWorkRecord(userId, id);
+                request.getRequestDispatcher("/main/work-list").forward(request, response);
+            }
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
         }
     }
 
 
-    private void setWorkToRequest(HttpServletRequest request, int userId) throws IOException {
+    private void setWorkToRequest(HttpServletRequest request, int userId) throws IOException, APIResponseException {
         int workId = request.getParameter(idParam) != null ? Integer.parseInt(request.getParameter(idParam)) :
                 (int) request.getAttribute(idParam);
         DentalWork work;
@@ -96,7 +111,7 @@ public class DentalWorkServlet extends HttpServlet {
         request.setAttribute("work", work);
     }
 
-    private void newDentalWork(HttpServletRequest request) throws IOException {
+    private void newDentalWork(HttpServletRequest request) throws IOException, APIResponseException {
         int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
 
         String patient = request.getParameter(patientParam);
@@ -109,7 +124,7 @@ public class DentalWorkServlet extends HttpServlet {
         request.setAttribute(idParam, id);
     }
 
-    private int createDentalWork(int userId, String patient, String clinic, String product, int quantity, LocalDate complete) throws IOException {
+    private int createDentalWork(int userId, String patient, String clinic, String product, int quantity, LocalDate complete) throws IOException, APIResponseException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         DentalWork dw;
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
@@ -127,7 +142,7 @@ public class DentalWorkServlet extends HttpServlet {
         return dw.id();
     }
 
-    private void editWork(HttpServletRequest request) throws IOException, NullPointerException {
+    private void editWork(HttpServletRequest request) throws IOException, NullPointerException, APIResponseException {
 
         //TODO fix saving in record book after updating
         int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
@@ -161,7 +176,7 @@ public class DentalWorkServlet extends HttpServlet {
         return queryFormer.form();
     }
 
-    private void deleteProductFromWork(int userId, int id, String product) throws IOException {
+    private void deleteProductFromWork(int userId, int id, String product) throws IOException, APIResponseException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(idParam, id);
@@ -175,7 +190,7 @@ public class DentalWorkServlet extends HttpServlet {
     }
 
 
-    private void deleteWorkRecord(int userId, int id) throws IOException {
+    private void deleteWorkRecord(int userId, int id) throws IOException, APIResponseException {
         String jwt = WebRepository.INSTANCE.getToken(userId);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(idParam, id);

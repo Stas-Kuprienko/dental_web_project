@@ -1,5 +1,6 @@
 package edu.dental.servlets.control;
 
+import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.UserDto;
 import edu.dental.service.Reception;
@@ -25,17 +26,21 @@ public class Authorization extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = request.getParameter(paramEmail);
-        String password = request.getParameter(paramPassword);
-        if (email == null || password == null) {
-            request.getRequestDispatcher("/").forward(request, response);
-        } else {
-            UserDto user = Reception.getInstance().getByLogin(email, password);
+        try {
+            String email = request.getParameter(paramEmail);
+            String password = request.getParameter(paramPassword);
+            if (email == null || password == null) {
+                request.getRequestDispatcher("/").forward(request, response);
+            } else {
+                UserDto user = Reception.getInstance().getByLogin(email, password);
 
-            request.getSession().setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
-            request.getSession().setAttribute(WebUtility.INSTANCE.sessionToken, user.jwt());
+                request.getSession().setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
+                request.getSession().setAttribute(WebUtility.INSTANCE.sessionToken, user.jwt());
 
-            request.getRequestDispatcher("/main").forward(request, response);
+                request.getRequestDispatcher("/main").forward(request, response);
+            }
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
         }
     }
 }
