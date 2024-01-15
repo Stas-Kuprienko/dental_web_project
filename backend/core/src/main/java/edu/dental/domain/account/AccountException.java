@@ -19,18 +19,28 @@ public class AccountException extends Exception{
     public AccountException(CAUSE cause, Exception e) {
         this.cause = cause;
         this.message = e.getMessage();
-        logger.log(Level.SEVERE, e.getMessage());
+        Level level = pickLevel(cause);
+        logger.log(level, e.getMessage());
     }
 
     public AccountException(CAUSE cause, MESSAGE message) {
         this.cause = cause;
         this.message = message.message;
+        Level level = pickLevel(cause);
         String str = "Error code: " + cause.code + ";\n";
-        logger.log(Level.SEVERE, str + message.message);
+        logger.log(level, str + message.message);
     }
 
     public final CAUSE cause;
     public final String message;
+
+    private Level pickLevel(CAUSE cause) {
+        if (cause.code >= 500) {
+            return Level.SEVERE;
+        } else {
+            return Level.INFO;
+        }
+    }
 
     public enum CAUSE {
         SERVER_ERROR(500),

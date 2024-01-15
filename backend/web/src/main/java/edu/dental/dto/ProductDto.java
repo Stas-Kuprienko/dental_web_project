@@ -1,5 +1,7 @@
 package edu.dental.dto;
 
+import edu.dental.entities.Product;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -8,8 +10,17 @@ import java.util.Objects;
  */
 public record ProductDto(int entryId, String title, byte quantity, int price) implements Serializable {
 
-    public static ProductDto parse(edu.dental.entities.Product product) {
+    public static ProductDto parse(Product product) {
         return new ProductDto(product.entryId(), product.title(), product.quantity(), product.price());
+    }
+
+    public static Product[] revert(ProductDto[] dtoArray) {
+        Product[] result = new Product[dtoArray.length];
+        for (int i = 0; i < dtoArray.length; i++) {
+            ProductDto dto = dtoArray[i];
+            result[i] = new Product(dto.entryId, dto.title, dto.quantity, dto.price);
+        }
+        return result;
     }
 
     @Override

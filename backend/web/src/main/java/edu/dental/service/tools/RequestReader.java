@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class RequestReader {
 
@@ -14,6 +15,10 @@ public class RequestReader {
     public RequestReader(HttpServletRequest request) {
         this.request = request;
         this.parameterMap = readParameters();
+    }
+
+    public static String readJson(HttpServletRequest request) throws IOException {
+        return request.getReader().lines().collect(Collectors.joining());
     }
 
     private HashMap<String, String> readParameters() {

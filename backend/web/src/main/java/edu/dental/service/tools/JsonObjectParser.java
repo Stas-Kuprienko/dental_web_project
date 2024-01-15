@@ -10,7 +10,5 @@ public interface JsonObjectParser {
 
     String parseToJson(Object o);
 
-    Object parseFromJson(String s, Class<?> clas);
-
-    String parseToDtoThenToJson(Object o);
+    <T> T parseFromJson(String s, Class<T> clas);
 }

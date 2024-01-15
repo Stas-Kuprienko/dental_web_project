@@ -5,7 +5,7 @@ import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
 import edu.dental.entities.User;
-import edu.dental.service.monitor.LifecycleMonitor;
+import edu.dental.service.lifecycle.LifecycleMonitor;
 import edu.dental.service.Repository;
 
 import java.util.List;
@@ -76,6 +76,19 @@ public final class MyRepository implements Repository {
     @Override
     public Account get(int id) {
         return RAM.get(id);
+    }
+
+    @Override
+    public boolean reloadWorks(int id) {
+        try {
+            WorkRecordBook recordBook = WorkRecordBook.getInstance(id);
+            User user = RAM.get(id).user;
+            Account account = new Account(user, recordBook);
+            RAM.put(id, account);
+            return true;
+        } catch (WorkRecordBookException e) {
+            return false;
+        }
     }
 
 

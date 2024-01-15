@@ -5,7 +5,7 @@ import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
 import edu.dental.entities.User;
-import edu.dental.service.monitor.Monitorable;
+import edu.dental.service.lifecycle.Monitorable;
 
 import java.util.List;
 
@@ -36,6 +36,8 @@ public interface Repository {
     WorkRecordBook getRecordBook(int id);
 
     void delete(int id);
+
+    boolean reloadWorks(int id);
 
 
     abstract class Account extends Monitorable {

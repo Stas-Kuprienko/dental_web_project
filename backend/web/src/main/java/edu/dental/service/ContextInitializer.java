@@ -4,7 +4,7 @@ import edu.dental.WebAPI;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.connection.ConnectionPool;
 import edu.dental.domain.APIManager;
-import edu.dental.service.monitor.LifecycleMonitor;
+import edu.dental.service.lifecycle.LifecycleMonitor;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;

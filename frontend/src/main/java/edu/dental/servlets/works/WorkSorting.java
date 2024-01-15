@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @WebServlet("/main/work-list/sort")
@@ -18,16 +19,19 @@ public class WorkSorting extends HttpServlet {
 
     public final String sortUrl = "/main/work-list/sort";
     public final String parameters = "?year=%s&month=%s";
+    public final String yearParam = "year";
+    public final String monthParam = "month";
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
         String jwt = WebRepository.INSTANCE.getToken(userId);
-        int year = request.getParameter("year") != null ? Integer.parseInt(request.getParameter("year")) :
-                (int) request.getAttribute("year");
-        int month = request.getParameter("month") != null ? Integer.parseInt(request.getParameter("month")) :
-                (int) request.getAttribute("month");
-        String jsonWorks = null;
+        int year = request.getParameter(yearParam) != null ? Integer.parseInt(request.getParameter(yearParam)) :
+                (int) request.getAttribute(yearParam);
+        int month = request.getParameter(monthParam) != null ? Integer.parseInt(request.getParameter(monthParam)) :
+                (int) request.getAttribute(monthParam);
+        String jsonWorks;
         try {
             jsonWorks = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(jwt, sortUrl + String.format(parameters, year, month));
         } catch (APIResponseException e) {
@@ -40,7 +44,38 @@ public class WorkSorting extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO write setting paid status to work list
-        doGet(request, response);
+        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
+        String jwt = WebRepository.INSTANCE.getToken(userId);
+
+        int year = request.getParameter(yearParam) != null ? Integer.parseInt(request.getParameter(yearParam)) :
+                (int) request.getAttribute(yearParam);
+        int month = request.getParameter(monthParam) != null ? Integer.parseInt(request.getParameter(monthParam)) :
+                (int) request.getAttribute(monthParam);
+
+        try {
+            DentalWork[] works = executeRequest(jwt, year, month);
+            if (isCurrent(year, month)) {
+                WebRepository.INSTANCE.setWorks(userId, List.of(works));
+            }
+            request.setAttribute("works", works);
+            request.getRequestDispatcher("/main/work-list").forward(request, response);
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
+        }
+    }
+
+
+    private DentalWork[] executeRequest(String jwt, int year, int month) throws IOException, APIResponseException {
+        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+        queryFormer.add(yearParam, year);
+        queryFormer.add(monthParam, month);
+        String requestParams = queryFormer.form();
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, sortUrl, requestParams);
+        return WebUtility.INSTANCE.parseFromJson(json, DentalWork[].class);
+    }
+
+    private boolean isCurrent(int year, int month) {
+        LocalDate now = LocalDate.now();
+        return (year == now.getYear() && month == now.getMonthValue());
     }
 }

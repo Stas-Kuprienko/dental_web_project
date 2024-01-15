@@ -30,9 +30,8 @@ public class WorkListServlet extends HttpServlet {
         } else {
             try {
                 setRequiredWorkList(userId, year_month, request);
-            } catch (Exception e) {
-                //TODO
-                response.sendError(400);
+            } catch (APIResponseException e) {
+                response.sendError(e.CODE, e.MESSAGE);
             }
         }
         String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
