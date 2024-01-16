@@ -66,7 +66,7 @@ public class UserMySql implements UserDAO, MySQL_DAO {
             throw new DatabaseException(e);
         }
     }
-    
+
     @Override
     public SimpleList<User> search(String login) throws DatabaseException {
         String where = "email = ?";
