@@ -246,7 +246,6 @@ public class MyWorkRecordBook implements WorkRecordBook {
             try {
                 dw = databaseService.getDentalWorkDAO().get(userId, id);
             } catch (DatabaseException e) {
-                //TODO
                 throw new WorkRecordBookException(e);
             }
         }
@@ -276,7 +275,6 @@ public class MyWorkRecordBook implements WorkRecordBook {
             String month = Month.of(monthValue).toString();
             return databaseService.getDentalWorkDAO().getAllMonthly(userId, month, year);
         } catch (DatabaseException e) {
-            //TODO
             throw new WorkRecordBookException(e);
         }
     }
@@ -289,13 +287,13 @@ public class MyWorkRecordBook implements WorkRecordBook {
         try {
             return databaseService.getDentalWorkDAO().search(userId, fields, args);
         } catch (DatabaseException e) {
-            //TODO
             throw new WorkRecordBookException(e);
         }
     }
 
     @Override
-    public void sorting(SorterTool<DentalWork> sorter) throws WorkRecordBookException {
+    public void sorting(int month, int year) throws WorkRecordBookException {
+        SorterTool<DentalWork> sorter = new Sorter(userId, month, year);
         sorter.push(records);
         sorter.doIt();
     }

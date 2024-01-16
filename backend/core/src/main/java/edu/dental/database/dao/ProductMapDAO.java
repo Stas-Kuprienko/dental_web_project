@@ -3,8 +3,6 @@ package edu.dental.database.dao;
 import edu.dental.database.DatabaseException;
 import edu.dental.entities.ProductMap;
 
-import java.sql.SQLException;
-
 public interface ProductMapDAO {
 
     boolean putAll(ProductMap map) throws DatabaseException;
@@ -16,11 +14,4 @@ public interface ProductMapDAO {
     boolean edit(int id, int value) throws DatabaseException;
 
     boolean delete(int id) throws DatabaseException;
-
-    class Request extends DAORequest {
-
-        public Request(String query) throws SQLException {
-            super(query);
-        }
-    }
 }

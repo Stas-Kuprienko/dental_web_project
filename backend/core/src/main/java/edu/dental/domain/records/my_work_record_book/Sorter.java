@@ -139,7 +139,7 @@ public class Sorter implements SorterTool<DentalWork> {
     private void setReportIdToDatabase(SimpleList<DentalWork> list, int year, int month) throws DatabaseException {
         int result;
         try {
-            result = dao.setReportId(list, Month.of(month).toString(), Integer.toString(year));
+            result = dao.setReportId(userId, list, Month.of(month).toString(), Integer.toString(year));
         } catch (DatabaseException e) {
             revertReport(list); throw e;
         }

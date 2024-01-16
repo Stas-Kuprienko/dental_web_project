@@ -1,4 +1,5 @@
-import edu.dental.database.dao.DAORequest;
+import edu.dental.database.DatabaseException;
+import edu.dental.database.mysql_api.MySQL_DAO;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.entities.DentalWork;
@@ -26,8 +27,8 @@ public class WorkRecordBookTest {
     }
 
     @AfterEach
-    public void cleanDatabase() throws SQLException {
-        try (DAORequest request = new DAORequest()) {
+    public void cleanDatabase() throws DatabaseException, SQLException {
+        try (MySQL_DAO.Request request = new MySQL_DAO.Request()) {
             request.getStatement().addBatch(CLEAN_WORKS);
             request.getStatement().addBatch(CLEAN_PRODUCT_MAP);
             request.getStatement().executeBatch();

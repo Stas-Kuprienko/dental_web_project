@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 
-public class ProductMapMySql implements ProductMapDAO {
+public class ProductMapMySql implements ProductMapDAO, MySQL_DAO {
 
     public static final String FIELDS = "id, user_id, title, price";
 
@@ -26,7 +26,7 @@ public class ProductMapMySql implements ProductMapDAO {
     @Override
     public boolean putAll(ProductMap map) throws DatabaseException {
         if (map == null || map.isEmpty()) {
-            throw new DatabaseException("The  given argument is null or empty.");
+            throw new DatabaseException(new NullPointerException("The  given argument is null or empty."));
         }
         String values = "DEFAULT, " + userId + ", ?, ?";
         String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
@@ -44,7 +44,7 @@ public class ProductMapMySql implements ProductMapDAO {
             setId(resultSet, map);
             return true;
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -61,7 +61,7 @@ public class ProductMapMySql implements ProductMapDAO {
             resultSet.next();
             return (int) resultSet.getLong(1);
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -81,7 +81,7 @@ public class ProductMapMySql implements ProductMapDAO {
             resultSet.close();
             return productMap;
         } catch (SQLException | NullPointerException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -97,7 +97,7 @@ public class ProductMapMySql implements ProductMapDAO {
             statement.setInt(3, userId);
             return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -110,7 +110,7 @@ public class ProductMapMySql implements ProductMapDAO {
             statement.setInt(2, userId);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -124,7 +124,7 @@ public class ProductMapMySql implements ProductMapDAO {
             statement.setInt(3, userId);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 

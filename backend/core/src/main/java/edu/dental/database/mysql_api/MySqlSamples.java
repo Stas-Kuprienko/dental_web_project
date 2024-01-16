@@ -15,7 +15,7 @@ public enum MySqlSamples {
     //TODO
     UPDATE("UPDATE %s SET %s WHERE %s;"),
 
-    REPORT_ID("SELECT id FROM report WHERE year = %s AND month = '%s'"),
+    REPORT_ID("SELECT id FROM report WHERE year = ? AND month = ?"),
 
     SELECT_DENTAL_WORK("""
             SELECT dental_work.*,

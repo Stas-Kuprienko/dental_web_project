@@ -33,7 +33,6 @@ public final class ConnectionPool {
                     DBConfiguration.get().getProp(DBConfiguration.LOGIN),
                     DBConfiguration.get().getProp(DBConfiguration.PASSWORD));
         } catch (SQLException | ClassNotFoundException e) {
-            //TODO loggers
             throw new RuntimeException(e);
         }
     }
@@ -56,32 +55,12 @@ public final class ConnectionPool {
     }
 
     public static synchronized void deregister() {
-        try {
-            closeConnections();
-        } catch (SQLException e) {
-            //TODO logger
-            throw new RuntimeException(e);
-        }
         Enumeration<Driver> drivers = DriverManager.getDrivers();
         while (drivers.hasMoreElements()) {
             try {
                 DriverManager.deregisterDriver(drivers.nextElement());
             } catch (SQLException e) {
-                //TODO logger
                 throw new RuntimeException(e);
-            }
-        }
-    }
-
-    private static synchronized void closeConnections() throws SQLException {
-        if (!instance.using.isEmpty()) {
-            for (Connection c : instance.using) {
-                c.close();
-            }
-        }
-        if (!instance.free.isEmpty()) {
-            for (Connection c : instance.free) {
-                c.close();
             }
         }
     }

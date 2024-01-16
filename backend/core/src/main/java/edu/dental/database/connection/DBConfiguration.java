@@ -1,13 +1,18 @@
 package edu.dental.database.connection;
 
+import edu.dental.database.TableInitializer;
+
 import java.io.*;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class DBConfiguration {
 
     private static final DBConfiguration config;
     static {
         config = new DBConfiguration();
+        logger = Logger.getLogger(TableInitializer.class.getName());
     }
 
     private DBConfiguration() {
@@ -15,11 +20,12 @@ public final class DBConfiguration {
         try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
             sqlProp.load(fileInput);
         } catch (IOException e) {
-            //TODO loggers
             throw new RuntimeException(e);
         }
     }
 
+
+    private static final Logger logger;
 
     public static final String URL = "db.url";
     public static final String LOGIN = "db.login";
@@ -45,6 +51,10 @@ public final class DBConfiguration {
      */
     public String getProp(String key) {
         return sqlProp.getProperty(key);
+    }
+
+    public static void logging(Exception e) {
+        logger.log(Level.SEVERE, e.getMessage());
     }
 
     public static synchronized DBConfiguration get() {

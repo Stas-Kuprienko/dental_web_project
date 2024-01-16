@@ -3,6 +3,7 @@ package edu.dental.database.mysql_api;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.TableInitializer;
+import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 
-public class DentalWorkMySql implements DentalWorkDAO {
+public class DentalWorkMySql implements DentalWorkDAO, MySQL_DAO {
 
     public final String TABLE = TableInitializer.DENTAL_WORK;
 
@@ -25,7 +26,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     @Override
     public boolean putAll(List<DentalWork> list) throws DatabaseException {
         if (list == null || list.isEmpty()) {
-            throw new DatabaseException("The given argument is null or empty.");
+            throw new DatabaseException(new NullPointerException("The given argument is null or empty."));
         }
         try (Request request = new Request()){
             Statement statement = request.getStatement();
@@ -35,8 +36,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             }
             return statement.executeBatch().length == list.size();
         } catch (SQLException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -65,8 +65,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             }
             return new ProductMySql(object.getId()).putAll(object.getProducts());
         } catch (SQLException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -80,8 +79,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             dentalWorks = (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
         } catch (SQLException | IOException | ClassCastException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
         return dentalWorks;
     }
@@ -99,8 +97,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             ResultSet resultSet = statement.executeQuery();
             dentalWorks = (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
         } catch (SQLException | IOException | ClassCastException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
         return dentalWorks;
     }
@@ -117,8 +114,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             SimpleList<DentalWork> list = (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | IOException | NullPointerException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -126,7 +122,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     public SimpleList<DentalWork> search(int userId, String[] fields, String[] args) throws DatabaseException {
         String where = buildSearchQuery(fields, args);
         if (where == null) {
-            throw new DatabaseException("Incorrect search parameters");
+            throw new DatabaseException(new IllegalArgumentException("Incorrect search parameters"));
         }
         where += TABLE + ".user_id = " + userId;
         String query = String.format(MySqlSamples.SELECT_DENTAL_WORK.QUERY, where);
@@ -134,8 +130,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             ResultSet resultSet = request.getStatement().executeQuery(query);
             return (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
         } catch (SQLException | IOException | NullPointerException | ClassCastException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -170,8 +165,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             return new ProductMySql(object.getId()).overwrite(object.getProducts())
                     && statement.executeUpdate() > 0;
         } catch (SQLException | ClassCastException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -192,18 +186,19 @@ public class DentalWorkMySql implements DentalWorkDAO {
             }
             return statement.executeBatch().length == list.size();
         } catch (SQLException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public int setReportId(List<DentalWork> list, String month, String year) throws DatabaseException {
+    public int setReportId(int userId, List<DentalWork> list, String month, String year) throws DatabaseException {
         if (list == null || list.isEmpty()) {
             return 0;
         }
-        String getReportId = String.format(MySqlSamples.REPORT_ID.QUERY, year, month);
-        String query = String.format((MySqlSamples.UPDATE.QUERY), TABLE, "report_id = (" + getReportId + ')', "id = ?");
+        int reportId = getReportId(month, year);
+        String set = "report_id = " + reportId;
+        String where = "user_id = " + userId + " AND id = ?";
+        String query = String.format((MySqlSamples.UPDATE.QUERY), TABLE, set, where);
         try (Request request = new Request(query)) {
             PreparedStatement statement = request.getPreparedStatement();
             for (DentalWork dw : list) {
@@ -212,20 +207,31 @@ public class DentalWorkMySql implements DentalWorkDAO {
             }
             int executed = statement.executeBatch().length;
             if (!(executed == list.size())) {
-                throw new DatabaseException("Error of batch executing. Finally result - " + executed
-                + ", the given list size - " + list.size());
+                throw new DatabaseException(new SQLException("Error of batch executing. Finally result - "
+                        + executed + ", the given list size - " + list.size()));
             }
-            statement.clearParameters();
-            ResultSet resultSet = statement.executeQuery(getReportId);
+            return reportId;
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public int getReportId(String month, String year) throws DatabaseException {
+        String query = String.format(MySqlSamples.REPORT_ID.QUERY);
+        try (Request request = new Request(query)) {
+            PreparedStatement statement = request.getPreparedStatement();
+            statement.setInt(1, Integer.parseInt(year));
+            statement.setString(2, month);
+            ResultSet resultSet = statement.executeQuery();
             resultSet.next();
             return resultSet.getInt("id");
         } catch (SQLException e) {
             if (e.getMessage().equals("Illegal operation on empty result set.")) {
                 DatabaseService.getInstance().getTableInitializer().addReports();
-                return setReportId(list, month, year);
+                return getReportId(month, year);
             } else {
-                //TODO loggers
-                throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
+                throw new DatabaseException(e);
             }
         }
     }
@@ -238,8 +244,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
             int workId = request.getPreparedStatement().executeUpdate();
             return new ProductMySql(workId).deleteAll();
         } catch (SQLException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -264,7 +269,7 @@ public class DentalWorkMySql implements DentalWorkDAO {
     }
 
 
-    protected static class DentalWorkInstantiation implements Instantiating<DentalWork> {
+    protected static class DentalWorkInstantiation implements DAO.Instantiation<DentalWork> {
 
         private final SimpleList<DentalWork> recordsList;
         private final ResultSet resultSet;

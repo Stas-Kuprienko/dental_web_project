@@ -2,6 +2,7 @@ package edu.dental.database.mysql_api;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
+import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.ProductDAO;
 import edu.dental.entities.Product;
 import utils.collections.SimpleList;
@@ -12,7 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public class ProductMySql implements ProductDAO {
+public class ProductMySql implements ProductDAO, MySQL_DAO {
 
     public final String TABLE = TableInitializer.PRODUCT;
     private final int workId;
@@ -26,7 +27,7 @@ public class ProductMySql implements ProductDAO {
     @Override
     public boolean putAll(List<Product> list) throws DatabaseException{
         if (list == null || list.isEmpty()) {
-            throw new DatabaseException("The  given argument is null or empty.");
+            throw new DatabaseException(new NullPointerException("The  given argument is null or empty."));
         }
         try (Request request = new Request()) {
             Statement statement = request.getStatement();
@@ -38,7 +39,7 @@ public class ProductMySql implements ProductDAO {
             }
             return statement.executeBatch().length == list.size();
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -55,7 +56,7 @@ public class ProductMySql implements ProductDAO {
             statement.setInt(4, product.price());
             return statement.execute();
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -76,8 +77,7 @@ public class ProductMySql implements ProductDAO {
             }
             return products;
         } catch (SQLException | NumberFormatException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -90,8 +90,7 @@ public class ProductMySql implements ProductDAO {
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             products = (SimpleList<Product>) new ProductInstantiation(resultSet).build();
         } catch (SQLException e) {
-            //TODO loggers
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
         return products;
     }
@@ -107,7 +106,7 @@ public class ProductMySql implements ProductDAO {
             ResultSet resultSet = statement.executeQuery();
             return new ProductInstantiation(resultSet).build();
         } catch (SQLException | NullPointerException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -128,7 +127,7 @@ public class ProductMySql implements ProductDAO {
             }
             return statement.executeBatch().length == list.size() + 1;
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -141,7 +140,7 @@ public class ProductMySql implements ProductDAO {
             statement.setString(2,title);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -152,12 +151,12 @@ public class ProductMySql implements ProductDAO {
             request.getPreparedStatement().setInt(1, workId);
             return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
 
-    protected static class ProductInstantiation {
+    protected static class ProductInstantiation implements DAO.Instantiation<Product> {
 
         private final SimpleList<Product> productsList;
         private final ResultSet resultSet;
@@ -167,6 +166,7 @@ public class ProductMySql implements ProductDAO {
             this.productsList = new SimpleList<>();
         }
 
+        @Override
         public List<Product> build() throws SQLException {
             try (resultSet) {
                 while (resultSet.next()) {

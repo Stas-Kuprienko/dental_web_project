@@ -2,7 +2,7 @@ package edu.dental.database.mysql_api;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.database.TableInitializer;
-import edu.dental.database.dao.Instantiation;
+import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.UserDAO;
 import edu.dental.entities.User;
 import utils.collections.SimpleList;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 
-public class UserMySql implements UserDAO {
+public class UserMySql implements UserDAO, MySQL_DAO {
 
     public static final String TABLE = TableInitializer.USER;
 
@@ -37,8 +37,7 @@ public class UserMySql implements UserDAO {
                 return request.setID(object);
             } else return false;
         } catch (SQLException e) {
-            //TODO logger
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -49,8 +48,7 @@ public class UserMySql implements UserDAO {
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             usersList = (SimpleList<User>) new UserInstantiation(resultSet).build();
         } catch (SQLException | IOException e) {
-            //TODO logger
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
         return usersList;
     }
@@ -65,16 +63,10 @@ public class UserMySql implements UserDAO {
             SimpleList<User> list = (SimpleList<User>) new UserInstantiation(resultSet).build();
             return list.get(0);
         } catch (SQLException | NullPointerException | IOException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
-
-    /**
-     *
-     * @param login user {@linkplain User#getEmail() email}.
-     * @return specified {@link User} list.
-     * @throws DatabaseException
-     */
+    
     @Override
     public SimpleList<User> search(String login) throws DatabaseException {
         String where = "email = ?";
@@ -85,8 +77,7 @@ public class UserMySql implements UserDAO {
             resultSet = request.getPreparedStatement().executeQuery();
             return (SimpleList<User>) new UserInstantiation(resultSet).build();
         } catch (SQLException | IOException | NullPointerException e) {
-            //TODO logger
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -108,7 +99,7 @@ public class UserMySql implements UserDAO {
             statement.setInt(i, object.getId());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
@@ -119,12 +110,11 @@ public class UserMySql implements UserDAO {
             request.getPreparedStatement().setInt(1, id);
             return request.getPreparedStatement().executeUpdate() > 0;
         } catch (SQLException e) {
-            //TODO logger
-            throw new DatabaseException(e.getMessage(), e.getCause());
+            throw new DatabaseException(e);
         }
     }
 
-    protected static class UserInstantiation implements Instantiation<User> {
+    protected static class UserInstantiation implements DAO.Instantiation<User> {
 
         private final SimpleList<User> usersList;
         private final ResultSet resultSet;

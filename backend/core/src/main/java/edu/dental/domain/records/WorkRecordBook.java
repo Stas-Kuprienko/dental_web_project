@@ -130,7 +130,7 @@ public interface WorkRecordBook {
 
     List<DentalWork> searchRecordsInDatabase(String[] fields, String[] args) throws WorkRecordBookException;
 
-    void sorting(SorterTool<DentalWork> sorter) throws WorkRecordBookException;
+    void sorting(int month, int year) throws WorkRecordBookException;
 
     ProfitRecord countProfitForMonth(int year, int monthValue) throws WorkRecordBookException;
 

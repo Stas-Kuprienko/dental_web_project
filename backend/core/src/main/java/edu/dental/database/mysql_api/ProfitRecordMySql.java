@@ -9,20 +9,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ProfitRecordMySql implements ProfitRecordDAO {
+public class ProfitRecordMySql implements ProfitRecordDAO, MySQL_DAO {
 
     ProfitRecordMySql() {}
 
     @Override
     public ProfitRecord[] countAllProfits(int userId) throws DatabaseException {
-        //TODO
         try (Request request = new Request(MySqlSamples.ALL_PROFITS.QUERY)) {
             request.getPreparedStatement().setInt(1, userId);
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             SimpleList<ProfitRecord> records = instantiating(resultSet);
             return records.toArray(new ProfitRecord[]{});
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
+            throw new DatabaseException(e);
         }
     }
 
@@ -36,7 +35,7 @@ public class ProfitRecordMySql implements ProfitRecordDAO {
             ResultSet resultSet = statement.executeQuery();
             return instantiating(resultSet).get(0);
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage(), e.fillInStackTrace());
+            throw new DatabaseException(e);
         }
     }
 
