@@ -3,12 +3,12 @@ package edu.dental.servlets.works;
 import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
-import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -25,8 +25,8 @@ public class WorkSorting extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-        String jwt = WebRepository.INSTANCE.getToken(userId);
+        HttpSession session = request.getSession();
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
         int year = request.getParameter(yearParam) != null ? Integer.parseInt(request.getParameter(yearParam)) :
                 (int) request.getAttribute(yearParam);
         int month = request.getParameter(monthParam) != null ? Integer.parseInt(request.getParameter(monthParam)) :
@@ -38,14 +38,14 @@ public class WorkSorting extends HttpServlet {
             throw new RuntimeException(e);
         }
         List<DentalWork> works = List.of(WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class));
-        WebRepository.INSTANCE.setWorks(userId, works);
+        session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
         request.getRequestDispatcher("/main/work-list").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-        String jwt = WebRepository.INSTANCE.getToken(userId);
+        HttpSession session = request.getSession();
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
 
         int year = request.getParameter(yearParam) != null ? Integer.parseInt(request.getParameter(yearParam)) :
                 (int) request.getAttribute(yearParam);
@@ -55,7 +55,7 @@ public class WorkSorting extends HttpServlet {
         try {
             DentalWork[] works = executeRequest(jwt, year, month);
             if (isCurrent(year, month)) {
-                WebRepository.INSTANCE.setWorks(userId, List.of(works));
+                session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
             }
             request.setAttribute("works", works);
             request.getRequestDispatcher("/main/work-list").forward(request, response);

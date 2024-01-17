@@ -1,8 +1,11 @@
 package edu.dental.jsp_printers;
 
+import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
+import edu.dental.beans.ProductMap;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -32,8 +35,13 @@ public class WorkListTable {
             this.datesTool = new DatesTool(year_month_split[0], year_month_split[1]);
         }
         this.tableHead = new Header(request);
-        this.map = (String[]) request.getAttribute("map");
-        DentalWork[] works = (DentalWork[]) request.getAttribute("works");
+        HttpSession session = request.getSession();
+        ProductMap productMap = (ProductMap) session.getAttribute(WebUtility.INSTANCE.sessionMap);
+        this.map = productMap.getKeys();
+        DentalWork[] works = (DentalWork[]) request.getAttribute(WebUtility.INSTANCE.sessionWorks);
+        if (works == null) {
+            works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
+        }
         this.iterator = Arrays.stream(works).iterator();
         request.removeAttribute("year-month");
     }
@@ -50,24 +58,24 @@ public class WorkListTable {
     public String next() {
         DentalWork dw = iterator.next();
         StringBuilder str = new StringBuilder();
-        HtmlTag tagA = dw.status().equals(DentalWork.Status.MAKE.toString()) ? A_TR
-                : dw.status().equals(DentalWork.Status.CLOSED.toString()) ? A_TR_CLOSED
+        HtmlTag tagA = dw.getStatus().equals("MAKE") ? A_TR
+                : dw.getStatus().equals("CLOSED") ? A_TR_CLOSED
                 : A_TR_PAID;
-        str.append(String.format(tagA.o, href + dw.id())).append("\n\t\t");
-        DIV_TD.line(str, dw.patient());
-        DIV_TD.line(str, dw.clinic());
-        if (dw.products().length == 0) {
+        str.append(String.format(tagA.o, href + dw.getId())).append("\n\t\t");
+        DIV_TD.line(str, dw.getPatient());
+        DIV_TD.line(str, dw.getClinic());
+        if (dw.getProducts().length == 0) {
             for (String ignored : map) {
                 DIV_TD.line(str, "");
             }
         } else {
             for (String s : map) {
                 Product p = findProduct(dw, s);
-                DIV_TD.line(str, p == null ? " " : String.valueOf(p.quantity()));
+                DIV_TD.line(str, p == null ? " " : String.valueOf(p.getQuantity()));
             }
         }
-        DIV_TD.line(str, dw.complete() != null ? String.valueOf(dw.complete()) : "");
-        DIV_TD.line(str, String.valueOf(dw.accepted()));
+        DIV_TD.line(str, dw.getComplete() != null ? String.valueOf(dw.getComplete()) : "");
+        DIV_TD.line(str, String.valueOf(dw.getAccepted()));
         str.append(tagA.c);
         return str.toString();
     }
@@ -91,12 +99,12 @@ public class WorkListTable {
     }
 
     private Product findProduct(DentalWork dw, String type) {
-        if (dw.products().length == 0) {
-            throw new NoSuchElementException("the given DentalWork(id=" + dw.id() + ") doesn't has products.");
+        if (dw.getProducts().length == 0) {
+            throw new NoSuchElementException("the given DentalWork(id=" + dw.getId() + ") doesn't has products.");
         }
         type = type.toLowerCase();
-        for (Product p : dw.products()) {
-            if (p.title().equals(type)) {
+        for (Product p : dw.getProducts()) {
+            if (p.getTitle().equals(type)) {
                 return p;
             }
         }

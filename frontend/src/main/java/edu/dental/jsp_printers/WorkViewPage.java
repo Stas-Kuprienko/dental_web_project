@@ -3,8 +3,9 @@ package edu.dental.jsp_printers;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
-import edu.dental.service.WebRepository;
+import edu.dental.beans.ProductMap;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -21,27 +22,29 @@ public class WorkViewPage {
 
     public WorkViewPage(HttpServletRequest request) {
         this.work = (DentalWork) request.getAttribute("work");
-        this.products = Arrays.stream(work.products()).iterator();
-        String[] productMap = (String[]) request.getAttribute("map");
-        this.option = new OptionBuilder(productMap);
+        this.products = Arrays.stream(work.getProducts()).iterator();
+        ProductMap map = (ProductMap) request.getSession().getAttribute(WebUtility.INSTANCE.sessionMap);
+        String[] keysMap = map.getKeys();
+        this.option = new OptionBuilder(keysMap);
     }
 
     public String inputId() {
-        return String.format(HtmlTag.WORK_VIEW.INPUT_ID.sample, work.id());
+        return String.format(HtmlTag.WORK_VIEW.INPUT_ID.sample, work.getId());
     }
 
     public String buttonId() {
-        return String.format(HtmlTag.WORK_VIEW.BUTTON_ID.sample, work.id());
+        return String.format(HtmlTag.WORK_VIEW.BUTTON_ID.sample, work.getId());
     }
 
     public boolean hasNextProduct() {
         return products.hasNext();
     }
 
-    public String nextProduct() {
+    public Product nextProduct() {
         Product product = products.next();
-        String DIV = product.title() + " - " + product.quantity();
-        return String.format(HtmlTag.WORK_VIEW.PRODUCT_LIST.sample, DIV, work.id(), product.title());
+//        String DIV = product.getTitle() + " - " + product.getQuantity();
+//        return String.format(HtmlTag.WORK_VIEW.PRODUCT_LIST.sample, DIV, work.getId(), product.getTitle());
+        return product;
     }
 
     public static class OptionBuilder {
@@ -50,8 +53,9 @@ public class WorkViewPage {
         private final StringBuilder str;
 
         public OptionBuilder(HttpServletRequest request) {
-            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-            String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
+            HttpSession session = request.getSession();
+            ProductMap productMap = (ProductMap) session.getAttribute(WebUtility.INSTANCE.sessionMap);
+            String[] map = productMap.getKeys();
             this.map = map != null ? Arrays.stream(map).iterator() :
                     Arrays.stream(new String[]{""}).iterator();
             str = new StringBuilder();

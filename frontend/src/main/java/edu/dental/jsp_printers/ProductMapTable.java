@@ -1,5 +1,6 @@
 package edu.dental.jsp_printers;
 
+import edu.dental.WebUtility;
 import edu.dental.beans.ProductMap;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -17,8 +18,8 @@ public class ProductMapTable {
     private final int id;
 
     public ProductMapTable(HttpServletRequest request) {
-        ProductMap.Item[] map = (ProductMap.Item[]) request.getAttribute("map");
-        this.iterator = Arrays.stream(map).iterator();
+        ProductMap map = (ProductMap) request.getSession().getAttribute(WebUtility.INSTANCE.sessionMap);
+        this.iterator = Arrays.stream(map.getItems()).iterator();
         String strId = request.getParameter("id");
         id = (strId == null || strId.isEmpty()) ? 0 : Integer.parseInt(strId);
     }

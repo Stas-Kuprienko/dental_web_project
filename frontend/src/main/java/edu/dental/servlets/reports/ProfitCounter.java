@@ -2,13 +2,15 @@ package edu.dental.servlets.reports;
 
 import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
+import edu.dental.beans.DentalWork;
+import edu.dental.beans.Product;
 import edu.dental.beans.ProfitRecord;
-import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -23,8 +25,7 @@ public class ProfitCounter extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-            String jwt = WebRepository.INSTANCE.getToken(userId);
+            String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
             String fileName = "profit_list";
             response.setContentType("application/msword");
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
@@ -37,10 +38,9 @@ public class ProfitCounter extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
             String year = request.getParameter("year");
             String month = request.getParameter("month");
-            ProfitRecord[] records = getProfitRecords(userId, year, month);
+            ProfitRecord[] records = getProfitRecords(request.getSession(), year, month);
             request.setAttribute("profit", records);
             request.getRequestDispatcher("/main/profit/page").forward(request, response);
         } catch (APIResponseException e) {
@@ -49,32 +49,41 @@ public class ProfitCounter extends HttpServlet {
     }
 
 
-    private ProfitRecord[] getProfitRecords(int userId, String year, String month) throws IOException, APIResponseException {
+    private ProfitRecord[] getProfitRecords(HttpSession session, String year, String month) throws IOException, APIResponseException {
         if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
-            return countAll(userId);
+            return countAll(session);
         } else {
             LocalDate now = LocalDate.now();
             if (Integer.parseInt(year) == now.getYear() && Integer.parseInt(month) == now.getMonthValue()) {
-                return countCurrent(userId);
+                return countCurrent(session);
             } else {
-                return countAnother(userId, year, month);
+                return countAnother(session, year, month);
             }
         }
     }
 
-    private ProfitRecord[] countCurrent(int userId) {
-        ProfitRecord record = WebRepository.INSTANCE.getProfitRecord(userId);
+    private ProfitRecord[] countCurrent(HttpSession session) {
+        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
+        int amount = 0;
+        for (DentalWork dw : works) {
+            for (Product p : dw.getProducts()) {
+                amount += p.getPrice() * p.getQuantity();
+            }
+        }
+        LocalDate now = LocalDate.now();
+        String month = now.getMonth().toString().toLowerCase();
+        ProfitRecord record = new ProfitRecord(now.getYear(), month, amount);
         return new ProfitRecord[] {record};
     }
 
-    private ProfitRecord[] countAll(int userId) throws IOException, APIResponseException {
-        String jwt = WebRepository.INSTANCE.getToken(userId);
+    private ProfitRecord[] countAll(HttpSession session) throws IOException, APIResponseException {
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
         String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, profitCountUrl, "");
         return WebUtility.INSTANCE.parseFromJson(json, ProfitRecord[].class);
     }
 
-    private ProfitRecord[] countAnother(int userId, String year, String month) throws IOException, APIResponseException {
-        String jwt = WebRepository.INSTANCE.getToken(userId);
+    private ProfitRecord[] countAnother(HttpSession session, String year, String month) throws IOException, APIResponseException {
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add("year", year);
         queryFormer.add("month", month);

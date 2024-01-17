@@ -3,12 +3,12 @@ package edu.dental.servlets.works;
 import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
-import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -21,8 +21,8 @@ public class WorkRecordSearch extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-        String jwt = WebRepository.INSTANCE.getToken(userId);
+        HttpSession session = request.getSession();
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
         String patient = request.getParameter(patientParam);
         String clinic = request.getParameter(clinicParam);
 
@@ -33,9 +33,7 @@ public class WorkRecordSearch extends HttpServlet {
             String requestBody = queryFormer.form();
             String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, recordSearchUrl, requestBody);
             DentalWork[] works = WebUtility.INSTANCE.parseFromJson(json, DentalWork[].class);
-            String[] map = WebRepository.INSTANCE.getMap(userId).getKeys();
             request.setAttribute("works", works);
-            request.setAttribute("map", map);
             request.getRequestDispatcher("/main/work-list/page").forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);

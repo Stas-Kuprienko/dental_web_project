@@ -6,7 +6,51 @@ import java.util.Objects;
 /**
  * The class represent the product object and contains entries id, title, price and quantity of product items.
  */
-public record Product(int entryId, String title, byte quantity, int price) implements Serializable {
+public class Product implements Serializable {
+
+    private int entryId;
+    private String title;
+    private byte quantity;
+    private int price;
+
+    public Product(int entryId, String title, byte quantity, int price) {
+        this.entryId = entryId;
+        this.title = title;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
+    public int getEntryId() {
+        return entryId;
+    }
+
+    public void setEntryId(int entryId) {
+        this.entryId = entryId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public byte getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(byte quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
     @Override
     public boolean equals(Object o) {

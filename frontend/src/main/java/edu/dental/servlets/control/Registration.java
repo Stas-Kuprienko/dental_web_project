@@ -2,13 +2,15 @@ package edu.dental.servlets.control;
 
 import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
+import edu.dental.beans.DentalWork;
+import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserDto;
-import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -43,8 +45,10 @@ public class Registration extends HttpServlet {
 
                 String jsonUser = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(signUpUrl, requestParameters);
                 UserDto user = WebUtility.INSTANCE.parseFromJson(jsonUser, UserDto.class);
-                WebRepository.INSTANCE.addNew(user);
-                request.getSession().setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
+                HttpSession session = request.getSession();
+                session.setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
+                session.setAttribute(WebUtility.INSTANCE.sessionWorks, new DentalWork[]{});
+                session.setAttribute(WebUtility.INSTANCE.sessionMap, new ProductMap());
                 request.getRequestDispatcher("/main").forward(request, response);
             } catch (APIResponseException e) {
                 response.sendError(e.CODE, e.MESSAGE);

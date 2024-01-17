@@ -2,7 +2,6 @@ package edu.dental.servlets.reports;
 
 import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
-import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,8 +21,7 @@ public class ReportDownloader extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-        String jwt = WebRepository.INSTANCE.getToken(userId);
+        String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
         String year = request.getParameter("year");
         String month = request.getParameter("month");
         String resource = clarifyResource(year, month);

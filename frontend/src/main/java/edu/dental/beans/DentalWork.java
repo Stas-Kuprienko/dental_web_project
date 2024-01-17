@@ -28,35 +28,35 @@ public class DentalWork {
         this.reportId = reportId;
     }
 
-    public int id() {
+    public int getId() {
         return id;
     }
 
-    public String patient() {
+    public String getPatient() {
         return patient;
     }
 
-    public String clinic() {
+    public String getClinic() {
         return clinic;
     }
 
-    public Product[] products() {
+    public Product[] getProducts() {
         return products;
     }
 
-    public String accepted() {
+    public String getAccepted() {
         return accepted;
     }
 
-    public String complete() {
+    public String getComplete() {
         return complete;
     }
 
-    public String comment() {
+    public String getComment() {
         return comment;
     }
 
-    public String status() {
+    public String getStatus() {
         return status;
     }
 
@@ -96,9 +96,6 @@ public class DentalWork {
         this.reportId = reportId;
     }
 
-    public enum Status {
-        MAKE, CLOSED, PAID
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -32,7 +32,7 @@ public class Authorization extends HttpServlet {
             if (email == null || password == null) {
                 request.getRequestDispatcher("/").forward(request, response);
             } else {
-                UserDto user = Reception.getInstance().getByLogin(email, password);
+                UserDto user = Reception.getInstance().getByLogin(email, password, request.getSession());
 
                 request.getSession().setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
                 request.getSession().setAttribute(WebUtility.INSTANCE.sessionToken, user.jwt());

@@ -1,8 +1,9 @@
 package edu.dental.service;
 
-import edu.dental.beans.*;
+import edu.dental.beans.DentalWork;
+import edu.dental.beans.ProductMap;
+import edu.dental.beans.UserDto;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,15 +17,6 @@ public enum WebRepository {
     }
 
     private final ConcurrentHashMap<Integer, Account> RAM;
-
-
-    public void startMonitor() {
-        WebLifecycleMonitor.INSTANCE.revision(RAM);
-    }
-
-    public void updateAccountLastAction(int userId) {
-        RAM.get(userId).updateLastAction();
-    }
 
     public String getToken(int id) {
         return RAM.get(id).user.jwt();
@@ -80,13 +72,6 @@ public enum WebRepository {
         RAM.remove(id);
     }
 
-    public ProfitRecord getProfitRecord(int userId) {
-        int amount = RAM.get(userId).countProfit();
-        LocalDate now = LocalDate.now();
-        String month = now.getMonth().toString().toLowerCase();
-        return new ProfitRecord(now.getYear(), month, amount);
-    }
-
 
     public static class Account extends Monitorable {
 
@@ -110,22 +95,13 @@ public enum WebRepository {
         }
 
         private void updateWorks(DentalWork dentalWork) {
-            dentalWorks.stream().filter(dw -> dw.id() == dentalWork.id()).findAny().ifPresent(dentalWorks::remove);
+            dentalWorks.stream().filter(dw -> dw.getId() == dentalWork.getId()).findAny().ifPresent(dentalWorks::remove);
             dentalWorks.add(dentalWork);
         }
 
         private void deleteWork(int id) {
-            dentalWorks.stream().filter(dw -> dw.id() == id).findAny().ifPresent(dentalWorks::remove);
+            dentalWorks.stream().filter(dw -> dw.getId() == id).findAny().ifPresent(dentalWorks::remove);
         }
 
-        private int countProfit() {
-            int amount = 0;
-            for (DentalWork dw : dentalWorks) {
-                for (Product p : dw.products()) {
-                    amount += p.price() * p.quantity();
-                }
-            }
-            return amount;
-        }
     }
 }

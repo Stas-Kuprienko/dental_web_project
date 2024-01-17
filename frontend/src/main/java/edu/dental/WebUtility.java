@@ -15,6 +15,8 @@ public enum WebUtility {
 
     public final String sessionUser = "user";
     public final String sessionToken = "token";
+    public final String sessionWorks = "works";
+    public final String sessionMap = "map";
 
     private static final String apiUrl = "http://localhost:8080/dental-api/";
 
