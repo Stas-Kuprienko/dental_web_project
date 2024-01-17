@@ -8,24 +8,24 @@ import java.util.Objects;
  */
 public class Product implements Serializable {
 
-    private int entryId;
+    private int id;
     private String title;
     private byte quantity;
     private int price;
 
-    public Product(int entryId, String title, byte quantity, int price) {
-        this.entryId = entryId;
+    public Product(int id, String title, byte quantity, int price) {
+        this.id = id;
         this.title = title;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public int getEntryId() {
-        return entryId;
+    public int getId() {
+        return id;
     }
 
-    public void setEntryId(int entryId) {
-        this.entryId = entryId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

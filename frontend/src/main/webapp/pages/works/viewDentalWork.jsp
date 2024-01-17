@@ -1,9 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.jsp_printers.WorkViewPage" %>
-<%@ page import="edu.dental.beans.Product" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ page isELIgnored = "false" %>
-<% WorkViewPage view = new WorkViewPage(request); %>
 
 <html>
 <head>
@@ -75,7 +72,7 @@
       <input type="text" name="value" value=""/>
       <input type="hidden" name="field" value="patient">
       <input type="hidden" name="method" value="put">
-      <%=view.inputId()%>
+      <input type="hidden" name="id" value="${work.id}">
       <input type="submit" value="save">
     </form></div>
   <div class="work">
@@ -85,7 +82,7 @@
       <input type="text" name="value" value=""/>
       <input type="hidden" name="field" value="clinic">
       <input type="hidden" name="method" value="put">
-      <%=view.inputId()%>
+      <input type="hidden" name="id" value="${work.id}">
       <input type="submit" value="save">
     </form></div>
   <div class="work">
@@ -95,7 +92,7 @@
       <input type="date" name="value" value=""/>
       <input type="hidden" name="field" value="complete">
       <input type="hidden" name="method" value="put">
-      <%=view.inputId()%>
+      <input type="hidden" name="id" value="${work.id}">
       <input type="submit" value="save">
     </form></div>
   <div class="work">
@@ -107,33 +104,29 @@
       <label for="product">product:</label>
       <select id="product" name="value">
         <option value=""></option>
-        <% while(view.option.hasNext()) {%>
-         <%=view.option.next()%> <%} %>
+        <c:forEach items="${requestScope.map}" var="title">
+        <option value="${title}"> ${title} </option>
+        </c:forEach>
       </select>
       <label for="quantity">quantity:</label>
       <input style="width: 64px;" type="number" id="quantity" name="quantity" value="" max="32">
       <input type="hidden" name="field" value="product">
       <input type="hidden" name="method" value="put">
-      <%=view.buttonId()%>
+      <button type="submit" name="id" value="${work.id}">add</button>
     </form>
     <form method="post" action="/dental/main/dental-work">
       <c:forEach items="${work.products}" var="product">
-        ${product.title} - ${product.quantity}
-        <input type="hidden" name="id" value="${product.id}">
-        <button type="submit" name="product" value="${product.title}" onclick="return confirm('Are you sure?')">delete</button>
+        <a class="tr">
+        <div class="td" style="width: 100%;"> ${product.title} - ${product.quantity} </div>
+        <input type="hidden" name="id" value="${work.id}">
+        <button type="submit" name="product" value="${product.title}" onclick="return confirm('Are you want to delete product?')">
+            delete
+        </button></a>
+        </c:forEach>
       <input type="hidden" name="method" value="delete"><br>
-      </c:forEach>
     </form>
-  <form method="post" action="/dental/main/dental-work">
-      <% while(view.hasNextProduct()) { Product product = view.nextProduct(); %>
-      <a class="tr">
-        <div class="td" style="width: 100%%;"> ${product.title} </div>
-        <input type="hidden" name="id" value="${product.id}">
-        <button type="submit" name="product" value="${product.title}" onclick="return confirm('Are you sure?')">delete</button>
-      </a> <%} %>
-      <input type="hidden" name="method" value="delete">
-    </form>
-  </div>  <div class="work">
+  </div>
+  <div class="work">
   <label style="font-size:80%;">status:</label><br>
   <label id="status-label"> ${work.status} </label>
   <form id="status-form" method="post" action="/dental/main/dental-work" style="display:none">
@@ -144,7 +137,7 @@
     </select>
     <input type="hidden" name="field" value="status">
     <input type="hidden" name="method" value="put">
-    <%=view.inputId()%>
+    <input type="hidden" name="id" value="${work.id}">
     <input type="submit" value="save">
   </form></div>
   <div class="work">
@@ -157,7 +150,7 @@
       </textarea>
       <input type="hidden" name="field" value="comment">
       <input type="hidden" name="method" value="put">
-      <%=view.inputId()%>
+      <input type="hidden" name="id" value="${work.id}">
       <input type="submit" value="save">
     </form></div>
   <div class="work">
@@ -165,11 +158,11 @@
      ${work.accepted} <br><br>
     <form action="/dental/main/photo" style="display:none">
       <button style="width:auto;" type="submit">OPEN PHOTOS</button>
-      <%=view.inputId()%>
+      <input type="hidden" name="id" value="${work.id}">
     </form>
     <form method="post" action="/dental/main/dental-work">
-      <button style="width:auto;"  type="submit" onclick="return confirm('Are you sure?')">DELETE</button>
-      <%=view.inputId()%>
+      <button style="width:auto;"  type="submit" onclick="return confirm('Are you want to delete record?')">DELETE</button>
+      <input type="hidden" name="id" value="${work.id}">
       <input type="hidden" name="method" value="delete">
     </form>
   </div>

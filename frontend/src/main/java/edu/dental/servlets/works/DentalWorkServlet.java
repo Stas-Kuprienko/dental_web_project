@@ -3,6 +3,7 @@ package edu.dental.servlets.works;
 import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
+import edu.dental.beans.ProductMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -41,6 +42,8 @@ public class DentalWorkServlet extends HttpServlet {
                 response.sendError(e.CODE, e.MESSAGE);
             }
         }
+        ProductMap map = (ProductMap) request.getSession().getAttribute(WebUtility.INSTANCE.sessionMap);
+        request.setAttribute(WebUtility.INSTANCE.sessionMap, map.getKeys());
 
         request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
     }
