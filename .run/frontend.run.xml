@@ -6,7 +6,7 @@
     <predefined_log_file id="Tomcat Manager Log" />
     <predefined_log_file id="Tomcat Host Manager Log" />
     <option name="adminPort" value="8006" />
-    <option name="catalinaBase" value="" />
+    <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\dental_web_project\frontend" />
     <option name="contextPath" value="/dental" />
     <option name="docBase" value="D:\Development Java\pet_projects\dental_web_project\frontend\src\main\webapp" />
     <option name="envOptions">
@@ -16,9 +16,9 @@
     <option name="port" value="8081" />
     <option name="tomcatInfo">
       <TomcatInfo>
-        <option name="name" value="t-Tomcat/10.1.18" />
-        <option name="path" value="$PROJECT_DIR$/frontend/apache-tomcat-10.1.18" />
-        <option name="version" value="10.1.18.0" />
+        <option name="name" value="frontend-Tomcat-10.1.16" />
+        <option name="path" value="$PROJECT_DIR$/frontend/apache-tomcat-10.1.16" />
+        <option name="version" value="10.1.16.0" />
       </TomcatInfo>
     </option>
     <option name="vmOptions" value="" />
