@@ -51,10 +51,6 @@ public enum WebUtility {
             this.url = url;
         }
 
-        public String sendHttpGetRequest(String jwt, String resource, String request) throws IOException {
-            //TODO !!!
-            return null;
-        }
 
         public String sendHttpGetRequest(String jwt, String resource) throws IOException, APIResponseException {
             HttpURLConnection connection = null;

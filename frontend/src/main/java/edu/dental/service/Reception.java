@@ -3,7 +3,6 @@ package edu.dental.service;
 import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.UserDto;
-import edu.dental.service.my_account_manager.MyAccountManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -15,7 +14,8 @@ public final class Reception {
         instance = new Reception();
     }
     private Reception() {
-        this.accountManager = new MyAccountManager();
+        this.dentalWorksService = DentalWorksService.getInstance();
+        this.productMapService = ProductMapService.getInstance();
     }
     private static final Reception instance;
 
@@ -23,7 +23,8 @@ public final class Reception {
     private static final String paramEmail = "email";
     private static final String paramPassword = "password";
 
-    private final AccountManager accountManager;
+    private final DentalWorksService dentalWorksService;
+    private final ProductMapService productMapService;
 
 
     public void authenticateByLogin(HttpServletRequest request) throws IOException, APIResponseException {
@@ -46,8 +47,8 @@ public final class Reception {
         session.setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
         session.setAttribute(WebUtility.INSTANCE.sessionToken, user.jwt());
 
-        accountManager.setWorkList(session);
-        accountManager.setProductMap(session);
+        dentalWorksService.setWorkList(session);
+        productMapService.setProductMap(session);
     }
 
     public UserDto getByToken(String token, HttpSession session) throws IOException, APIResponseException {

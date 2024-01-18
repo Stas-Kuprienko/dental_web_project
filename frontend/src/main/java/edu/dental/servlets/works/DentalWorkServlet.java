@@ -4,8 +4,7 @@ import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
-import edu.dental.service.AccountManager;
-import edu.dental.service.my_account_manager.MyAccountManager;
+import edu.dental.service.DentalWorksService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -33,12 +32,12 @@ public class DentalWorkServlet extends HttpServlet {
     public final String fieldParam = "field";
     public final String valueParam = "value";
 
-    private AccountManager accountManager;
+    private DentalWorksService dentalWorksService;
 
 
     @Override
     public void init() throws ServletException {
-        this.accountManager = new MyAccountManager();
+        this.dentalWorksService = DentalWorksService.getInstance();
     }
 
     @Override
