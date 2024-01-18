@@ -4,6 +4,8 @@ import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
+import edu.dental.service.AccountManager;
+import edu.dental.service.my_account_manager.MyAccountManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,6 +33,13 @@ public class DentalWorkServlet extends HttpServlet {
     public final String fieldParam = "field";
     public final String valueParam = "value";
 
+    private AccountManager accountManager;
+
+
+    @Override
+    public void init() throws ServletException {
+        this.accountManager = new MyAccountManager();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -216,7 +225,7 @@ public class DentalWorkServlet extends HttpServlet {
         DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
         ArrayList<DentalWork> workList = new ArrayList<>(List.of(works));
         workList.stream().filter(dw -> dw.getId() == id).findAny().ifPresent(workList::remove);
-        works = workList.toArray(works);
+        works = workList.toArray(new DentalWork[]{});
         session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
     }
 }

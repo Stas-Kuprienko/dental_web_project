@@ -73,14 +73,13 @@ public enum WebRepository {
     }
 
 
-    public static class Account extends Monitorable {
+    public static class Account {
 
         private UserDto user;
         private final ProductMap productMap;
         private List<DentalWork> dentalWorks;
 
         public Account(UserDto user, ProductMap productMap, List<DentalWork> dentalWorks) {
-            super(user.id());
             this.user = user;
             this.productMap = productMap;
             this.dentalWorks = new ArrayList<>(dentalWorks);
