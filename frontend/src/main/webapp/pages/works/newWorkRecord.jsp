@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.jsp_printers.WorkViewPage" %>
-<% WorkViewPage.OptionBuilder option = new WorkViewPage.OptionBuilder(request); %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page isELIgnored = "false" %>
+
 <html>
 <head>
     <title>DENTAL MECHANIC SERVICE</title>
@@ -25,9 +26,11 @@
     <label for="clinic">clinic:</label><br>
     <input type="text" id="clinic" name="clinic" value=""><br>
     <label for="product">product:</label><br>
-    <select id="product" name="product" style="width: 230px; height: 30px; font-size: 22px;">
+    <select id="product" name="title" style="width: 230px; height: 30px; font-size: 22px;">
         <option value=""></option>
-        <% while(option.hasNext()) {%> <%=option.next()%> <%} %>
+        <c:forEach items="${sessionScope.map.items}" var="item">
+        <option value="${item.key}"> ${item.key} </option>
+        </c:forEach>
     </select><br>
     <label for="quantity">quantity:</label><br>
     <input type="number" id="quantity" name="quantity" value="0" max="32"><br>

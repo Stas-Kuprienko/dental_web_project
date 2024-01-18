@@ -4,10 +4,10 @@ import java.util.*;
 
 public class ProductMap {
 
-    private List<Item> items;
+    private ArrayList<Item> items;
 
-    public ProductMap(List<Item> items) {
-        this.items = new ArrayList<>(items);
+    public ProductMap(Item[] items) {
+        this.items = new ArrayList<>(List.of(items));
     }
     public ProductMap() {
         this.items = new ArrayList<>();
@@ -26,7 +26,7 @@ public class ProductMap {
     public void update(String key, int value) {
         Item item = items.stream().filter(e -> e.key.equals(key)).findAny().orElse(null);
         if (item != null) {
-            int id = item.id();
+            int id = item.id;
             items.remove(item);
             items.add(new Item(id, key, value));
         }
@@ -40,12 +40,11 @@ public class ProductMap {
         return items.isEmpty();
     }
 
-    public Item[] getItems() {
-        Item[] result = new Item[items.size()];
-        return items.toArray(result);
+    public ArrayList<Item> getItems() {
+        return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(ArrayList<Item> items) {
         this.items = items;
     }
 
@@ -69,14 +68,44 @@ public class ProductMap {
                 '}';
     }
 
-    public record Item(int id, String key, int value) {
+    public static class Item {
+
+        private int id;
+        private String key;
+        private int value;
+
+        public Item(int id, String key, int value) {}
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
 
         @Override
             public boolean equals(Object o) {
                 if (this == o) return true;
                 if (o == null || getClass() != o.getClass()) return false;
-                Item itemDTO = (Item) o;
-                return id == itemDTO.id && value == itemDTO.value && Objects.equals(key, itemDTO.key);
+                Item item = (Item) o;
+                return id == item.id && value == item.value && Objects.equals(key, item.key);
             }
 
         @Override

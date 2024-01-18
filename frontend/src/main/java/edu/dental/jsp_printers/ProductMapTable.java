@@ -4,7 +4,6 @@ import edu.dental.WebUtility;
 import edu.dental.beans.ProductMap;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import static edu.dental.jsp_printers.HtmlTag.*;
@@ -19,7 +18,7 @@ public class ProductMapTable {
 
     public ProductMapTable(HttpServletRequest request) {
         ProductMap map = (ProductMap) request.getSession().getAttribute(WebUtility.INSTANCE.sessionMap);
-        this.iterator = Arrays.stream(map.getItems()).iterator();
+        this.iterator = map.getItems().iterator();
         String strId = request.getParameter("id");
         id = (strId == null || strId.isEmpty()) ? 0 : Integer.parseInt(strId);
     }
@@ -34,9 +33,9 @@ public class ProductMapTable {
         }
         ProductMap.Item item = iterator.next();
         StringBuilder str = new StringBuilder();
-        str.append(String.format(A_TR.o, href + item.id()));
-        DIV_TD.line(str, item.key());
-        DIV_TD.line(str, String.valueOf(item.value()));
+        str.append(String.format(A_TR.o, href + item.getId()));
+        DIV_TD.line(str, item.getKey());
+        DIV_TD.line(str, String.valueOf(item.getValue()));
         str.append(A_TR.c);
         return str.toString();
     }
@@ -44,15 +43,15 @@ public class ProductMapTable {
     private String next(int id) {
         ProductMap.Item item = iterator.next();
         StringBuilder str = new StringBuilder();
-        if (item.id() == id) {
+        if (item.getId() == id) {
             str.append(A_TR_WITHOUT_HREF.o);
-            DIV_TD.line(str, item.key());
+            DIV_TD.line(str, item.getKey());
             str.append(String.format(HtmlTag.PRODUCT_VIEW.FORM.sample,
-                    item.value(), item.key(), item.id(), item.key(), item.id()));
+                    item.getValue(), item.getKey(), item.getId(), item.getKey(), item.getId()));
         } else {
-            str.append(String.format(A_TR.o, href + item.id()));
-            DIV_TD.line(str, item.key());
-            DIV_TD.line(str, String.valueOf(item.value()));
+            str.append(String.format(A_TR.o, href + item.getId()));
+            DIV_TD.line(str, item.getKey());
+            DIV_TD.line(str, String.valueOf(item.getValue()));
         }
         str.append(A_TR.c);
         return str.toString();

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.jsp_printers.ProfitListPrinter" %>
-<% ProfitListPrinter td = new ProfitListPrinter(request); %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page isELIgnored = "false" %>
+
 <html>
 <head>
     <title>DENTAL MECHANIC SERVICE</title>
@@ -27,8 +28,13 @@
             </div>
         </div>
         <div class="tbody">
-            <% while (td.hasNext()) {%>
-            <%=td.next()%> <%} %>
+            <c:forEach items="${profit}" var="record">
+            <a class="tr" href="/dental/main/work-list?year-month=${record.year}-${record.monthValue}">
+                <div class="td"> ${record.year} </div>
+                <div class="td"> ${record.month} </div>
+                <div class="td"> ${record.amount} </div>
+            </a>
+            </c:forEach>
         </div>
     </div>
 </section>
