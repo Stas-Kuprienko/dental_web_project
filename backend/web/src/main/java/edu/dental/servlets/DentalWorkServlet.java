@@ -3,10 +3,12 @@ package edu.dental.servlets;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
+import edu.dental.dto.ProductDto;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.tools.RequestReader;
+import edu.dental.service.tools.RestRequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,6 +22,8 @@ import java.util.HashMap;
 @WebServlet("/main/dental-work")
 public class DentalWorkServlet extends HttpServlet {
 
+    private static final String url = "/main/dental-work";
+
     public final String idParam = "id";
     public final String patientParam = "patient";
     public final String clinicParam = "clinic";
@@ -31,11 +35,14 @@ public class DentalWorkServlet extends HttpServlet {
 
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
+    private RestRequestReader restRequestReader;
+
 
     @Override
     public void init() throws ServletException {
         this.repository = Repository.getInstance();
         this.jsonObjectParser = JsonObjectParser.getInstance();
+        this.restRequestReader = new RestRequestReader(url);
     }
 
 
@@ -60,24 +67,22 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        String patient = request.getParameter(patientParam);
-        String clinic = request.getParameter(clinicParam);
-        String product = request.getParameter(productParam);
-        int quantity = Integer.parseInt(request.getParameter(quantityParam));
-        String complete = request.getParameter(completeParam);
+        String jsonNew = RequestReader.readJson(request);
+        DentalWorkDto dto = jsonObjectParser.parseFromJson(jsonNew, DentalWorkDto.class);
 
-        DentalWorkDto dw;
         WorkRecordBook recordBook = repository.getRecordBook(userId);
+        DentalWork dw;
         try {
-            if (product != null && !product.isEmpty()) {
-                dw = new DentalWorkDto(recordBook.createRecord(patient, clinic, product, quantity, LocalDate.parse(complete)));
+            if (dto.getProducts() == null || dto.getProducts().length == 0) {
+                dw = recordBook.createRecord(dto.getPatient(), dto.getClinic());
             } else {
-                dw = new DentalWorkDto(recordBook.createRecord(patient, clinic));
+                ProductDto p = dto.getProducts()[0];
+                dw = recordBook.createRecord(dto.getPatient(), dto.getClinic(), p.title(), p.quantity(), LocalDate.parse(dto.getComplete()));
             }
-            String json = jsonObjectParser.parseToJson(dw);
+            String jsonCreated = jsonObjectParser.parseToJson(dw);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(json);
+            response.getWriter().print(jsonCreated);
             response.getWriter().flush();
         } catch (WorkRecordBookException e) {
             response.sendError(400);

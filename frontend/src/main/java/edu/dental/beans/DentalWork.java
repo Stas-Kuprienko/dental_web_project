@@ -3,7 +3,7 @@ package edu.dental.beans;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class DentalWork {
+public class DentalWork implements Comparable<DentalWork> {
 
     private final int id;
     private String patient;
@@ -125,5 +125,10 @@ public class DentalWork {
                 ", comment='" + comment + '\'' +
                 ", status='" + status + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(DentalWork o) {
+        return Integer.compare(id, o.id);
     }
 }

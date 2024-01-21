@@ -1,7 +1,8 @@
 package edu.dental.service;
 
 import edu.dental.APIResponseException;
-import jakarta.servlet.http.HttpServletRequest;
+import edu.dental.beans.DentalWork;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
@@ -14,10 +15,15 @@ public interface DentalWorksService {
 
     void setWorkList(HttpSession session) throws IOException, APIResponseException;
 
-    void createWork(HttpServletRequest request);
+    DentalWork createWork(HttpSession session, String patient, String clinic, String product, int quantity, String complete) throws IOException, APIResponseException;
 
-    void updateWork(HttpServletRequest request) throws IOException, APIResponseException;
+    DentalWork updateDentalWork(HttpSession session, int id, String field, String value, String quantity) throws IOException, APIResponseException, ServletException;
 
-    void deleteWork(HttpServletRequest request);
+    DentalWork getDentalWorkById(HttpSession session, int id) throws IOException, APIResponseException;
 
+    void updateDentalWorkList(HttpSession session, DentalWork dw);
+
+    void deleteDentalWorkFromList(HttpSession session, int id) throws IOException, APIResponseException;
+
+    DentalWork removeProductFromDentalWork(HttpSession session, int id, String product) throws IOException, APIResponseException;
 }

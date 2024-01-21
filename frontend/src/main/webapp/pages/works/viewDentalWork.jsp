@@ -104,8 +104,8 @@
       <label for="product">product:</label>
       <select id="product" name="value">
         <option value=""></option>
-        <c:forEach items="${requestScope.map}" var="title">
-        <option value="${title}"> ${title} </option>
+        <c:forEach items="${sessionScope.map.items}" var="item">
+        <option value="${item.key}"> ${item.key} </option>
         </c:forEach>
       </select>
       <label for="quantity">quantity:</label>

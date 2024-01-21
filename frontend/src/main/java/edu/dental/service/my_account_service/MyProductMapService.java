@@ -1,4 +1,4 @@
-package edu.dental.service.my_account_manager;
+package edu.dental.service.my_account_service;
 
 import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
