@@ -72,8 +72,8 @@ public class ProfitCountServlet extends HttpServlet {
 
             return ProfitRecordDto.parseArray(recordBook.countAllProfits());
         } else {
-            ProfitRecordDto dto = ProfitRecordDto
-                    .parse(recordBook.countProfitForMonth(Integer.parseInt(year), Integer.parseInt(month)));
+            ProfitRecordDto dto = new ProfitRecordDto
+                    (recordBook.countProfitForMonth(Integer.parseInt(year), Integer.parseInt(month)));
 
             return new ProfitRecordDto[] {dto};
         }

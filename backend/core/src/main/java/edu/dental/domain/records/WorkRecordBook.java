@@ -8,7 +8,6 @@ import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
 import edu.dental.entities.ProfitRecord;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -44,25 +43,12 @@ public interface WorkRecordBook {
 
     /**
      * Create a {@link DentalWork} object and add it to {@link List} field of this instance.
-     * @param patient the patient name or surname of this work.
-     * @param clinic the clinic of this work.
-     * @param product the {@link Product product} type title
-     *                 (that having in {@link Map}).
-     * @param quantity the quantity of product items (no more than 32, depending on the type of product).
-     * @param complete The date, when this work should be completed.
+     * @param dentalWork {@link DentalWork} object to add.
      * @return The created DentalWork object.
      * @throws WorkRecordBookException if a given arguments is incorrect or the given product type
      *  is not contain in {@link Map}.
      */
-    DentalWork createRecord(String patient, String clinic, String product, int quantity, LocalDate complete) throws WorkRecordBookException;
-
-    /**
-     * Create a {@link DentalWork} object and add it to {@link List} field of this instance.
-     * @param patient the patient name or surname of this work.
-     * @param clinic the clinic of this work.
-     * @return The created DentalWork object.
-     */
-    DentalWork createRecord(String patient, String clinic) throws WorkRecordBookException;
+    DentalWork addNewRecord(DentalWork dentalWork) throws WorkRecordBookException;
 
     ProductMap.Item addProductItem(String title, int price) throws WorkRecordBookException;
 

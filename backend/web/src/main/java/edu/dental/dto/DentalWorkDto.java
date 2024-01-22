@@ -1,10 +1,7 @@
 package edu.dental.dto;
 
 import edu.dental.entities.DentalWork;
-import edu.dental.entities.Product;
-import utils.collections.SimpleList;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -43,22 +40,7 @@ public class DentalWorkDto {
         this.status = dw.getStatus().toString();
         this.reportId = dw.getReportId();
         this.products = new ProductDto[dw.getProducts().size()];
-        dw.getProducts().stream().map(ProductDto::parse).toList().toArray(products);
-    }
-
-    public static DentalWork revert(int userId, DentalWorkDto dto) {
-        DentalWork dw = new DentalWork();
-        dw.setUserId(userId);
-        dw.setId(dto.id);
-        dw.setPatient(dto.patient);
-        dw.setClinic(dto.clinic);
-        dw.setComplete(dto.complete);
-        dw.setAccepted(LocalDate.parse(dto.accepted));
-        dw.setStatus(dto.status);
-        dw.setReportId(dto.reportId);
-        Product[] productArray = ProductDto.revert(dto.products);
-        dw.setProducts(new SimpleList<>(productArray));
-        return dw;
+        dw.getProducts().stream().map(ProductDto::new).toList().toArray(products);
     }
 
     public int getId() {

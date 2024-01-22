@@ -193,6 +193,10 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
         this.products = (SimpleList<Product>) products;
     }
 
+    public void setProducts(Product[] products) {
+        this.products = new SimpleList<>(products);
+    }
+
     public LocalDate getComplete() {
         return complete;
     }

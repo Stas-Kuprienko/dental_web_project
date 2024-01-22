@@ -14,7 +14,6 @@ import utils.collections.SimpleList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
@@ -50,28 +49,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public DentalWork createRecord(String patient, String clinic, String product, int quantity, LocalDate complete) throws WorkRecordBookException {
-        Product p;
-        try {
-            p = productMap.createProduct(product, quantity);
-        } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
-            throw new WorkRecordBookException(e);
-        }
-        DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).setComplete(complete).build();
-        dentalWork.getProducts().add(p);
-        dentalWork.setUserId(userId);
-        try {
-            databaseService.getDentalWorkDAO().put(dentalWork);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
-        records.add(dentalWork);
-        return dentalWork;
-    }
-
-    @Override
-    public DentalWork createRecord(String patient, String clinic) throws WorkRecordBookException {
-        DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).build();
+    public DentalWork addNewRecord(DentalWork dentalWork) throws WorkRecordBookException {
         dentalWork.setUserId(userId);
         try {
             databaseService.getDentalWorkDAO().put(dentalWork);

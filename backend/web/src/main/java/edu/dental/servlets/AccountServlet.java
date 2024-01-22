@@ -100,7 +100,7 @@ public class AccountServlet extends HttpServlet {
         user.setName(name);
         try {
             accountService.update(user);
-            return UserDto.parse(user);
+            return new UserDto(user);
         } catch (AccountException e) {
             user.setName(oldValue);
             throw new WebException(e.cause, e);
@@ -113,7 +113,7 @@ public class AccountServlet extends HttpServlet {
         user.setEmail(email);
         try {
             accountService.update(user);
-            return UserDto.parse(user);
+            return new UserDto(user);
         } catch (AccountException e) {
             user.setEmail(oldValue);
             throw new WebException(e.cause, e);
@@ -122,6 +122,6 @@ public class AccountServlet extends HttpServlet {
 
     private UserDto setPassword(User user, String password) throws WebException {
         authenticationService.updatePassword(user, password);
-        return UserDto.parse(user);
+        return new UserDto(user);
     }
 }

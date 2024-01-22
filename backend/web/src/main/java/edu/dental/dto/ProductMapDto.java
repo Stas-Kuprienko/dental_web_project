@@ -1,27 +1,26 @@
 package edu.dental.dto;
 
+import edu.dental.entities.ProductMap;
+
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Objects;
 
 public class ProductMapDto {
 
     private Item[] items;
 
+    public ProductMapDto() {}
+
     public ProductMapDto(Item[] items) {
         this.items = items;
     }
 
-    public ProductMapDto(edu.dental.entities.ProductMap map) {
+    public ProductMapDto(ProductMap map) {
         this.items = new Item[map.size()];
         edu.dental.entities.ProductMap.Item[] items = map.toArray();
         for (int i = 0; i < map.size(); i++) {
             this.items[i] = new Item(items[i]);
         }
-    }
-
-    public Iterator<Item> iterator() {
-        return Arrays.stream(items).iterator();
     }
 
     public String[] getKeys() {

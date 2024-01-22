@@ -3,7 +3,7 @@ package edu.dental.servlets;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
-import edu.dental.dto.ProductDto;
+import edu.dental.dto.DtoParser;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.HashMap;
 
 @WebServlet("/main/dental-work")
@@ -71,20 +70,23 @@ public class DentalWorkServlet extends HttpServlet {
         DentalWorkDto dto = jsonObjectParser.parseFromJson(jsonNew, DentalWorkDto.class);
 
         WorkRecordBook recordBook = repository.getRecordBook(userId);
-        DentalWork dw;
+//        DentalWork dw;
         try {
-            if (dto.getProducts() == null || dto.getProducts().length == 0) {
-                dw = recordBook.createRecord(dto.getPatient(), dto.getClinic());
-            } else {
-                ProductDto p = dto.getProducts()[0];
-                dw = recordBook.createRecord(dto.getPatient(), dto.getClinic(), p.title(), p.quantity(), LocalDate.parse(dto.getComplete()));
-            }
-            String jsonCreated = jsonObjectParser.parseToJson(dw);
+            DentalWork dentalWork = DtoParser.revertDto(new DentalWork(), dto);
+            dentalWork = recordBook.addNewRecord(dentalWork);
+
+//            if (dto.getProducts() == null || dto.getProducts().length == 0) {
+//                dw = recordBook.addNewRecord(dto.getPatient(), dto.getClinic());
+//            } else {
+//                ProductDto p = dto.getProducts()[0];
+//                dw = recordBook.addNewRecord(dto.getPatient(), dto.getClinic(), p.title(), p.quantity(), LocalDate.parse(dto.getComplete()));
+//            }
+            String jsonCreated = jsonObjectParser.parseToJson(dentalWork);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(jsonCreated);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
+        } catch (WorkRecordBookException | ReflectiveOperationException e) {
             response.sendError(400);
         }
 

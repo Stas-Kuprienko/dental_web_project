@@ -42,7 +42,7 @@ public class MyAuthentication implements AuthenticationService {
         try {
             user = accountService.create(name, email, password);
             repository.put(user, WorkRecordBook.createNew(user.getId()));
-            return UserDto.parse(user);
+            return new UserDto(user);
         } catch (AccountException e) {
             throw new WebException(e.cause, e);
         }
@@ -61,7 +61,7 @@ public class MyAuthentication implements AuthenticationService {
         } catch (WorkRecordBookException e) {
             throw new WebException(AccountException.CAUSE.BAD_REQUEST, e);
         }
-        return UserDto.parse(user);
+        return new UserDto(user);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class MyAuthentication implements AuthenticationService {
             int id = jwtUtils.getId(jwt);
             if (id > 0) {
                 user = accountService.get(id);
-                return UserDto.parse(user);
+                return new UserDto(user);
             } else {
                 throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
             }
