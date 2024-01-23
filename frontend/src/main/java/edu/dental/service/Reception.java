@@ -44,8 +44,8 @@ public final class Reception {
 
         HttpSession session = request.getSession(true);
 
-        session.setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
-        session.setAttribute(WebUtility.INSTANCE.sessionToken, user.jwt());
+        session.setAttribute(WebUtility.INSTANCE.sessionUser, user.getId());
+        session.setAttribute(WebUtility.INSTANCE.sessionToken, user.getJwt());
 
         dentalWorksService.setWorkList(session);
         productMapService.setProductMap(session);

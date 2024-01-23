@@ -90,12 +90,8 @@ public class MyDentalWorksService implements DentalWorksService {
         dw = Arrays.stream(works).filter(e -> e.getId() == id).findFirst().orElse(null);
         if (dw == null) {
 
-            WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
-            queryFormer.add(idParam, id);
-            String requestParam = queryFormer.form();
-
             String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
-            String json = httpRequestSender.sendHttpGetRequest(jwt, dentalWorkUrl + "?" + requestParam);
+            String json = httpRequestSender.sendHttpGetRequest(jwt, dentalWorkUrl + "/" + id);
             dw = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         }
         return dw;

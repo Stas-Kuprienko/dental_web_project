@@ -18,7 +18,7 @@ import static edu.dental.jsp_printers.HtmlTag.*;
 @SuppressWarnings("unused")
 public class WorkListTable {
 
-    private static final String href = "dental-work?id=";
+    private static final String href = "dental-work/";
 
     public final Header tableHead;
 

@@ -40,7 +40,13 @@ public class AccountServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendError(405);
+        int userId = (int) request.getAttribute(Repository.paramUser);
+        UserDto dto = new UserDto(repository.getUser(userId));
+        String json = jsonObjectParser.parseToJson(dto);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().print(json);
+        response.getWriter().flush();
     }
 
     @Override

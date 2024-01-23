@@ -1,8 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.jsp_printers.AccountPagePrinter" %>
-<%@ page import="edu.dental.beans.UserDto" %>
-<% AccountPagePrinter printer = new AccountPagePrinter(request); %>
-<% UserDto user = printer.user(); %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page isELIgnored = "false" %>
+
 <html>
 <head>
     <title>DENTAL MECHANIC SERVICE</title>
@@ -44,7 +43,7 @@
 <section>
     <div class="work">
         <label style="font-size:80%;">USER:</label><br>
-        <label id="name-label"> <%=user.name() %> </label>
+        <label id="name-label"> ${user.name} </label>
         <form id="name-form" method="post" action="/dental/main/account" style="display:none">
             <input type="text" name="value" value=""/>
             <input type="hidden" name="field" value="name">
@@ -53,7 +52,7 @@
     </div>
     <div class="work">
         <label style="font-size:80%;">EMAIL:</label><br>
-        <label id="email-label"> <%=user.email() %> </label>
+        <label id="email-label"> ${user.email} </label>
         <form id="email-form" method="post" action="/dental/main/account" style="display:none">
             <input type="text" name="value" value=""/>
             <input type="hidden" name="field" value="email">
@@ -62,7 +61,7 @@
     </div>
     <div class="work">
         <label style="font-size:80%;">CREATED:</label><br>
-        <label> <%=user.created() %> </label>
+        <label> ${user.created} </label>
     </div>
     <div class="work">
         <label id="password-label" style="font-size:80%;">change password</label><br>
@@ -75,7 +74,7 @@
     <br><br>
     <a>
         <form method="post" action="/dental/main/account">
-            <input type="submit" value="delete account" onclick="return confirm('ARE YOU SURE?')">
+            <input type="submit" value="delete account" onclick="return confirm('DELETE YOUR ACCOUNT?')">
             <input type="hidden" name="method" value="delete">
         </form>
     </a>

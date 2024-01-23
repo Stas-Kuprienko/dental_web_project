@@ -46,7 +46,7 @@ public class Registration extends HttpServlet {
                 String jsonUser = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(signUpUrl, requestParameters);
                 UserDto user = WebUtility.INSTANCE.parseFromJson(jsonUser, UserDto.class);
                 HttpSession session = request.getSession();
-                session.setAttribute(WebUtility.INSTANCE.sessionUser, user.id());
+                session.setAttribute(WebUtility.INSTANCE.sessionUser, user.getId());
                 session.setAttribute(WebUtility.INSTANCE.sessionWorks, new DentalWork[]{});
                 session.setAttribute(WebUtility.INSTANCE.sessionMap, new ProductMap());
                 request.getRequestDispatcher("/main").forward(request, response);

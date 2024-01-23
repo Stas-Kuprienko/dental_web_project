@@ -19,7 +19,7 @@ public enum WebRepository {
     private final ConcurrentHashMap<Integer, Account> RAM;
 
     public String getToken(int id) {
-        return RAM.get(id).user.jwt();
+        return RAM.get(id).user.getJwt();
     }
 
     public UserDto getUser(int id) {
@@ -27,7 +27,7 @@ public enum WebRepository {
     }
 
     public void updateUser(UserDto user) {
-        RAM.get(user.id()).setUser(user);
+        RAM.get(user.getId()).setUser(user);
     }
 
     public ProductMap getMap(int id) {
@@ -44,13 +44,13 @@ public enum WebRepository {
 
     public void setAccount(UserDto user, List<DentalWork> works, ProductMap map) {
         Account account = new Account(user, map, works);
-        RAM.put(user.id(), account);
+        RAM.put(user.getId(), account);
     }
 
     public void addNew(UserDto userDto) {
         List<DentalWork> workList = new ArrayList<>();
         Account account = new Account(userDto, new ProductMap(), workList);
-        RAM.put(userDto.id(), account);
+        RAM.put(userDto.getId(), account);
     }
 
     public void updateDentalWorkList(int userId, DentalWork dw) {
@@ -65,7 +65,7 @@ public enum WebRepository {
 
     public boolean isExist(int userId) {
         Account account = RAM.get(userId);
-        return (account != null && account.user.id() == userId);
+        return (account != null && account.user.getId() == userId);
     }
 
     public void delete(int id) {

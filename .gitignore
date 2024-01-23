@@ -50,3 +50,4 @@ build/
 /backend/core/src/main/resources/log4j2.xml
 /frontend/apache-tomcat-10.1.18/
 /backend/core/src/main/resources/dental.log.lck
+/frontend/src/main/resources/frontend_dental.log.lck

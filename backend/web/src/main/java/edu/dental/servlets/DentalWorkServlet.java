@@ -44,11 +44,11 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        int workId = Integer.parseInt(request.getParameter(idParam));
+        int id = restRequestReader.getId(request.getRequestURI());
         DentalWorkDto work;
         WorkRecordBook recordBook = repository.getRecordBook(userId);
         try {
-            work = new DentalWorkDto(recordBook.getById(workId, true));
+            work = new DentalWorkDto(recordBook.getById(id, true));
             String json = jsonObjectParser.parseToJson(work);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -69,7 +69,7 @@ public class DentalWorkServlet extends HttpServlet {
         try {
             DentalWork dentalWork = dto.revert(userId);
             dentalWork = recordBook.addNewRecord(dentalWork);
-            String jsonCreated = jsonObjectParser.parseToJson(dentalWork);
+            String jsonCreated = jsonObjectParser.parseToJson(new DentalWorkDto(dentalWork));
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(jsonCreated);

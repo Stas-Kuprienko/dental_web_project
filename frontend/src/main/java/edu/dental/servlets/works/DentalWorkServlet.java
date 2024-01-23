@@ -4,6 +4,7 @@ import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
 import edu.dental.service.DentalWorksService;
 
+import edu.dental.service.RestRequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,7 +14,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/main/dental-work")
+@WebServlet({"/main/dental-work", "/main/dental-work/*"})
 public class DentalWorkServlet extends HttpServlet {
 
     private static final String idParam = "id";
@@ -26,11 +27,13 @@ public class DentalWorkServlet extends HttpServlet {
     private static final String valueParam = "value";
 
     private DentalWorksService dentalWorksService;
+    private RestRequestReader restRequestReader;
 
 
     @Override
     public void init() throws ServletException {
         this.dentalWorksService = DentalWorksService.getInstance();
+        this.restRequestReader = new RestRequestReader("/main/dental-work");
     }
 
     @Override
@@ -39,8 +42,14 @@ public class DentalWorkServlet extends HttpServlet {
         if (dentalWork == null) {
             try {
                 HttpSession session = request.getSession();
-                int workId = request.getParameter(idParam) != null ? Integer.parseInt(request.getParameter(idParam)) :
-                        (int) request.getAttribute(idParam);
+                int workId;
+                String parameterId = request.getParameter(idParam);
+                if (parameterId != null && !parameterId.isEmpty()) {
+                    workId = Integer.parseInt(parameterId);
+                } else {
+                    //TODO temporary
+                    workId = restRequestReader.getId(request.getRequestURI());
+                }
                 dentalWork = dentalWorksService.getDentalWorkById(session, workId);
             } catch (APIResponseException e) {
                 response.sendError(e.CODE, e.MESSAGE);

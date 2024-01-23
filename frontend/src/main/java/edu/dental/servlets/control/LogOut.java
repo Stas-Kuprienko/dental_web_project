@@ -14,10 +14,11 @@ public class LogOut extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO it don't work
         HttpSession session = request.getSession(false);
-        session.invalidate();
-        response.sendRedirect("/");
+        if (session != null) {
+            session.invalidate();
+        }
+        request.getRequestDispatcher("/").forward(request, response);
     }
 
     @Override

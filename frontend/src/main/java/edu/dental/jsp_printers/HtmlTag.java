@@ -136,7 +136,7 @@ public enum HtmlTag {
                 <input type="hidden" name="title" value="%s">
                 <input type="hidden" name="id" value="%s">
                 <input type="hidden" name="method" value="delete">
-                <input type="submit" value="delete">
+                <input type="submit" value="delete" onclick="return confirm('remove product item?')">
                 </form>&emsp;
             <form style="display: inline-block;" action="/dental/main/product-map">
                 <input type="submit" value="cancel">

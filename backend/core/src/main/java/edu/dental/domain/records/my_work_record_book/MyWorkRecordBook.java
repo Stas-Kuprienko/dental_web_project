@@ -130,11 +130,11 @@ public class MyWorkRecordBook implements WorkRecordBook {
         }
         Product p;
         SimpleList<Product> products = dentalWork.getProducts();
-        p = products.searchElement("title", product).get(0);
-        if (p != null) {
+        try {
+            p = products.searchElement("title", product).get(0);
             quantity += p.quantity();
             removeProduct(dentalWork, product);
-        }
+        } catch (NoSuchElementException ignored) {}
         try {
             p = productMap.createProduct(product, quantity);
             dentalWork.getProducts().add(p);
