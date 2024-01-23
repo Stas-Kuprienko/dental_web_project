@@ -117,7 +117,8 @@ public class WorkListTable {
         private final Iterator<String> map;
 
         private Header(HttpServletRequest request) {
-            String[] map = (String[]) request.getAttribute("map");
+            ProductMap productMap = (ProductMap) request.getSession().getAttribute(WebUtility.INSTANCE.sessionMap);
+            String[] map = productMap.getKeys();
             if (map == null || map.length == 0) {
                 this.map = Arrays.stream(new String[] {" "}).iterator();
             } else {

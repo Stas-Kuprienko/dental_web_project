@@ -19,7 +19,7 @@ public interface DentalWorkDAO {
 
     List<DentalWork> search(int userId, String[] fields, String[] args) throws DatabaseException;
 
-    boolean edit(DentalWork object) throws DatabaseException;
+    boolean update(DentalWork object) throws DatabaseException;
 
     boolean setFieldValue(int userId, List<DentalWork> list, String field, Object value) throws DatabaseException;
 

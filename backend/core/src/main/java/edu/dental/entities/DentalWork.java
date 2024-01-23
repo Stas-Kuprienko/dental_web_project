@@ -43,10 +43,11 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
      */
     public DentalWork() {}
 
-    private DentalWork(SimpleList<Product> products, LocalDate accepted, Status status) {
+    private DentalWork(SimpleList<Product> products, LocalDate accepted, Status status, int reportId) {
         this.products = products;
         this.accepted = accepted;
         this.status = status;
+        this.reportId = reportId;
     }
 
 
@@ -56,8 +57,9 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
     public static Builder create() {
         SimpleList<Product> products = new SimpleList<>();
         LocalDate accepted = LocalDate.now();
-        Status s = Status.MAKE;
-        return new DentalWork(products, accepted, s).new Builder();
+        Status workStatus = Status.MAKE;
+        int reportId = 0;
+        return new DentalWork(products, accepted, workStatus, reportId).new Builder();
     }
 
     @Override

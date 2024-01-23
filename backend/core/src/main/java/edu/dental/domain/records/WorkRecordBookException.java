@@ -17,6 +17,16 @@ public class WorkRecordBookException extends Exception {
     }
 
     public WorkRecordBookException(Exception e) {
-        logger.log(Level.SEVERE, e.getMessage());
+        String message = buildStackMessage(e.getStackTrace());
+        logger.log(Level.SEVERE, message);
+    }
+
+    private static String buildStackMessage(StackTraceElement[] stackTrace) {
+        //TODO
+        StringBuilder str = new StringBuilder();
+        for (StackTraceElement e : stackTrace) {
+            str.append(e.toString()).append("\n");
+        }
+        return str.toString();
     }
 }

@@ -9,7 +9,7 @@ public class RestRequestReader {
     private final Pattern regExIdPattern;
 
     public RestRequestReader(String resource) {
-        this.regExIdPattern = Pattern.compile(resource + "/(\\d)");
+        this.regExIdPattern = Pattern.compile(resource + "/(\\d*)");
     }
 
     public Integer getId(String pathInfo) {

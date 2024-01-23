@@ -52,15 +52,11 @@ public interface WorkRecordBook {
 
     ProductMap.Item addProductItem(String title, int price) throws WorkRecordBookException;
 
-    @SuppressWarnings("all")
-    Integer editProductItem(String title, int price) throws WorkRecordBookException;
+    Integer updateProductItem(String title, int price) throws WorkRecordBookException;
 
     boolean deleteProductItem(String title) throws WorkRecordBookException;
 
-    @SuppressWarnings("unused")
-    DentalWork editRecord(int id, String field, String value) throws WorkRecordBookException;
-
-    DentalWork editRecord(DentalWork dw, String field, String value) throws WorkRecordBookException;
+    DentalWork updateRecord(DentalWork dw, String field, String value) throws WorkRecordBookException;
 
     /**
      * Create {@link Product product} object and add it into the given {@link DentalWork}.

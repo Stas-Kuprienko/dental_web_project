@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
 @WebServlet("/main/work-list/sort")
 public class WorkSorting extends HttpServlet {
@@ -37,7 +36,7 @@ public class WorkSorting extends HttpServlet {
         } catch (APIResponseException e) {
             throw new RuntimeException(e);
         }
-        List<DentalWork> works = List.of(WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class));
+        DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
         session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
         request.getRequestDispatcher("/main/work-list").forward(request, response);
     }

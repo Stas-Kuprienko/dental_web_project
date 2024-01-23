@@ -12,8 +12,6 @@ import edu.dental.entities.ProductMap;
 import edu.dental.entities.ProfitRecord;
 import utils.collections.SimpleList;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
@@ -49,15 +47,28 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public DentalWork addNewRecord(DentalWork dentalWork) throws WorkRecordBookException {
-        dentalWork.setUserId(userId);
+    public DentalWork addNewRecord(DentalWork dw) throws WorkRecordBookException {
+        DentalWork newRecord = DentalWork.create()
+                                .setUserId(userId)
+                                .setPatient(dw.getPatient())
+                                .setClinic(dw.getClinic())
+                                .setComplete(dw.getComplete())
+                                .setComment(dw.getComment()).build();
+
+        if (!(dw.getProducts().isEmpty())) {
+            SimpleList<Product> productList = newRecord.getProducts();
+            for (Product p : dw.getProducts()) {
+                Product product = productMap.createProduct(p.title(), p.quantity());
+                productList.add(product);
+            }
+        }
         try {
-            databaseService.getDentalWorkDAO().put(dentalWork);
+            databaseService.getDentalWorkDAO().put(newRecord);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e);
         }
-        records.add(dentalWork);
-        return dentalWork;
+        records.add(newRecord);
+        return newRecord;
     }
 
     @Override
@@ -72,7 +83,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public Integer editProductItem(String title, int price) throws WorkRecordBookException {
+    public Integer updateProductItem(String title, int price) throws WorkRecordBookException {
         try {
             int id = productMap.getId(title);
             databaseService.getProductMapDAO(userId).edit(id, price);
@@ -95,28 +106,18 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public DentalWork editRecord(int id, String field, String value) throws WorkRecordBookException {
-        DentalWork dw = getById(id);
-        return editRecord(dw, field, value);
-    }
-
-    @Override
-    public DentalWork editRecord(DentalWork dw, String field, String value) throws WorkRecordBookException {
-        String oldValue = getValueFromWork(dw, field);
-        Method setter = null;
+    public DentalWork updateRecord(DentalWork dw, String field, String value) throws WorkRecordBookException {
+        Updating<DentalWork> updating = new Updating<>();
         try {
-            String setterName = concatenateSetMethod(field, "set");
-            setter = DentalWork.class.getMethod(setterName, String.class);
-            setter.invoke(dw, value);
-            databaseService.getDentalWorkDAO().edit(dw);
+            updating.init(dw, field);
+            updating.setNewValue(value);
+            databaseService.getDentalWorkDAO().update(dw);
+        } catch (ReflectiveOperationException e) {
+            throw new WorkRecordBookException(e);
         } catch (DatabaseException e) {
             try {
-                setter.invoke(dw, oldValue);
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                throw new WorkRecordBookException(ex);
-            }
-            throw new WorkRecordBookException(e);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                updating.revert();
+            } catch (ReflectiveOperationException ignored) {}
             throw new WorkRecordBookException(e);
         }
         return dw;
@@ -128,20 +129,18 @@ public class MyWorkRecordBook implements WorkRecordBook {
             throw new WorkRecordBookException(new NullPointerException("The given DentalWork object is null"));
         }
         Product p;
-        try {
-            SimpleList<Product> products = dentalWork.getProducts();
-            p = products.searchElement("title", product).get(0);
+        SimpleList<Product> products = dentalWork.getProducts();
+        p = products.searchElement("title", product).get(0);
+        if (p != null) {
             quantity += p.quantity();
             removeProduct(dentalWork, product);
-        } catch (NullPointerException | NoSuchElementException ignored) {}
+        }
         try {
             p = productMap.createProduct(product, quantity);
+            dentalWork.getProducts().add(p);
+            databaseService.getDentalWorkDAO().update(dentalWork);
         } catch (IllegalArgumentException | NoSuchElementException e) {
             throw new WorkRecordBookException(e);
-        }
-        dentalWork.getProducts().add(p);
-        try {
-            databaseService.getDentalWorkDAO().edit(dentalWork);
         } catch (DatabaseException e) {
             removeProduct(dentalWork, product);
             throw new WorkRecordBookException(e);
@@ -168,7 +167,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
         }
         if (removable != null) {
             try {
-                databaseService.getDentalWorkDAO().edit(dentalWork);
+                databaseService.getDentalWorkDAO().update(dentalWork);
             } catch (DatabaseException e) {
                 dentalWork.getProducts().add(removable);
                 throw new WorkRecordBookException(e);
@@ -308,24 +307,5 @@ public class MyWorkRecordBook implements WorkRecordBook {
     @Override
     public MyProductMap getProductMap() {
         return productMap;
-    }
-
-
-    private String getValueFromWork(DentalWork dw, String field) throws WorkRecordBookException {
-        String getterName = concatenateSetMethod(field, "get");
-        try {
-            Method getter = DentalWork.class.getMethod(getterName);
-            return String.valueOf(getter.invoke(dw));
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new WorkRecordBookException(e);
-        }
-    }
-
-    private String concatenateSetMethod(String toModify, String method) {
-        char firstLetter = (char) (toModify.charAt(0) - 32);
-        StringBuilder str = new StringBuilder(toModify);
-        str.setCharAt(0, firstLetter);
-        str.insert(0, method, 0, method.length());
-        return str.toString();
     }
 }

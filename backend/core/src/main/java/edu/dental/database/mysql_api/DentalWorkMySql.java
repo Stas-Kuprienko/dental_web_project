@@ -135,7 +135,7 @@ public class DentalWorkMySql implements DentalWorkDAO, MySQL_DAO {
     }
 
     @Override
-    public boolean edit(DentalWork object) throws DatabaseException {
+    public boolean update(DentalWork object) throws DatabaseException {
         StringBuilder sets = new StringBuilder();
         String[] fields = FIELDS.split(", ");
         for (int i = 1; i < fields.length - 1; i++) {

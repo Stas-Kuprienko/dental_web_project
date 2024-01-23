@@ -26,7 +26,7 @@
     <label for="clinic">clinic:</label><br>
     <input type="text" id="clinic" name="clinic" value=""><br>
     <label for="product">product:</label><br>
-    <select id="product" name="title" style="width: 230px; height: 30px; font-size: 22px;">
+    <select id="product" name="product" style="width: 230px; height: 30px; font-size: 22px;">
         <option value=""></option>
         <c:forEach items="${sessionScope.map.items}" var="item">
         <option value="${item.key}"> ${item.key} </option>

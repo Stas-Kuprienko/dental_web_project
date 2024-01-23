@@ -1,7 +1,9 @@
 package edu.dental.dto;
 
 import edu.dental.entities.DentalWork;
+import edu.dental.entities.Product;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -41,6 +43,25 @@ public class DentalWorkDto {
         this.reportId = dw.getReportId();
         this.products = new ProductDto[dw.getProducts().size()];
         dw.getProducts().stream().map(ProductDto::new).toList().toArray(products);
+    }
+
+    public DentalWork revert(int userId) {
+        DentalWork dentalWork = DentalWork.create()
+                                .setId(id)
+                                .setUserId(userId)
+                                .setPatient(patient)
+                                .setClinic(clinic)
+                                .setComplete(LocalDate.parse(complete))
+                                .setComment(comment).build();
+        if (accepted != null) {
+            dentalWork.setAccepted(LocalDate.parse(accepted));
+        }
+        dentalWork.setStatus(status);
+        dentalWork.setReportId(reportId);
+        Product[] workProducts = new Product[products.length];
+        workProducts = Arrays.stream(products).map(ProductDto::revert).toList().toArray(workProducts);
+        dentalWork.setProducts(workProducts);
+        return dentalWork;
     }
 
     public int getId() {

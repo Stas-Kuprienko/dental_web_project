@@ -31,6 +31,10 @@ public class ProductDto implements Serializable {
         this.price = product.price();
     }
 
+    public Product revert() {
+        return new Product(entryId, title, quantity, price);
+    }
+
     public int getEntryId() {
         return entryId;
     }

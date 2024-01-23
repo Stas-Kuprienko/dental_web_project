@@ -93,7 +93,7 @@ public class WorkRecordBookTest {
         workRecordBook.addProductItem(title, price);
 
         int newPrice = 150;
-        workRecordBook.editProductItem(title, newPrice);
+        int id = workRecordBook.updateProductItem(title, newPrice);
         Integer updatedPrice = workRecordBook.getProductMap().get(title);
 
         assertNotNull(updatedPrice);
@@ -163,7 +163,7 @@ public class WorkRecordBookTest {
         DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).build();
         dentalWork = workRecordBook.addNewRecord(dentalWork);
 
-        workRecordBook.editRecord(dentalWork, field, value);
+        workRecordBook.updateRecord(dentalWork, field, value);
 
         assertEquals(value, dentalWork.getPatient());
     }

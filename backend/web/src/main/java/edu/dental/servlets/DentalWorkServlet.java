@@ -3,7 +3,6 @@ package edu.dental.servlets;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
-import edu.dental.dto.DtoParser;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
@@ -18,17 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 
-@WebServlet("/main/dental-work")
+@WebServlet({"/main/dental-work", "/main/dental-work/*"})
 public class DentalWorkServlet extends HttpServlet {
 
     private static final String url = "/main/dental-work";
 
     public final String idParam = "id";
-    public final String patientParam = "patient";
-    public final String clinicParam = "clinic";
     public final String productParam = "product";
     public final String quantityParam = "quantity";
-    public final String completeParam = "complete";
     public final String fieldParam = "field";
     public final String valueParam = "value";
 
@@ -70,23 +66,15 @@ public class DentalWorkServlet extends HttpServlet {
         DentalWorkDto dto = jsonObjectParser.parseFromJson(jsonNew, DentalWorkDto.class);
 
         WorkRecordBook recordBook = repository.getRecordBook(userId);
-//        DentalWork dw;
         try {
-            DentalWork dentalWork = DtoParser.revertDto(new DentalWork(), dto);
+            DentalWork dentalWork = dto.revert(userId);
             dentalWork = recordBook.addNewRecord(dentalWork);
-
-//            if (dto.getProducts() == null || dto.getProducts().length == 0) {
-//                dw = recordBook.addNewRecord(dto.getPatient(), dto.getClinic());
-//            } else {
-//                ProductDto p = dto.getProducts()[0];
-//                dw = recordBook.addNewRecord(dto.getPatient(), dto.getClinic(), p.title(), p.quantity(), LocalDate.parse(dto.getComplete()));
-//            }
             String jsonCreated = jsonObjectParser.parseToJson(dentalWork);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(jsonCreated);
             response.getWriter().flush();
-        } catch (WorkRecordBookException | ReflectiveOperationException e) {
+        } catch (WorkRecordBookException e) {
             response.sendError(400);
         }
 
@@ -97,18 +85,19 @@ public class DentalWorkServlet extends HttpServlet {
         int userId = (int) request.getAttribute(Repository.paramUser);
         HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
 
-        int id = Integer.parseInt(parameters.get(idParam));
+        int id = restRequestReader.getId(request.getRequestURI());
         String field = parameters.get(fieldParam);
         String value = parameters.get(valueParam);
         String quantity = parameters.get(quantityParam);
-        DentalWorkDto dw;
         try {
-            if (field != null && field.equals(productParam)) {
-                dw = new DentalWorkDto(addProductToWork(userId, id, value, Integer.parseInt(quantity)));
+            WorkRecordBook recordBook = repository.getRecordBook(userId);
+            DentalWork dentalWork = recordBook.getById(id, true);
+            if (field.equals(productParam)) {
+                recordBook.addProductToRecord(dentalWork, value, Integer.parseInt(quantity));
             } else {
-                dw = new DentalWorkDto(editDentalWork(userId, id, field, value));
+                recordBook.updateRecord(dentalWork, field, value);
             }
-            String json = jsonObjectParser.parseToJson(dw);
+            String json = jsonObjectParser.parseToJson(new DentalWorkDto(dentalWork));
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
@@ -123,15 +112,14 @@ public class DentalWorkServlet extends HttpServlet {
         int userId = (int) request.getAttribute(Repository.paramUser);
         HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
 
-        int id = Integer.parseInt(parameters.get(idParam));
+        int id = restRequestReader.getId(request.getRequestURI());
         String product = parameters.get(productParam);
         try {
             if (product != null) {
                 WorkRecordBook recordBook = repository.getRecordBook(userId);
-                recordBook.removeProduct(id, product);
-                DentalWorkDto dw = new DentalWorkDto(recordBook.getById(id));
-                //TODO add search in db
-                String json = jsonObjectParser.parseToJson(dw);
+                DentalWork dw = recordBook.getById(id, true);
+                recordBook.removeProduct(dw, product);
+                String json = jsonObjectParser.parseToJson(new DentalWorkDto(dw));
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().print(json);
@@ -142,19 +130,5 @@ public class DentalWorkServlet extends HttpServlet {
         } catch (WorkRecordBookException e) {
             response.sendError(400);
         }
-    }
-
-
-    private DentalWork editDentalWork(int userId, int id, String field, String value) throws WorkRecordBookException {
-        WorkRecordBook recordBook = repository.getRecordBook(userId);
-        DentalWork dw = recordBook.getById(id, true);
-        return recordBook.editRecord(dw, field, value);
-    }
-
-    private DentalWork addProductToWork(int userId, int id, String product, int quantity) throws WorkRecordBookException {
-        WorkRecordBook recordBook = repository.getRecordBook(userId);
-        recordBook.addProductToRecord(recordBook.getById(id), product, quantity);
-        DentalWork dw = recordBook.getById(id, true);
-        return recordBook.addProductToRecord(dw, product, quantity);
     }
 }

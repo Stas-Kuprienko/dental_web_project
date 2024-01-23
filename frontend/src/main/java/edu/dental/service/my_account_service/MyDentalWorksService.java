@@ -63,7 +63,6 @@ public class MyDentalWorksService implements DentalWorksService {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
 
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
-        queryFormer.add(idParam, id);
         queryFormer.add(fieldParam, field);
         queryFormer.add(valueParam, value);
         if (field.equals(productParam)) {
@@ -125,7 +124,7 @@ public class MyDentalWorksService implements DentalWorksService {
         DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
         ArrayList<DentalWork> workList = new ArrayList<>(List.of(works));
         workList.stream().filter(dw -> dw.getId() == id).findFirst().ifPresent(workList::remove);
-        works = workList.toArray(works);
+        works = workList.toArray(new DentalWork[]{});
         session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
     }
 

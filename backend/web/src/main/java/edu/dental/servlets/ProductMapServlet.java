@@ -71,7 +71,7 @@ public class ProductMapServlet extends HttpServlet {
         int price = Integer.parseInt(parameters.get(priceParam));
         WorkRecordBook recordBook = repository.getRecordBook(userId);
         try {
-            recordBook.editProductItem(title, price);
+            recordBook.updateProductItem(title, price);
             response.getWriter().flush();
         } catch (WorkRecordBookException e) {
             //TODO
