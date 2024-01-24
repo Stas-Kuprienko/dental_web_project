@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS dental.product_map (
 	id INT NOT NULL AUTO_INCREMENT,
 	title VARCHAR(31) NOT NULL UNIQUE,
 	price INT NOT NULL,
-	FOREIGN KEY (user_id) REFERENCES user(id),
+	CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
 	PRIMARY KEY (id, user_id, title)
   );
 
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS dental.product (
     quantity SMALLINT DEFAULT 0,
     price INT DEFAULT 0,
     CONSTRAINT work_id FOREIGN KEY (work_id) REFERENCES dental_work(id) ON DELETE CASCADE,
-    FOREIGN KEY (title) REFERENCES product_map (id),
+    CONSTRAINT FOREIGN KEY (title) REFERENCES product_map (id) ON DELETE CASCADE,
     PRIMARY KEY (work_id, title)
     );
 
@@ -56,6 +56,6 @@ CREATE TABLE IF NOT EXISTS dental.photo (
 	id INT NOT NULL AUTO_INCREMENT,
     work_id INT NOT NULL,
     file BLOB NOT NULL,
-    CONSTRAINT FOREIGN KEY (work_id) REFERENCES dental_work(id),
+    CONSTRAINT FOREIGN KEY (work_id) REFERENCES dental_work(id) ON DELETE CASCADE,
     PRIMARY KEY (id, work_id)
     );

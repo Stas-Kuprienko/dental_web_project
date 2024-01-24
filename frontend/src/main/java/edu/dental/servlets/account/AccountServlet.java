@@ -3,7 +3,6 @@ package edu.dental.servlets.account;
 import edu.dental.APIResponseException;
 import edu.dental.WebUtility;
 import edu.dental.beans.UserDto;
-import edu.dental.service.WebRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -47,29 +46,28 @@ public class AccountServlet extends HttpServlet {
         if (method != null && method.equals("delete")) {
             doDelete(request, response);
         } else {
-            try {
-                int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-                String field = request.getParameter(fieldParam);
-                String value = request.getParameter(valueParam);
-                switch (field) {
-                    case nameField,
-                            emailField,
-                            passwordField -> setUserValue(userId, field, value);
-                    default -> {}
-                }
-                doGet(request, response);
-            } catch (APIResponseException e) {
-                response.sendError(e.CODE, e.MESSAGE);
-            }
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            String token = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
+            String field = request.getParameter(fieldParam);
+            String value = request.getParameter(valueParam);
+            UserDto user = setUserValue(token, field, value);
+            request.setAttribute(WebUtility.INSTANCE.sessionUser, user);
+            request.getRequestDispatcher("/main/account/page").forward(request, response);
+        } catch (APIResponseException e) {
+            response.sendError(e.CODE, e.MESSAGE);
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int userId = (int) request.getSession().getAttribute(WebUtility.INSTANCE.sessionUser);
-        String jwt = WebRepository.INSTANCE.getToken(userId);
+        String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
         try {
-            WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, accountUrl, "");
+            WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, accountUrl, null);
             request.getRequestDispatcher("/main/log-out").forward(request, response);
         } catch (Exception e) {
             response.sendError(400);
@@ -77,17 +75,14 @@ public class AccountServlet extends HttpServlet {
     }
 
 
-    private void setUserValue(int userId, String field, String value) throws IOException, APIResponseException {
-        String jwt = WebRepository.INSTANCE.getToken(userId);
-
+    private UserDto setUserValue(String token, String field, String value) throws IOException, APIResponseException {
         WebUtility.QueryFormer former = new WebUtility.QueryFormer();
         former.add(fieldParam, field);
         former.add(valueParam, value);
         String requestParam = former.form();
 
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, accountUrl, requestParam);
-        UserDto user = WebUtility.INSTANCE.parseFromJson(json, UserDto.class);
-        WebRepository.INSTANCE.updateUser(user);
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(token, accountUrl, requestParam);
+        return WebUtility.INSTANCE.parseFromJson(json, UserDto.class);
     }
 
     private UserDto getUser(String token) throws IOException, APIResponseException {
