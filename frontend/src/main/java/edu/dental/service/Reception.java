@@ -1,7 +1,6 @@
 package edu.dental.service;
 
 import edu.dental.APIResponseException;
-import edu.dental.WebUtility;
 import edu.dental.beans.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

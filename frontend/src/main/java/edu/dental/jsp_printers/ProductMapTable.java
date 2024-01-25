@@ -1,6 +1,6 @@
 package edu.dental.jsp_printers;
 
-import edu.dental.WebUtility;
+import edu.dental.service.WebUtility;
 import edu.dental.beans.ProductMap;
 import jakarta.servlet.http.HttpServletRequest;
 

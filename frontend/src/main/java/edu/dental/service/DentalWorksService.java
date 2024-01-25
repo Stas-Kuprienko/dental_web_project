@@ -1,6 +1,7 @@
 package edu.dental.service;
 
 import edu.dental.APIResponseException;
+import edu.dental.WebAPIManager;
 import edu.dental.beans.DentalWork;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;

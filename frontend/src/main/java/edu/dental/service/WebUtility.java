@@ -1,7 +1,8 @@
-package edu.dental;
+package edu.dental.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import edu.dental.APIResponseException;
 
 import java.io.*;
 import java.net.HttpURLConnection;

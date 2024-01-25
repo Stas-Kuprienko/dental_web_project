@@ -1,7 +1,7 @@
 package edu.dental.servlets.control;
 
 import edu.dental.APIResponseException;
-import edu.dental.WebUtility;
+import edu.dental.service.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserDto;

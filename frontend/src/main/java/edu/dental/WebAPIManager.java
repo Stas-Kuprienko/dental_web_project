@@ -1,4 +1,7 @@
-package edu.dental.service;
+package edu.dental;
+
+import edu.dental.service.DentalWorksService;
+import edu.dental.service.ProductMapService;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,8 +17,8 @@ public enum WebAPIManager {
 
     INSTANCE;
 
-    private static final String SERVICE_PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\frontend\\target\\classes\\service.properties";
-    private static final String LOGGING_PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\frontend\\target\\classes\\log_path.properties";
+    private static final String SERVICE_PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\service.properties";
+    private static final String LOGGING_PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\log_path.properties";
 
     private static final Logger logger;
     public static final FileHandler fileHandler;

@@ -1,6 +1,6 @@
 package edu.dental.jsp_printers;
 
-import edu.dental.WebUtility;
+import edu.dental.service.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.beans.ProductMap;
@@ -89,7 +89,7 @@ public class WorkListTable {
     }
 
     public String form_get_works_by_month() {
-        int month = datesTool.getCurrentMonth();
+        int month = datesTool.getMonth();
         String monthStr = month < 10 ? "0" + month : "" + month;
         return String.format(WORK_VIEW.FORM_FOR_MONTH.sample, datesTool.getYear(), monthStr);
     }
@@ -157,10 +157,6 @@ public class WorkListTable {
 
         private String getMonthToString() {
             return month.toString();
-        }
-
-        private String getCurrentMonthToString() {
-            return now.getMonth().toString();
         }
 
         private int getMonth() {

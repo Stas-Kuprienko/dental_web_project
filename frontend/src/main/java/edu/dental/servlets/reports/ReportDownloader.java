@@ -1,7 +1,7 @@
 package edu.dental.servlets.reports;
 
 import edu.dental.APIResponseException;
-import edu.dental.WebUtility;
+import edu.dental.service.WebUtility;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

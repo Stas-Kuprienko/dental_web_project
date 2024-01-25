@@ -1,7 +1,7 @@
 package edu.dental.servlets.products;
 
 import edu.dental.APIResponseException;
-import edu.dental.WebUtility;
+import edu.dental.service.WebUtility;
 import edu.dental.beans.ProductMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

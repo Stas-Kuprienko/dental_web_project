@@ -5,7 +5,7 @@
     <predefined_log_file id="Tomcat Catalina Log" />
     <predefined_log_file id="Tomcat Manager Log" />
     <predefined_log_file id="Tomcat Host Manager Log" />
-    <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\dental_web_project\web" />
+    <option name="catalinaBase" value="" />
     <option name="contextPath" value="/dental-api" />
     <option name="docBase" value="D:\Development Java\pet_projects\dental_web_project\backend\web\src\main\webapp" />
     <option name="envOptions">
@@ -14,9 +14,9 @@
     <option name="extraClassPath" value="" />
     <option name="tomcatInfo">
       <TomcatInfo>
-        <option name="name" value="backend_web-Tomcat-10.1.16" />
-        <option name="path" value="$PROJECT_DIR$/backend/web/apache-tomcat-10.1.16" />
-        <option name="version" value="10.1.16.0" />
+        <option name="name" value="backend_web-Tomcat-10.1.18" />
+        <option name="path" value="$PROJECT_DIR$/backend/web/apache-tomcat-10.1.18" />
+        <option name="version" value="10.1.18.0" />
       </TomcatInfo>
     </option>
     <option name="vmOptions" value="" />

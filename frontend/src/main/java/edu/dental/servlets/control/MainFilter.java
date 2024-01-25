@@ -1,6 +1,6 @@
 package edu.dental.servlets.control;
 
-import edu.dental.WebUtility;
+import edu.dental.service.WebUtility;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;

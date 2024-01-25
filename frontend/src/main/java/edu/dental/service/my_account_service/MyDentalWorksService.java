@@ -1,7 +1,7 @@
 package edu.dental.service.my_account_service;
 
 import edu.dental.APIResponseException;
-import edu.dental.WebUtility;
+import edu.dental.service.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.service.DentalWorksService;

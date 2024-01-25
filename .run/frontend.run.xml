@@ -6,7 +6,7 @@
     <predefined_log_file id="Tomcat Manager Log" />
     <predefined_log_file id="Tomcat Host Manager Log" />
     <option name="adminPort" value="8006" />
-    <option name="catalinaBase" value="" />
+    <option name="catalinaBase" value="C:\Users\Станислав\.SmartTomcat\dental_web_project\frontend" />
     <option name="contextPath" value="/dental" />
     <option name="docBase" value="D:\Development Java\pet_projects\dental_web_project\frontend\src\main\webapp" />
     <option name="envOptions">

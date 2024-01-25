@@ -12,8 +12,7 @@
 </a>
 <body>
 <section>
-<br />
-    <c:out value="${message}" />
+<span class="error">${message}</span>
 </section>
 </body>
 </html>
