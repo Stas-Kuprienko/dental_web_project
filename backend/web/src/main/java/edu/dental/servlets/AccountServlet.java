@@ -1,7 +1,7 @@
 package edu.dental.servlets;
 
-import edu.dental.domain.account.AccountException;
-import edu.dental.domain.account.AccountService;
+import edu.dental.domain.user.AccountException;
+import edu.dental.domain.user.UserService;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
 import edu.dental.service.Repository;
@@ -25,14 +25,14 @@ public class AccountServlet extends HttpServlet {
     public final String fieldParam = "field";
     public final String valueParam = "value";
 
-    private AccountService accountService;
+    private UserService userService;
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
     private AuthenticationService authenticationService;
 
     @Override
     public void init() throws ServletException {
-        this.accountService = AccountService.getInstance();
+        this.userService = UserService.getInstance();
         this.repository = Repository.getInstance();
         this.jsonObjectParser = JsonObjectParser.getInstance();
         this.authenticationService = AuthenticationService.getInstance();
@@ -78,7 +78,7 @@ public class AccountServlet extends HttpServlet {
         int userId = (int) request.getAttribute(Repository.paramUser);
         User user = repository.getUser(userId);
         try {
-            accountService.deleteUser(user);
+            userService.deleteUser(user);
             repository.delete(userId);
             response.setStatus(200);
         } catch (AccountException e) {
@@ -105,7 +105,7 @@ public class AccountServlet extends HttpServlet {
         String oldValue = user.getName();
         user.setName(name);
         try {
-            accountService.update(user);
+            userService.update(user);
             return new UserDto(user);
         } catch (AccountException e) {
             user.setName(oldValue);
@@ -118,7 +118,7 @@ public class AccountServlet extends HttpServlet {
         String oldValue = user.getEmail();
         user.setEmail(email);
         try {
-            accountService.update(user);
+            userService.update(user);
             return new UserDto(user);
         } catch (AccountException e) {
             user.setEmail(oldValue);
@@ -127,7 +127,10 @@ public class AccountServlet extends HttpServlet {
     }
 
     private UserDto setPassword(User user, String password) throws WebException {
-        authenticationService.updatePassword(user, password);
-        return new UserDto(user);
+        if (authenticationService.updatePassword(user, password)) {
+            return new UserDto(user);
+        } else {
+            throw new WebException(AccountException.CAUSE.BAD_REQUEST, AccountException.MESSAGE.DATABASE_ERROR);
+        }
     }
 }

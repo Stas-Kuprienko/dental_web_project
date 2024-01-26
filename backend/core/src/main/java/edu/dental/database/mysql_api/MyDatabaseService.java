@@ -16,19 +16,6 @@ public class MyDatabaseService implements DatabaseService {
     }
 
     @Override
-    public User findUser(String login) throws DatabaseException {
-        try {
-            return new UserMySql().search(login).get(0);
-        } catch (DatabaseException e) {
-            if (e.getMessage().equals("The such object is not found.")) {
-                return null;
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    @Override
     public UserDAO getUserDAO() {
         return new UserMySql();
     }

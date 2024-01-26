@@ -3,7 +3,7 @@ package edu.dental.domain;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.ProductMapDAO;
-import edu.dental.domain.account.AccountService;
+import edu.dental.domain.user.UserService;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.entities.DentalWork;
@@ -38,7 +38,7 @@ public enum APIManager {
     private final Properties service;
 
     private DatabaseService databaseService;
-    private AccountService accountService;
+    private UserService userService;
     private ReportService reportService;
 
     static {
@@ -151,11 +151,11 @@ public enum APIManager {
         return reportService;
     }
 
-    public synchronized AccountService getAccountService() {
-        if (accountService == null) {
-            accountService = init(AccountService.class);
+    public synchronized UserService getAccountService() {
+        if (userService == null) {
+            userService = init(UserService.class);
         }
-        return accountService;
+        return userService;
     }
 
     public synchronized DatabaseService getDatabaseService() {

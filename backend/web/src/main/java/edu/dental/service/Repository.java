@@ -21,7 +21,7 @@ public interface Repository {
 
     void updateAccountLastAction(int userId);
 
-    Repository.Account put(User user, WorkRecordBook recordBook);
+    void putNew(User user);
 
     Account get(int id);
 
@@ -37,7 +37,7 @@ public interface Repository {
 
     void delete(int id);
 
-    boolean reloadWorks(int id);
+    void reloadWorks(int id);
 
 
     abstract class Account extends Monitorable {

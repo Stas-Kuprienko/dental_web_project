@@ -1,7 +1,7 @@
 package edu.dental;
 
 import edu.dental.domain.APIManager;
-import edu.dental.domain.account.AccountException;
+import edu.dental.domain.user.AccountException;
 import jakarta.servlet.http.HttpServlet;
 
 import java.util.logging.Level;

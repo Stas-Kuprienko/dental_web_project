@@ -2,6 +2,7 @@ package edu.dental.dto;
 
 import edu.dental.entities.User;
 import edu.dental.security.AuthenticationService;
+import edu.dental.security.TokenUtils;
 
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ public class UserDto {
     private String created;
     private String jwt;
 
-    private static final AuthenticationService.TokenUtils tokenUtils;
+    private static final TokenUtils tokenUtils;
 
     static {
         tokenUtils = AuthenticationService.getInstance().tokenUtils();

@@ -1,47 +1,49 @@
 package edu.dental.security.my_authentication;
 
 import edu.dental.WebException;
-import edu.dental.domain.account.AccountException;
-import edu.dental.domain.account.AccountService;
-import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.user.AccountException;
+import edu.dental.domain.user.UserService;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
 import edu.dental.security.AuthenticationService;
 import edu.dental.security.IFilterVerification;
+import edu.dental.security.TokenUtils;
 import edu.dental.service.Repository;
-import io.jsonwebtoken.*;
-import jakarta.servlet.http.HttpServletRequest;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.Date;
-import java.time.ZoneId;
-import java.util.Properties;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 
 public class MyAuthentication implements AuthenticationService {
 
-
-    private MyAuthentication() {
-        this.jwtUtils = new JwtUtils();
-        this.filter = new MyFilter();
-        this.accountService = AccountService.getInstance();
-        this.repository = Repository.getInstance();
-    }
-
     private final JwtUtils jwtUtils;
     private final MyFilter filter;
-    private final AccountService accountService;
+    private final UserService userService;
     private final Repository repository;
+    private final MessageDigest MD5;
+
+
+    private MyAuthentication() {
+        try {
+            this.MD5 = MessageDigest.getInstance("MD5");
+            this.jwtUtils = new JwtUtils();
+            this.filter = new MyFilter();
+            this.userService = UserService.getInstance();
+            this.repository = Repository.getInstance();
+        } catch (NoSuchAlgorithmException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
 
 
     @Override
     public UserDto registration(String name, String email, String password) throws WebException {
         User user;
         try {
-            user = accountService.create(name, email, password);
-            repository.put(user, WorkRecordBook.createNew(user.getId()));
+            byte[] passHashByte = MD5.digest(password.getBytes());
+            user = userService.create(name, email, passHashByte);
+            repository.putNew(user);
             return new UserDto(user);
         } catch (AccountException e) {
             throw new WebException(e.cause, e);
@@ -50,33 +52,71 @@ public class MyAuthentication implements AuthenticationService {
 
     @Override
     public UserDto authorization(String login, String password) throws WebException {
+        User user = authenticate(login, password);
+        if (repository.put(user)) {
+            return new UserDto(user);
+        } else {
+            throw new WebException(AccountException.CAUSE.SERVER_ERROR, AccountException.MESSAGE.DATABASE_ERROR);
+        }
+    }
+
+    /**
+     * The user authentication in system.
+     * @param login    The user's account login.
+     * @param password The password to verify.
+     * @return The {@link User} object, if authentication was successful.
+     * @throws WebException Causes of throwing
+     *  - specified user is not found;
+     *  - Database exception;
+     *  - incorrect password;
+     *  - a given argument is null.
+     */
+    @Override
+    public User authenticate(String login, String password) throws WebException {
+        if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
+            throw new WebException(AccountException.CAUSE.BAD_REQUEST, new NullPointerException("argument is null"));
+        }
         User user;
         try {
-            user = accountService.authenticate(login, password);
+            user = userService.findUser(login);
         } catch (AccountException e) {
             throw new WebException(e.cause, e);
         }
-        try {
-            repository.put(user, WorkRecordBook.getInstance(user.getId()));
-        } catch (WorkRecordBookException e) {
-            throw new WebException(AccountException.CAUSE.BAD_REQUEST, e);
+        if (user == null) {
+            throw new WebException(AccountException.CAUSE.NOT_FOUND, AccountException.MESSAGE.USER_NOT_FOUND);
         }
-        return new UserDto(user);
+        if (!verification(user, password)) {
+            throw new WebException(AccountException.CAUSE.UNAUTHORIZED, AccountException.MESSAGE.PASSWORD_INVALID);
+        }
+        return user;
     }
 
+    /**
+     * Verification the user's password when logging in.
+     * @param password The user's password.
+     * @return The {@link User} object if verification was successful, or null if not.
+     */
     @Override
-    public int verification(String jwt) {
-        return jwtUtils.getId(jwt);
+    public boolean verification(User user, String password) {
+        return MessageDigest.isEqual(user.getPassword(), MD5.digest(password.getBytes()));
     }
 
     @Override
     public boolean updatePassword(User user, String password) throws WebException {
+        byte[] oldValue = user.getPassword();
+        byte[] newPassword = passwordHash(password);
         try {
-            accountService.updatePassword(user, password);
-            return true;
+            user.setPassword(newPassword);
+            return userService.update(user);
         } catch (AccountException e) {
-            throw new WebException(e.cause, e);
+            user.setPassword(oldValue);
+            throw new WebException(AccountException.CAUSE.SERVER_ERROR, e);
         }
+    }
+
+    @Override
+    public byte[] passwordHash(String password) {
+        return MD5.digest(password.getBytes());
     }
 
     @Override
@@ -84,7 +124,7 @@ public class MyAuthentication implements AuthenticationService {
         try {
             int id = jwtUtils.getId(jwt);
             if (id > 0) {
-                return accountService.get(id);
+                return userService.get(id);
             } else {
                 throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
             }
@@ -99,7 +139,7 @@ public class MyAuthentication implements AuthenticationService {
         try {
             int id = jwtUtils.getId(jwt);
             if (id > 0) {
-                user = accountService.get(id);
+                user = userService.get(id);
                 return new UserDto(user);
             } else {
                 throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
@@ -117,97 +157,5 @@ public class MyAuthentication implements AuthenticationService {
     @Override
     public IFilterVerification filterService() {
         return filter;
-    }
-
-    private static class JwtUtils implements AuthenticationService.TokenUtils {
-
-        private JwtUtils() {}
-
-        static {
-            SECRET_KEY = loadProperties().getProperty("key");
-        }
-
-        private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\secret_key.properties";
-        private static final String SECRET_KEY;
-
-
-        @Override
-        public String generateJwtFromEntity(User user) {
-            JwtBuilder jwtBuilder = Jwts.builder()
-                    .setId(String.valueOf(user.getId()))
-                    .setIssuedAt(Date.from(user.getCreated().atStartOfDay(ZoneId.systemDefault()).toInstant()))
-                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY);
-
-            return jwtBuilder.compact();
-        }
-
-        @Override
-        public Claims parseJwt(String jwt) {
-            return Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(jwt)
-                    .getBody();
-        }
-
-        @Override
-        public int getId(String jwt) {
-            try {
-                return Integer.parseInt(parseJwt(jwt).getId());
-            } catch (JwtException e) {
-                //TODO loggers
-                return 0;
-            }
-        }
-
-        @Override
-        public boolean isSigned(String jwt) {
-            return Jwts.parser().isSigned(jwt);
-        }
-
-        private static Properties loadProperties() {
-            try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
-                Properties prop = new Properties();
-                prop.load(fileInput);
-                return prop;
-            } catch (IOException e) {
-                //TODO loggers
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    private class MyFilter implements IFilterVerification {
-
-        private static final String authorizationType = "Bearer ";
-        private static final String authVar = "Authorization";
-
-        @Override
-        public int verify(HttpServletRequest request) throws WebException {
-            String authorization = request.getHeader(authVar);
-
-            if (authorization != null && authorization.startsWith(authorizationType)) {
-                String jwt = authorization.substring(authorizationType.length());
-                int userId = verification(jwt);
-                if (userId > 0) {
-                    if (isLoggedIn(userId)) {
-                        repository.updateAccountLastAction(userId);
-                        return userId;
-                    } else {
-                        if (addToRepository(jwt)) {
-                            return userId;
-                        }
-                    }
-                }
-            } throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
-        }
-
-        private boolean isLoggedIn(int userId) {
-            return repository.get(userId) != null;
-        }
-
-        private boolean addToRepository(String jwt) throws WebException {
-            User user = getUser(jwt);
-            return repository.put(user);
-        }
     }
 }

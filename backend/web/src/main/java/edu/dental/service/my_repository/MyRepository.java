@@ -30,10 +30,10 @@ public final class MyRepository implements Repository {
         RAM.get(userId).updateLastAction();
     }
 
-    public Account put(User user, WorkRecordBook recordBook) {
+    public void putNew(User user) {
+        WorkRecordBook recordBook = WorkRecordBook.createNew(user.getId());
         Account account = new Account(user, recordBook);
         RAM.put(user.getId(), account);
-        return account;
     }
 
     @Override
@@ -79,15 +79,13 @@ public final class MyRepository implements Repository {
     }
 
     @Override
-    public boolean reloadWorks(int id) {
+    public void reloadWorks(int id) {
         try {
             WorkRecordBook recordBook = WorkRecordBook.getInstance(id);
             User user = RAM.get(id).user;
             Account account = new Account(user, recordBook);
             RAM.put(id, account);
-            return true;
         } catch (WorkRecordBookException e) {
-            return false;
         }
     }
 

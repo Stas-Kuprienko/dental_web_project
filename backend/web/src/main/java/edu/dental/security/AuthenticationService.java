@@ -2,9 +2,9 @@ package edu.dental.security;
 
 import edu.dental.WebAPI;
 import edu.dental.WebException;
+import edu.dental.domain.user.AccountException;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
-import io.jsonwebtoken.Claims;
 
 public interface AuthenticationService {
 
@@ -16,9 +16,13 @@ public interface AuthenticationService {
 
     UserDto authorization(String login, String password) throws WebException;
 
-    int verification(String jwt);
+    User authenticate(String login, String password) throws AccountException, WebException;
+
+    boolean verification(User user, String password);
 
     boolean updatePassword(User user, String password) throws WebException;
+
+    byte[] passwordHash(String password);
 
     User getUser(String jwt) throws WebException;
 
@@ -27,15 +31,4 @@ public interface AuthenticationService {
     TokenUtils tokenUtils();
 
     IFilterVerification filterService();
-
-    interface TokenUtils {
-
-        String generateJwtFromEntity(User user);
-
-        Claims parseJwt(String jwt);
-
-        int getId(String jwt);
-
-        boolean isSigned(String jwt);
-    }
 }

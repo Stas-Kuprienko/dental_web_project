@@ -33,7 +33,6 @@ public interface WorkRecordBook {
         ProductMap map;
         try {
             works = database.getDentalWorkDAO().getAll(userId);
-            //TODO
             map = APIManager.INSTANCE.getProductMap(userId);
         } catch (DatabaseException e) {
             throw new WorkRecordBookException(e);

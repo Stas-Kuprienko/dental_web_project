@@ -1,4 +1,4 @@
-package edu.dental.domain.account;
+package edu.dental.domain.user;
 
 import edu.dental.domain.APIManager;
 import edu.dental.domain.records.WorkRecordBook;

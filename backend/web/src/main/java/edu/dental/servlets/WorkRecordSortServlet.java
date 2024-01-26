@@ -4,7 +4,7 @@ import edu.dental.WebException;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.DentalWorkDAO;
-import edu.dental.domain.account.AccountException;
+import edu.dental.domain.user.AccountException;
 import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
