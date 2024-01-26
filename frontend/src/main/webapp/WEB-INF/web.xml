@@ -46,7 +46,7 @@
 
   <servlet>
     <servlet-name>workListPage</servlet-name>
-    <jsp-file>/pages/works/workList2.jsp</jsp-file>
+    <jsp-file>/pages/works/workList.jsp</jsp-file>
   </servlet>
 
   <servlet>

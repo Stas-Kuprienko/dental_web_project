@@ -1,6 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.jsp_printers.WorkListTable" %>
-<% WorkListTable td = new WorkListTable(request); %>
+<%@ page import="edu.dental.tag_support.HeaderMonth" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="d" uri="/WEB-INF/MyTagDescriptor.tld" %>
+<%@ page isELIgnored = "false" %>
+<% HeaderMonth date = new HeaderMonth(request); %>
+<% pageContext.setAttribute("date", date); %>
 
 <html>
 <head>
@@ -45,37 +49,43 @@
     <a href="/dental/main/product-map">PRODUCT MAP</a>
     <a href="/dental/main/account">ACCOUNT</a>
     <a style="float:right;" href="/dental/main/log-out" onclick="return confirm('LOG OUT?')">
-            <button>log out</button>
-        </a>
+        <button>log out</button>
+    </a>
 </nav>
 <body>
 <section>
     <h3>
         <strong>
-            <%=td.month()%>
+            ${pageScope.date.month()}
         </strong>
     </h3>
-	<h4 style="float: left;">
+    <h4 style="float: left;">
         <label style="background-color: #002d73; border: 5px solid #002d73">CLOSED</label> &emsp;
         <label style="background-color: #075700; border: 5px solid #075700"> PAID </label>
     </h4>
-	<div class="table">
-	    <div class="thead" style="font-size: 65%;">
+    <div class="table">
+        <div class="thead" style="font-size: 65%;">
             <div class="tr">
-            <div class="th">PATIENT</div>
-            <div class="th">CLINIC</div>
-            <% while (td.tableHead.hasNext()) {%>
-            <div class="th">
-                <%=td.tableHead.next()%>
-            </div> <%} %>
-            <div class="th">COMPLETE</div>
-            <div class="th">ACCEPT</div>
+                <div class="th">PATIENT</div>
+                <div class="th">CLINIC</div>
+                <d:forEach tag="div" style="th" items="${sessionScope.map.getKeys()}"/>
+                <div class="th">COMPLETE</div>
+                <div class="th">ACCEPT</div>
+            </div>
+        </div>
+        <div class="tbody">
+            <c:forEach items="${works}" var="record">
+            <c:set var="work" value="${record}"/>
+            <d:row tag="a" href="/dental/main/dental-work" work="${pageScope.work}">
+                <div class="td"> ${work.patient} </div>
+                <div class="td"> ${work.clinic} </div>
+                <d:products tag="div" style="td" map="${sessionScope.map.getKeys()}" work="${pageScope.work}"/>
+                <div class="td"> ${work.complete} </div>
+                <div class="td"> ${work.accepted} </div>
+            </d:row>
+            </c:forEach>
         </div>
     </div>
-    <div class="tbody">
-    <% while (td.hasNext()) {%>
-        <%=td.next()%> <%} %>
-	</div></div>
 </section>
 </body>
 <nav class="low-menu">
@@ -85,7 +95,8 @@
     <div id="profit-form" style="display:none;">
         <form method="post" action="/dental/main/profit" style="float:left;">
             <input class="medium-button" type="submit" value="current">
-            <%=td.hidden_input_year_and_month()%> &emsp;
+            <input type="hidden" name="year" value="${pageScope.date.year}">
+            <input type="hidden" name="month" value="${pageScope.date.monthValue}"> &emsp;
         </form>
         <form method="post" action="/dental/main/profit" style="float:left;">
             <input class="medium-button" type="submit" value="all time">
@@ -106,7 +117,7 @@
     </a>
     <div id="monthly-form" style="display:none;">
         <form method="get" action="/dental/main/work-list">
-            <%=td.form_get_works_by_month()%>
+            <input type="month" name="year-month" value="${pageScope.date.year}-${pageScope.date.monthValue}">
             <input class="medium-button" type="submit" value="get">
         </form>
     </div>
@@ -115,22 +126,26 @@
     </a>
     <div id="sort-form" style="display:none;">
         <form method="get" action="/dental/main/work-list/sort" style="float:left;">
-            <input class="medium-button" type="submit" value="current">
-            <%=td.input_for_sorting_current_month()%> &emsp;
+            <input type="hidden" name="year" value="${pageScope.date.nowYear}">
+            <input type="hidden" name="month" value="${pageScope.date.nowMonthValue}">
+            <input class="medium-button" type="submit" value="current"> &emsp;
         </form>
         <form method="get" action="/dental/main/work-list/sort" style="float:left;">
-            <input class="medium-button" type="submit" value="previous">
-            <%=td.input_for_sorting_previous_month()%> &emsp;
+            <input type="hidden" name="year" value="${pageScope.date.prevYear}">
+            <input type="hidden" name="month" value="${pageScope.date.prevMonthValue}">
+            <input class="medium-button" type="submit" value="previous"> &emsp;
         </form>
         <form method="post" action="/dental/main/work-list/sort" style="float:left;">
+            <input type="hidden" name="year" value="${pageScope.date.year}">
+            <input type="hidden" name="month" value="${pageScope.date.monthValue}">
             <input class="medium-button" type="submit" value="all paid">
-            <%=td.hidden_input_year_and_month()%>
         </form>
     </div>
     <a>
         <form method="get" action="/dental/main/reports/download">
             <input class="low-button" type="submit" value="download">
-            <%=td.hidden_input_year_and_month()%>
+            <input type="hidden" name="year" value="${pageScope.date.year}">
+            <input type="hidden" name="month" value="${pageScope.date.monthValue}">
         </form>
     </a>
 </nav>

@@ -20,10 +20,10 @@ public class DentalWorksTableRow extends SimpleTagSupport {
         JspWriter out = getJspContext().getOut();
         StringWriter writer = new StringWriter();
         getJspBody().invoke(writer);
-        CSS style = defineStyle();
+        CSS clas = defineStyle();
         out.print(String.format("""
                 <%s class="%s" href="%s/%d">"""
-                , tag, style, href, work.getId()));
+                , tag, clas.css, href, work.getId()));
         out.print(writer.toString());
         out.print("</" + tag + ">\n");
     }
@@ -56,10 +56,10 @@ public class DentalWorksTableRow extends SimpleTagSupport {
         tr_closed("tr-closed"),
         tr_paid("tr-paid");
 
-        final String style;
+        final String css;
 
-        CSS(String style) {
-            this.style = style;
+        CSS(String css) {
+            this.css = css;
         }
     }
 }

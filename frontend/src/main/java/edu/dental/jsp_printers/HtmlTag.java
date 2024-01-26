@@ -1,5 +1,6 @@
 package edu.dental.jsp_printers;
 
+@Deprecated
 public enum HtmlTag {
 
     DIV_TABLE("""
