@@ -76,7 +76,7 @@
 
   <servlet>
     <servlet-name>viewProductMap</servlet-name>
-    <jsp-file>/pages/products/productMap.jsp</jsp-file>
+    <jsp-file>/pages/products/productMapPage.jsp</jsp-file>
   </servlet>
 
   <servlet>
