@@ -5,6 +5,7 @@ import edu.dental.WebException;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
+import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
 import edu.dental.service.lifecycle.Monitorable;
 
@@ -22,9 +23,7 @@ public interface Repository {
 
     void updateAccountLastAction(int userId);
 
-    void createNew(User user);
-
-    Account get(int id);
+    User createNew(String name, String login, byte[] password) throws AccountException;
 
     boolean put(User user);
 
@@ -36,7 +35,11 @@ public interface Repository {
 
     WorkRecordBook getRecordBook(int id);
 
+    UserDto update(int userId, String field, String value) throws WebException;
+
     void delete(int id);
+
+    void delete(int id, boolean fromDatabase) throws WebException;
 
     void reloadWorks(int id) throws WebException;
 

@@ -1,7 +1,7 @@
 package edu.dental.security.my_authentication;
 
 import edu.dental.WebException;
-import edu.dental.domain.user.AccountException;
+import edu.dental.service.AccountException;
 import edu.dental.security.AuthenticationService;
 import edu.dental.security.IFilterVerification;
 import edu.dental.service.Repository;
@@ -29,6 +29,7 @@ class MyFilter implements IFilterVerification {
             int userId = authenticationService.tokenUtils().getId(jwt);
             if (userId > 0) {
                 repository.ensureLoggingIn(userId);
+                repository.updateAccountLastAction(userId);
                 return userId;
             }
         }

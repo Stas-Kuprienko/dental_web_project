@@ -28,7 +28,6 @@ public class ContextInitializer implements ServletContextListener {
         DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
         databaseService.getTableInitializer().init();
 
-        APIManager.INSTANCE.getUserService();
         APIManager.INSTANCE.getReportService();
         WebAPI.INSTANCE.getAuthenticationService();
         WebAPI.INSTANCE.getJsonParser();

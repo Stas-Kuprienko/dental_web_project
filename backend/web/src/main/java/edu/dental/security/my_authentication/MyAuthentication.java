@@ -1,8 +1,10 @@
 package edu.dental.security.my_authentication;
 
 import edu.dental.WebException;
-import edu.dental.domain.user.AccountException;
-import edu.dental.domain.user.UserService;
+import edu.dental.database.DatabaseException;
+import edu.dental.database.DatabaseService;
+import edu.dental.database.dao.UserDAO;
+import edu.dental.service.AccountException;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
 import edu.dental.security.AuthenticationService;
@@ -16,7 +18,7 @@ import java.security.NoSuchAlgorithmException;
 public class MyAuthentication implements AuthenticationService {
 
     private final JwtUtils jwtUtils;
-    private final UserService userService;
+    private final UserDAO userDAO;
     private final Repository repository;
     private final MessageDigest MD5;
 
@@ -25,7 +27,7 @@ public class MyAuthentication implements AuthenticationService {
         try {
             this.MD5 = MessageDigest.getInstance("MD5");
             this.jwtUtils = new JwtUtils();
-            this.userService = UserService.getInstance();
+            this.userDAO = DatabaseService.getInstance().getUserDAO();
             this.repository = Repository.getInstance();
         } catch (NoSuchAlgorithmException e) {
 
@@ -39,8 +41,7 @@ public class MyAuthentication implements AuthenticationService {
         User user;
         try {
             byte[] passHashByte = MD5.digest(password.getBytes());
-            user = userService.create(name, email, passHashByte);
-            repository.createNew(user);
+            user = repository.createNew(name, email, passHashByte);
             return new UserDto(user);
         } catch (AccountException e) {
             throw new WebException(e.cause, e);
@@ -75,12 +76,12 @@ public class MyAuthentication implements AuthenticationService {
         }
         User user;
         try {
-            user = userService.findUser(login);
-        } catch (AccountException e) {
-            throw new WebException(e.cause, e);
-        }
-        if (user == null) {
-            throw new WebException(AccountException.CAUSE.NOT_FOUND, AccountException.MESSAGE.USER_NOT_FOUND);
+            user = userDAO.search(login).get(0);
+        } catch (DatabaseException e) {
+            if (e.getMessage().equals("The such object is not found.")) {
+                throw new WebException(AccountException.CAUSE.NOT_FOUND, AccountException.MESSAGE.USER_NOT_FOUND);
+            }
+            throw new WebException(AccountException.CAUSE.SERVER_ERROR, AccountException.MESSAGE.DATABASE_ERROR);
         }
         if (!verification(user, password)) {
             throw new WebException(AccountException.CAUSE.UNAUTHORIZED, AccountException.MESSAGE.PASSWORD_INVALID);
@@ -104,8 +105,8 @@ public class MyAuthentication implements AuthenticationService {
         byte[] newPassword = passwordHash(password);
         try {
             user.setPassword(newPassword);
-            return userService.update(user);
-        } catch (AccountException e) {
+            return userDAO.update(user);
+        } catch (DatabaseException e) {
             user.setPassword(oldValue);
             throw new WebException(AccountException.CAUSE.SERVER_ERROR, e);
         }
@@ -114,22 +115,6 @@ public class MyAuthentication implements AuthenticationService {
     @Override
     public byte[] passwordHash(String password) {
         return MD5.digest(password.getBytes());
-    }
-
-    @Override
-    public UserDto getUserDto(String jwt) throws WebException {
-        User user;
-        try {
-            int id = jwtUtils.getId(jwt);
-            if (id > 0) {
-                user = userService.get(id);
-                return new UserDto(user);
-            } else {
-                throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
-            }
-        } catch (AccountException e) {
-            throw new WebException(e.cause, e);
-        }
     }
 
     @Override

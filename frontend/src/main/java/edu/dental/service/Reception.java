@@ -50,16 +50,6 @@ public final class Reception {
         productMapService.setProductMap(session);
     }
 
-    public UserBean getByToken(String token, HttpSession session) throws IOException, APIResponseException {
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
-
-        String paramToken = "token";
-        queryFormer.add(paramToken, token);
-        String requestParameters = queryFormer.form();
-
-        return getUserDto(requestParameters);
-    }
-
     private UserBean getUserDto(String requestParameters) throws IOException, APIResponseException {
         String jsonUser = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(logInUrl, requestParameters);
         return WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);

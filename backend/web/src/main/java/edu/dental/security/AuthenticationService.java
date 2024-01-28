@@ -2,7 +2,7 @@ package edu.dental.security;
 
 import edu.dental.WebAPI;
 import edu.dental.WebException;
-import edu.dental.domain.user.AccountException;
+import edu.dental.service.AccountException;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
 
@@ -23,8 +23,6 @@ public interface AuthenticationService {
     boolean updatePassword(User user, String password) throws WebException;
 
     byte[] passwordHash(String password);
-
-    UserDto getUserDto(String jwt) throws WebException;
 
     TokenUtils tokenUtils();
 }

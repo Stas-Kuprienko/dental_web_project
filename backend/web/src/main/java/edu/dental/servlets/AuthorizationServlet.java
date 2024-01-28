@@ -33,15 +33,10 @@ public class AuthorizationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UserDto user;
-        String token = request.getParameter("token");
         try {
-            if (token == null || token.isEmpty()) {
-                String email = request.getParameter("email");
-                String password = request.getParameter("password");
-                user = authenticationService.authorization(email, password);
-            } else {
-                user = authenticationService.getUserDto(token);
-            }
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            user = authenticationService.authorization(email, password);
             String jsonUser = jsonObjectParser.parseToJson(user);
             response.setContentType("text/plain");
             response.setCharacterEncoding("UTF-8");

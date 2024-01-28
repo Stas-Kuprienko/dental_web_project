@@ -1,12 +1,9 @@
 package edu.dental.servlets;
 
-import edu.dental.domain.user.AccountException;
-import edu.dental.domain.user.UserService;
-import edu.dental.dto.UserDto;
-import edu.dental.entities.User;
-import edu.dental.service.Repository;
 import edu.dental.WebException;
-import edu.dental.security.AuthenticationService;
+import edu.dental.service.AccountException;
+import edu.dental.dto.UserDto;
+import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,23 +16,16 @@ import java.io.IOException;
 @WebServlet("/main/account")
 public class AccountServlet extends HttpServlet {
 
-    public final String nameField = "name";
-    public final String emailField = "email";
-    public final String passwordField = "password";
-    public final String fieldParam = "field";
-    public final String valueParam = "value";
+    private static final String fieldParam = "field";
+    private static final String valueParam = "value";
 
-    private UserService userService;
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
-    private AuthenticationService authenticationService;
 
     @Override
     public void init() throws ServletException {
-        this.userService = UserService.getInstance();
         this.repository = Repository.getInstance();
         this.jsonObjectParser = JsonObjectParser.getInstance();
-        this.authenticationService = AuthenticationService.getInstance();
     }
 
     @Override
@@ -74,63 +64,22 @@ public class AccountServlet extends HttpServlet {
         }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        User user = repository.getUser(userId);
         try {
-            userService.deleteUser(user);
-            repository.delete(userId);
+            repository.delete(userId, true);
             response.setStatus(200);
-        } catch (AccountException e) {
+        } catch (WebException e) {
             response.sendError(e.cause.code, e.message);
         }
     }
 
 
     private String update(int userId, String field, String value) throws WebException {
-        User user = repository.getUser(userId);
-        UserDto dto;
-        switch (field) {
-            case nameField -> dto = setName(user, value);
-            case emailField -> dto = setEmail(user, value);
-            case passwordField -> dto = setPassword(user, value);
-            default -> {
-                return null;
-            }
+        UserDto dto = repository.update(userId, field, value);
+        if (dto == null) {
+            throw new WebException(AccountException.CAUSE.SERVER_ERROR, AccountException.MESSAGE.DATABASE_ERROR);
         }
         return jsonObjectParser.parseToJson(dto);
-    }
-
-    private UserDto setName(User user, String name) throws WebException {
-        String oldValue = user.getName();
-        user.setName(name);
-        try {
-            userService.update(user);
-            return new UserDto(user);
-        } catch (AccountException e) {
-            user.setName(oldValue);
-            throw new WebException(e.cause, e);
-        }
-    }
-
-
-    private UserDto setEmail(User user, String email) throws WebException {
-        String oldValue = user.getEmail();
-        user.setEmail(email);
-        try {
-            userService.update(user);
-            return new UserDto(user);
-        } catch (AccountException e) {
-            user.setEmail(oldValue);
-            throw new WebException(e.cause, e);
-        }
-    }
-
-    private UserDto setPassword(User user, String password) throws WebException {
-        if (authenticationService.updatePassword(user, password)) {
-            return new UserDto(user);
-        } else {
-            throw new WebException(AccountException.CAUSE.BAD_REQUEST, AccountException.MESSAGE.DATABASE_ERROR);
-        }
     }
 }
