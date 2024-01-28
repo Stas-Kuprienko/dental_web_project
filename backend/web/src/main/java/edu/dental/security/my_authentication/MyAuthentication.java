@@ -6,7 +6,6 @@ import edu.dental.domain.user.UserService;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
 import edu.dental.security.AuthenticationService;
-import edu.dental.security.IFilterVerification;
 import edu.dental.security.TokenUtils;
 import edu.dental.service.Repository;
 
@@ -17,7 +16,6 @@ import java.security.NoSuchAlgorithmException;
 public class MyAuthentication implements AuthenticationService {
 
     private final JwtUtils jwtUtils;
-    private final MyFilter filter;
     private final UserService userService;
     private final Repository repository;
     private final MessageDigest MD5;
@@ -27,7 +25,6 @@ public class MyAuthentication implements AuthenticationService {
         try {
             this.MD5 = MessageDigest.getInstance("MD5");
             this.jwtUtils = new JwtUtils();
-            this.filter = new MyFilter();
             this.userService = UserService.getInstance();
             this.repository = Repository.getInstance();
         } catch (NoSuchAlgorithmException e) {
@@ -43,7 +40,7 @@ public class MyAuthentication implements AuthenticationService {
         try {
             byte[] passHashByte = MD5.digest(password.getBytes());
             user = userService.create(name, email, passHashByte);
-            repository.putNew(user);
+            repository.createNew(user);
             return new UserDto(user);
         } catch (AccountException e) {
             throw new WebException(e.cause, e);
@@ -120,20 +117,6 @@ public class MyAuthentication implements AuthenticationService {
     }
 
     @Override
-    public User getUser(String jwt) throws WebException {
-        try {
-            int id = jwtUtils.getId(jwt);
-            if (id > 0) {
-                return userService.get(id);
-            } else {
-                throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
-            }
-        } catch (AccountException e) {
-            throw new WebException(e.cause, e);
-        }
-    }
-
-    @Override
     public UserDto getUserDto(String jwt) throws WebException {
         User user;
         try {
@@ -152,10 +135,5 @@ public class MyAuthentication implements AuthenticationService {
     @Override
     public TokenUtils tokenUtils() {
         return jwtUtils;
-    }
-
-    @Override
-    public IFilterVerification filterService() {
-        return filter;
     }
 }

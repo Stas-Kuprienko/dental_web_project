@@ -151,7 +151,7 @@ public enum APIManager {
         return reportService;
     }
 
-    public synchronized UserService getAccountService() {
+    public synchronized UserService getUserService() {
         if (userService == null) {
             userService = init(UserService.class);
         }

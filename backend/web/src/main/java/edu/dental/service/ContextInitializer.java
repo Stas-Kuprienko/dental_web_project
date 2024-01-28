@@ -23,16 +23,16 @@ public class ContextInitializer implements ServletContextListener {
                 throw new SQLException("trouble with DB connection.");
             }
         } catch (SQLException e) {
-            //TODO logger
             throw new RuntimeException(e);
         }
         DatabaseService databaseService = APIManager.INSTANCE.getDatabaseService();
         databaseService.getTableInitializer().init();
 
-        APIManager.INSTANCE.getAccountService();
+        APIManager.INSTANCE.getUserService();
         APIManager.INSTANCE.getReportService();
         WebAPI.INSTANCE.getAuthenticationService();
         WebAPI.INSTANCE.getJsonParser();
+        WebAPI.INSTANCE.getFilterVerification();
 
         Repository repository = WebAPI.INSTANCE.getRepository();
         repository.startMonitor();

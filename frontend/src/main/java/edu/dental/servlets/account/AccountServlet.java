@@ -1,8 +1,8 @@
 package edu.dental.servlets.account;
 
 import edu.dental.APIResponseException;
+import edu.dental.beans.UserBean;
 import edu.dental.service.WebUtility;
-import edu.dental.beans.UserDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -32,7 +32,7 @@ public class AccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            UserDto user = getUser((String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken));
+            UserBean user = getUser((String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken));
             request.setAttribute(WebUtility.INSTANCE.sessionUser, user);
             request.getRequestDispatcher("/main/account/page").forward(request, response);
         } catch (APIResponseException e) {
@@ -55,7 +55,7 @@ public class AccountServlet extends HttpServlet {
             String token = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
             String field = request.getParameter(fieldParam);
             String value = request.getParameter(valueParam);
-            UserDto user = setUserValue(token, field, value);
+            UserBean user = setUserValue(token, field, value);
             request.setAttribute(WebUtility.INSTANCE.sessionUser, user);
             request.getRequestDispatcher("/main/account/page").forward(request, response);
         } catch (APIResponseException e) {
@@ -75,18 +75,18 @@ public class AccountServlet extends HttpServlet {
     }
 
 
-    private UserDto setUserValue(String token, String field, String value) throws IOException, APIResponseException {
+    private UserBean setUserValue(String token, String field, String value) throws IOException, APIResponseException {
         WebUtility.QueryFormer former = new WebUtility.QueryFormer();
         former.add(fieldParam, field);
         former.add(valueParam, value);
         String requestParam = former.form();
 
         String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(token, accountUrl, requestParam);
-        return WebUtility.INSTANCE.parseFromJson(json, UserDto.class);
+        return WebUtility.INSTANCE.parseFromJson(json, UserBean.class);
     }
 
-    private UserDto getUser(String token) throws IOException, APIResponseException {
+    private UserBean getUser(String token) throws IOException, APIResponseException {
         String json = httpRequestSender.sendHttpGetRequest(token, accountUrl);
-        return WebUtility.INSTANCE.parseFromJson(json, UserDto.class);
+        return WebUtility.INSTANCE.parseFromJson(json, UserBean.class);
     }
 }

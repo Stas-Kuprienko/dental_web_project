@@ -2,7 +2,7 @@ package edu.dental.beans;
 
 import java.util.Objects;
 
-public class UserDto {
+public class UserBean {
 
     private int id;
     private String name;
@@ -10,9 +10,9 @@ public class UserDto {
     private String created;
     private String jwt;
 
-    public UserDto() {}
+    public UserBean() {}
 
-    public UserDto(int id, String name, String email, String created, String jwt) {
+    public UserBean(int id, String name, String email, String created, String jwt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -65,9 +65,9 @@ public class UserDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserDto userDto = (UserDto) o;
-        return Objects.equals(name, userDto.name) && Objects.equals(email, userDto.email) &&
-                Objects.equals(created, userDto.created) && Objects.equals(jwt, userDto.jwt);
+        UserBean userBean = (UserBean) o;
+        return Objects.equals(name, userBean.name) && Objects.equals(email, userBean.email) &&
+                Objects.equals(created, userBean.created) && Objects.equals(jwt, userBean.jwt);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class UserDto {
 
     @Override
     public String toString() {
-        return "UserDto{" +
+        return "UserBean{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", created='" + created + '\'' +

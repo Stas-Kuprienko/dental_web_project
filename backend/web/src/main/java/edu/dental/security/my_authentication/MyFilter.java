@@ -2,7 +2,6 @@ package edu.dental.security.my_authentication;
 
 import edu.dental.WebException;
 import edu.dental.domain.user.AccountException;
-import edu.dental.entities.User;
 import edu.dental.security.AuthenticationService;
 import edu.dental.security.IFilterVerification;
 import edu.dental.service.Repository;
@@ -27,31 +26,12 @@ class MyFilter implements IFilterVerification {
 
         if (authorization != null && authorization.startsWith(authorizationType)) {
             String jwt = authorization.substring(authorizationType.length());
-            int userId = verification(jwt);
+            int userId = authenticationService.tokenUtils().getId(jwt);
             if (userId > 0) {
-                if (isLoggedIn(userId)) {
-                    repository.updateAccountLastAction(userId);
-                    return userId;
-                } else {
-                    if (addToRepository(jwt)) {
-                        return userId;
-                    }
-                }
+                repository.ensureLoggingIn(userId);
+                return userId;
             }
         }
         throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
-    }
-
-    private int verification(String jwt) {
-        return authenticationService.tokenUtils().getId(jwt);
-    }
-
-    private boolean isLoggedIn(int userId) {
-        return repository.get(userId) != null;
-    }
-
-    private boolean addToRepository(String jwt) throws WebException {
-        User user = authenticationService.getUser(jwt);
-        return repository.put(user);
     }
 }

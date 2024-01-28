@@ -6,7 +6,7 @@ import edu.dental.entities.User;
 public interface UserService {
 
     static UserService getInstance() {
-        return APIManager.INSTANCE.getAccountService();
+        return APIManager.INSTANCE.getUserService();
     }
 
     User create(String name, String login, byte[] password) throws AccountException;

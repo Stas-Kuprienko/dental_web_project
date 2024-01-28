@@ -24,11 +24,7 @@ public interface AuthenticationService {
 
     byte[] passwordHash(String password);
 
-    User getUser(String jwt) throws WebException;
-
     UserDto getUserDto(String jwt) throws WebException;
 
     TokenUtils tokenUtils();
-
-    IFilterVerification filterService();
 }

@@ -1,7 +1,7 @@
 package edu.dental.service;
 
 import edu.dental.APIResponseException;
-import edu.dental.beans.UserDto;
+import edu.dental.beans.UserBean;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -39,7 +39,7 @@ public final class Reception {
         queryFormer.add(paramPassword, password);
         String requestParameters = queryFormer.form();
 
-        UserDto user =  getUserDto(requestParameters);
+        UserBean user =  getUserDto(requestParameters);
 
         HttpSession session = request.getSession(true);
 
@@ -50,7 +50,7 @@ public final class Reception {
         productMapService.setProductMap(session);
     }
 
-    public UserDto getByToken(String token, HttpSession session) throws IOException, APIResponseException {
+    public UserBean getByToken(String token, HttpSession session) throws IOException, APIResponseException {
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
 
         String paramToken = "token";
@@ -60,9 +60,9 @@ public final class Reception {
         return getUserDto(requestParameters);
     }
 
-    private UserDto getUserDto(String requestParameters) throws IOException, APIResponseException {
+    private UserBean getUserDto(String requestParameters) throws IOException, APIResponseException {
         String jsonUser = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(logInUrl, requestParameters);
-        return WebUtility.INSTANCE.parseFromJson(jsonUser, UserDto.class);
+        return WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);
     }
 
     public static synchronized Reception getInstance() {

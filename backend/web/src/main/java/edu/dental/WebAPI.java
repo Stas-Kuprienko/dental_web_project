@@ -2,6 +2,7 @@ package edu.dental;
 
 import edu.dental.domain.APIManager;
 import edu.dental.security.AuthenticationService;
+import edu.dental.security.IFilterVerification;
 import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
 
@@ -13,6 +14,7 @@ public enum WebAPI {
     private AuthenticationService authenticationService;
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
+    private IFilterVerification filterVerification;
 
     WebAPI() {}
 
@@ -35,5 +37,12 @@ public enum WebAPI {
             jsonObjectParser = APIManager.INSTANCE.init(JsonObjectParser.class);
         }
         return jsonObjectParser;
+    }
+
+    public synchronized IFilterVerification getFilterVerification() {
+        if (filterVerification == null) {
+            filterVerification = APIManager.INSTANCE.init(IFilterVerification.class);
+        }
+        return filterVerification;
     }
 }

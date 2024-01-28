@@ -1,7 +1,10 @@
 package edu.dental.service.my_repository;
 
+import edu.dental.WebException;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.user.AccountException;
+import edu.dental.domain.user.UserService;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
 import edu.dental.entities.User;
@@ -13,8 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class MyRepository implements Repository {
 
+    private final UserService userService;
+
     private MyRepository() {
         RAM = new ConcurrentHashMap<>();
+        userService = UserService.getInstance();
     }
 
     private final ConcurrentHashMap<Integer, Account> RAM;
@@ -30,7 +36,7 @@ public final class MyRepository implements Repository {
         RAM.get(userId).updateLastAction();
     }
 
-    public void putNew(User user) {
+    public void createNew(User user) {
         WorkRecordBook recordBook = WorkRecordBook.createNew(user.getId());
         Account account = new Account(user, recordBook);
         RAM.put(user.getId(), account);
@@ -79,13 +85,25 @@ public final class MyRepository implements Repository {
     }
 
     @Override
-    public void reloadWorks(int id) {
+    public void reloadWorks(int id) throws WebException {
         try {
             WorkRecordBook recordBook = WorkRecordBook.getInstance(id);
             User user = RAM.get(id).user;
             Account account = new Account(user, recordBook);
             RAM.put(id, account);
         } catch (WorkRecordBookException e) {
+            throw new WebException(AccountException.CAUSE.SERVER_ERROR, e);
+        }
+    }
+
+    @Override
+    public void ensureLoggingIn(int id) throws WebException {
+        if (RAM.get(id) == null) {
+            try {
+                userService.get(id);
+            } catch (AccountException e) {
+                throw new WebException(e.cause, e);
+            }
         }
     }
 

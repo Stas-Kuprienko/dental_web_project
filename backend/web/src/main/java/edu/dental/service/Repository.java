@@ -1,6 +1,7 @@
 package edu.dental.service;
 
 import edu.dental.WebAPI;
+import edu.dental.WebException;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
@@ -21,7 +22,7 @@ public interface Repository {
 
     void updateAccountLastAction(int userId);
 
-    void putNew(User user);
+    void createNew(User user);
 
     Account get(int id);
 
@@ -37,7 +38,9 @@ public interface Repository {
 
     void delete(int id);
 
-    void reloadWorks(int id);
+    void reloadWorks(int id) throws WebException;
+
+    void ensureLoggingIn(int id) throws WebException;
 
 
     abstract class Account extends Monitorable {

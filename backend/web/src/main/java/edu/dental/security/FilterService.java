@@ -17,7 +17,7 @@ public class FilterService implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        this.filterVerification = AuthenticationService.getInstance().filterService();
+        this.filterVerification = IFilterVerification.getInstance();
     }
 
     @Override
