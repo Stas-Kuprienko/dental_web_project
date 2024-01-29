@@ -1,8 +1,9 @@
 package edu.dental.servlets.products;
 
 import edu.dental.APIResponseException;
-import edu.dental.service.WebUtility;
 import edu.dental.beans.ProductMap;
+import edu.dental.service.WebUtility;
+import edu.http_utils.RestRequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,13 +13,21 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/main/product-map")
+@WebServlet({"/main/product-map", "/main/product-map/*"})
 public class ProductServlet extends HttpServlet {
 
     public final String productMapUrl = "main/product-map";
     public final String titleParam = "title";
+    public final String idParam = "id";
     public final String priceParam = "price";
 
+    private RestRequestReader restRequestReader;
+
+
+    @Override
+    public void init() throws ServletException {
+        this.restRequestReader = new RestRequestReader(productMapUrl);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -50,13 +59,18 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        try {
-            String title = request.getParameter(titleParam);
-            int price = Integer.parseInt(request.getParameter(priceParam));
-            editProduct(request.getSession(), title, price);
-            doGet(request, response);
-        } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+        int id = restRequestReader.getId(request.getRequestURI());
+        if (id > 0) {
+
+            try {
+                int price = Integer.parseInt(request.getParameter(priceParam));
+                editProduct(request.getSession(), id, price);
+                doGet(request, response);
+            } catch (APIResponseException e) {
+                response.sendError(e.CODE, e.MESSAGE);
+            }
+        } else {
+            response.sendError(400);
         }
     }
 
@@ -87,15 +101,15 @@ public class ProductServlet extends HttpServlet {
         map.add(item);
     }
 
-    private void editProduct(HttpSession session, String title, int price) throws IOException, APIResponseException {
+    private void editProduct(HttpSession session, int id, int price) throws IOException, APIResponseException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
-        queryFormer.add(titleParam, title);
+        queryFormer.add(idParam, id);
         queryFormer.add(priceParam, price);
         String requestParam = queryFormer.form();
         WebUtility.INSTANCE.requestSender().sendHttpPutRequest(jwt, productMapUrl, requestParam);
         ProductMap map = (ProductMap) session.getAttribute(WebUtility.INSTANCE.sessionMap);
-        map.update(title, price);
+        map.update(id, price);
     }
 
     private void deleteProduct(HttpSession session, String title) throws IOException, APIResponseException {

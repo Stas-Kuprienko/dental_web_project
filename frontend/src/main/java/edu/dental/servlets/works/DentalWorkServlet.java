@@ -3,8 +3,7 @@ package edu.dental.servlets.works;
 import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
 import edu.dental.service.DentalWorksService;
-
-import edu.dental.service.RestRequestReader;
+import edu.http_utils.RestRequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

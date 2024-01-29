@@ -23,10 +23,10 @@ public class ProductMap {
         return this.items.add(item);
     }
 
-    public void update(String key, int value) {
-        Item item = items.stream().filter(e -> e.key.equals(key)).findAny().orElse(null);
+    public void update(int id, int value) {
+        Item item = items.stream().filter(e -> e.id == id).findAny().orElse(null);
         if (item != null) {
-            int id = item.id;
+            String key = item.key;
             items.remove(item);
             items.add(new Item(id, key, value));
         }

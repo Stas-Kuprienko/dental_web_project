@@ -35,21 +35,22 @@ $(document).ready(function() {
 
 function openDialog(rowId) {
   var content = 'Load data for row ' + rowId + ' and populate the form fields';
+  var itemKey = $('#map .tr[data-rowid="' + rowId + '"] .td:first-child').text();
 
   $('#dialog').dialog({
-    title: '*  update  *',
+    title: itemKey + '- - -',
     modal: true,
     buttons: {
       Save: function() {
         var editedData = {
-          name: $('#key').val(),
           price: $('#value').val(),
         };
 
         $.ajax({
-          url: '/dental/main/product-map/' + rowId,
+          url: 'http://localhost:8081/dental/main/product-map/' + rowId,
           type: 'PUT',
-          data: editedData,
+          data: 'price=' + editedData.price,
+          contentType: 'application/json',
           success: function(response) {
             console.log('PUT request successful');
             console.log(response);
@@ -60,29 +61,25 @@ function openDialog(rowId) {
           }
         });
 
-        window.location.href = '/dental/main/product-map/' + rowId;
       },
-    Delete: function() {
-      $.ajax({
-        url: '/dental/main/product-map/' + rowId,
-        type: 'DELETE',
-        success: function(response) {
-          console.log('DELETE request successful');
-          console.log(response);
-        },
-        error: function(xhr, status, error) {
-          console.log('DELETE request failed');
-          console.log(xhr.responseText);
-        }
-      });
+      Delete: function() {
+        if (confirm('delete the product item?')) {
+          $.ajax({
+            url: 'http://localhost:8081/dental/main/product-map/' + rowId,
+            type: 'DELETE',
+            success: function(response) {
+              console.log('DELETE request successful');
+              console.log(response);
+            },
+            error: function(xhr, status, error) {
+              console.log('DELETE request failed');
+              console.log(xhr.responseText);
+            }
+          });
 
-        alert('delete the item?');
-        window.location.href = '/dental/main/product-map/' + rowId;
+        }
       }
     },
-    open: function() {
-      $('#key').val().prop('disabled', true);
-    }
   });
 }
 </script>
@@ -126,13 +123,10 @@ function openDialog(rowId) {
             </c:forEach>
         </div>
     </div>
-    <div class="th" id="dialog" style="display:none;">
+    <div class="td" id="dialog" style="display:none;">
         <form>
-            <label for="key"></label>
-            <input type="text" id="key" name="key" readonly>
-            <br>
-            <label for="value"></label>
-            <input type="number" id="value" name="value">
+            <label for="value">price</label>
+            <input type="number" id="value" name="price">
             <br>
         </form>
     </div>

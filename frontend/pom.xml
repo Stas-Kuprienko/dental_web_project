@@ -58,6 +58,14 @@
             <version>3.0.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>edu.http_utils</groupId>
+            <artifactId>RestApiReaderId</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/my_libraries/RestApiReaderId-1.0.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
