@@ -69,7 +69,11 @@ public class ProductMap {
         private String key;
         private int value;
 
-        public Item(int id, String key, int value) {}
+        public Item(int id, String key, int value) {
+            this.id = id;
+            this.key = key;
+            this.value = value;
+        }
 
         public int getId() {
             return id;

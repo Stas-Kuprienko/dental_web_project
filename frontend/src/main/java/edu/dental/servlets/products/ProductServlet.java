@@ -51,7 +51,7 @@ public class ProductServlet extends HttpServlet {
                 int price = Integer.parseInt(request.getParameter(priceParam));
 
                 newProduct(request.getSession(), title, price);
-                doGet(request, response);
+                request.getRequestDispatcher("/main/product-map/page").forward(request, response);
             } catch (APIResponseException e) {
                 response.sendError(e.CODE, e.MESSAGE);
             }
@@ -82,7 +82,7 @@ public class ProductServlet extends HttpServlet {
             int id = restRequestReader.getId(request.getRequestURI());
             String title = request.getParameter(titleParam);
             deleteProduct(request.getSession(), id, title);
-            doGet(request, response);
+            request.getRequestDispatcher("/main/product-map/page").forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
         }
