@@ -15,11 +15,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 
-@WebServlet("/main/product-map")
+@WebServlet({"/main/product-map", "/main/product-map/*"})
 public class ProductMapServlet extends HttpServlet {
 
-    public final String titleParam = "title";
-    public final String priceParam = "price";
+    private static final String idParam = "id";
+    private static final String titleParam = "title";
+    private static final String priceParam = "price";
 
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
@@ -67,14 +68,15 @@ public class ProductMapServlet extends HttpServlet {
         int userId = (int) request.getAttribute(Repository.paramUser);
         HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
 
+        int id = Integer.parseInt(parameters.get(idParam));
         String title = parameters.get(titleParam);
         int price = Integer.parseInt(parameters.get(priceParam));
+
         WorkRecordBook recordBook = repository.getRecordBook(userId);
         try {
             recordBook.updateProductItem(title, price);
             response.getWriter().flush();
         } catch (WorkRecordBookException e) {
-            //TODO
             response.sendError(500);
         }
     }
@@ -90,7 +92,6 @@ public class ProductMapServlet extends HttpServlet {
             recordBook.deleteProductItem(title);
             response.getWriter().flush();
         } catch (WorkRecordBookException e) {
-            //TODO
             response.sendError(500);
         }
     }

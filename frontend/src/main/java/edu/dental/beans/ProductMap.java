@@ -24,16 +24,11 @@ public class ProductMap {
     }
 
     public void update(int id, int value) {
-        Item item = items.stream().filter(e -> e.id == id).findAny().orElse(null);
-        if (item != null) {
-            String key = item.key;
-            items.remove(item);
-            items.add(new Item(id, key, value));
-        }
+        items.stream().filter(e -> e.id == id).findAny().ifPresent(item -> item.setValue(value));
     }
 
-    public void remove(String key) {
-        items.stream().filter(e -> e.key.equals(key)).findAny().ifPresent(items::remove);
+    public void remove(int id) {
+        items.stream().filter(e -> e.id == id).findAny().ifPresent(items::remove);
     }
 
     public boolean isEmpty() {

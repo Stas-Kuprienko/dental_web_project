@@ -42,8 +42,9 @@ public class ProductServlet extends HttpServlet {
                 doPut(request, response);
             } else if (method.equals("delete")) {
                 doDelete(request, response);
+            } else {
+                response.sendError(400);
             }
-            response.sendError(400);
         } else {
             try {
                 String title = request.getParameter(titleParam);
@@ -63,9 +64,10 @@ public class ProductServlet extends HttpServlet {
         if (id > 0) {
 
             try {
+                String title = request.getParameter(titleParam);
                 int price = Integer.parseInt(request.getParameter(priceParam));
-                editProduct(request.getSession(), id, price);
-                doGet(request, response);
+                editProduct(request.getSession(), id, title, price);
+                request.getRequestDispatcher("/main/product-map/page").forward(request, response);
             } catch (APIResponseException e) {
                 response.sendError(e.CODE, e.MESSAGE);
             }
@@ -77,8 +79,9 @@ public class ProductServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
+            int id = restRequestReader.getId(request.getRequestURI());
             String title = request.getParameter(titleParam);
-            deleteProduct(request.getSession(), title);
+            deleteProduct(request.getSession(), id, title);
             doGet(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
@@ -101,10 +104,11 @@ public class ProductServlet extends HttpServlet {
         map.add(item);
     }
 
-    private void editProduct(HttpSession session, int id, int price) throws IOException, APIResponseException {
+    private void editProduct(HttpSession session, int id, String title, int price) throws IOException, APIResponseException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(idParam, id);
+        queryFormer.add(titleParam, title);
         queryFormer.add(priceParam, price);
         String requestParam = queryFormer.form();
         WebUtility.INSTANCE.requestSender().sendHttpPutRequest(jwt, productMapUrl, requestParam);
@@ -112,13 +116,12 @@ public class ProductServlet extends HttpServlet {
         map.update(id, price);
     }
 
-    private void deleteProduct(HttpSession session, String title) throws IOException, APIResponseException {
+    private void deleteProduct(HttpSession session, int id, String title) throws IOException, APIResponseException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(titleParam, title);
-        String requestParam = queryFormer.form();
-        WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, productMapUrl, requestParam);
+        WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, productMapUrl + '/' + id, queryFormer.form());
         ProductMap map = (ProductMap) session.getAttribute(WebUtility.INSTANCE.sessionMap);
-        map.remove(title);
+        map.remove(id);
     }
 }

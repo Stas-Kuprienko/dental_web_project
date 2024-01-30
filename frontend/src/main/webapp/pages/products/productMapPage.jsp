@@ -11,77 +11,82 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
-	$(document).ready(function(){
+	$(document).ready(function() {
 
-		$('#product-new').click(function(){
-			$('#product-form').toggle("show");
-		});
+	    $('#product-new').click(function() {
+	        $('#product-form').toggle("show");
+	    });
 
 	});
 
-$(document).ready(function() {
-  $('#map .tr').click(function() {
-    var rowId = $(this).data('rowid');
-    openDialog(rowId);
-  });
-});
+	$(document).ready(function() {
+	    $('#map .tr').click(function() {
+	        var rowId = $(this).data('rowid');
+	        openDialog(rowId);
+	    });
+	});
 
-$(document).ready(function() {
-  $('#map .tr').click(function() {
-    var rowId = $(this).data('rowid');
-    openDialog(rowId);
-  });
-});
+	$(document).ready(function() {
+	    $('#map .tr').click(function() {
+	        var rowId = $(this).data('rowid');
+	        openDialog(rowId);
+	    });
+	});
 
-function openDialog(rowId) {
-  var content = 'Load data for row ' + rowId + ' and populate the form fields';
-  var itemKey = $('#map .tr[data-rowid="' + rowId + '"] .td:first-child').text();
+	function openDialog(rowId) {
+	    var content = 'Load data for row ' + rowId + ' and populate the form fields';
+	    var itemKey = $('#map .tr[data-rowid="' + rowId + '"] .td:first-child').text();
 
-  $('#dialog').dialog({
-    title: itemKey + '- - -',
-    modal: true,
-    buttons: {
-      Save: function() {
-        var editedData = {
-          price: $('#value').val(),
-        };
+	    $('#dialog').dialog({
+	        title: itemKey + '- - -',
+	        modal: true,
+	        buttons: {
+	            Save: function() {
+	                var editedData = {
+	                    price: $('#value').val(),
+	                };
 
-        $.ajax({
-          url: 'http://localhost:8081/dental/main/product-map/' + rowId,
-          type: 'PUT',
-          data: 'price=' + editedData.price,
-          contentType: 'application/json',
-          success: function(response) {
-            console.log('PUT request successful');
-            console.log(response);
-          },
-          error: function(xhr, status, error) {
-            console.log('PUT request failed');
-            console.log(xhr.responseText);
-          }
-        });
+	                $.ajax({
+	                    url: 'http://localhost:8081/dental/main/product-map/' + rowId,
+	                    type: 'POST',
+	                    data: 'price=' + editedData.price + '&title=' + itemKey + '&method=put',
+	                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	                    success: function(response) {
+	                        console.log('POST request successful');
+	                        console.log(response);
+	                        location.reload();
+	                    },
+	                    error: function(xhr, status, error) {
+	                        console.log('POST request failed');
+	                        console.log(xhr.responseText);
+	                    }
+	                });
 
-      },
-      Delete: function() {
-        if (confirm('delete the product item?')) {
-          $.ajax({
-            url: 'http://localhost:8081/dental/main/product-map/' + rowId,
-            type: 'DELETE',
-            success: function(response) {
-              console.log('DELETE request successful');
-              console.log(response);
-            },
-            error: function(xhr, status, error) {
-              console.log('DELETE request failed');
-              console.log(xhr.responseText);
-            }
-          });
+	            },
 
-        }
-      }
-    },
-  });
-}
+                Delete: function() {
+                  if (confirm('delete the product item?')) {
+                    $.ajax({
+                      url: 'http://localhost:8081/dental/main/product-map/' + rowId,
+                      type: 'POST',
+                      data: 'method=delete&title=' + itemKey,
+                      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                      success: function(response) {
+                        console.log('POST request successful');
+                        console.log(response);
+	                    location.reload();
+                      },
+                      error: function(xhr, status, error) {
+                        console.log('POST request failed');
+                        console.log(xhr.responseText);
+                      }
+                    });
+
+	                }
+	            }
+	        },
+	    });
+	}
 </script>
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
@@ -123,7 +128,7 @@ function openDialog(rowId) {
             </c:forEach>
         </div>
     </div>
-    <div class="td" id="dialog" style="display:none;">
+    <div class="tr" id="dialog" style="display:none;">
         <form>
             <label for="value">price</label>
             <input type="number" id="value" name="price">

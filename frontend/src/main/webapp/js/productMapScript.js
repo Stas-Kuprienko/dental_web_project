@@ -1,49 +1,53 @@
-function openDialog(rowId) {
-  var content = 'Load data for row ' + rowId + ' and populate the form fields';
-  var itemKey = $('#map .tr[data-rowid="' + rowId + '"] .td:first-child').text();
 
-  $('#dialog').dialog({
-    title: itemKey + '- - -',
-    modal: true,
-    buttons: {
-      Save: function() {
-        var editedData = {
-          price: $('#value').val(),
-        };
+	function openDialog(rowId) {
+	    var content = 'Load data for row ' + rowId + ' and populate the form fields';
+	    var itemKey = $('#map .tr[data-rowid="' + rowId + '"] .td:first-child').text();
 
-        $.ajax({
-          url: 'http://localhost:8081/dental/main/product-map/' + rowId,
-          type: 'PUT',
-          data: 'price=' + editedData.price,
-          contentType: 'application/json',
-          success: function(response) {
-            console.log('PUT request successful');
-            console.log(response);
-          },
-          error: function(xhr, status, error) {
-            console.log('PUT request failed');
-            console.log(xhr.responseText);
-          }
-        });
+	    $('#dialog').dialog({
+	        title: itemKey + '- - -',
+	        modal: true,
+	        buttons: {
+	            Save: function() {
+	                var editedData = {
+	                    price: $('#value').val(),
+	                };
 
-      },
-      Delete: function() {
-        if (confirm('delete the product item?')) {
-          $.ajax({
-            url: 'http://localhost:8081/dental/main/product-map/' + rowId,
-            type: 'DELETE',
-            success: function(response) {
-              console.log('DELETE request successful');
-              console.log(response);
-            },
-            error: function(xhr, status, error) {
-              console.log('DELETE request failed');
-              console.log(xhr.responseText);
-            }
-          });
+	                $.ajax({
+	                    url: 'http://localhost:8081/dental/main/product-map/' + rowId,
+	                    type: 'POST',
+	                    data: 'price=' + editedData.price + '&title=' + itemKey + '&method=put',
+	                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	                    success: function(response) {
+	                        console.log('POST request successful');
+	                        console.log(response);
+	                    },
+	                    error: function(xhr, status, error) {
+	                        console.log('POST request failed');
+	                        console.log(xhr.responseText);
+	                    }
+	                });
 
-        }
-      }
-    },
-  });
-}
+	            },
+
+                Delete: function() {
+                  if (confirm('delete the product item?')) {
+                    $.ajax({
+                      url: 'http://localhost:8081/dental/main/product-map/' + rowId,
+                      type: 'POST',
+                      data: 'method=delete&title=' + itemKey,
+                      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                      success: function(response) {
+                        console.log('POST request successful');
+                        console.log(response);
+                      },
+                      error: function(xhr, status, error) {
+                        console.log('POST request failed');
+                        console.log(xhr.responseText);
+                      }
+                    });
+
+	                }
+	            }
+	        },
+	    });
+	}
