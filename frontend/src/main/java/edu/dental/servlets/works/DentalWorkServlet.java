@@ -2,7 +2,8 @@ package edu.dental.servlets.works;
 
 import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
-import edu.dental.service.DentalWorksService;
+import edu.dental.service.control.Administrator;
+import edu.dental.service.control.DentalWorksService;
 import edu.http_utils.RestRequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -31,7 +32,7 @@ public class DentalWorkServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        this.dentalWorksService = DentalWorksService.getInstance();
+        this.dentalWorksService = Administrator.getInstance().getDentalWorksService();
         this.restRequestReader = new RestRequestReader("/main/dental-work");
     }
 

@@ -1,4 +1,4 @@
-package edu.dental.servlets.control;
+package edu.dental.servlets.account;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,6 +17,8 @@ public class LogOut extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
+            //TODO
+            response.setIntHeader("Refresh", 2);
         }
         request.getRequestDispatcher("/").forward(request, response);
     }

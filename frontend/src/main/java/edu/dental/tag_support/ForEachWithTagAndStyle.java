@@ -12,6 +12,8 @@ public class ForEachWithTagAndStyle extends SimpleTagSupport {
     private String style;
     private String[] items;
 
+    //TODO fixing
+    // <d:forEach tag="div" style="th" items="${sessionScope.map.getKeys()}"/>
 
     @Override
     public void doTag() throws JspException, IOException {

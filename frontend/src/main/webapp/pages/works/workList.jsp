@@ -68,6 +68,7 @@
             <div class="tr">
                 <div class="th">PATIENT</div>
                 <div class="th">CLINIC</div>
+                fixing!
                 <d:forEach tag="div" style="th" items="${sessionScope.map.getKeys()}"/>
                 <div class="th">COMPLETE</div>
                 <div class="th">ACCEPT</div>

@@ -1,5 +1,4 @@
-
-	function openDialog(rowId) {
+function openDialog(rowId) {
 	    var content = 'Load data for row ' + rowId + ' and populate the form fields';
 	    var itemKey = $('#map .tr[data-rowid="' + rowId + '"] .td:first-child').text();
 
@@ -20,6 +19,7 @@
 	                    success: function(response) {
 	                        console.log('POST request successful');
 	                        console.log(response);
+	                        location.reload();
 	                    },
 	                    error: function(xhr, status, error) {
 	                        console.log('POST request failed');
@@ -39,6 +39,7 @@
                       success: function(response) {
                         console.log('POST request successful');
                         console.log(response);
+	                    location.reload();
                       },
                       error: function(xhr, status, error) {
                         console.log('POST request failed');

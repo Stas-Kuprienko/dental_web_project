@@ -1,10 +1,10 @@
-package edu.dental.service.my_account_service;
+package edu.dental.service.control.my_account_service;
 
 import edu.dental.APIResponseException;
 import edu.dental.service.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
-import edu.dental.service.DentalWorksService;
+import edu.dental.service.control.DentalWorksService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
@@ -16,7 +16,6 @@ import java.util.stream.IntStream;
 
 public class MyDentalWorksService implements DentalWorksService {
 
-    private static final String dentalWorkListUrl = "main/dental-works";
     private static final String dentalWorkUrl = "main/dental-work";
     private static final String idParam = "id";
     private static final String productParam = "product";
@@ -26,20 +25,10 @@ public class MyDentalWorksService implements DentalWorksService {
 
     private final WebUtility.HttpRequestSender httpRequestSender;
 
-    private MyDentalWorksService() {
+    MyDentalWorksService() {
         this.httpRequestSender = WebUtility.INSTANCE.requestSender();
     }
 
-
-    @Override
-    public void setWorkList(HttpSession session) throws IOException, APIResponseException {
-        String token = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
-
-        String jsonWorks = httpRequestSender.sendHttpGetRequest(token, dentalWorkListUrl);
-        DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
-
-        session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
-    }
 
     @Override
     public DentalWork createWork(HttpSession session, String patient, String clinic, String product, int quantity, String complete) throws IOException, APIResponseException {

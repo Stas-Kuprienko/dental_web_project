@@ -22,21 +22,21 @@ public enum WebUtility {
     private static final String apiUrl = "http://localhost:8080/dental-api/";
 
     private final HttpRequestSender requestSender;
-    private final Gson parser;
+    private final Gson jsonParser;
 
 
     WebUtility() {
         this.requestSender = new HttpRequestSender(apiUrl);
-        this.parser = new GsonBuilder().create();
+        this.jsonParser = new GsonBuilder().create();
     }
 
 
     public <T> String parseToJson(T object) {
-        return parser.toJson(object);
+        return jsonParser.toJson(object);
     }
 
     public <T> T parseFromJson(String json, Class<T> clas) {
-        return parser.fromJson(json, clas);
+        return jsonParser.fromJson(json, clas);
     }
 
     public HttpRequestSender requestSender() {

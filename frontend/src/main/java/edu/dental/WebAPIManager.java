@@ -1,7 +1,6 @@
 package edu.dental;
 
-import edu.dental.service.DentalWorksService;
-import edu.dental.service.ProductMapService;
+import edu.dental.service.control.Administrator;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,8 +30,7 @@ public enum WebAPIManager {
     private final Properties service;
 
 
-    private DentalWorksService dentalWorksService;
-    private ProductMapService productMapService;
+    private Administrator administrator;
 
     static {
         logger = Logger.getLogger(WebAPIManager.class.getName());
@@ -61,20 +59,13 @@ public enum WebAPIManager {
         }
     }
 
-
-    public synchronized DentalWorksService getDentalWorksService() {
-        if (dentalWorksService == null) {
-            dentalWorksService = init(DentalWorksService.class);
+    public synchronized Administrator getAdministrator() {
+        if (administrator == null) {
+            administrator = init(Administrator.class);
         }
-        return dentalWorksService;
+        return administrator;
     }
 
-    public synchronized ProductMapService getProductMapService() {
-        if (productMapService == null) {
-            productMapService = init(ProductMapService.class);
-        }
-        return productMapService;
-    }
 
     @SuppressWarnings("unchecked")
     public <T> T init(Class<T> clas) {

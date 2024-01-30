@@ -7,12 +7,12 @@
 
   <filter>
     <filter-name>mainFilter</filter-name>
-    <filter-class>edu.dental.servlets.control.MainFilter</filter-class>
+    <filter-class>edu.dental.servlets.filters.MainFilter</filter-class>
   </filter>
 
   <filter>
     <filter-name>enterFilter</filter-name>
-    <filter-class>edu.dental.servlets.control.EnterFilter</filter-class>
+    <filter-class>edu.dental.servlets.filters.EnterFilter</filter-class>
   </filter>
 
   <listener>
@@ -26,12 +26,12 @@
 
   <servlet>
     <servlet-name>logIn</servlet-name>
-    <servlet-class>edu.dental.servlets.control.Authorization</servlet-class>
+    <servlet-class>edu.dental.servlets.account.Authorization</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>register</servlet-name>
-    <servlet-class>edu.dental.servlets.control.Registration</servlet-class>
+    <servlet-class>edu.dental.servlets.account.Registration</servlet-class>
   </servlet>
 
   <servlet>
@@ -111,7 +111,7 @@
 
   <servlet>
     <servlet-name>logOut</servlet-name>
-    <servlet-class>edu.dental.servlets.control.LogOut</servlet-class>
+    <servlet-class>edu.dental.servlets.account.LogOut</servlet-class>
   </servlet>
 
   <servlet-mapping>
