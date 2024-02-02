@@ -1,13 +1,13 @@
-package edu.dental.service.control.my_account_service;
+package edu.dental.control.my_account_service;
 
 import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserBean;
+import edu.dental.control.Administrator;
+import edu.dental.control.DentalWorksService;
 import edu.dental.service.WebUtility;
-import edu.dental.service.control.Administrator;
-import edu.dental.service.control.DentalWorksService;
-import edu.dental.service.control.ProductMapService;
+import edu.dental.control.ProductMapService;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
@@ -17,11 +17,14 @@ public final class MyAdministrator implements Administrator {
 
     private static final String signUpUrl = "sign-up";
     private static final String logInUrl = "log-in";
+    private static final String accountUrl = "main/account";
     private static final String dentalWorkListUrl = "main/dental-works";
     private static final String productMapUrl = "main/product-map";
     private static final String paramName = "name";
     private static final String paramEmail = "email";
     private static final String paramPassword = "password";
+    private static final String fieldParam = "field";
+    private static final String valueParam = "value";
 
     public final DentalWorksService dentalWorksService;
     public final ProductMapService productMapService;
@@ -48,7 +51,7 @@ public final class MyAdministrator implements Administrator {
             String jsonUser = httpRequestSender.sendHttpPostRequest(signUpUrl, requestParameters);
             UserBean user = WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);
 
-            session.setAttribute(WebUtility.INSTANCE.sessionUser, user.getId());
+            session.setAttribute(WebUtility.INSTANCE.sessionToken, user.getJwt());
             session.setAttribute(WebUtility.INSTANCE.sessionWorks, new DentalWork[]{});
             session.setAttribute(WebUtility.INSTANCE.sessionMap, new ProductMap.Item[]{});
         } catch (IOException e) {
@@ -72,11 +75,27 @@ public final class MyAdministrator implements Administrator {
         }
         UserBean user =  WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);
 
-        session.setAttribute(WebUtility.INSTANCE.sessionUser, user.getId());
         session.setAttribute(WebUtility.INSTANCE.sessionToken, user.getJwt());
 
         setWorkList(session);
         setProductMap(session);
+    }
+
+    @Override
+    public UserBean getUser(String token) throws IOException, APIResponseException {
+        String json = httpRequestSender.sendHttpGetRequest(token, accountUrl);
+        return WebUtility.INSTANCE.parseFromJson(json, UserBean.class);
+    }
+
+    @Override
+    public UserBean updateUser(String token, String field, String value) throws IOException, APIResponseException {
+        WebUtility.QueryFormer former = new WebUtility.QueryFormer();
+        former.add(fieldParam, field);
+        former.add(valueParam, value);
+        String requestParam = former.form();
+
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(token, accountUrl, requestParam);
+        return WebUtility.INSTANCE.parseFromJson(json, UserBean.class);
     }
 
     @Override

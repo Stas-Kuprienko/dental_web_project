@@ -1,6 +1,6 @@
-package edu.dental;
+package edu.dental.service;
 
-import edu.dental.service.control.Administrator;
+import edu.dental.control.Administrator;
 
 import java.io.FileInputStream;
 import java.io.IOException;

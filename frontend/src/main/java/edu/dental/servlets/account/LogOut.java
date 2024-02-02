@@ -17,10 +17,8 @@ public class LogOut extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
-            //TODO
-            response.setIntHeader("Refresh", 2);
         }
-        request.getRequestDispatcher("/").forward(request, response);
+        response.sendRedirect("/dental/sign-in");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package edu.dental.service.control;
+package edu.dental.control;
 
 import edu.dental.APIResponseException;
 import jakarta.servlet.http.HttpSession;

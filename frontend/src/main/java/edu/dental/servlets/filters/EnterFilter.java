@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/", "/sign-up"})
+@WebFilter(urlPatterns = {"/", "/sign-in", "/sign-up", "/log-in", "/new-user"})
 public class EnterFilter implements Filter {
 
     @Override
@@ -20,7 +20,7 @@ public class EnterFilter implements Filter {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute(WebUtility.INSTANCE.sessionUser) == null) {
+        if (session == null || session.getAttribute(WebUtility.INSTANCE.sessionToken) == null) {
             chain.doFilter(request, response);
         } else {
             request.getRequestDispatcher("/main").forward(request, response);

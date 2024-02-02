@@ -3,6 +3,7 @@ package edu.dental.servlets.account;
 import edu.dental.APIResponseException;
 import edu.dental.beans.UserBean;
 import edu.dental.service.WebUtility;
+import edu.dental.control.Administrator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,27 +15,25 @@ import java.io.IOException;
 @WebServlet("/main/account")
 public class AccountServlet extends HttpServlet {
 
-    public final String accountUrl = "main/account";
-    public final String fieldParam = "field";
-    public final String valueParam = "value";
-    public final String nameField = "name";
-    public final String emailField = "email";
-    public final String passwordField = "password";
+    private static final String accountUrl = "main/account";
+    private static final String fieldParam = "field";
+    private static final String valueParam = "value";
+    private static final String accountPageURL = "/main/account/page";
 
-    private WebUtility.HttpRequestSender httpRequestSender;
-
+    private Administrator administrator;
 
     @Override
     public void init() throws ServletException {
-        this.httpRequestSender = WebUtility.INSTANCE.requestSender();
+        this.administrator = Administrator.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            UserBean user = getUser((String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken));
+            String token = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
+            UserBean user = administrator.getUser(token);
             request.setAttribute(WebUtility.INSTANCE.sessionUser, user);
-            request.getRequestDispatcher("/main/account/page").forward(request, response);
+            request.getRequestDispatcher(accountPageURL).forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
         }
@@ -42,10 +41,10 @@ public class AccountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String method = request.getParameter("method");
-        if (method != null && method.equals("delete")) {
-            doDelete(request, response);
+        if (request.getParameter("method") != null) {
+            chooseMethod(request, response);
         } else {
+            response.sendError(405);
         }
     }
 
@@ -55,9 +54,9 @@ public class AccountServlet extends HttpServlet {
             String token = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
             String field = request.getParameter(fieldParam);
             String value = request.getParameter(valueParam);
-            UserBean user = setUserValue(token, field, value);
+            UserBean user = administrator.updateUser(token, field, value);
             request.setAttribute(WebUtility.INSTANCE.sessionUser, user);
-            request.getRequestDispatcher("/main/account/page").forward(request, response);
+            request.getRequestDispatcher(accountPageURL).forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
         }
@@ -75,18 +74,14 @@ public class AccountServlet extends HttpServlet {
     }
 
 
-    private UserBean setUserValue(String token, String field, String value) throws IOException, APIResponseException {
-        WebUtility.QueryFormer former = new WebUtility.QueryFormer();
-        former.add(fieldParam, field);
-        former.add(valueParam, value);
-        String requestParam = former.form();
-
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(token, accountUrl, requestParam);
-        return WebUtility.INSTANCE.parseFromJson(json, UserBean.class);
-    }
-
-    private UserBean getUser(String token) throws IOException, APIResponseException {
-        String json = httpRequestSender.sendHttpGetRequest(token, accountUrl);
-        return WebUtility.INSTANCE.parseFromJson(json, UserBean.class);
+    private void chooseMethod(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String method = request.getParameter("method");
+        if (method.equals("put")) {
+            doPut(request, response);
+        } else if (method.equals("delete")) {
+            doDelete(request, response);
+        } else {
+            response.sendError(405);
+        }
     }
 }

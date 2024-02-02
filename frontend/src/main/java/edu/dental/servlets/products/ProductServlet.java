@@ -1,8 +1,8 @@
 package edu.dental.servlets.products;
 
 import edu.dental.APIResponseException;
-import edu.dental.service.control.Administrator;
-import edu.dental.service.control.ProductMapService;
+import edu.dental.control.Administrator;
+import edu.dental.control.ProductMapService;
 import edu.http_utils.RestRequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

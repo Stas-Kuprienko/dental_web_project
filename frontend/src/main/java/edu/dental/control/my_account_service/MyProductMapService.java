@@ -1,9 +1,9 @@
-package edu.dental.service.control.my_account_service;
+package edu.dental.control.my_account_service;
 
 import edu.dental.APIResponseException;
 import edu.dental.beans.ProductMap;
+import edu.dental.control.ProductMapService;
 import edu.dental.service.WebUtility;
-import edu.dental.service.control.ProductMapService;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class MyProductMapService implements ProductMapService {
         item = WebUtility.INSTANCE.parseFromJson(json, ProductMap.Item.class);
         ProductMap map = getProductMap(session);
         map.add(item);
-        session.setAttribute(WebUtility.INSTANCE.sessionMap, map.getItems().toArray(new ProductMap.Item[]{}));
+        session.setAttribute(WebUtility.INSTANCE.sessionMap, map.getItems());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MyProductMapService implements ProductMapService {
         WebUtility.INSTANCE.requestSender().sendHttpPutRequest(jwt, productMapUrl + '/' + id, requestParam);
         ProductMap map = getProductMap(session);
         map.update(id, price);
-        session.setAttribute(WebUtility.INSTANCE.sessionMap, map.getItems().toArray(new ProductMap.Item[]{}));
+        session.setAttribute(WebUtility.INSTANCE.sessionMap, map.getItems());
     }
 
     @Override
@@ -55,7 +55,7 @@ public class MyProductMapService implements ProductMapService {
         WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, productMapUrl + '/' + id, queryFormer.form());
         ProductMap map = getProductMap(session);
         map.remove(id);
-        session.setAttribute(WebUtility.INSTANCE.sessionMap, map.getItems().toArray(new ProductMap.Item[]{}));
+        session.setAttribute(WebUtility.INSTANCE.sessionMap, map.getItems());
     }
 
     private ProductMap getProductMap(HttpSession session) {

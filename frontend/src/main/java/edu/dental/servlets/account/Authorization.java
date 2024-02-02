@@ -1,7 +1,7 @@
 package edu.dental.servlets.account;
 
 import edu.dental.APIResponseException;
-import edu.dental.service.control.Administrator;
+import edu.dental.control.Administrator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

@@ -20,7 +20,7 @@ public class MainFilter implements Filter {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute(WebUtility.INSTANCE.sessionUser) == null) {
+        if (session == null || session.getAttribute(WebUtility.INSTANCE.sessionToken) == null) {
             request.getRequestDispatcher("/").forward(request, response);
         }
         chain.doFilter(request, response);

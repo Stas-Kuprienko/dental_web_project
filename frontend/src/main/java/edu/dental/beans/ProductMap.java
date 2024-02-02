@@ -4,14 +4,10 @@ import java.util.*;
 
 public class ProductMap {
 
-    private ArrayList<Item> items;
+    private final ArrayList<Item> items;
 
     public ProductMap(Item[] items) {
         this.items = new ArrayList<>(List.of(items));
-    }
-
-    public ProductMap() {
-        this.items = new ArrayList<>();
     }
 
     public boolean add(Item item) {
@@ -30,12 +26,8 @@ public class ProductMap {
         return items.isEmpty();
     }
 
-    public ArrayList<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(ArrayList<Item> items) {
-        this.items = items;
+    public Item[] getItems() {
+        return items.toArray(new Item[]{});
     }
 
     @Override

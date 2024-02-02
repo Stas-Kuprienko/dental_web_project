@@ -222,7 +222,7 @@ public class MyProductMap implements ProductMap {
     @Override
     public String[] keysToArray() {
         if (size == 0) {
-            throw new NullPointerException("The array of entries is empty.");
+            return new String[0];
         }
         String[] arr = new String[size];
         Arrays.stream(toArray()).map(e -> e.title).toList().toArray(arr);

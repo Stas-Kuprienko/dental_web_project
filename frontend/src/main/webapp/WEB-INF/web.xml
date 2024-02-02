@@ -25,6 +25,11 @@
   </servlet>
 
   <servlet>
+    <servlet-name>logInPage</servlet-name>
+    <jsp-file>/pages/index.html</jsp-file>
+  </servlet>
+
+  <servlet>
     <servlet-name>logIn</servlet-name>
     <servlet-class>edu.dental.servlets.account.Authorization</servlet-class>
   </servlet>
@@ -120,6 +125,11 @@
   </servlet-mapping>
 
   <servlet-mapping>
+    <servlet-name>logInPage</servlet-name>
+    <url-pattern>/sign-in</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
     <servlet-name>Main</servlet-name>
     <url-pattern>/main/*</url-pattern>
   </servlet-mapping>
@@ -161,6 +171,11 @@
   <error-page>
     <error-code>404</error-code>
     <location>/pages/error.html</location>
+  </error-page>
+
+  <error-page>
+    <error-code>400</error-code>
+    <location>/pages/errorPage.jsp</location>
   </error-page>
 
   <error-page>

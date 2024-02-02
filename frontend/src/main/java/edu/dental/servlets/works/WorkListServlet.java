@@ -40,16 +40,22 @@ public class WorkListServlet extends HttpServlet {
     private void setRequiredWorkList(String year_month, HttpServletRequest request) throws IOException, APIResponseException {
         String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
         String[] year_month_split = year_month.split("-");
-        String year = year_month_split[0];
-        String month = year_month_split[1];
-        LocalDate now = LocalDate.now();
+        int year = Integer.parseInt(year_month_split[0]);
+        int month = Integer.parseInt(year_month_split[1]);
         DentalWork[] works;
-        if (now.getYear() != Integer.parseInt(year) && now.getMonthValue() != Integer.parseInt(month)) {
+        if (isCurrentMonth(year, month)) {
             String jsonWorks = WebUtility.INSTANCE.requestSender()
                     .sendHttpGetRequest(jwt, dentalWorksUrl + String.format(parameters, year, month));
             works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
             request.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
             request.setAttribute("year-month", year_month);
         }
+    }
+
+    private boolean isCurrentMonth(int year, int month) {
+        LocalDate now = LocalDate.now();
+        int currentYear = now.getYear();
+        int currentMonth = now.getMonthValue();
+        return month != currentMonth || currentYear != year;
     }
 }

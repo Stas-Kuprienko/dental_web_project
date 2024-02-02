@@ -1,10 +1,10 @@
-package edu.dental.service.control.my_account_service;
+package edu.dental.control.my_account_service;
 
 import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
+import edu.dental.control.DentalWorksService;
 import edu.dental.service.WebUtility;
-import edu.dental.service.control.DentalWorksService;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
