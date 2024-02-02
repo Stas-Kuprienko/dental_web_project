@@ -6,6 +6,7 @@ import edu.dental.dto.ProductMapDto;
 import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.Repository;
 import edu.dental.service.tools.RequestReader;
+import edu.dental.service.tools.RestRequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,17 +19,20 @@ import java.util.HashMap;
 @WebServlet({"/main/product-map", "/main/product-map/*"})
 public class ProductMapServlet extends HttpServlet {
 
+    private static final String url = "/main/product-map";
     private static final String idParam = "id";
     private static final String titleParam = "title";
     private static final String priceParam = "price";
 
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
+    private RestRequestReader restRequestReader;
 
     @Override
     public void init() throws ServletException {
         this.repository = Repository.getInstance();
         this.jsonObjectParser = JsonObjectParser.getInstance();
+        this.restRequestReader = new RestRequestReader(url);
     }
 
     @Override
@@ -58,7 +62,6 @@ public class ProductMapServlet extends HttpServlet {
             response.getWriter().print(json);
             response.getWriter().flush();
         } catch (WorkRecordBookException e) {
-            //TODO
             response.sendError(400);
         }
     }
@@ -68,7 +71,7 @@ public class ProductMapServlet extends HttpServlet {
         int userId = (int) request.getAttribute(Repository.paramUser);
         HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
 
-        int id = Integer.parseInt(parameters.get(idParam));
+        int id = restRequestReader.getId(request.getRequestURI());
         String title = parameters.get(titleParam);
         int price = Integer.parseInt(parameters.get(priceParam));
 
@@ -95,6 +98,4 @@ public class ProductMapServlet extends HttpServlet {
             response.sendError(500);
         }
     }
-
-
 }

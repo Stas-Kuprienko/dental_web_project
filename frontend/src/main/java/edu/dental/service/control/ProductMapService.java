@@ -1,14 +1,15 @@
 package edu.dental.service.control;
 
 import edu.dental.APIResponseException;
-import edu.dental.beans.ProductMap;
 import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
 
 public interface ProductMapService {
 
-    void createProductItem(ProductMap.Item item);
+    void createProductItem(HttpSession session, String title, int price) throws IOException, APIResponseException;
 
-    void updateProductItem(int id, int value);
+    void updateProductItem(HttpSession session, int id, String title, int price) throws IOException, APIResponseException;
 
-    void deleteProductItem(int id);
+    void deleteProductItem(HttpSession session, int id, String title) throws IOException, APIResponseException;
 }

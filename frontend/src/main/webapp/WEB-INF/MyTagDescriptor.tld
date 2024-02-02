@@ -25,7 +25,7 @@
     </tag>
     <tag>
         <name>forEach</name>
-        <tag-class>edu.dental.tag_support.ForEachWithTagAndStyle</tag-class>
+        <tag-class>edu.dental.tag_support.HeaderProductMap</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>items</name>

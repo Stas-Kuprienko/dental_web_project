@@ -2,6 +2,7 @@ package edu.dental.servlets.works;
 
 import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
+import edu.dental.service.WebUtility;
 import edu.dental.service.control.Administrator;
 import edu.dental.service.control.DentalWorksService;
 import edu.http_utils.RestRequestReader;
@@ -25,6 +26,7 @@ public class DentalWorkServlet extends HttpServlet {
     private static final String completeParam = "complete";
     private static final String fieldParam = "field";
     private static final String valueParam = "value";
+    private static final String dentalWorkPageURL = "/main/dental-work/page";
 
     private DentalWorksService dentalWorksService;
     private RestRequestReader restRequestReader;
@@ -38,25 +40,28 @@ public class DentalWorkServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        DentalWork dentalWork = (DentalWork) request.getAttribute("work");
+        DentalWork dentalWork = (DentalWork) request.getAttribute(WebUtility.INSTANCE.sessionWork);
         if (dentalWork == null) {
             try {
                 HttpSession session = request.getSession();
                 int workId;
-                String parameterId = request.getParameter(idParam);
-                if (parameterId != null && !parameterId.isEmpty()) {
-                    workId = Integer.parseInt(parameterId);
-                } else {
-                    //TODO temporary
-                    workId = restRequestReader.getId(request.getRequestURI());
+                workId = restRequestReader.getId(request.getRequestURI());
+                if (workId < 0) {
+                    String parameterId = request.getParameter(idParam);
+                    if (parameterId != null) {
+                        workId = Integer.parseInt(parameterId);
+                    } else {
+                        response.sendError(400, "parameter ID is null");
+                        return;
+                    }
                 }
                 dentalWork = dentalWorksService.getDentalWorkById(session, workId);
             } catch (APIResponseException e) {
                 response.sendError(e.CODE, e.MESSAGE);
             }
         }
-        request.setAttribute("work", dentalWork);
-        request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
+        request.setAttribute(WebUtility.INSTANCE.sessionWork, dentalWork);
+        request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
     }
 
     @Override
@@ -74,8 +79,8 @@ public class DentalWorkServlet extends HttpServlet {
 
                 DentalWork dentalWork = dentalWorksService.createWork(session, patient, clinic, product, quantity, complete);
                 dentalWorksService.updateDentalWorkList(session, dentalWork);
-                request.setAttribute("work", dentalWork);
-                request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
+                request.setAttribute(WebUtility.INSTANCE.sessionWork, dentalWork);
+                request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             } catch (APIResponseException e) {
                 response.sendError(e.CODE, e.MESSAGE);
             }
@@ -96,8 +101,8 @@ public class DentalWorkServlet extends HttpServlet {
             if (dentalWork.getReportId() == 0) {
                 dentalWorksService.updateDentalWorkList(session, dentalWork);
             }
-            request.setAttribute("work", dentalWork);
-            request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
+            request.setAttribute(WebUtility.INSTANCE.sessionWork, dentalWork);
+            request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
         }
@@ -114,8 +119,8 @@ public class DentalWorkServlet extends HttpServlet {
                 request.getRequestDispatcher("/main/work-list").forward(request, response);
             } else {
                 DentalWork dentalWork = dentalWorksService.removeProductFromDentalWork(session, id, product);
-                request.setAttribute("work", dentalWork);
-                request.getRequestDispatcher("/main/dental-work/page").forward(request, response);
+                request.setAttribute(WebUtility.INSTANCE.sessionWork, dentalWork);
+                request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             }
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
@@ -129,7 +134,8 @@ public class DentalWorkServlet extends HttpServlet {
             doPut(request, response);
         } else if (method.equals("delete")) {
             doDelete(request, response);
+        } else {
+            response.sendError(405);
         }
-        response.sendError(400);
     }
 }

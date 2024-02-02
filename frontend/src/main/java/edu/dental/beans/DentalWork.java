@@ -15,6 +15,10 @@ public class DentalWork implements Comparable<DentalWork> {
     private String status;
     private int reportId;
 
+    public DentalWork(int id) {
+        this.id = id;
+    }
+
     public DentalWork(int id, String patient, String clinic, Product[] products,
                       String accepted, String complete, String comment, String status, int reportId) {
         this.id = id;

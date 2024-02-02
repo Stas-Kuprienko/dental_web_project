@@ -1,23 +1,20 @@
 package edu.dental.service.control.my_account_service;
 
 import edu.dental.APIResponseException;
-import edu.dental.service.WebUtility;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
+import edu.dental.service.WebUtility;
 import edu.dental.service.control.DentalWorksService;
-
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class MyDentalWorksService implements DentalWorksService {
 
     private static final String dentalWorkUrl = "main/dental-work";
-    private static final String idParam = "id";
     private static final String productParam = "product";
     private static final String quantityParam = "quantity";
     private static final String fieldParam = "field";
@@ -44,11 +41,15 @@ public class MyDentalWorksService implements DentalWorksService {
         String newToJson = WebUtility.INSTANCE.parseToJson(dw);
         String token = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
         String returnedJson = httpRequestSender.sendHttpPostRequest(token, dentalWorkUrl, newToJson);
-        return WebUtility.INSTANCE.parseFromJson(returnedJson, DentalWork.class);
+        DentalWork dentalWork = WebUtility.INSTANCE.parseFromJson(returnedJson, DentalWork.class);
+        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
+        works = addToList(works, dentalWork);
+        session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
+        return dentalWork;
     }
 
     @Override
-    public DentalWork updateDentalWork(HttpSession session, int id, String field, String value, String quantity) throws APIResponseException, IOException, ServletException {
+    public DentalWork updateDentalWork(HttpSession session, int id, String field, String value, String quantity) throws APIResponseException, IOException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
 
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
@@ -58,7 +59,7 @@ public class MyDentalWorksService implements DentalWorksService {
             if (!(quantity == null || quantity.isEmpty())) {
                 queryFormer.add(quantityParam, quantity);
             } else {
-                throw new ServletException("parameter is null");
+                throw new APIResponseException(400, "parameter is null");
             }
         }
         String requestParam = queryFormer.form();
@@ -76,12 +77,13 @@ public class MyDentalWorksService implements DentalWorksService {
     public DentalWork getDentalWorkById(HttpSession session, int id) throws IOException, APIResponseException {
         DentalWork dw;
         DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
-        dw = Arrays.stream(works).filter(e -> e.getId() == id).findFirst().orElse(null);
-        if (dw == null) {
-
+        int i = getIndexById(works, id);
+        if (i < 0) {
             String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
             String json = httpRequestSender.sendHttpGetRequest(jwt, dentalWorkUrl + "/" + id);
             dw = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
+        } else {
+            dw = works[i];
         }
         return dw;
     }
@@ -91,7 +93,7 @@ public class MyDentalWorksService implements DentalWorksService {
         DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
         ArrayList<DentalWork> workList = new ArrayList<>(List.of(works));
 
-        int i = IntStream.range(0, workList.size()).filter(e -> e == dw.getId()).findFirst().orElse(-1);
+        int i = getIndexById(works, dw.getId());
         if (i < 0) {
             workList.add(dw);
         } else {
@@ -107,10 +109,13 @@ public class MyDentalWorksService implements DentalWorksService {
         httpRequestSender.sendHttpDeleteRequest(token, dentalWorkUrl + '/' + id, null);
 
         DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
-        ArrayList<DentalWork> workList = new ArrayList<>(List.of(works));
-        workList.stream().filter(dw -> dw.getId() == id).findFirst().ifPresent(workList::remove);
-        works = workList.toArray(new DentalWork[]{});
-        session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
+        int i = getIndexById(works, id);
+        if (i >= 0) {
+            ArrayList<DentalWork> workList = new ArrayList<>(List.of(works));
+            workList.remove(i);
+            works = workList.toArray(new DentalWork[]{});
+            session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
+        }
     }
 
     @Override
@@ -123,5 +128,15 @@ public class MyDentalWorksService implements DentalWorksService {
         DentalWork dw = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         updateDentalWorkList(session, dw);
         return dw;
+    }
+
+    private DentalWork[] addToList(DentalWork[] works, DentalWork dentalWork) {
+        ArrayList<DentalWork> dentalWorkList = new ArrayList<>(List.of(works));
+        dentalWorkList.add(dentalWork);
+        return dentalWorkList.toArray(new DentalWork[]{});
+    }
+
+    private int getIndexById(DentalWork[] works, int id) {
+        return Arrays.binarySearch(works, new DentalWork(id));
     }
 }

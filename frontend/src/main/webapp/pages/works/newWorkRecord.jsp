@@ -28,7 +28,7 @@
     <label for="product">product:</label><br>
     <select id="product" name="product" style="width: 230px; height: 30px; font-size: 22px;">
         <option value=""></option>
-        <c:forEach items="${sessionScope.map.items}" var="item">
+        <c:forEach items="${sessionScope.map}" var="item">
         <option value="${item.key}"> ${item.key} </option>
         </c:forEach>
     </select><br>

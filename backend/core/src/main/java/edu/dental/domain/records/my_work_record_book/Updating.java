@@ -16,7 +16,8 @@ public class Updating<T> {
         this.updatable = updatable;
         Class<?> clas = updatable.getClass();
         Field field = clas.getDeclaredField(fieldToUpdate);
-        this.setter = clas.getMethod(concatenateMethodName(fieldToUpdate, "set"), field.getType());
+        Class<?> setParameter = field.getType().isPrimitive() ? field.getType() : String.class;
+        this.setter = clas.getMethod(concatenateMethodName(fieldToUpdate, "set"), setParameter);
         Method getter = clas.getMethod(concatenateMethodName(fieldToUpdate, "get"));
         this.previousValue = field.getType().cast(getter.invoke(updatable));
     }

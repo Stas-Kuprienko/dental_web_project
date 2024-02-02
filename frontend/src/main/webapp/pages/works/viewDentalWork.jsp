@@ -104,7 +104,7 @@
       <label for="product">product:</label>
       <select id="product" name="value">
         <option value=""></option>
-        <c:forEach items="${sessionScope.map.items}" var="item">
+        <c:forEach items="${sessionScope.map}" var="item">
         <option value="${item.key}"> ${item.key} </option>
         </c:forEach>
       </select>

@@ -1,19 +1,18 @@
 package edu.dental.tag_support;
 
+import edu.dental.beans.ProductMap;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 
 import java.io.IOException;
 
-public class ForEachWithTagAndStyle extends SimpleTagSupport {
+public class HeaderProductMap extends SimpleTagSupport {
 
     private String tag;
     private String style;
-    private String[] items;
+    private ProductMap.Item[] items;
 
-    //TODO fixing
-    // <d:forEach tag="div" style="th" items="${sessionScope.map.getKeys()}"/>
 
     @Override
     public void doTag() throws JspException, IOException {
@@ -22,8 +21,8 @@ public class ForEachWithTagAndStyle extends SimpleTagSupport {
                 <%s class="%s">""", tag, style);
         String close = "</" + tag + ">\n";
         String line;
-        for (String s : items) {
-            line = open + s.toUpperCase() + close;
+        for (ProductMap.Item item : items) {
+            line = open + item.getKey().toUpperCase() + close;
             out.print(line);
         }
     }
@@ -36,7 +35,7 @@ public class ForEachWithTagAndStyle extends SimpleTagSupport {
         this.style = style;
     }
 
-    public void setItems(String[] items) {
+    public void setItems(ProductMap.Item[] items) {
         this.items = items;
     }
 }

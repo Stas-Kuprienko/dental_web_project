@@ -8,10 +8,10 @@ import edu.dental.service.WebUtility;
 import edu.dental.service.control.Administrator;
 import edu.dental.service.control.DentalWorksService;
 import edu.dental.service.control.ProductMapService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public final class MyAdministrator implements Administrator {
 
@@ -23,8 +23,8 @@ public final class MyAdministrator implements Administrator {
     private static final String paramEmail = "email";
     private static final String paramPassword = "password";
 
-    private final DentalWorksService dentalWorksService;
-    private final ProductMapService productMapService;
+    public final DentalWorksService dentalWorksService;
+    public final ProductMapService productMapService;
     private final WebUtility.HttpRequestSender httpRequestSender;
 
 
@@ -80,56 +80,14 @@ public final class MyAdministrator implements Administrator {
     }
 
     @Override
-    public DentalWork createWork(HttpSession session, String patient, String clinic, String product, int quantity, String complete) throws IOException, APIResponseException {
-        return null;
-    }
-
-    @Override
-    public DentalWork updateDentalWork(HttpSession session, int id, String field, String value, String quantity) throws IOException, APIResponseException, ServletException {
-        return null;
-    }
-
-    @Override
-    public DentalWork getDentalWorkById(HttpSession session, int id) throws IOException, APIResponseException {
-        return null;
-    }
-
-    @Override
-    public void updateDentalWorkList(HttpSession session, DentalWork dw) {
-
-    }
-
-    @Override
-    public void deleteDentalWorkFromList(HttpSession session, int id) throws IOException, APIResponseException {
-
-    }
-
-    @Override
-    public DentalWork removeProductFromDentalWork(HttpSession session, int id, String product) throws IOException, APIResponseException {
-        return null;
-    }
-
-    @Override
-    public void createProductItem(HttpSession session, String title, int price) {
-
-    }
-
-    @Override
-    public void updateProductItem(HttpSession session, int id, String title, int price) {
-
-    }
-
-    @Override
-    public void deleteProductItem(HttpSession session, int id, String title) {
-
-    }
-
-
-    @Override
     public DentalWorksService getDentalWorksService() {
         return dentalWorksService;
     }
 
+    @Override
+    public ProductMapService getProductMapService() {
+        return productMapService;
+    }
 
     private void setWorkList(HttpSession session) throws APIResponseException {
         String token = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
@@ -141,7 +99,7 @@ public final class MyAdministrator implements Administrator {
             throw new APIResponseException(500, e.getMessage());
         }
         DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
-
+        Arrays.sort(works);
         session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
     }
 

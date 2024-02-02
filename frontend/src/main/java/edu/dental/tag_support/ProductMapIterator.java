@@ -2,6 +2,7 @@ package edu.dental.tag_support;
 
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
+import edu.dental.beans.ProductMap;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.tagext.SimpleTagSupport;
@@ -12,7 +13,7 @@ public class ProductMapIterator extends SimpleTagSupport {
 
     private String tag;
     private String style;
-    private String[] map;
+    private ProductMap.Item[] map;
     private DentalWork work;
 
 
@@ -24,15 +25,15 @@ public class ProductMapIterator extends SimpleTagSupport {
         String close = "</" + tag + ">\n";
         String line;
         if (work.getProducts().length == 0) {
-            for (String ignored : map) {
+            for (ProductMap.Item ignored : map) {
                 line = open + " " + close;
                 out.print(line);
             }
         } else {
-            for (String s : map) {
+            for (ProductMap.Item item : map) {
                 String quantity = " ";
                 for (Product p : work.getProducts()) {
-                    if (p.getTitle().equals(s)) {
+                    if (p.getTitle().equals(item.getKey())) {
                         quantity = String.valueOf(p.getQuantity());
                     }
                 }
@@ -50,7 +51,7 @@ public class ProductMapIterator extends SimpleTagSupport {
         this.style = style;
     }
 
-    public void setMap(String[] map) {
+    public void setMap(ProductMap.Item[] map) {
         this.map = map;
     }
 

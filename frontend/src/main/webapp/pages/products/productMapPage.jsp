@@ -120,7 +120,7 @@
             </div>
         </div>
         <div class="tbody" id="map">
-            <c:forEach items="${sessionScope.map.items}" var="item">
+            <c:forEach items="${sessionScope.map}" var="item">
             <a class="tr" data-rowid="${item.id}">
                 <div class="td">${item.key}</div>
                 <div class="td">${item.value}</div>

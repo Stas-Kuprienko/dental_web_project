@@ -9,14 +9,9 @@ public class ProductMap {
     public ProductMap(Item[] items) {
         this.items = new ArrayList<>(List.of(items));
     }
+
     public ProductMap() {
         this.items = new ArrayList<>();
-    }
-
-
-    public String[] getKeys() {
-        String[] result = new String[items.size()];
-        return items.stream().map(e -> e.key).toList().toArray(result);
     }
 
     public boolean add(Item item) {
@@ -41,19 +36,6 @@ public class ProductMap {
 
     public void setItems(ArrayList<Item> items) {
         this.items = items;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductMap that = (ProductMap) o;
-        return Objects.equals(items, that.items);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(items);
     }
 
     @Override
@@ -97,6 +79,11 @@ public class ProductMap {
 
         public void setValue(int value) {
             this.value = value;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, key);
         }
 
         @Override

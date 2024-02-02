@@ -68,8 +68,7 @@
             <div class="tr">
                 <div class="th">PATIENT</div>
                 <div class="th">CLINIC</div>
-                fixing!
-                <d:forEach tag="div" style="th" items="${sessionScope.map.getKeys()}"/>
+                <d:forEach tag="div" style="th" items="${sessionScope.map}"/>
                 <div class="th">COMPLETE</div>
                 <div class="th">ACCEPT</div>
             </div>
@@ -80,7 +79,7 @@
             <d:row tag="a" href="/dental/main/dental-work" work="${pageScope.work}">
                 <div class="td"> ${work.patient} </div>
                 <div class="td"> ${work.clinic} </div>
-                <d:products tag="div" style="td" map="${sessionScope.map.getKeys()}" work="${pageScope.work}"/>
+                <d:products tag="div" style="td" map="${sessionScope.map}" work="${pageScope.work}"/>
                 <div class="td"> ${work.complete} </div>
                 <div class="td"> ${work.accepted} </div>
             </d:row>
