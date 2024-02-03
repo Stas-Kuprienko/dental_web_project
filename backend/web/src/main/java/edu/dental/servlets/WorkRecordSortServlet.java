@@ -59,7 +59,7 @@ public class WorkRecordSortServlet extends HttpServlet {
         int month = Integer.parseInt(request.getParameter("month"));
 
         try {
-            String json = execute(userId, year, month);
+            String json = setWorkListStatus(userId, year, month);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
@@ -70,7 +70,7 @@ public class WorkRecordSortServlet extends HttpServlet {
     }
 
 
-    private String execute(int userId, int year, int month) throws WebException {
+    private String setWorkListStatus(int userId, int year, int month) throws WebException {
         String field = "status";
         String value = DentalWork.Status.PAID.toString();
         List<DentalWork> works;

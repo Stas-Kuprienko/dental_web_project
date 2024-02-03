@@ -21,7 +21,7 @@ public class ReportDownloader extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
+        String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.attribToken);
         String year = request.getParameter("year");
         String month = request.getParameter("month");
         String resource = clarifyResource(year, month);

@@ -25,7 +25,7 @@ public class ProfitCounter extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
+            String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.attribToken);
             String fileName = "profit_list";
             response.setContentType("application/msword");
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
@@ -63,7 +63,7 @@ public class ProfitCounter extends HttpServlet {
     }
 
     private ProfitRecord[] countCurrent(HttpSession session) {
-        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
+        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.attribWorks);
         int amount = 0;
         for (DentalWork dw : works) {
             for (Product p : dw.getProducts()) {
@@ -77,13 +77,13 @@ public class ProfitCounter extends HttpServlet {
     }
 
     private ProfitRecord[] countAll(HttpSession session) throws IOException, APIResponseException {
-        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, profitCountUrl, "");
         return WebUtility.INSTANCE.parseFromJson(json, ProfitRecord[].class);
     }
 
     private ProfitRecord[] countAnother(HttpSession session, String year, String month) throws IOException, APIResponseException {
-        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add("year", year);
         queryFormer.add("month", month);

@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-public interface DentalWorksService {
+public interface DentalWorkService {
 
     DentalWork createWork(HttpSession session, String patient, String clinic, String product, int quantity, String complete) throws IOException, APIResponseException;
 

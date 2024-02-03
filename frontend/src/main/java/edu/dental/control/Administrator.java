@@ -17,7 +17,9 @@ public interface Administrator {
 
     UserBean updateUser(String token, String field, String value) throws IOException, APIResponseException;
 
-    DentalWorksService getDentalWorksService();
+    DentalWorksListService getDentalWorksListService();
+
+    DentalWorkService getDentalWorksService();
 
     ProductMapService getProductMapService();
 

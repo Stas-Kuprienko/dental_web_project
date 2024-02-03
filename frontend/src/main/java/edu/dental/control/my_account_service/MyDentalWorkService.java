@@ -3,7 +3,7 @@ package edu.dental.control.my_account_service;
 import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
-import edu.dental.control.DentalWorksService;
+import edu.dental.control.DentalWorkService;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MyDentalWorksService implements DentalWorksService {
+public class MyDentalWorkService implements DentalWorkService {
 
     private static final String dentalWorkUrl = "main/dental-work";
     private static final String productParam = "product";
@@ -22,7 +22,7 @@ public class MyDentalWorksService implements DentalWorksService {
 
     private final WebUtility.HttpRequestSender httpRequestSender;
 
-    MyDentalWorksService() {
+    MyDentalWorkService() {
         this.httpRequestSender = WebUtility.INSTANCE.requestSender();
     }
 
@@ -39,18 +39,18 @@ public class MyDentalWorksService implements DentalWorksService {
         DentalWork dw = new DentalWork(0, patient, clinic, products, null, complete, null, "MAKE", 0);
 
         String newToJson = WebUtility.INSTANCE.parseToJson(dw);
-        String token = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         String returnedJson = httpRequestSender.sendHttpPostRequest(token, dentalWorkUrl, newToJson);
         DentalWork dentalWork = WebUtility.INSTANCE.parseFromJson(returnedJson, DentalWork.class);
-        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
+        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.attribWorks);
         works = addToList(works, dentalWork);
-        session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
+        session.setAttribute(WebUtility.INSTANCE.attribWorks, works);
         return dentalWork;
     }
 
     @Override
     public DentalWork updateDentalWork(HttpSession session, int id, String field, String value, String quantity) throws APIResponseException, IOException {
-        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
 
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(fieldParam, field);
@@ -76,10 +76,10 @@ public class MyDentalWorksService implements DentalWorksService {
     @Override
     public DentalWork getDentalWorkById(HttpSession session, int id) throws IOException, APIResponseException {
         DentalWork dw;
-        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
+        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.attribWorks);
         int i = getIndexById(works, id);
         if (i < 0) {
-            String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+            String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
             String json = httpRequestSender.sendHttpGetRequest(jwt, dentalWorkUrl + "/" + id);
             dw = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         } else {
@@ -90,7 +90,7 @@ public class MyDentalWorksService implements DentalWorksService {
 
     @Override
     public void updateDentalWorkList(HttpSession session, DentalWork dw) {
-        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
+        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.attribWorks);
         ArrayList<DentalWork> workList = new ArrayList<>(List.of(works));
 
         int i = getIndexById(works, dw.getId());
@@ -100,27 +100,27 @@ public class MyDentalWorksService implements DentalWorksService {
             workList.set(i, dw);
         }
         works = workList.toArray(works);
-        session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
+        session.setAttribute(WebUtility.INSTANCE.attribWorks, works);
     }
 
     @Override
     public void deleteDentalWorkFromList(HttpSession session, int id) throws IOException, APIResponseException {
-        String token = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         httpRequestSender.sendHttpDeleteRequest(token, dentalWorkUrl + '/' + id, null);
 
-        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.sessionWorks);
+        DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.attribWorks);
         int i = getIndexById(works, id);
         if (i >= 0) {
             ArrayList<DentalWork> workList = new ArrayList<>(List.of(works));
             workList.remove(i);
             works = workList.toArray(new DentalWork[]{});
-            session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
+            session.setAttribute(WebUtility.INSTANCE.attribWorks, works);
         }
     }
 
     @Override
     public DentalWork removeProductFromDentalWork(HttpSession session, int id, String product) throws IOException, APIResponseException {
-        String token = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
 
         String parameter = productParam + '=' + product;
         String json = httpRequestSender.sendHttpDeleteRequest(token, dentalWorkUrl + '/' + id, parameter);

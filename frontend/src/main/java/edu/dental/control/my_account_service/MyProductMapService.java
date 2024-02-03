@@ -19,7 +19,7 @@ public class MyProductMapService implements ProductMapService {
 
     @Override
     public void createProductItem(HttpSession session, String title, int price) throws IOException, APIResponseException {
-        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         ProductMap.Item item;
 
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
@@ -31,12 +31,12 @@ public class MyProductMapService implements ProductMapService {
         item = WebUtility.INSTANCE.parseFromJson(json, ProductMap.Item.class);
         ProductMap map = getProductMap(session);
         map.add(item);
-        session.setAttribute(WebUtility.INSTANCE.sessionMap, map.getItems());
+        session.setAttribute(WebUtility.INSTANCE.attribMap, map.getItems());
     }
 
     @Override
     public void updateProductItem(HttpSession session, int id, String title, int price) throws IOException, APIResponseException {
-        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(titleParam, title);
         queryFormer.add(priceParam, price);
@@ -44,22 +44,22 @@ public class MyProductMapService implements ProductMapService {
         WebUtility.INSTANCE.requestSender().sendHttpPutRequest(jwt, productMapUrl + '/' + id, requestParam);
         ProductMap map = getProductMap(session);
         map.update(id, price);
-        session.setAttribute(WebUtility.INSTANCE.sessionMap, map.getItems());
+        session.setAttribute(WebUtility.INSTANCE.attribMap, map.getItems());
     }
 
     @Override
     public void deleteProductItem(HttpSession session, int id, String title) throws IOException, APIResponseException {
-        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
         queryFormer.add(titleParam, title);
         WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, productMapUrl + '/' + id, queryFormer.form());
         ProductMap map = getProductMap(session);
         map.remove(id);
-        session.setAttribute(WebUtility.INSTANCE.sessionMap, map.getItems());
+        session.setAttribute(WebUtility.INSTANCE.attribMap, map.getItems());
     }
 
     private ProductMap getProductMap(HttpSession session) {
-        ProductMap.Item[] items = (ProductMap.Item[]) session.getAttribute(WebUtility.INSTANCE.sessionMap);
+        ProductMap.Item[] items = (ProductMap.Item[]) session.getAttribute(WebUtility.INSTANCE.attribMap);
         return new ProductMap(items);
     }
 }

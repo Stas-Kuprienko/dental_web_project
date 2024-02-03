@@ -30,9 +30,9 @@ public class AccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            String token = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
+            String token = (String) request.getSession().getAttribute(WebUtility.INSTANCE.attribToken);
             UserBean user = administrator.getUser(token);
-            request.setAttribute(WebUtility.INSTANCE.sessionUser, user);
+            request.setAttribute(WebUtility.INSTANCE.attribUser, user);
             request.getRequestDispatcher(accountPageURL).forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
@@ -51,11 +51,11 @@ public class AccountServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            String token = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
+            String token = (String) request.getSession().getAttribute(WebUtility.INSTANCE.attribToken);
             String field = request.getParameter(fieldParam);
             String value = request.getParameter(valueParam);
             UserBean user = administrator.updateUser(token, field, value);
-            request.setAttribute(WebUtility.INSTANCE.sessionUser, user);
+            request.setAttribute(WebUtility.INSTANCE.attribUser, user);
             request.getRequestDispatcher(accountPageURL).forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
@@ -64,7 +64,7 @@ public class AccountServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.sessionToken);
+        String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.attribToken);
         try {
             WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, accountUrl, null);
             request.getRequestDispatcher("/main/log-out").forward(request, response);

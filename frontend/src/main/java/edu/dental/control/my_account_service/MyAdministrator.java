@@ -5,7 +5,8 @@ import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserBean;
 import edu.dental.control.Administrator;
-import edu.dental.control.DentalWorksService;
+import edu.dental.control.DentalWorkService;
+import edu.dental.control.DentalWorksListService;
 import edu.dental.service.WebUtility;
 import edu.dental.control.ProductMapService;
 import jakarta.servlet.http.HttpSession;
@@ -26,13 +27,15 @@ public final class MyAdministrator implements Administrator {
     private static final String fieldParam = "field";
     private static final String valueParam = "value";
 
-    public final DentalWorksService dentalWorksService;
-    public final ProductMapService productMapService;
+    private final DentalWorksListService dentalWorksListService;
+    private final DentalWorkService dentalWorkService;
+    private final ProductMapService productMapService;
     private final WebUtility.HttpRequestSender httpRequestSender;
 
 
     private MyAdministrator() {
-        this.dentalWorksService = new MyDentalWorksService();
+        this.dentalWorksListService = new MyDentalWorksListService();
+        this.dentalWorkService = new MyDentalWorkService();
         this.productMapService = new MyProductMapService();
         this.httpRequestSender = WebUtility.INSTANCE.requestSender();
     }
@@ -51,9 +54,9 @@ public final class MyAdministrator implements Administrator {
             String jsonUser = httpRequestSender.sendHttpPostRequest(signUpUrl, requestParameters);
             UserBean user = WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);
 
-            session.setAttribute(WebUtility.INSTANCE.sessionToken, user.getJwt());
-            session.setAttribute(WebUtility.INSTANCE.sessionWorks, new DentalWork[]{});
-            session.setAttribute(WebUtility.INSTANCE.sessionMap, new ProductMap.Item[]{});
+            session.setAttribute(WebUtility.INSTANCE.attribToken, user.getJwt());
+            session.setAttribute(WebUtility.INSTANCE.attribWorks, new DentalWork[]{});
+            session.setAttribute(WebUtility.INSTANCE.attribMap, new ProductMap.Item[]{});
         } catch (IOException e) {
             throw new APIResponseException(500, e.getMessage());
         }
@@ -75,7 +78,7 @@ public final class MyAdministrator implements Administrator {
         }
         UserBean user =  WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);
 
-        session.setAttribute(WebUtility.INSTANCE.sessionToken, user.getJwt());
+        session.setAttribute(WebUtility.INSTANCE.attribToken, user.getJwt());
 
         setWorkList(session);
         setProductMap(session);
@@ -99,8 +102,13 @@ public final class MyAdministrator implements Administrator {
     }
 
     @Override
-    public DentalWorksService getDentalWorksService() {
-        return dentalWorksService;
+    public DentalWorksListService getDentalWorksListService() {
+        return dentalWorksListService;
+    }
+
+    @Override
+    public DentalWorkService getDentalWorksService() {
+        return dentalWorkService;
     }
 
     @Override
@@ -109,7 +117,7 @@ public final class MyAdministrator implements Administrator {
     }
 
     private void setWorkList(HttpSession session) throws APIResponseException {
-        String token = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
 
         String jsonWorks;
         try {
@@ -119,11 +127,11 @@ public final class MyAdministrator implements Administrator {
         }
         DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
         Arrays.sort(works);
-        session.setAttribute(WebUtility.INSTANCE.sessionWorks, works);
+        session.setAttribute(WebUtility.INSTANCE.attribWorks, works);
     }
 
     private void setProductMap(HttpSession session) throws APIResponseException {
-        String token = (String) session.getAttribute(WebUtility.INSTANCE.sessionToken);
+        String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
 
         String jsonMap;
         try {
@@ -132,6 +140,6 @@ public final class MyAdministrator implements Administrator {
             throw new APIResponseException(500, e.getMessage());
         }
         ProductMap.Item[] map = WebUtility.INSTANCE.parseFromJson(jsonMap, ProductMap.Item[].class);
-        session.setAttribute(WebUtility.INSTANCE.sessionMap, map);
+        session.setAttribute(WebUtility.INSTANCE.attribMap, map);
     }
 }
