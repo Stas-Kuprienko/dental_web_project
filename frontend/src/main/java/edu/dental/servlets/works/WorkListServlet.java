@@ -11,8 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/main/work-list")
+@WebServlet("/main/dental-works")
 public class WorkListServlet extends HttpServlet {
+
+    private static final String dentalWorksPageURL = "/main/dental-works/page";
 
     private DentalWorksListService dentalWorksListService;
 
@@ -31,7 +33,7 @@ public class WorkListServlet extends HttpServlet {
                 response.sendError(e.CODE, e.MESSAGE);
             }
         }
-        request.getRequestDispatcher("/main/work-list/page").forward(request, response);
+        request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
     }
 
     @Override

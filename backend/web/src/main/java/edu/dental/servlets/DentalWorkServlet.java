@@ -45,15 +45,20 @@ public class DentalWorkServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
         int id = restRequestReader.getId(request.getRequestURI());
-        DentalWorkDto work;
+        DentalWorkDto dto;
         WorkRecordBook recordBook = repository.getRecordBook(userId);
         try {
-            work = new DentalWorkDto(recordBook.getById(id, true));
-            String json = jsonObjectParser.parseToJson(work);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(json);
-            response.getWriter().flush();
+            DentalWork dw = recordBook.getById(id, true);
+            if (dw == null) {
+                response.sendError(404, "such record is not found");
+            } else {
+                dto = new DentalWorkDto(dw);
+                String json = jsonObjectParser.parseToJson(dto);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().print(json);
+                response.getWriter().flush();
+            }
         } catch (WorkRecordBookException e) {
             response.sendError(500);
         }

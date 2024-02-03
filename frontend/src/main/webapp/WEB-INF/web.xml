@@ -136,7 +136,7 @@
 
   <servlet-mapping>
     <servlet-name>workListPage</servlet-name>
-    <url-pattern>/main/work-list/page</url-pattern>
+    <url-pattern>/main/dental-works/page</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -169,18 +169,8 @@
   </welcome-file-list>
 
   <error-page>
-    <error-code>404</error-code>
-    <location>/pages/error.html</location>
-  </error-page>
-
-  <error-page>
     <error-code>400</error-code>
     <location>/pages/errorPage.jsp</location>
-  </error-page>
-
-  <error-page>
-    <error-code>401</error-code>
-    <location>/pages/unauthorized.html</location>
   </error-page>
 
 </web-app>

@@ -45,7 +45,7 @@
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
     <a href="/dental/main/new-work">NEW WORK</a>
-    <a href="/dental/main/work-list">WORK LIST</a>
+    <a href="/dental/main/dental-works">WORK LIST</a>
     <a href="/dental/main/product-map">PRODUCT MAP</a>
     <a href="/dental/main/account">ACCOUNT</a>
     <a style="float:right;" href="/dental/main/log-out" onclick="return confirm('LOG OUT?')">
@@ -116,7 +116,7 @@
         <button> another month </button>
     </a>
     <div id="monthly-form" style="display:none;">
-        <form method="get" action="/dental/main/work-list">
+        <form method="get" action="/dental/main/dental-works">
             <input type="month" name="year-month" value="${pageScope.date.year}-${pageScope.date.monthValue}">
             <input class="medium-button" type="submit" value="get">
         </form>
@@ -125,17 +125,17 @@
         <button> sorting </button>
     </a>
     <div id="sort-form" style="display:none;">
-        <form method="get" action="/dental/main/work-list/sort" style="float:left;">
+        <form method="get" action="/dental/main/dental-works/sort" style="float:left;">
             <input type="hidden" name="year" value="${pageScope.date.nowYear}">
             <input type="hidden" name="month" value="${pageScope.date.nowMonthValue}">
             <input class="medium-button" type="submit" value="current"> &emsp;
         </form>
-        <form method="get" action="/dental/main/work-list/sort" style="float:left;">
+        <form method="get" action="/dental/main/dental-works/sort" style="float:left;">
             <input type="hidden" name="year" value="${pageScope.date.prevYear}">
             <input type="hidden" name="month" value="${pageScope.date.prevMonthValue}">
             <input class="medium-button" type="submit" value="previous"> &emsp;
         </form>
-        <form method="post" action="/dental/main/work-list/sort" style="float:left;">
+        <form method="post" action="/dental/main/dental-works/sort" style="float:left;">
             <input type="hidden" name="year" value="${pageScope.date.year}">
             <input type="hidden" name="month" value="${pageScope.date.monthValue}">
             <input class="medium-button" type="submit" value="all paid">

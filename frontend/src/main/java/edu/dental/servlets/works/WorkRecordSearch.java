@@ -16,8 +16,10 @@ import java.io.IOException;
 @WebServlet("/main/dental-works/search")
 public class WorkRecordSearch extends HttpServlet {
 
-    public final String patientParam = "patient";
-    public final String clinicParam = "clinic";
+    private static final String patientParam = "patient";
+    private static final String clinicParam = "clinic";
+    private static final String dentalWorksPageURL = "/main/dental-works/page";
+
     private DentalWorksListService dentalWorksListService;
 
     @Override
@@ -33,7 +35,7 @@ public class WorkRecordSearch extends HttpServlet {
         try {
             DentalWork[] works = dentalWorksListService.search(jwt, patient, clinic);
             request.setAttribute(WebUtility.INSTANCE.attribWorks, works);
-            request.getRequestDispatcher("/main/work-list/page").forward(request, response);
+            request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
         }

@@ -32,7 +32,7 @@
 <nav class="menu">
     <header><strong>DENTAL MECHANIC SERVICE</strong></header>
     <a href="/dental/main/new-work">NEW WORK</a>
-    <a href="/dental/main/work-list">WORK LIST</a>
+    <a href="/dental/main/dental-works">WORK LIST</a>
     <a href="/dental/main/product-map">PRODUCT MAP</a>
     <a href="/dental/main/account">ACCOUNT</a>
     <a style="float:right;" href="/dental/main/log-out" onclick="return confirm('LOG OUT?')">

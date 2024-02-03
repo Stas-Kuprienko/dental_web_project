@@ -21,6 +21,7 @@ public class MyDentalWorksListService implements DentalWorksListService {
     private static final String patientParam = "patient";
     private static final String clinicParam = "clinic";
 
+    MyDentalWorksListService() {}
 
     @Override
     public void getRequired(String year_month, HttpServletRequest request) throws IOException, APIResponseException {

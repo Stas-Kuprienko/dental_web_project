@@ -27,6 +27,7 @@ public class DentalWorkServlet extends HttpServlet {
     private static final String fieldParam = "field";
     private static final String valueParam = "value";
     private static final String dentalWorkPageURL = "/main/dental-work/page";
+    private static final String dentalWorksListURL = "/main/dental-works";
 
     private DentalWorkService dentalWorkService;
     private RestRequestReader restRequestReader;
@@ -44,24 +45,14 @@ public class DentalWorkServlet extends HttpServlet {
         if (dentalWork == null) {
             try {
                 HttpSession session = request.getSession();
-                int workId;
-                workId = restRequestReader.getId(request.getRequestURI());
-                if (workId < 0) {
-                    String parameterId = request.getParameter(idParam);
-                    if (parameterId != null) {
-                        workId = Integer.parseInt(parameterId);
-                    } else {
-                        response.sendError(400, "parameter ID is null");
-                        return;
-                    }
-                }
-                dentalWork = dentalWorkService.getDentalWorkById(session, workId);
+                int id = getId(request);
+                dentalWork = dentalWorkService.getDentalWorkById(session, id);
+                request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
+                request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             } catch (APIResponseException e) {
                 response.sendError(e.CODE, e.MESSAGE);
             }
         }
-        request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
-        request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
     }
 
     @Override
@@ -92,7 +83,7 @@ public class DentalWorkServlet extends HttpServlet {
         try {
             HttpSession session = request.getSession();
 
-            int id = Integer.parseInt(request.getParameter(idParam));
+            int id = getId(request);
             String field = request.getParameter(fieldParam);
             String value = request.getParameter(valueParam);
             String quantity = request.getParameter(quantityParam);
@@ -112,11 +103,11 @@ public class DentalWorkServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         try {
-            int id = Integer.parseInt(request.getParameter(idParam));
+            int id = getId(request);
             String product = request.getParameter(productParam);
             if (product == null) {
                 dentalWorkService.deleteDentalWorkFromList(session, id);
-                request.getRequestDispatcher("/main/work-list").forward(request, response);
+                request.getRequestDispatcher(dentalWorksListURL).forward(request, response);
             } else {
                 DentalWork dentalWork = dentalWorkService.removeProductFromDentalWork(session, id, product);
                 request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
@@ -127,6 +118,19 @@ public class DentalWorkServlet extends HttpServlet {
         }
     }
 
+
+    private int getId(HttpServletRequest request) throws APIResponseException {
+        int id = restRequestReader.getId(request.getRequestURI());
+        if (id < 0) {
+            String parameterId = request.getParameter(idParam);
+            if (parameterId != null) {
+                id = Integer.parseInt(parameterId);
+            } else {
+                throw new APIResponseException(400, "parameter ID is null");
+            }
+        }
+        return id;
+    }
 
     private void chooseMethod(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String method = request.getParameter("method");

@@ -14,12 +14,12 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/main/work-list/sort")
+@WebServlet("/main/dental-works/sort")
 public class WorkSorting extends HttpServlet {
 
     private static final String yearParam = "year";
     private static final String monthParam = "month";
-    private static final String dentalWorksListPageURL = "/main/work-list";
+    private static final String dentalWorksListURL = "/main/dental-works";
 
     private DentalWorksListService dentalWorksListService;
 
@@ -37,7 +37,7 @@ public class WorkSorting extends HttpServlet {
                 (int) request.getAttribute(monthParam);
         try {
             dentalWorksListService.sort(session, year, month);
-            request.getRequestDispatcher(dentalWorksListPageURL).forward(request, response);
+            request.getRequestDispatcher(dentalWorksListURL).forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
         }
@@ -53,7 +53,7 @@ public class WorkSorting extends HttpServlet {
         try {
             DentalWork[] works = dentalWorksListService.setStatus(session, year, month);
             request.setAttribute(WebUtility.INSTANCE.attribWorks, works);
-            request.getRequestDispatcher(dentalWorksListPageURL).forward(request, response);
+            request.getRequestDispatcher(dentalWorksListURL).forward(request, response);
         } catch (APIResponseException e) {
             response.sendError(e.CODE, e.MESSAGE);
         }
