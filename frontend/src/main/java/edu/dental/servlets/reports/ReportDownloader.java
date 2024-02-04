@@ -15,8 +15,8 @@ import java.time.Month;
 @WebServlet("/main/reports/download")
 public class ReportDownloader extends HttpServlet {
 
-    public final String reportsDownloadUrl = "main/reports/download";
-    public final String fileFormat = ".xlsx";
+    private static final String reportsDownloadUrl = "main/reports/download";
+    private static final String fileFormat = ".xlsx";
 
 
     @Override
@@ -37,7 +37,7 @@ public class ReportDownloader extends HttpServlet {
 
 
     private String clarifyResource(String year, String month) {
-        if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
+        if (hasYearAndMonth(year, month)) {
             return reportsDownloadUrl;
         } else {
             LocalDate now = LocalDate.now();
@@ -53,11 +53,16 @@ public class ReportDownloader extends HttpServlet {
     }
 
     private String getFileName(String year, String month) {
-        if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
+        if (hasYearAndMonth(year, month)) {
             LocalDate now = LocalDate.now();
             return now.getMonth() + "_" + now.getYear();
         } else {
             return Month.of(Integer.parseInt(month)) + "_" + year;
         }
+    }
+
+    private boolean hasYearAndMonth(String year, String month) {
+        return (year == null || year.isEmpty()
+                && month == null || month.isEmpty());
     }
 }

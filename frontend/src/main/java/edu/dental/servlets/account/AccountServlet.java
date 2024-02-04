@@ -63,7 +63,7 @@ public class AccountServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.attribToken);
         try {
             WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, accountUrl, null);

@@ -23,6 +23,8 @@ public interface Administrator {
 
     ProductMapService getProductMapService();
 
+    ProfitRecordService getProfitRecordService();
+
     static Administrator getInstance() {
         return WebAPIManager.INSTANCE.getAdministrator();
     }

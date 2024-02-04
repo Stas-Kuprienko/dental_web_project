@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/main/dental-works/sort")
-public class WorkSorting extends HttpServlet {
+public class DentalWorkListSorting extends HttpServlet {
 
     private static final String yearParam = "year";
     private static final String monthParam = "month";

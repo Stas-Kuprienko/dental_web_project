@@ -4,11 +4,8 @@ import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserBean;
-import edu.dental.control.Administrator;
-import edu.dental.control.DentalWorkService;
-import edu.dental.control.DentalWorksListService;
+import edu.dental.control.*;
 import edu.dental.service.WebUtility;
-import edu.dental.control.ProductMapService;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
@@ -30,6 +27,7 @@ public final class MyAdministrator implements Administrator {
     private final DentalWorksListService dentalWorksListService;
     private final DentalWorkService dentalWorkService;
     private final ProductMapService productMapService;
+    private final ProfitRecordService profitRecordService;
     private final WebUtility.HttpRequestSender httpRequestSender;
 
 
@@ -37,6 +35,7 @@ public final class MyAdministrator implements Administrator {
         this.dentalWorksListService = new MyDentalWorksListService();
         this.dentalWorkService = new MyDentalWorkService();
         this.productMapService = new MyProductMapService();
+        this.profitRecordService = new MyProfitRecordService();
         this.httpRequestSender = WebUtility.INSTANCE.requestSender();
     }
 
@@ -114,6 +113,11 @@ public final class MyAdministrator implements Administrator {
     @Override
     public ProductMapService getProductMapService() {
         return productMapService;
+    }
+
+    @Override
+    public ProfitRecordService getProfitRecordService() {
+        return profitRecordService;
     }
 
     private void setWorkList(HttpSession session) throws APIResponseException {

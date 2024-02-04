@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/main/dental-works")
-public class WorkListServlet extends HttpServlet {
+public class DentalWorksList extends HttpServlet {
 
     private static final String dentalWorksPageURL = "/main/dental-works/page";
 

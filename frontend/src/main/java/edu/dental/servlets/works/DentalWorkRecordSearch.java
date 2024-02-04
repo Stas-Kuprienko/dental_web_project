@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/main/dental-works/search")
-public class WorkRecordSearch extends HttpServlet {
+public class DentalWorkRecordSearch extends HttpServlet {
 
     private static final String patientParam = "patient";
     private static final String clinicParam = "clinic";

@@ -46,7 +46,7 @@
 
   <servlet>
     <servlet-name>workListServlet</servlet-name>
-    <servlet-class>edu.dental.servlets.works.WorkListServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.works.DentalWorksList</servlet-class>
   </servlet>
 
   <servlet>
@@ -66,7 +66,7 @@
 
   <servlet>
     <servlet-name>sorting</servlet-name>
-    <servlet-class>edu.dental.servlets.works.WorkSorting</servlet-class>
+    <servlet-class>edu.dental.servlets.works.DentalWorkListSorting</servlet-class>
   </servlet>
 
   <servlet>
@@ -101,7 +101,7 @@
 
   <servlet>
     <servlet-name>searchRecords</servlet-name>
-    <servlet-class>edu.dental.servlets.works.WorkRecordSearch</servlet-class>
+    <servlet-class>edu.dental.servlets.works.DentalWorkRecordSearch</servlet-class>
   </servlet>
 
   <servlet>

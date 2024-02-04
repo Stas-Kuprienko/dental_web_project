@@ -17,6 +17,7 @@ public class Registration extends HttpServlet {
     private static final String paramName = "name";
     private static final String paramEmail = "email";
     private static final String paramPassword = "password";
+    private static final String signUpPageURL = "/sign-up";
 
     private Administrator administrator;
 
@@ -27,7 +28,7 @@ public class Registration extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/sign-up").forward(request, response);
+        request.getRequestDispatcher(signUpPageURL).forward(request, response);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class Registration extends HttpServlet {
                 response.sendError(e.CODE, e.MESSAGE);
             }
         } else {
-            request.getRequestDispatcher("/sign-up").forward(request, response);
+            request.getRequestDispatcher(signUpPageURL).forward(request, response);
         }
     }
 
