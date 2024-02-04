@@ -1,7 +1,6 @@
 package edu.dental.servlets;
 
 import edu.dental.WebException;
-import edu.dental.service.AccountException;
 import edu.dental.dto.UserDto;
 import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
@@ -44,14 +43,15 @@ public class AccountServlet extends HttpServlet {
         int userId = (int) request.getAttribute(Repository.paramUser);
         String field = request.getParameter(fieldParam);
         String value = request.getParameter(valueParam);
-        if (field == null || value == null || field.isEmpty() || value.isEmpty()) {
+        if (nullParameters(field, value)) {
             response.sendError(400);
         } else {
             try {
-                String json = update(userId, field, value);
-                if (json == null) {
+                UserDto dto = repository.update(userId, field, value);
+                if (dto == null) {
                     response.sendError(400);
                 } else {
+                    String json = jsonObjectParser.parseToJson(dto);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().print(json);
@@ -75,11 +75,8 @@ public class AccountServlet extends HttpServlet {
     }
 
 
-    private String update(int userId, String field, String value) throws WebException {
-        UserDto dto = repository.update(userId, field, value);
-        if (dto == null) {
-            throw new WebException(AccountException.CAUSE.SERVER_ERROR, AccountException.MESSAGE.DATABASE_ERROR);
-        }
-        return jsonObjectParser.parseToJson(dto);
+    private boolean nullParameters(String field, String value) {
+        return (field == null || value == null ||
+                field.isEmpty() || value.isEmpty());
     }
 }

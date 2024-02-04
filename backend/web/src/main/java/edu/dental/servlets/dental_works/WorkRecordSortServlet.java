@@ -1,4 +1,4 @@
-package edu.dental.servlets;
+package edu.dental.servlets.dental_works;
 
 import edu.dental.WebException;
 import edu.dental.database.DatabaseException;

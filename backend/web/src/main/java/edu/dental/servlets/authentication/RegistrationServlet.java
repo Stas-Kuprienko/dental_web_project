@@ -1,4 +1,4 @@
-package edu.dental.servlets;
+package edu.dental.servlets.authentication;
 
 import edu.dental.dto.UserDto;
 import edu.dental.WebException;

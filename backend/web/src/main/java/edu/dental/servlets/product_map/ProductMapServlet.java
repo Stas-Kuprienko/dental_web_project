@@ -1,4 +1,4 @@
-package edu.dental.servlets;
+package edu.dental.servlets.product_map;
 
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;

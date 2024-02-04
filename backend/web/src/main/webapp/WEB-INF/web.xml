@@ -16,12 +16,12 @@
 
   <servlet>
     <servlet-name>signUp</servlet-name>
-    <servlet-class>edu.dental.servlets.RegistrationServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.authentication.RegistrationServlet</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>logIn</servlet-name>
-    <servlet-class>edu.dental.servlets.AuthorizationServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.authentication.AuthorizationServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -31,22 +31,22 @@
 
   <servlet>
     <servlet-name>dentalWorks</servlet-name>
-    <servlet-class>edu.dental.servlets.DentalWorkListServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.dental_works.DentalWorkListServlet</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>dentalWork</servlet-name>
-    <servlet-class>edu.dental.servlets.DentalWorkServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.dental_works.DentalWorkServlet</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>productMap</servlet-name>
-    <servlet-class>edu.dental.servlets.ProductMapServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.product_map.ProductMapServlet</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>workSort</servlet-name>
-    <servlet-class>edu.dental.servlets.WorkRecordSortServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.dental_works.WorkRecordSortServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -56,7 +56,7 @@
 
   <servlet>
     <servlet-name>searchRecords</servlet-name>
-    <servlet-class>edu.dental.servlets.WorkRecordSearchServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.dental_works.WorkRecordSearchServlet</servlet-class>
   </servlet>
 
   <servlet>

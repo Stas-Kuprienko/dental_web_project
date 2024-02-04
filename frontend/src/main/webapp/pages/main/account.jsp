@@ -47,6 +47,7 @@
         <form id="name-form" method="post" action="/dental/main/account" style="display:none">
             <input type="text" name="value" value=""/>
             <input type="hidden" name="field" value="name">
+            <input type="hidden" name="method" value="put">
             <input type="submit" value="save">
         </form>
     </div>
@@ -56,6 +57,7 @@
         <form id="email-form" method="post" action="/dental/main/account" style="display:none">
             <input type="text" name="value" value=""/>
             <input type="hidden" name="field" value="email">
+            <input type="hidden" name="method" value="put">
             <input type="submit" value="save">
         </form>
     </div>
@@ -68,6 +70,7 @@
         <form id="password-form" method="post" action="/dental/main/account" style="display:none">
             <input type="password" name="value" value=""/>
             <input type="hidden" name="field" value="password">
+            <input type="hidden" name="method" value="put">
             <input type="submit" value="save" onclick="return confirm('CHANGE PASSWORD?')">
         </form>
     </div>
