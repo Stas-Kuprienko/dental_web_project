@@ -73,7 +73,7 @@ public final class MyAdministrator implements Administrator {
         try {
             jsonUser = httpRequestSender.sendHttpPostRequest(logInUrl, requestParameters);
         } catch (IOException e) {
-            throw new APIResponseException(400, e.getMessage());
+            throw new APIResponseException(500, e.getMessage());
         }
         UserBean user =  WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);
 

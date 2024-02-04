@@ -76,8 +76,7 @@ public enum WebUtility {
                     }
                     return response.toString();
                 } else {
-                    String message = connection.getResponseMessage();
-                    throw new APIResponseException(responseCode, message);
+                    throw new APIResponseException(responseCode);
                 }
             } finally {
                 if (connection != null) {
@@ -130,8 +129,7 @@ public enum WebUtility {
                         output.write(buffer, 0, bytesRead);
                     }
                 } else {
-                    String message = connection.getResponseMessage();
-                    throw new APIResponseException(responseCode, message);
+                    throw new APIResponseException(responseCode);
                 }
             } finally {
                 if (inputStream != null) {
@@ -170,8 +168,7 @@ public enum WebUtility {
                     }
                     return response.toString();
                 } else {
-                    String message = connection.getResponseMessage();
-                    throw new APIResponseException(responseCode, message);
+                    throw new APIResponseException(responseCode);
                 }
             } finally {
                 if (connection != null) {
@@ -216,8 +213,7 @@ public enum WebUtility {
                     }
                     return response.toString();
                 } else {
-                    String message = connection.getResponseMessage();
-                    throw new APIResponseException(responseCode, message);
+                    throw new APIResponseException(responseCode);
                 }
             } finally {
                 if (connection != null) {
