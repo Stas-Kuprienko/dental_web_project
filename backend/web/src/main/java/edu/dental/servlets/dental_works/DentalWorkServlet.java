@@ -21,8 +21,6 @@ import java.util.HashMap;
 public class DentalWorkServlet extends HttpServlet {
 
     private static final String url = "/main/dental-work";
-
-    public final String idParam = "id";
     public final String productParam = "product";
     public final String quantityParam = "quantity";
     public final String fieldParam = "field";

@@ -125,19 +125,20 @@
         <button> sorting </button>
     </a>
     <div id="sort-form" style="display:none;">
-        <form method="get" action="/dental/main/dental-works/sort" style="float:left;">
+        <form method="post" action="/dental/main/dental-works" style="float:left;">
             <input type="hidden" name="year" value="${pageScope.date.nowYear}">
             <input type="hidden" name="month" value="${pageScope.date.nowMonthValue}">
             <input class="medium-button" type="submit" value="current"> &emsp;
         </form>
-        <form method="get" action="/dental/main/dental-works/sort" style="float:left;">
+        <form method="post" action="/dental/main/dental-works" style="float:left;">
             <input type="hidden" name="year" value="${pageScope.date.prevYear}">
             <input type="hidden" name="month" value="${pageScope.date.prevMonthValue}">
             <input class="medium-button" type="submit" value="previous"> &emsp;
         </form>
-        <form method="post" action="/dental/main/dental-works/sort" style="float:left;">
+        <form method="post" action="/dental/main/dental-works" style="float:left;">
             <input type="hidden" name="year" value="${pageScope.date.year}">
             <input type="hidden" name="month" value="${pageScope.date.monthValue}">
+            <input type="hidden" name="method" value="put">
             <input class="medium-button" type="submit" value="all paid">
         </form>
     </div>

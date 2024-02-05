@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class MyDentalWorksListService implements DentalWorksListService {
 
     private static final String dentalWorksUrl = "/main/dental-works";
-    private static final String sortUrl = "/main/work-list/sort";
+    private static final String sortUrl = "/main/work-list";
     private static final String recordSearchUrl = "main/dental-works/search";
     private static final String parameters = "?year=%s&month=%s";
     private static final String yearParam = "year";
@@ -41,8 +41,11 @@ public class MyDentalWorksListService implements DentalWorksListService {
     @Override
     public void sort(HttpSession session, int year, int month) throws IOException, APIResponseException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
+        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+        queryFormer.add(yearParam, year);
+        queryFormer.add(monthParam, month);
         String jsonWorks = WebUtility.INSTANCE.requestSender()
-                .sendHttpGetRequest(jwt, sortUrl + String.format(parameters, year, month));
+                .sendHttpPostRequest(jwt, dentalWorksUrl, queryFormer.form());
         DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
         session.setAttribute(WebUtility.INSTANCE.attribWorks, works);
     }
@@ -54,7 +57,7 @@ public class MyDentalWorksListService implements DentalWorksListService {
         queryFormer.add(yearParam, year);
         queryFormer.add(monthParam, month);
         String requestParams = queryFormer.form();
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, sortUrl, requestParams);
+        String json = WebUtility.INSTANCE.requestSender().sendHttpPutRequest(jwt, dentalWorksUrl, requestParams);
         DentalWork[] works = WebUtility.INSTANCE.parseFromJson(json, DentalWork[].class);
         if (isCurrent(year, month)) {
             session.setAttribute(WebUtility.INSTANCE.attribWorks, works);
