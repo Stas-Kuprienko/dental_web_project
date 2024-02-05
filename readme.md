@@ -1,14 +1,13 @@
 # DENTAL MECHANIC
 
-#### This is a web application designed for dental technicians to record and manage their work. The application allows users to store work records in a database, sort them by month, calculate income, and save the records to an .xlsx files.
-This is my first education project. Cause my job is a dental technician, I decided to make a service for the work accounting for my job.
+#### This is my first education project. Cause my job is a dental technician, I decided to make a service for the work accounting for my job.
 
 ## Features
 
 - Record and store works in a database
 - Sort works by month for easy management and analysis
 - Calculate income based on the recorded works
-- Save work records to an xls file for further analysis or reporting
+- Save work records to an .xlsx file for further analysis or reporting
 
 ## Tech
 
@@ -28,7 +27,7 @@ The frontend module follows the MVC (Model-View-Controller) architectural patter
 ###### Backend Module
 The backend module consists of two sub-modules: core and webapp.
 - Core Module
-  The core module contains the main logic of the application. It handles the recording and storage of works, sorting works by month, and calculating income.
+  The core module contains the main logic of the application. It handles the recording and storage of works, sorting works by month, and calculating income. Also, it accesses the database.
 - Webapp Module
   The webapp module serves as the REST API for the application. It handles authentication using JWT (JSON Web Tokens) and provides servlets for interacting with the frontend module.
 
@@ -37,7 +36,6 @@ The backend module consists of two sub-modules: core and webapp.
 To run the application, follow these steps:
 - Ensure you have Java 18 installed on your system.
 - Set up a MySQL database and configure the connection details in the "mysql.properties" file located in the [backend/core/src/main/resources] directory.
-- Execute in MySQL file "mysql_tables.sql".
 - Deploy the backend module on a Tomcat server.
 - Configure the Tomcat server to use the appropriate version of Jakarta Servlet (version 6).
 - Deploy the frontend module on the same Tomcat server.
@@ -53,5 +51,8 @@ Once the application is up and running, you can use it to record and manage your
 
 ## License
 
-**Author: Stanislav Kuprienko**
-**Location: Omsk, Siberia, Russia**
+***Author:***
+**Stanislav Kuprienko**
+
+***Location:***
+**Omsk, Siberia, Russia**
