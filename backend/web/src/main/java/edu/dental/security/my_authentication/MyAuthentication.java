@@ -37,25 +37,22 @@ public class MyAuthentication implements AuthenticationService {
 
 
     @Override
-    public UserDto registration(String name, String email, String password) throws WebException {
+    public UserDto registration(String name, String email, String password) throws SecurityException {
         User user;
         try {
             byte[] passHashByte = MD5.digest(password.getBytes());
             user = repository.createNew(name, email, passHashByte);
             return new UserDto(user);
         } catch (AccountException e) {
-            throw new WebException(e.cause, e);
+            throw new SecurityException(e);
         }
     }
 
     @Override
     public UserDto authorization(String login, String password) throws WebException {
         User user = authenticate(login, password);
-        if (repository.put(user)) {
-            return new UserDto(user);
-        } else {
-            throw new WebException(AccountException.CAUSE.SERVER_ERROR, AccountException.MESSAGE.DATABASE_ERROR);
-        }
+        repository.put(user);
+        return new UserDto(user);
     }
 
     /**
@@ -70,21 +67,21 @@ public class MyAuthentication implements AuthenticationService {
      *  - a given argument is null.
      */
     @Override
-    public User authenticate(String login, String password) throws WebException {
+    public User authenticate(String login, String password) throws WebException, SecurityException {
         if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
-            throw new WebException(AccountException.CAUSE.BAD_REQUEST, new NullPointerException("argument is null"));
+            throw new SecurityException("argument is null");
         }
         User user;
         try {
             user = userDAO.search(login).get(0);
         } catch (DatabaseException e) {
             if (e.getMessage().equals("The such object is not found.")) {
-                throw new WebException(AccountException.CAUSE.NOT_FOUND, AccountException.MESSAGE.USER_NOT_FOUND);
+                throw new WebException(WebException.CODE.NOT_FOUND);
             }
-            throw new WebException(AccountException.CAUSE.SERVER_ERROR, AccountException.MESSAGE.DATABASE_ERROR);
+            throw new SecurityException(e);
         }
         if (!verification(user, password)) {
-            throw new WebException(AccountException.CAUSE.UNAUTHORIZED, AccountException.MESSAGE.PASSWORD_INVALID);
+            throw new WebException(WebException.CODE.UNAUTHORIZED);
         }
         return user;
     }
@@ -100,7 +97,7 @@ public class MyAuthentication implements AuthenticationService {
     }
 
     @Override
-    public boolean updatePassword(User user, String password) throws WebException {
+    public boolean updatePassword(User user, String password) throws SecurityException {
         byte[] oldValue = user.getPassword();
         byte[] newPassword = passwordHash(password);
         try {
@@ -108,7 +105,7 @@ public class MyAuthentication implements AuthenticationService {
             return userDAO.update(user);
         } catch (DatabaseException e) {
             user.setPassword(oldValue);
-            throw new WebException(AccountException.CAUSE.SERVER_ERROR, e);
+            throw new SecurityException(e);
         }
     }
 

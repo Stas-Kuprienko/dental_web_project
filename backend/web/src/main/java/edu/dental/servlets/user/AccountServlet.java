@@ -58,7 +58,7 @@ public class AccountServlet extends HttpServlet {
                     response.getWriter().flush();
                 }
             } catch (WebException e) {
-                response.sendError(e.cause.code, e.message);
+                response.sendError(e.code.code, e.message);
             }
         }
         }
@@ -70,7 +70,7 @@ public class AccountServlet extends HttpServlet {
             repository.delete(userId, true);
             response.setStatus(200);
         } catch (WebException e) {
-            response.sendError(e.cause.code, e.message);
+            response.sendError(e.code.code, e.message);
         }
     }
 

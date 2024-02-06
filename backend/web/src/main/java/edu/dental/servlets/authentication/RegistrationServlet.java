@@ -42,7 +42,7 @@ public class RegistrationServlet extends HttpServlet {
             response.getWriter().print(jsonUser);
             response.getWriter().flush();
         } catch (WebException e) {
-            response.sendError(e.cause.code, e.message);
+            response.sendError(e.code.code, e.message);
         }
     }
 }

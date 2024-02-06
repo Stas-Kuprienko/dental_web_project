@@ -39,11 +39,11 @@ public interface Repository {
 
     void delete(int id);
 
-    void delete(int id, boolean fromDatabase) throws WebException;
+    void delete(int id, boolean fromDatabase) throws WebException, AccountException;
 
-    void reloadWorks(int id) throws WebException;
+    void reloadWorks(int id) throws WebException, AccountException;
 
-    void ensureLoggingIn(int id) throws WebException;
+    void ensureLoggingIn(int id) throws WebException, AccountException;
 
 
     abstract class Account extends Monitorable {

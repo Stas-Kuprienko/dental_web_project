@@ -6,6 +6,7 @@ import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.UserDAO;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.security.SecurityException;
 import edu.dental.service.AccountException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
@@ -52,7 +53,7 @@ public final class MyRepository implements Repository {
             return user;
         } catch (DatabaseException e) {
             RAM.remove(user.getId());
-            throw new AccountException(AccountException.CAUSE.SERVER_ERROR, e);
+            throw new AccountException(e);
         }
     }
 
@@ -103,39 +104,39 @@ public final class MyRepository implements Repository {
     }
 
     @Override
-    public void delete(int id, boolean fromDatabase) throws WebException {
+    public void delete(int id, boolean fromDatabase) throws AccountException {
         if (fromDatabase) {
             try {
                 userDAO.delete(id);
             } catch (DatabaseException e) {
-                throw new WebException(AccountException.CAUSE.SERVER_ERROR, e);
+                throw new AccountException(e);
             }
         }
         RAM.remove(id);
     }
 
     @Override
-    public void reloadWorks(int id) throws WebException {
+    public void reloadWorks(int id) throws AccountException {
         try {
             WorkRecordBook recordBook = WorkRecordBook.getInstance(id);
             User user = RAM.get(id).user;
             Account account = new Account(user, recordBook);
             RAM.put(id, account);
         } catch (WorkRecordBookException e) {
-            throw new WebException(AccountException.CAUSE.SERVER_ERROR, e);
+            throw new AccountException(e);
         }
     }
 
     @Override
-    public void ensureLoggingIn(int id) throws WebException {
+    public void ensureLoggingIn(int id) throws WebException, AccountException {
         if (RAM.get(id) == null) {
             try {
                 User user = userDAO.get(id);
                 put(user);
             } catch (DatabaseException e) {
                 if (e.getMessage().equals("The such object is not found.")) {
-                    throw new WebException(AccountException.CAUSE.NOT_FOUND, AccountException.MESSAGE.USER_NOT_FOUND);
-                } throw new WebException(AccountException.CAUSE.SERVER_ERROR, AccountException.MESSAGE.DATABASE_ERROR);
+                    throw new WebException(WebException.CODE.NOT_FOUND);
+                } throw new AccountException(e);
             }
         }
     }
@@ -149,7 +150,7 @@ public final class MyRepository implements Repository {
                     return userDAO.update(user);
                 } catch (DatabaseException e) {
                     user.setName(oldName);
-                    throw new WebException(AccountException.CAUSE.SERVER_ERROR, e);
+                    throw new WebException(WebException.CODE.SERVER_ERROR);
                 }
             }
             case "email" -> {
@@ -159,11 +160,15 @@ public final class MyRepository implements Repository {
                     return userDAO.update(user);
                 } catch (DatabaseException e) {
                     user.setEmail(oldEmail);
-                    throw new WebException(AccountException.CAUSE.SERVER_ERROR, e);
+                    throw new WebException(WebException.CODE.SERVER_ERROR);
                 }
             }
             case "password" -> {
-                return AuthenticationService.getInstance().updatePassword(user, value);
+                try {
+                    return AuthenticationService.getInstance().updatePassword(user, value);
+                } catch (SecurityException e) {
+                    throw new WebException(WebException.CODE.SERVER_ERROR);
+                }
             }
             default -> {
                 return false;

@@ -1,7 +1,6 @@
 package edu.dental;
 
 import edu.dental.domain.APIManager;
-import edu.dental.service.AccountException;
 import jakarta.servlet.http.HttpServlet;
 
 import java.util.logging.Level;
@@ -17,16 +16,37 @@ public class WebException extends Exception {
         logger.setLevel(Level.SEVERE);
     }
 
-    public WebException(AccountException.CAUSE cause, Exception e) {
-        this.cause = cause;
+    public WebException(CODE code, Exception e) {
+        this.code = code;
         this.message = e.getMessage();
+        logger.log(Level.INFO, e.getMessage());
     }
 
-    public WebException(AccountException.CAUSE cause, AccountException.MESSAGE message) {
-        this.cause = cause;
-        this.message = message.message;
+    public WebException(CODE code, String message) {
+        this.code = code;
+        this.message = message;
+        logger.log(Level.INFO, message);
     }
 
-    public final AccountException.CAUSE cause;
-    public final String message;
+    public WebException(CODE code) {
+        this.code = code;
+    }
+
+    public final CODE code;
+    public String message;
+
+
+    public enum CODE {
+        SERVER_ERROR(500),
+        BAD_REQUEST(400),
+        UNAUTHORIZED(401),
+        FORBIDDEN(403),
+        NOT_FOUND(404);
+
+
+        public final int code;
+        CODE(int code) {
+            this.code = code;
+        }
+    }
 }
