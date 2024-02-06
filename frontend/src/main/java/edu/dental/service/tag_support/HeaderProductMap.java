@@ -1,4 +1,4 @@
-package edu.dental.tag_support;
+package edu.dental.service.tag_support;
 
 import edu.dental.beans.ProductMap;
 import jakarta.servlet.jsp.JspException;

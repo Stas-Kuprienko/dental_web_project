@@ -1,4 +1,4 @@
-package edu.dental.servlets.reports;
+package edu.dental.control.servlets.reports;
 
 import edu.dental.APIResponseException;
 import edu.dental.service.WebUtility;

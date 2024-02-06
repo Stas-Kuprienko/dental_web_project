@@ -1,4 +1,4 @@
-package edu.dental.servlets;
+package edu.dental.servlets.reports;
 
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordBookException;

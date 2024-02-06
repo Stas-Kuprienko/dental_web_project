@@ -1,4 +1,4 @@
-package edu.dental.servlets.account;
+package edu.dental.control.servlets.account;
 
 import edu.dental.APIResponseException;
 import edu.dental.control.Administrator;

@@ -14,7 +14,7 @@ public class WebException extends Exception {
     static {
         logger = Logger.getLogger(HttpServlet.class.getName());
         logger.addHandler(APIManager.fileHandler);
-        logger.setLevel(Level.ALL);
+        logger.setLevel(Level.SEVERE);
     }
 
     public WebException(AccountException.CAUSE cause, Exception e) {

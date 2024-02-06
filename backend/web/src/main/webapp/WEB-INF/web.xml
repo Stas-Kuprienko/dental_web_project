@@ -26,7 +26,7 @@
 
   <servlet>
     <servlet-name>account</servlet-name>
-    <servlet-class>edu.dental.servlets.AccountServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.user.AccountServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -51,7 +51,7 @@
 
   <servlet>
     <servlet-name>reportDownload</servlet-name>
-    <servlet-class>edu.dental.servlets.ReportDownloader</servlet-class>
+    <servlet-class>edu.dental.servlets.reports.ReportDownloader</servlet-class>
   </servlet>
 
   <servlet>
@@ -61,7 +61,7 @@
 
   <servlet>
     <servlet-name>profitCount</servlet-name>
-    <servlet-class>edu.dental.servlets.ProfitCountServlet</servlet-class>
+    <servlet-class>edu.dental.servlets.reports.ProfitCountServlet</servlet-class>
   </servlet>
 
 </web-app>

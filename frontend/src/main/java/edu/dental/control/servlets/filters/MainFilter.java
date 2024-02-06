@@ -1,4 +1,4 @@
-package edu.dental.servlets.filters;
+package edu.dental.control.servlets.filters;
 
 import edu.dental.service.WebUtility;
 import jakarta.servlet.*;
@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/", "/sign-in", "/sign-up", "/log-in", "/new-user"})
-public class EnterFilter implements Filter {
+@WebFilter("/main/*")
+public class MainFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
@@ -21,9 +21,8 @@ public class EnterFilter implements Filter {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute(WebUtility.INSTANCE.attribToken) == null) {
-            chain.doFilter(request, response);
-        } else {
-            request.getRequestDispatcher("/main").forward(request, response);
+            request.getRequestDispatcher("/").forward(request, response);
         }
+        chain.doFilter(request, response);
     }
 }

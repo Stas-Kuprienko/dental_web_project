@@ -7,12 +7,12 @@
 
   <filter>
     <filter-name>mainFilter</filter-name>
-    <filter-class>edu.dental.servlets.filters.MainFilter</filter-class>
+    <filter-class>edu.dental.control.servlets.filters.MainFilter</filter-class>
   </filter>
 
   <filter>
     <filter-name>enterFilter</filter-name>
-    <filter-class>edu.dental.servlets.filters.EnterFilter</filter-class>
+    <filter-class>edu.dental.control.servlets.filters.EnterFilter</filter-class>
   </filter>
 
   <listener>
@@ -31,12 +31,12 @@
 
   <servlet>
     <servlet-name>logIn</servlet-name>
-    <servlet-class>edu.dental.servlets.account.Authorization</servlet-class>
+    <servlet-class>edu.dental.control.servlets.account.Authorization</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>register</servlet-name>
-    <servlet-class>edu.dental.servlets.account.Registration</servlet-class>
+    <servlet-class>edu.dental.control.servlets.account.Registration</servlet-class>
   </servlet>
 
   <servlet>
@@ -46,7 +46,7 @@
 
   <servlet>
     <servlet-name>workListServlet</servlet-name>
-    <servlet-class>edu.dental.servlets.works.DentalWorksList</servlet-class>
+    <servlet-class>edu.dental.control.servlets.works.DentalWorksList</servlet-class>
   </servlet>
 
   <servlet>
@@ -56,7 +56,7 @@
 
   <servlet>
     <servlet-name>dentalWork</servlet-name>
-    <servlet-class>edu.dental.servlets.works.DentalWorkServlet</servlet-class>
+    <servlet-class>edu.dental.control.servlets.works.DentalWorkServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -76,7 +76,7 @@
 
   <servlet>
     <servlet-name>productMap</servlet-name>
-    <servlet-class>edu.dental.servlets.products.ProductServlet</servlet-class>
+    <servlet-class>edu.dental.control.servlets.products.ProductServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -91,22 +91,22 @@
 
   <servlet>
     <servlet-name>profitCount</servlet-name>
-    <servlet-class>edu.dental.servlets.reports.ProfitCounter</servlet-class>
+    <servlet-class>edu.dental.control.servlets.reports.ProfitCounter</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>saveFile</servlet-name>
-    <servlet-class>edu.dental.servlets.reports.ReportDownloader</servlet-class>
+    <servlet-class>edu.dental.control.servlets.reports.ReportDownloader</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>searchRecords</servlet-name>
-    <servlet-class>edu.dental.servlets.works.DentalWorkRecordSearch</servlet-class>
+    <servlet-class>edu.dental.control.servlets.works.DentalWorkRecordSearch</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>accountServlet</servlet-name>
-    <servlet-class>edu.dental.servlets.account.AccountServlet</servlet-class>
+    <servlet-class>edu.dental.control.servlets.account.AccountServlet</servlet-class>
   </servlet>
 
   <servlet>
@@ -116,7 +116,7 @@
 
   <servlet>
     <servlet-name>logOut</servlet-name>
-    <servlet-class>edu.dental.servlets.account.LogOut</servlet-class>
+    <servlet-class>edu.dental.control.servlets.account.LogOut</servlet-class>
   </servlet>
 
   <servlet-mapping>

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="edu.dental.tag_support.HeaderMonth" %>
+<%@ page import="edu.dental.service.tag_support.HeaderMonth" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="d" uri="/WEB-INF/MyTagDescriptor.tld" %>
 <%@ page isELIgnored = "false" %>
