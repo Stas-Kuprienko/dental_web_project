@@ -24,9 +24,9 @@ public class ProductMapMySql implements ProductMapDAO, MySQL_DAO {
     }
 
     @Override
-    public boolean putAll(ProductMap map) throws DatabaseException {
+    public boolean putAll(ProductMap map) throws DatabaseException, NullPointerException {
         if (map == null || map.isEmpty()) {
-            throw new DatabaseException(new NullPointerException("The  given argument is null or empty."));
+            throw new NullPointerException("The  given argument is null or empty.");
         }
         String values = "DEFAULT, " + userId + ", ?, ?";
         String query = String.format(MySqlSamples.INSERT_BATCH.QUERY, TABLE, values);
@@ -66,7 +66,7 @@ public class ProductMapMySql implements ProductMapDAO, MySQL_DAO {
     }
 
     @Override
-    public ProductMap get() throws DatabaseException {
+    public ProductMap get() throws DatabaseException, NullPointerException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "user_id = ?");
         ProductMap productMap = APIManager.INSTANCE.getProductMap();
         try (Request request = new Request(query)) {
@@ -80,7 +80,7 @@ public class ProductMapMySql implements ProductMapDAO, MySQL_DAO {
             }
             resultSet.close();
             return productMap;
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException e) {
             throw new DatabaseException(e);
         }
     }

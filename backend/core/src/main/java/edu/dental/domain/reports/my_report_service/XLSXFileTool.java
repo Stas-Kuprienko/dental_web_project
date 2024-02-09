@@ -1,7 +1,7 @@
 package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.domain.reports.SheetFileTool;
-import edu.dental.domain.reports.ReportServiceException;
+import edu.dental.domain.reports.ReportException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -30,29 +30,28 @@ class XLSXFileTool implements SheetFileTool {
     }
 
     @Override
-    public boolean writeFile() throws ReportServiceException {
+    public boolean writeFile() throws ReportException {
         String defaultFileName = "new_file_" + LocalDate.now();
         return writeFile(defaultFileName);
     }
 
     @Override
-    public boolean writeFile(String fileName) throws ReportServiceException {
+    public boolean writeFile(String fileName) throws ReportException {
         File file = new File(PATH_FOR_REPORTS + fileName + fileFormat);
         try(FileOutputStream fileOutput = new FileOutputStream(file); xssfBox) {
             xssfBox.workbook.write(fileOutput);
             return true;
         } catch (Exception e) {
-            //TODO logger
-            throw new ReportServiceException(e);
+            throw new ReportException(e);
         }
     }
 
     @Override
-    public OutputStream writeFile(OutputStream output) throws ReportServiceException {
+    public OutputStream writeFile(OutputStream output) throws ReportException {
         try (xssfBox) {
             xssfBox.workbook.write(output);
         } catch (Exception e) {
-            throw new ReportServiceException(e);
+            throw new ReportException(e);
         }
         return output;
     }

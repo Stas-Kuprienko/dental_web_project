@@ -1,14 +1,11 @@
 package edu.dental.servlets.dental_works;
 
-import edu.dental.WebException;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
-import edu.dental.service.AccountException;
 import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.tools.RequestReader;
@@ -49,7 +46,7 @@ public class DentalWorkListServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
+        } catch (DatabaseException e) {
             response.sendError(500);
         }
     }
@@ -67,7 +64,7 @@ public class DentalWorkListServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
+        } catch (DatabaseException e) {
             response.sendError(500);
         }
     }
@@ -86,12 +83,12 @@ public class DentalWorkListServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (WebException e) {
+        } catch (DatabaseException e) {
             response.sendError(500, e.getMessage());
         }
     }
 
-    private List<DentalWorkDto> getDentalWorks(int userId, String year, String month) throws WorkRecordBookException {
+    private List<DentalWorkDto> getDentalWorks(int userId, String year, String month) throws DatabaseException {
         if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
             return repository.getDentalWorkDtoList(userId);
         } else {
@@ -103,27 +100,23 @@ public class DentalWorkListServlet extends HttpServlet {
         }
     }
 
-    private String setWorkListStatus(int userId, int year, int month) throws WebException {
+    private String setWorkListStatus(int userId, int year, int month) throws DatabaseException {
         String field = "status";
         String value = DentalWork.Status.PAID.toString();
         List<DentalWork> works;
         DentalWorkDto[] dtoArray = new DentalWorkDto[]{};
-        try {
-            if (isCurrent(year, month)) {
-                works = repository.getRecordBook(userId).getRecords();
-                dentalWorkDAO.setFieldValue(userId, works, field, value);
-                repository.reloadWorks(userId);
-                dtoArray = repository.getDentalWorkDtoList(userId).toArray(dtoArray);
-            } else {
-                works = repository.getRecordBook(userId).getWorksByMonth(month, year);
-                dentalWorkDAO.setFieldValue(userId, works, field, value);
-                works = repository.getRecordBook(userId).getWorksByMonth(month, year);
-                dtoArray = works.stream().map(DentalWorkDto::new).toList().toArray(dtoArray);
-            }
-            return jsonObjectParser.parseToJson(dtoArray);
-        } catch (DatabaseException | WorkRecordBookException e) {
-            throw new WebException(AccountException.CAUSE.SERVER_ERROR, e);
+        if (isCurrent(year, month)) {
+            works = repository.getRecordBook(userId).getRecords();
+            dentalWorkDAO.setFieldValue(userId, works, field, value);
+            repository.reloadWorks(userId);
+            dtoArray = repository.getDentalWorkDtoList(userId).toArray(dtoArray);
+        } else {
+            works = repository.getRecordBook(userId).getWorksByMonth(month, year);
+            dentalWorkDAO.setFieldValue(userId, works, field, value);
+            works = repository.getRecordBook(userId).getWorksByMonth(month, year);
+            dtoArray = works.stream().map(DentalWorkDto::new).toList().toArray(dtoArray);
         }
+        return jsonObjectParser.parseToJson(dtoArray);
     }
 
     private boolean isCurrent(int year, int month) {

@@ -1,33 +1,24 @@
-package edu.dental.security;
+package edu.dental.domain.records;
+
 
 import edu.dental.domain.APIManager;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SecurityException extends Exception {
+public class WorkRecordException extends Exception {
 
     private static final Logger logger;
 
     static {
-        logger = Logger.getLogger(AuthenticationService.class.getName());
+        logger = Logger.getLogger(WorkRecordBook.class.getName());
         logger.addHandler(APIManager.fileHandler);
         logger.setLevel(Level.ALL);
     }
 
-    public SecurityException(Exception e) {
+    public WorkRecordException(Exception e) {
         super(e);
         logger.log(Level.SEVERE, buildStackMessage(e.getStackTrace()));
-    }
-
-    public SecurityException(String message) {
-        super(message);
-        logger.log(Level.SEVERE, message);
-    }
-
-    public SecurityException(Level level, Exception e) {
-        super(e);
-        logger.log(level, buildStackMessage(e.getStackTrace()));
     }
 
 

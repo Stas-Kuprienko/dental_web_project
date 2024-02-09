@@ -1,7 +1,8 @@
 package edu.dental.servlets.product_map;
 
+import edu.dental.database.DatabaseException;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.records.WorkRecordException;
 import edu.dental.dto.ProductMapDto;
 import edu.dental.service.tools.JsonObjectParser;
 import edu.dental.service.Repository;
@@ -61,8 +62,8 @@ public class ProductMapServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
-            response.sendError(400);
+        } catch (DatabaseException e) {
+            response.sendError(500);
         }
     }
 
@@ -79,7 +80,7 @@ public class ProductMapServlet extends HttpServlet {
         try {
             recordBook.updateProductItem(title, price);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
+        } catch (DatabaseException e) {
             response.sendError(500);
         }
     }
@@ -94,7 +95,7 @@ public class ProductMapServlet extends HttpServlet {
         try {
             recordBook.deleteProductItem(title);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
+        } catch (DatabaseException e) {
             response.sendError(500);
         }
     }

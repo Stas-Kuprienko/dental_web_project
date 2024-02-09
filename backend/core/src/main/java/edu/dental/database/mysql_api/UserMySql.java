@@ -54,7 +54,7 @@ public class UserMySql implements UserDAO, MySQL_DAO {
     }
 
     @Override
-    public User get(int id) throws DatabaseException {
+    public User get(int id) throws DatabaseException, NullPointerException {
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, "id = ?");
         ResultSet resultSet;
         try (Request request = new Request(query)) {
@@ -62,13 +62,13 @@ public class UserMySql implements UserDAO, MySQL_DAO {
             resultSet = request.getPreparedStatement().executeQuery();
             SimpleList<User> list = (SimpleList<User>) new UserInstantiation(resultSet).build();
             return list.get(0);
-        } catch (SQLException | NullPointerException | IOException e) {
+        } catch (SQLException | IOException e) {
             throw new DatabaseException(e);
         }
     }
 
     @Override
-    public SimpleList<User> search(String login) throws DatabaseException {
+    public SimpleList<User> search(String login) throws DatabaseException, NullPointerException {
         String where = "email = ?";
         String query = String.format(MySqlSamples.SELECT_WHERE.QUERY, "*", TABLE, where);
         ResultSet resultSet;
@@ -76,7 +76,7 @@ public class UserMySql implements UserDAO, MySQL_DAO {
             request.getPreparedStatement().setString(1, login);
             resultSet = request.getPreparedStatement().executeQuery();
             return (SimpleList<User>) new UserInstantiation(resultSet).build();
-        } catch (SQLException | IOException | NullPointerException e) {
+        } catch (SQLException | IOException e) {
             throw new DatabaseException(e);
         }
     }

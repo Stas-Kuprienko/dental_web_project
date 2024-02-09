@@ -6,9 +6,9 @@ public interface SheetFileTool {
 
     <T> void addSheet(T[][] sheetData);
 
-    boolean writeFile() throws ReportServiceException;
+    boolean writeFile() throws ReportException;
 
-    boolean writeFile(String fileName) throws ReportServiceException;
+    boolean writeFile(String fileName) throws ReportException;
 
-    OutputStream writeFile(OutputStream output) throws ReportServiceException;
+    OutputStream writeFile(OutputStream output) throws ReportException;
 }

@@ -1,7 +1,7 @@
 package edu.dental.domain.reports.my_report_service;
 
 import edu.dental.domain.reports.ReportService;
-import edu.dental.domain.reports.ReportServiceException;
+import edu.dental.domain.reports.ReportException;
 import edu.dental.domain.reports.SheetFileTool;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.ProfitRecord;
@@ -15,7 +15,7 @@ public class MyReportService implements ReportService {
 
 
     @Override
-    public boolean writeReportToFile(String[] mapKeys, List<DentalWork> works) throws ReportServiceException {
+    public boolean writeReportToFile(String[] mapKeys, List<DentalWork> works) throws ReportException {
         DataArrayTool dataArrayTool = new DataArrayTool(mapKeys, works);
         String[][] reportData = dataArrayTool.getResult();
         SheetFileTool fileTool = new XLSXFileTool();
@@ -24,7 +24,7 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public void writeReportToOutput(OutputStream output, String[] mapKeys, List<DentalWork> works) throws ReportServiceException {
+    public void writeReportToOutput(OutputStream output, String[] mapKeys, List<DentalWork> works) throws ReportException {
         DataArrayTool dataArrayTool = new DataArrayTool(mapKeys, works);
         String[][] reportData = dataArrayTool.getResult();
         SheetFileTool fileTool = new XLSXFileTool();
@@ -33,7 +33,7 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public boolean writeProfitToFile(ProfitRecord[] profitRecords) throws ReportServiceException {
+    public boolean writeProfitToFile(ProfitRecord[] profitRecords) throws ReportException {
         DataArrayTool dataTool = new DataArrayTool(profitRecords);
         SheetFileTool fileTool = new XLSXFileTool();
         fileTool.addSheet(dataTool.getResult());
@@ -41,7 +41,7 @@ public class MyReportService implements ReportService {
     }
 
     @Override
-    public void writeProfitToOutput(ProfitRecord[] profitRecords, OutputStream output) throws ReportServiceException {
+    public void writeProfitToOutput(ProfitRecord[] profitRecords, OutputStream output) throws ReportException {
         DataArrayTool dataTool = new DataArrayTool(profitRecords);
         SheetFileTool fileTool = new XLSXFileTool();
         fileTool.addSheet(dataTool.getResult());

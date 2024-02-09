@@ -1,7 +1,8 @@
 package edu.dental.servlets.dental_works;
 
+import edu.dental.database.DatabaseException;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.records.WorkRecordException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
@@ -57,7 +58,7 @@ public class DentalWorkServlet extends HttpServlet {
                 response.getWriter().print(json);
                 response.getWriter().flush();
             }
-        } catch (WorkRecordBookException e) {
+        } catch (DatabaseException e) {
             response.sendError(500);
         }
     }
@@ -77,10 +78,9 @@ public class DentalWorkServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(jsonCreated);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
-            response.sendError(400);
+        } catch (DatabaseException e) {
+            response.sendError(500);
         }
-
     }
 
     @Override
@@ -105,7 +105,7 @@ public class DentalWorkServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
+        } catch (WorkRecordException | DatabaseException e) {
             response.sendError(500);
         }
     }
@@ -130,8 +130,10 @@ public class DentalWorkServlet extends HttpServlet {
             } else {
                 repository.getRecordBook(userId).deleteRecord(id);
             }
-        } catch (WorkRecordBookException e) {
+        } catch (WorkRecordException e) {
             response.sendError(400);
+        } catch (DatabaseException e) {
+            response.sendError(500);
         }
     }
 }

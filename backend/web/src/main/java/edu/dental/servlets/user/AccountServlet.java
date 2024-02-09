@@ -1,6 +1,6 @@
 package edu.dental.servlets.user;
 
-import edu.dental.WebException;
+import edu.dental.database.DatabaseException;
 import edu.dental.dto.UserDto;
 import edu.dental.service.Repository;
 import edu.dental.service.tools.JsonObjectParser;
@@ -57,8 +57,8 @@ public class AccountServlet extends HttpServlet {
                     response.getWriter().print(json);
                     response.getWriter().flush();
                 }
-            } catch (WebException e) {
-                response.sendError(e.code.code, e.message);
+            } catch (DatabaseException e) {
+                response.sendError(500);
             }
         }
         }
@@ -69,8 +69,8 @@ public class AccountServlet extends HttpServlet {
         try {
             repository.delete(userId, true);
             response.setStatus(200);
-        } catch (WebException e) {
-            response.sendError(e.code.code, e.message);
+        } catch (DatabaseException e) {
+            response.sendError(500, e.getMessage());
         }
     }
 

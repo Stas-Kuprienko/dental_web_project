@@ -28,15 +28,11 @@ public interface WorkRecordBook {
         return APIManager.INSTANCE.getWorkRecordBook(userId, works, map);
     }
 
-    static WorkRecordBook getInstance(int userId) throws WorkRecordBookException {
+    static WorkRecordBook getInstance(int userId) throws DatabaseException {
         List<DentalWork> works;
         ProductMap map;
-        try {
-            works = database.getDentalWorkDAO().getAll(userId);
-            map = APIManager.INSTANCE.getProductMap(userId);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
+        works = database.getDentalWorkDAO().getAll(userId);
+        map = APIManager.INSTANCE.getProductMap(userId);
         return APIManager.INSTANCE.getWorkRecordBook(userId, works, map);
     }
 
@@ -44,18 +40,17 @@ public interface WorkRecordBook {
      * Create a {@link DentalWork} object and add it to {@link List} field of this instance.
      * @param dentalWork {@link DentalWork} object to add.
      * @return The created DentalWork object.
-     * @throws WorkRecordBookException if a given arguments is incorrect or the given product type
-     *  is not contain in {@link Map}.
+     * @throws DatabaseException if troubles with database connection.
      */
-    DentalWork addNewRecord(DentalWork dentalWork) throws WorkRecordBookException;
+    DentalWork addNewRecord(DentalWork dentalWork) throws DatabaseException;
 
-    ProductMap.Item addProductItem(String title, int price) throws WorkRecordBookException;
+    ProductMap.Item addProductItem(String title, int price) throws DatabaseException;
 
-    Integer updateProductItem(String title, int price) throws WorkRecordBookException;
+    Integer updateProductItem(String title, int price) throws DatabaseException;
 
-    boolean deleteProductItem(String title) throws WorkRecordBookException;
+    boolean deleteProductItem(String title) throws DatabaseException;
 
-    DentalWork updateRecord(DentalWork dw, String field, String value) throws WorkRecordBookException;
+    DentalWork updateRecord(DentalWork dw, String field, String value) throws WorkRecordException, DatabaseException;
 
     /**
      * Create {@link Product product} object and add it into the given {@link DentalWork}.
@@ -64,41 +59,41 @@ public interface WorkRecordBook {
      * @param product    the product type title to add (should be containing in {@link Map}).
      * @param quantity   the quantity of a product items.
      * @return the updated given {@link DentalWork} object.
-     * @throws WorkRecordBookException if a given arguments is incorrect or the given product type
+     * @throws WorkRecordException if a given arguments is incorrect or the given product type
      *                                 is not contain in {@link Map}.
      */
-    DentalWork addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException;
+    DentalWork addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordException, DatabaseException;
 
     /**
      * Remove {@link Product product} object from the given {@linkplain  DentalWork#getProducts() record}.
      *
      * @param dentalWork the {@link DentalWork} object to remove a {@link Product product}.
      * @param product    the product type title to remove (should be containing in {@link Map}).
-     * @throws WorkRecordBookException if a given arguments is null.
+     * @throws WorkRecordException if a given arguments is null.
      */
-    void removeProduct(DentalWork dentalWork, String product) throws WorkRecordBookException;
+    void removeProduct(DentalWork dentalWork, String product) throws WorkRecordException, DatabaseException;
 
-    void removeProduct(int id, String product) throws WorkRecordBookException;
+    void removeProduct(int id, String product) throws WorkRecordException, DatabaseException;
 
     /**
      * Delete {@link DentalWork} object from the instance {@link List} field.
      *
      * @param dentalWork the object to delete.
      */
-    void deleteRecord(DentalWork dentalWork) throws WorkRecordBookException;
+    void deleteRecord(DentalWork dentalWork) throws DatabaseException;
 
-    void deleteRecord(int id) throws WorkRecordBookException;
+    void deleteRecord(int id) throws DatabaseException;
 
     /**
      * Search a {@link DentalWork} by {@code patient and clinic} fields.
      * @param patient the patient name or surname of required record.
      * @param clinic the clinic  of required record.
      * @return the required DentalWork object.
-     * @throws WorkRecordBookException if a given argument is incorrect or null, and if such object is not found.
+     * @throws WorkRecordException if a given argument is incorrect or null, and if such object is not found.
      */
-    DentalWork searchRecord(String patient, String clinic) throws WorkRecordBookException;
+    DentalWork searchRecord(String patient, String clinic) throws WorkRecordException;
 
-    DentalWork getById(int id, boolean includeDatabase) throws WorkRecordBookException;
+    DentalWork getById(int id, boolean includeDatabase) throws DatabaseException;
 
     /**
      * Search a {@link DentalWork} by {@code id} fields.
@@ -107,15 +102,15 @@ public interface WorkRecordBook {
      */
     DentalWork getById(int id);
 
-    List<DentalWork> getWorksByMonth(int monthValue, int year) throws WorkRecordBookException;
+    List<DentalWork> getWorksByMonth(int monthValue, int year) throws DatabaseException;
 
-    List<DentalWork> searchRecordsInDatabase(String[] fields, String[] args) throws WorkRecordBookException;
+    List<DentalWork> searchRecordsInDatabase(String[] fields, String[] args) throws WorkRecordException, DatabaseException;
 
-    void sorting(int month, int year) throws WorkRecordBookException;
+    void sorting(int month, int year) throws DatabaseException;
 
-    ProfitRecord countProfitForMonth(int year, int monthValue) throws WorkRecordBookException;
+    ProfitRecord countProfitForMonth(int year, int monthValue) throws DatabaseException;
 
-    ProfitRecord[] countAllProfits() throws WorkRecordBookException;
+    ProfitRecord[] countAllProfits() throws DatabaseException;
 
     int getUserId();
 

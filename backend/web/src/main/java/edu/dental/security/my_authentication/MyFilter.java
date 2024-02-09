@@ -1,11 +1,13 @@
 package edu.dental.security.my_authentication;
 
-import edu.dental.WebException;
-import edu.dental.service.AccountException;
+import edu.dental.database.DatabaseException;
 import edu.dental.security.AuthenticationService;
 import edu.dental.security.IFilterVerification;
+import edu.dental.security.WebSecurityException;
 import edu.dental.service.Repository;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.logging.Level;
 
 class MyFilter implements IFilterVerification {
 
@@ -21,7 +23,7 @@ class MyFilter implements IFilterVerification {
 
 
     @Override
-    public int verify(HttpServletRequest request) throws WebException {
+    public int verify(HttpServletRequest request) throws DatabaseException, WebSecurityException {
         String authorization = request.getHeader(authVar);
 
         if (authorization != null && authorization.startsWith(authorizationType)) {
@@ -33,6 +35,6 @@ class MyFilter implements IFilterVerification {
                 return userId;
             }
         }
-        throw new WebException(AccountException.CAUSE.FORBIDDEN, AccountException.MESSAGE.TOKEN_INVALID);
+        throw new WebSecurityException(Level.WARNING, AuthenticationService.ERROR.FORBIDDEN, "invalid token");
     }
 }

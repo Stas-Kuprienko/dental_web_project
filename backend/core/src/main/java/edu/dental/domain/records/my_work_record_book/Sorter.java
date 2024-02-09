@@ -4,7 +4,7 @@ import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.domain.records.SorterTool;
-import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.records.WorkRecordException;
 import edu.dental.entities.DentalWork;
 import utils.collections.SimpleList;
 
@@ -36,17 +36,13 @@ public class Sorter implements SorterTool<DentalWork> {
     }
 
     @Override
-    public List<DentalWork> doIt() throws WorkRecordBookException {
+    public List<DentalWork> doIt() throws DatabaseException {
         LocalDate now = LocalDate.now();
-        try {
             if (now.getMonth().getValue() == month && now.getYear() == year) {
                 return sortCurrentMonth(works);
             } else {
                 return sortAnyPreviousMonth(works, year, month);
             }
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
     }
 
     private SimpleList<DentalWork> sortCurrentMonth(List<DentalWork> list) throws DatabaseException {

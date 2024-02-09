@@ -18,10 +18,23 @@ public class DatabaseException extends Exception {
 
     public DatabaseException(Exception e) {
         super(e);
-        logger.log(Level.SEVERE, e.getMessage());
+        logger.log(Level.WARNING, buildStackMessage(e.getStackTrace()));
     }
 
     public static void logging(Exception e) {
-        logger.log(Level.SEVERE, e.getMessage());
+        logger.log(Level.SEVERE, buildStackMessage(e.getStackTrace()));
+    }
+
+
+    private static String buildStackMessage(StackTraceElement[] stackTrace) {
+        StringBuilder str = new StringBuilder();
+        for (StackTraceElement e : stackTrace) {
+            if (e.toString().startsWith("edu.")) {
+                str.append(e).append("\n");
+            } else {
+                break;
+            }
+        }
+        return str.toString();
     }
 }

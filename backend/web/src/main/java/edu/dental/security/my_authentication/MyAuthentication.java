@@ -1,18 +1,18 @@
 package edu.dental.security.my_authentication;
 
-import edu.dental.WebException;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.UserDAO;
-import edu.dental.service.AccountException;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
 import edu.dental.security.AuthenticationService;
 import edu.dental.security.TokenUtils;
+import edu.dental.security.WebSecurityException;
 import edu.dental.service.Repository;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
 
 
 public class MyAuthentication implements AuthenticationService {
@@ -37,22 +37,21 @@ public class MyAuthentication implements AuthenticationService {
 
 
     @Override
-    public UserDto registration(String name, String email, String password) throws SecurityException {
+    public UserDto registration(String name, String email, String password) throws DatabaseException {
         User user;
-        try {
-            byte[] passHashByte = MD5.digest(password.getBytes());
-            user = repository.createNew(name, email, passHashByte);
-            return new UserDto(user);
-        } catch (AccountException e) {
-            throw new SecurityException(e);
-        }
+        byte[] passHashByte = MD5.digest(password.getBytes());
+        user = repository.createNew(name, email, passHashByte);
+        return new UserDto(user);
     }
 
     @Override
-    public UserDto authorization(String login, String password) throws WebException {
+    public UserDto authorization(String login, String password) throws DatabaseException, WebSecurityException {
         User user = authenticate(login, password);
-        repository.put(user);
-        return new UserDto(user);
+        if (repository.put(user)) {
+            return new UserDto(user);
+        } else {
+            throw new WebSecurityException(Level.INFO, ERROR.SERVER_ERROR, "user is not put in repository");
+        }
     }
 
     /**
@@ -60,28 +59,25 @@ public class MyAuthentication implements AuthenticationService {
      * @param login    The user's account login.
      * @param password The password to verify.
      * @return The {@link User} object, if authentication was successful.
-     * @throws WebException Causes of throwing
+     * @throws WebSecurityException Causes of throwing
      *  - specified user is not found;
-     *  - Database exception;
      *  - incorrect password;
      *  - a given argument is null.
+     * @throws DatabaseException if troubles with database connection.
      */
     @Override
-    public User authenticate(String login, String password) throws WebException, SecurityException {
+    public User authenticate(String login, String password) throws WebSecurityException, DatabaseException {
         if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
-            throw new SecurityException("argument is null");
+            throw new WebSecurityException(Level.INFO, ERROR.BAD_REQUEST, "argument is null");
         }
         User user;
         try {
             user = userDAO.search(login).get(0);
-        } catch (DatabaseException e) {
-            if (e.getMessage().equals("The such object is not found.")) {
-                throw new WebException(WebException.CODE.NOT_FOUND);
-            }
-            throw new SecurityException(e);
+        } catch (NullPointerException e) {
+            throw new WebSecurityException(Level.INFO, ERROR.NOT_FOUND, e.getMessage());
         }
         if (!verification(user, password)) {
-            throw new WebException(WebException.CODE.UNAUTHORIZED);
+            throw new WebSecurityException(Level.INFO, ERROR.UNAUTHORIZED, "password is invalid");
         }
         return user;
     }
@@ -97,7 +93,7 @@ public class MyAuthentication implements AuthenticationService {
     }
 
     @Override
-    public boolean updatePassword(User user, String password) throws SecurityException {
+    public boolean updatePassword(User user, String password) throws DatabaseException {
         byte[] oldValue = user.getPassword();
         byte[] newPassword = passwordHash(password);
         try {
@@ -105,7 +101,7 @@ public class MyAuthentication implements AuthenticationService {
             return userDAO.update(user);
         } catch (DatabaseException e) {
             user.setPassword(oldValue);
-            throw new SecurityException(e);
+            throw e;
         }
     }
 

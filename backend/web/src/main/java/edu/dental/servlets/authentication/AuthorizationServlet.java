@@ -1,10 +1,10 @@
 package edu.dental.servlets.authentication;
 
+import edu.dental.database.DatabaseException;
 import edu.dental.dto.UserDto;
-import edu.dental.WebException;
 import edu.dental.security.AuthenticationService;
+import edu.dental.security.WebSecurityException;
 import edu.dental.service.tools.JsonObjectParser;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -42,8 +42,10 @@ public class AuthorizationServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(jsonUser);
             response.getWriter().flush();
-        } catch (WebException e) {
-            response.sendError(e.code.code);
+        } catch (DatabaseException e) {
+            response.sendError(500);
+        } catch (WebSecurityException e) {
+            response.sendError(e.code, e.getMessage());
         }
     }
 }

@@ -26,7 +26,7 @@ public class DentalWorkMySql implements DentalWorkDAO, MySQL_DAO {
     @Override
     public boolean putAll(List<DentalWork> list) throws DatabaseException {
         if (list == null || list.isEmpty()) {
-            throw new DatabaseException(new NullPointerException("The given argument is null or empty."));
+            throw new NullPointerException("The given argument is null or empty.");
         }
         try (Request request = new Request()){
             Statement statement = request.getStatement();
@@ -78,7 +78,7 @@ public class DentalWorkMySql implements DentalWorkDAO, MySQL_DAO {
         try (Request request = new Request(query)) {
             ResultSet resultSet = request.getPreparedStatement().executeQuery();
             dentalWorks = (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
-        } catch (SQLException | IOException | ClassCastException e) {
+        } catch (SQLException | IOException e) {
             throw new DatabaseException(e);
         }
         return dentalWorks;
@@ -96,14 +96,14 @@ public class DentalWorkMySql implements DentalWorkDAO, MySQL_DAO {
             statement.setInt(2, year);
             ResultSet resultSet = statement.executeQuery();
             dentalWorks = (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
-        } catch (SQLException | IOException | ClassCastException e) {
+        } catch (SQLException | IOException e) {
             throw new DatabaseException(e);
         }
         return dentalWorks;
     }
 
     @Override
-    public DentalWork get(int userId, int id) throws DatabaseException {
+    public DentalWork get(int userId, int id) throws DatabaseException, NullPointerException {
         String where = TABLE + ".id = ? AND " + TABLE + ".user_id = ?";
         String query = String.format(MySqlSamples.SELECT_DENTAL_WORK.QUERY, where);
         try (Request request = new Request(query)) {
@@ -113,23 +113,23 @@ public class DentalWorkMySql implements DentalWorkDAO, MySQL_DAO {
             ResultSet resultSet = statement.executeQuery();
             SimpleList<DentalWork> list = (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
             return list.get(0);
-        } catch (SQLException | IOException | NullPointerException e) {
+        } catch (SQLException | IOException e) {
             throw new DatabaseException(e);
         }
     }
 
     @Override
-    public SimpleList<DentalWork> search(int userId, String[] fields, String[] args) throws DatabaseException {
+    public SimpleList<DentalWork> search(int userId, String[] fields, String[] args) throws DatabaseException, IllegalArgumentException, NullPointerException {
         String where = buildSearchQuery(fields, args);
         if (where == null) {
-            throw new DatabaseException(new IllegalArgumentException("Incorrect search parameters"));
+            throw new IllegalArgumentException("Incorrect search parameters");
         }
         where += TABLE + ".user_id = " + userId;
         String query = String.format(MySqlSamples.SELECT_DENTAL_WORK.QUERY, where);
         try (Request request = new Request()) {
             ResultSet resultSet = request.getStatement().executeQuery(query);
             return (SimpleList<DentalWork>) new DentalWorkInstantiation(resultSet).build();
-        } catch (SQLException | IOException | NullPointerException | ClassCastException e) {
+        } catch (SQLException | IOException e) {
             throw new DatabaseException(e);
         }
     }
@@ -164,7 +164,7 @@ public class DentalWorkMySql implements DentalWorkDAO, MySQL_DAO {
             statement.setInt(i, object.getUserId());
             return new ProductMySql(object.getId()).overwrite(object.getProducts())
                     && statement.executeUpdate() > 0;
-        } catch (SQLException | ClassCastException e) {
+        } catch (SQLException e) {
             throw new DatabaseException(e);
         }
     }

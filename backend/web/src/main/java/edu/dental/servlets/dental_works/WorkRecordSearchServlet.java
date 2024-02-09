@@ -1,7 +1,8 @@
 package edu.dental.servlets.dental_works;
 
+import edu.dental.database.DatabaseException;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.records.WorkRecordException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
@@ -43,13 +44,13 @@ public class WorkRecordSearchServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
+        } catch (WorkRecordException | DatabaseException e) {
             response.sendError(500);
         }
     }
 
 
-    private DentalWorkDto[] search(int userId, HttpServletRequest request) throws WorkRecordBookException {
+    private DentalWorkDto[] search(int userId, HttpServletRequest request) throws WorkRecordException, DatabaseException {
         ArrayList<String> fields = new ArrayList<>(searchFields.length);
         ArrayList<String> args = new ArrayList<>(searchFields.length);
 

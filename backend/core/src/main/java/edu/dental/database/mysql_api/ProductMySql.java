@@ -25,9 +25,9 @@ public class ProductMySql implements ProductDAO, MySQL_DAO {
     }
 
     @Override
-    public boolean putAll(List<Product> list) throws DatabaseException{
+    public boolean putAll(List<Product> list) throws DatabaseException, NullPointerException{
         if (list == null || list.isEmpty()) {
-            throw new DatabaseException(new NullPointerException("The  given argument is null or empty."));
+            throw new NullPointerException("The  given argument is null or empty.");
         }
         try (Request request = new Request()) {
             Statement statement = request.getStatement();
@@ -76,7 +76,7 @@ public class ProductMySql implements ProductDAO, MySQL_DAO {
                 }
             }
             return products;
-        } catch (SQLException | NumberFormatException e) {
+        } catch (SQLException e) {
             throw new DatabaseException(e);
         }
     }
@@ -96,7 +96,7 @@ public class ProductMySql implements ProductDAO, MySQL_DAO {
     }
 
     @Override
-    public List<Product> search(String title, int quantity) throws DatabaseException {
+    public List<Product> search(String title, int quantity) throws DatabaseException, NullPointerException {
         String query = MySqlSamples.SELECT_PRODUCT.QUERY;
         try (Request request = new Request(query)) {
             PreparedStatement statement = request.getPreparedStatement();
@@ -105,7 +105,7 @@ public class ProductMySql implements ProductDAO, MySQL_DAO {
             statement.setByte(3, (byte) quantity);
             ResultSet resultSet = statement.executeQuery();
             return new ProductInstantiation(resultSet).build();
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException e) {
             throw new DatabaseException(e);
         }
     }

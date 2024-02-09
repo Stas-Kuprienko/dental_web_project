@@ -1,9 +1,10 @@
 package edu.dental.servlets.reports;
 
+import edu.dental.database.DatabaseException;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.records.WorkRecordException;
 import edu.dental.domain.reports.ReportService;
-import edu.dental.domain.reports.ReportServiceException;
+import edu.dental.domain.reports.ReportException;
 import edu.dental.dto.ProfitRecordDto;
 import edu.dental.entities.ProfitRecord;
 import edu.dental.service.Repository;
@@ -43,7 +44,7 @@ public class ProfitCountServlet extends HttpServlet {
             WorkRecordBook recordBook = repository.getRecordBook(userId);
             ProfitRecord[] records = recordBook.countAllProfits();
             reportService.writeProfitToOutput(records, output);
-        } catch (ReportServiceException | WorkRecordBookException e) {
+        } catch (ReportException | DatabaseException e) {
             response.sendError(500);
         }
     }
@@ -60,13 +61,13 @@ public class ProfitCountServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
             response.getWriter().flush();
-        } catch (WorkRecordBookException e) {
+        } catch (WorkRecordException | DatabaseException e) {
             response.sendError(500);
         }
     }
 
 
-    private ProfitRecordDto[] getProfitRecords(int userId, String year, String month) throws WorkRecordBookException {
+    private ProfitRecordDto[] getProfitRecords(int userId, String year, String month) throws DatabaseException, WorkRecordException {
         WorkRecordBook recordBook = repository.getRecordBook(userId);
         if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
 

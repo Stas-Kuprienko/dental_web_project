@@ -1,6 +1,6 @@
 package edu.dental.security;
 
-import edu.dental.WebException;
+import edu.dental.database.DatabaseException;
 import edu.dental.service.Repository;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -31,8 +31,10 @@ public class FilterService implements Filter {
             userId = filterVerification.verify(request);
             request.setAttribute(Repository.paramUser, userId);
             chain.doFilter(request, response);
-        } catch (WebException e) {
-            response.sendError(e.code.code, e.message);
+        } catch (WebSecurityException e) {
+            response.sendError(e.code, e.getMessage());
+        } catch (DatabaseException e) {
+            response.sendError(500, e.getMessage());
         }
     }
 }

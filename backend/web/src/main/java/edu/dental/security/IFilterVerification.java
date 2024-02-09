@@ -1,7 +1,7 @@
 package edu.dental.security;
 
 import edu.dental.WebAPI;
-import edu.dental.WebException;
+import edu.dental.database.DatabaseException;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface IFilterVerification {
@@ -10,5 +10,5 @@ public interface IFilterVerification {
         return WebAPI.INSTANCE.getFilterVerification();
     }
 
-    int verify(HttpServletRequest request) throws WebException;
+    int verify(HttpServletRequest request) throws DatabaseException, WebSecurityException;
 }

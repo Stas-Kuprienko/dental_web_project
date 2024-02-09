@@ -5,7 +5,7 @@ import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.ProfitRecordDAO;
 import edu.dental.domain.records.SorterTool;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
+import edu.dental.domain.records.WorkRecordException;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
@@ -47,13 +47,13 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public DentalWork addNewRecord(DentalWork dw) throws WorkRecordBookException {
+    public DentalWork addNewRecord(DentalWork dw) throws DatabaseException {
         DentalWork newRecord = DentalWork.create()
-                                .setUserId(userId)
-                                .setPatient(dw.getPatient())
-                                .setClinic(dw.getClinic())
-                                .setComplete(dw.getComplete())
-                                .setComment(dw.getComment()).build();
+                .setUserId(userId)
+                .setPatient(dw.getPatient())
+                .setClinic(dw.getClinic())
+                .setComplete(dw.getComplete())
+                .setComment(dw.getComment()).build();
 
         if (!(dw.getProducts().isEmpty())) {
             SimpleList<Product> productList = newRecord.getProducts();
@@ -62,71 +62,57 @@ public class MyWorkRecordBook implements WorkRecordBook {
                 productList.add(product);
             }
         }
-        try {
-            databaseService.getDentalWorkDAO().put(newRecord);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
+        databaseService.getDentalWorkDAO().put(newRecord);
         records.add(newRecord);
         return newRecord;
     }
 
     @Override
-    public ProductMap.Item addProductItem(String title, int price) throws WorkRecordBookException {
-        try {
-            int id = databaseService.getProductMapDAO(userId).put(title, price);
-            productMap.put(title, price, id);
-            return productMap.getItem(title);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
+    public ProductMap.Item addProductItem(String title, int price) throws DatabaseException {
+        int id = databaseService.getProductMapDAO(userId).put(title, price);
+        productMap.put(title, price, id);
+        return productMap.getItem(title);
     }
 
     @Override
-    public Integer updateProductItem(String title, int price) throws WorkRecordBookException {
-        try {
-            int id = productMap.getId(title);
-            databaseService.getProductMapDAO(userId).edit(id, price);
-            return productMap.put(title, price);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
+    public Integer updateProductItem(String title, int price) throws DatabaseException {
+        int id = productMap.getId(title);
+        databaseService.getProductMapDAO(userId).edit(id, price);
+        return productMap.put(title, price);
     }
 
     @Override
-    public boolean deleteProductItem(String title) throws WorkRecordBookException {
+    public boolean deleteProductItem(String title) throws DatabaseException {
         try {
             int id = productMap.remove(title);
             return databaseService.getProductMapDAO(userId).delete(id);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
         } catch (NullPointerException ignored) {
             return false;
         }
     }
 
     @Override
-    public DentalWork updateRecord(DentalWork dw, String field, String value) throws WorkRecordBookException {
+    public DentalWork updateRecord(DentalWork dw, String field, String value) throws WorkRecordException, DatabaseException {
         Updating<DentalWork> updating = new Updating<>();
         try {
             updating.init(dw, field);
             updating.setNewValue(value);
             databaseService.getDentalWorkDAO().update(dw);
         } catch (ReflectiveOperationException e) {
-            throw new WorkRecordBookException(e);
+            throw new WorkRecordException(e);
         } catch (DatabaseException e) {
             try {
                 updating.revert();
             } catch (ReflectiveOperationException ignored) {}
-            throw new WorkRecordBookException(e);
+            throw e;
         }
         return dw;
     }
 
     @Override
-    public DentalWork addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordBookException {
+    public DentalWork addProductToRecord(DentalWork dentalWork, String product, int quantity) throws WorkRecordException, DatabaseException {
         if (dentalWork == null || product == null) {
-            throw new WorkRecordBookException(new NullPointerException("The given DentalWork object is null"));
+            throw new WorkRecordException(new NullPointerException("The given DentalWork object is null"));
         }
         Product p;
         SimpleList<Product> products = dentalWork.getProducts();
@@ -140,18 +126,18 @@ public class MyWorkRecordBook implements WorkRecordBook {
             dentalWork.getProducts().add(p);
             databaseService.getDentalWorkDAO().update(dentalWork);
         } catch (IllegalArgumentException | NoSuchElementException e) {
-            throw new WorkRecordBookException(e);
+            throw new WorkRecordException(e);
         } catch (DatabaseException e) {
             removeProduct(dentalWork, product);
-            throw new WorkRecordBookException(e);
+            throw e;
         }
         return dentalWork;
     }
 
     @Override
-    public void removeProduct(DentalWork dentalWork, String product) throws WorkRecordBookException {
+    public void removeProduct(DentalWork dentalWork, String product) throws WorkRecordException, DatabaseException {
         if ((dentalWork == null) || (product == null || product.isEmpty())) {
-            throw new WorkRecordBookException(new NullPointerException("The given argument is null or empty"));
+            throw new WorkRecordException(new NullPointerException("The given argument is null or empty"));
         }
         if (dentalWork.getProducts().isEmpty()) {
             return;
@@ -170,37 +156,33 @@ public class MyWorkRecordBook implements WorkRecordBook {
                 databaseService.getDentalWorkDAO().update(dentalWork);
             } catch (DatabaseException e) {
                 dentalWork.getProducts().add(removable);
-                throw new WorkRecordBookException(e);
+                throw e;
             }
         }
     }
 
     @Override
-    public void removeProduct(int id, String product) throws WorkRecordBookException {
+    public void removeProduct(int id, String product) throws WorkRecordException, DatabaseException {
         DentalWork dw = getById(id);
         removeProduct(dw, product);
     }
 
     @Override
-    public void deleteRecord(DentalWork dentalWork) throws WorkRecordBookException {
+    public void deleteRecord(DentalWork dentalWork) throws DatabaseException {
         if (dentalWork == null) {
             return;
         }
-        try {
-            databaseService.getDentalWorkDAO().delete(dentalWork.getId());
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
+        databaseService.getDentalWorkDAO().delete(dentalWork.getId());
         records.remove(dentalWork);
     }
 
     @Override
-    public void deleteRecord(int id) throws WorkRecordBookException {
+    public void deleteRecord(int id) throws DatabaseException {
         deleteRecord(getById(id));
     }
 
     @Override
-    public DentalWork searchRecord(String patient, String clinic) throws WorkRecordBookException {
+    public DentalWork searchRecord(String patient, String clinic) throws WorkRecordException {
         try {
             SimpleList<DentalWork> list = records.searchElement("patient", patient);
             if (list.size() > 1) {
@@ -210,21 +192,17 @@ public class MyWorkRecordBook implements WorkRecordBook {
             if (list.get(0).getClinic().equals(clinic)) {
                 return list.get(0);
             }
-            throw new WorkRecordBookException(new NoSuchElementException(patient + ", " + clinic));
+            throw new WorkRecordException(new NoSuchElementException(patient + ", " + clinic));
         } catch (NoSuchElementException | NullPointerException e) {
-            throw new WorkRecordBookException(e);
+            throw new WorkRecordException(e);
         }
     }
 
     @Override
-    public DentalWork getById(int id, boolean includeDatabase) throws WorkRecordBookException {
+    public DentalWork getById(int id, boolean includeDatabase) throws DatabaseException {
         DentalWork dw = getById(id);
         if (dw == null && includeDatabase) {
-            try {
-                dw = databaseService.getDentalWorkDAO().get(userId, id);
-            } catch (DatabaseException e) {
-                throw new WorkRecordBookException(e);
-            }
+            dw = databaseService.getDentalWorkDAO().get(userId, id);
         }
         return dw;
     }
@@ -247,52 +225,36 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public List<DentalWork> getWorksByMonth(int monthValue, int year) throws WorkRecordBookException {
-        try {
-            String month = Month.of(monthValue).toString();
-            return databaseService.getDentalWorkDAO().getAllMonthly(userId, month, year);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
+    public List<DentalWork> getWorksByMonth(int monthValue, int year) throws DatabaseException {
+        String month = Month.of(monthValue).toString();
+        return databaseService.getDentalWorkDAO().getAllMonthly(userId, month, year);
     }
 
     @Override
-    public List<DentalWork> searchRecordsInDatabase(String[] fields, String[] args) throws WorkRecordBookException {
+    public List<DentalWork> searchRecordsInDatabase(String[] fields, String[] args) throws WorkRecordException, DatabaseException {
         if (fields.length != args.length || fields.length == 0) {
-            throw new WorkRecordBookException(new IllegalArgumentException("arrays of arguments is not equals by length or empty"));
+            throw new WorkRecordException(new IllegalArgumentException("arrays of arguments is not equals by length or empty"));
         }
-        try {
-            return databaseService.getDentalWorkDAO().search(userId, fields, args);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
+        return databaseService.getDentalWorkDAO().search(userId, fields, args);
     }
 
     @Override
-    public void sorting(int month, int year) throws WorkRecordBookException {
+    public void sorting(int month, int year) throws DatabaseException {
         SorterTool<DentalWork> sorter = new Sorter(userId, month, year);
         sorter.push(records);
         sorter.doIt();
     }
 
     @Override
-    public ProfitRecord countProfitForMonth(int year, int monthValue) throws WorkRecordBookException {
+    public ProfitRecord countProfitForMonth(int year, int monthValue) throws DatabaseException {
         String month = Month.of(monthValue).toString().toLowerCase();
         ProfitRecordDAO dao = databaseService.getProfitRecordDAO();
-        try {
-            return dao.countProfitForMonth(userId, year, month);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
+        return dao.countProfitForMonth(userId, year, month);
     }
 
     @Override
-    public ProfitRecord[] countAllProfits() throws WorkRecordBookException {
-        try {
-            return databaseService.getProfitRecordDAO().countAllProfits(userId);
-        } catch (DatabaseException e) {
-            throw new WorkRecordBookException(e);
-        }
+    public ProfitRecord[] countAllProfits() throws DatabaseException {
+        return databaseService.getProfitRecordDAO().countAllProfits(userId);
     }
 
     @Override

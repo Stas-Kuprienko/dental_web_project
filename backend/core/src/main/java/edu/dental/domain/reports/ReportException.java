@@ -1,31 +1,34 @@
-package edu.dental.domain.records;
-
+package edu.dental.domain.reports;
 
 import edu.dental.domain.APIManager;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class WorkRecordBookException extends Exception {
+public class ReportException extends Exception {
 
     private static final Logger logger;
 
     static {
-        logger = Logger.getLogger(WorkRecordBook.class.getName());
+        logger = Logger.getLogger(ReportService.class.getName());
         logger.addHandler(APIManager.fileHandler);
         logger.setLevel(Level.ALL);
     }
 
-    public WorkRecordBookException(Exception e) {
-        String message = buildStackMessage(e.getStackTrace());
-        logger.log(Level.SEVERE, message);
+    public ReportException(Exception e) {
+        super(e);
+        logger.log(Level.SEVERE, buildStackMessage(e.getStackTrace()));
     }
 
+
     private static String buildStackMessage(StackTraceElement[] stackTrace) {
-        //TODO
         StringBuilder str = new StringBuilder();
         for (StackTraceElement e : stackTrace) {
-            str.append(e.toString()).append("\n");
+            if (e.toString().startsWith("edu.")) {
+                str.append(e).append("\n");
+            } else {
+                break;
+            }
         }
         return str.toString();
     }

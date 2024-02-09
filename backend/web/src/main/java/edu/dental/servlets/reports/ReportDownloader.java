@@ -1,9 +1,9 @@
 package edu.dental.servlets.reports;
 
+import edu.dental.database.DatabaseException;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
 import edu.dental.domain.reports.ReportService;
-import edu.dental.domain.reports.ReportServiceException;
+import edu.dental.domain.reports.ReportException;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
 import jakarta.servlet.ServletException;
@@ -49,7 +49,7 @@ public class ReportDownloader extends HttpServlet {
             String fileName = getFileName(year, month);
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + "\"");
             reportService.writeReportToOutput(output, recordBook.getProductMap().keysToArray(), works);
-        } catch (ReportServiceException | WorkRecordBookException e) {
+        } catch (ReportException | DatabaseException e) {
             response.sendError(500);
         }
     }

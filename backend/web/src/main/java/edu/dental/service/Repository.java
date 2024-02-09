@@ -1,12 +1,13 @@
 package edu.dental.service;
 
 import edu.dental.WebAPI;
-import edu.dental.WebException;
+import edu.dental.database.DatabaseException;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
 import edu.dental.dto.UserDto;
 import edu.dental.entities.User;
+import edu.dental.security.WebSecurityException;
 import edu.dental.service.lifecycle.Monitorable;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface Repository {
 
     void updateAccountLastAction(int userId);
 
-    User createNew(String name, String login, byte[] password) throws AccountException;
+    User createNew(String name, String login, byte[] password) throws DatabaseException;
 
     boolean put(User user);
 
@@ -35,15 +36,15 @@ public interface Repository {
 
     WorkRecordBook getRecordBook(int id);
 
-    UserDto update(int userId, String field, String value) throws WebException;
+    UserDto update(int userId, String field, String value) throws DatabaseException;
 
     void delete(int id);
 
-    void delete(int id, boolean fromDatabase) throws WebException, AccountException;
+    void delete(int id, boolean fromDatabase) throws DatabaseException;
 
-    void reloadWorks(int id) throws WebException, AccountException;
+    void reloadWorks(int id) throws DatabaseException;
 
-    void ensureLoggingIn(int id) throws WebException, AccountException;
+    void ensureLoggingIn(int id) throws WebSecurityException, DatabaseException;
 
 
     abstract class Account extends Monitorable {

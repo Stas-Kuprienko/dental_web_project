@@ -1,35 +1,30 @@
-package edu.dental.service;
+package edu.dental.security;
 
 import edu.dental.domain.APIManager;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AccountException extends Exception{
+public class WebSecurityException extends Exception {
 
     private static final Logger logger;
 
     static {
-        logger = Logger.getLogger(Repository.class.getName());
+        logger = Logger.getLogger(AuthenticationService.class.getName());
         logger.addHandler(APIManager.fileHandler);
         logger.setLevel(Level.ALL);
     }
 
-    public AccountException(Exception e) {
-        super(e);
-        logger.log(Level.SEVERE, buildStackMessage(e.getStackTrace()));
-    }
+    public final int code;
 
-    public AccountException(String message) {
-        logger.log(Level.SEVERE, message);
-    }
-
-    public AccountException(Level level, Exception e) {
+    public WebSecurityException(Level level, AuthenticationService.ERROR error, Exception e) {
         super(e);
+        this.code = error.code;
         logger.log(level, buildStackMessage(e.getStackTrace()));
     }
 
-    public AccountException(Level level, String message) {
+    public WebSecurityException(Level level, AuthenticationService.ERROR error, String message) {
+        this.code = error.code;
         logger.log(level, message);
     }
 

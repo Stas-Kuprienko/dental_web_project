@@ -1,13 +1,9 @@
 package edu.dental.service.my_repository;
 
-import edu.dental.WebException;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.UserDAO;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordBookException;
-import edu.dental.security.SecurityException;
-import edu.dental.service.AccountException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
 import edu.dental.dto.UserDto;
@@ -43,7 +39,7 @@ public final class MyRepository implements Repository {
     }
 
     @Override
-    public User createNew(String name, String login, byte[] password) throws AccountException {
+    public User createNew(String name, String login, byte[] password) throws DatabaseException {
         User user = new User(name, login, password);
         try {
             userDAO.put(user);
@@ -53,7 +49,7 @@ public final class MyRepository implements Repository {
             return user;
         } catch (DatabaseException e) {
             RAM.remove(user.getId());
-            throw new AccountException(e);
+            throw e;
         }
     }
 
@@ -64,7 +60,7 @@ public final class MyRepository implements Repository {
             Account account = new Account(user, recordBook);
             RAM.put(user.getId(), account);
             return true;
-        } catch (WorkRecordBookException e) {
+        } catch (DatabaseException e) {
             return false;
         }
     }
@@ -90,7 +86,7 @@ public final class MyRepository implements Repository {
     }
 
     @Override
-    public UserDto update(int userId, String field, String value) throws WebException {
+    public UserDto update(int userId, String field, String value) throws DatabaseException {
         User user = getUser(userId);
         if (!updateFieldValue(field, value, user)) {
             return null;
@@ -104,44 +100,33 @@ public final class MyRepository implements Repository {
     }
 
     @Override
-    public void delete(int id, boolean fromDatabase) throws AccountException {
+    public void delete(int id, boolean fromDatabase) throws DatabaseException {
         if (fromDatabase) {
-            try {
-                userDAO.delete(id);
-            } catch (DatabaseException e) {
-                throw new AccountException(e);
-            }
+            userDAO.delete(id);
         }
         RAM.remove(id);
     }
 
     @Override
-    public void reloadWorks(int id) throws AccountException {
-        try {
-            WorkRecordBook recordBook = WorkRecordBook.getInstance(id);
-            User user = RAM.get(id).user;
-            Account account = new Account(user, recordBook);
-            RAM.put(id, account);
-        } catch (WorkRecordBookException e) {
-            throw new AccountException(e);
-        }
+    public void reloadWorks(int id) throws DatabaseException {
+        WorkRecordBook recordBook = WorkRecordBook.getInstance(id);
+        User user = RAM.get(id).user;
+        Account account = new Account(user, recordBook);
+        RAM.put(id, account);
     }
 
     @Override
-    public void ensureLoggingIn(int id) throws WebException, AccountException {
+    public void ensureLoggingIn(int id) throws DatabaseException {
         if (RAM.get(id) == null) {
-            try {
-                User user = userDAO.get(id);
-                put(user);
-            } catch (DatabaseException e) {
-                if (e.getMessage().equals("The such object is not found.")) {
-                    throw new WebException(WebException.CODE.NOT_FOUND);
-                } throw new AccountException(e);
-            }
+            User user = userDAO.get(id);
+            put(user);
         }
     }
 
-    private boolean updateFieldValue(String field, String value, User user) throws WebException {
+    private boolean updateFieldValue(String field, String value, User user) throws DatabaseException {
+
+        //TODO REPLACE THIS FUCKING SHIT METHOD !!!
+
         switch (field) {
             case "name" -> {
                 String oldName = user.getName();
@@ -150,7 +135,7 @@ public final class MyRepository implements Repository {
                     return userDAO.update(user);
                 } catch (DatabaseException e) {
                     user.setName(oldName);
-                    throw new WebException(WebException.CODE.SERVER_ERROR);
+                    throw e;
                 }
             }
             case "email" -> {
@@ -160,15 +145,11 @@ public final class MyRepository implements Repository {
                     return userDAO.update(user);
                 } catch (DatabaseException e) {
                     user.setEmail(oldEmail);
-                    throw new WebException(WebException.CODE.SERVER_ERROR);
+                    throw e;
                 }
             }
             case "password" -> {
-                try {
-                    return AuthenticationService.getInstance().updatePassword(user, value);
-                } catch (SecurityException e) {
-                    throw new WebException(WebException.CODE.SERVER_ERROR);
-                }
+                return AuthenticationService.getInstance().updatePassword(user, value);
             }
             default -> {
                 return false;

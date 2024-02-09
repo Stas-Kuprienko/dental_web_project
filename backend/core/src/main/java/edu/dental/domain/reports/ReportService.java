@@ -13,13 +13,13 @@ public interface ReportService {
         return APIManager.INSTANCE.getReportService();
     }
 
-    boolean writeReportToFile(String[] mapKeys, List<DentalWork> works) throws ReportServiceException;
+    boolean writeReportToFile(String[] mapKeys, List<DentalWork> works) throws ReportException;
 
-    void writeReportToOutput(OutputStream output, String[] mapKeys, List<DentalWork> works) throws ReportServiceException;
+    void writeReportToOutput(OutputStream output, String[] mapKeys, List<DentalWork> works) throws ReportException;
 
-    boolean writeProfitToFile(ProfitRecord[] profitRecords) throws ReportServiceException;
+    boolean writeProfitToFile(ProfitRecord[] profitRecords) throws ReportException;
 
-    void writeProfitToOutput(ProfitRecord[] profitRecords, OutputStream output) throws ReportServiceException;
+    void writeProfitToOutput(ProfitRecord[] profitRecords, OutputStream output) throws ReportException;
 
     String getFileFormat();
 }
