@@ -3,6 +3,8 @@ package edu.dental.beans;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static edu.dental.service.WebUtility.XSSEscape;
+
 /**
  * The class represent the product object and contains entries id, title, price and quantity of product items.
  */
@@ -29,7 +31,7 @@ public class Product implements Serializable {
     }
 
     public String getTitle() {
-        return title;
+        return XSSEscape(title);
     }
 
     public void setTitle(String title) {

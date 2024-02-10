@@ -3,6 +3,8 @@ package edu.dental.beans;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static edu.dental.service.WebUtility.XSSEscape;
+
 public class DentalWork implements Comparable<DentalWork> {
 
     private final int id;
@@ -37,11 +39,11 @@ public class DentalWork implements Comparable<DentalWork> {
     }
 
     public String getPatient() {
-        return patient;
+        return XSSEscape(patient);
     }
 
     public String getClinic() {
-        return clinic;
+        return XSSEscape(clinic);
     }
 
     public Product[] getProducts() {
@@ -57,7 +59,7 @@ public class DentalWork implements Comparable<DentalWork> {
     }
 
     public String getComment() {
-        return comment;
+        return XSSEscape(comment);
     }
 
     public String getStatus() {

@@ -22,9 +22,9 @@
 <h2>Input new record:</h2>
 <form action="/dental/main/dental-work" method="post">
     <label for="patient">patient:</label><br>
-    <input type="text" id="patient" name="patient" value=""><br>
+    <input type="text" id="patient" name="patient" required><br>
     <label for="clinic">clinic:</label><br>
-    <input type="text" id="clinic" name="clinic" value=""><br>
+    <input type="text" id="clinic" name="clinic" required><br>
     <label for="product">product:</label><br>
     <select id="product" name="product" style="width: 230px; height: 30px; font-size: 22px;">
         <option value=""></option>
@@ -35,7 +35,7 @@
     <label for="quantity">quantity:</label><br>
     <input type="number" id="quantity" name="quantity" value="0" max="32"><br>
     <label for="complete">complete:</label><br>
-    <input type="date" id="complete" name="complete" style="width: 180px; height: 30px; font-size: 18px;" value=""><br>
+    <input type="date" id="complete" name="complete" style="width: 180px; height: 30px; font-size: 18px;" required><br>
     <br>
     <button type="submit" style="font-size: 18px; width: 90;">SAVE</button>
 </form>

@@ -42,11 +42,12 @@ public class ProductServlet extends HttpServlet {
         } else {
             try {
                 String title = request.getParameter(titleParam);
-                int price = Integer.parseInt(request.getParameter(priceParam));
+                if (title != null && !title.isEmpty()) {
+                    int price = Integer.parseInt(request.getParameter(priceParam));
 
-                productMapService.createProductItem(request.getSession(), title, price);
+                    productMapService.createProductItem(request.getSession(), title, price);
+                }
                 request.getRequestDispatcher(productMapPageURL).forward(request, response);
-
             } catch (APIResponseException e) {
                 response.sendError(e.CODE, e.MESSAGE);
             }
@@ -59,11 +60,12 @@ public class ProductServlet extends HttpServlet {
         if (id > 0) {
             try {
                 String title = request.getParameter(titleParam);
-                int price = Integer.parseInt(request.getParameter(priceParam));
+                if (title != null && !title.isEmpty()) {
+                    int price = Integer.parseInt(request.getParameter(priceParam));
 
-                productMapService.updateProductItem(request.getSession(), id, title, price);
+                    productMapService.updateProductItem(request.getSession(), id, title, price);
+                }
                 request.getRequestDispatcher(productMapPageURL).forward(request, response);
-
             } catch (APIResponseException e) {
                 response.sendError(e.CODE, e.MESSAGE);
             }

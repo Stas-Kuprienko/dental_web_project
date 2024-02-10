@@ -2,6 +2,8 @@ package edu.dental.beans;
 
 import java.util.*;
 
+import static edu.dental.service.WebUtility.XSSEscape;
+
 public class ProductMap {
 
     private final ArrayList<Item> items;
@@ -58,7 +60,7 @@ public class ProductMap {
         }
 
         public String getKey() {
-            return key;
+            return XSSEscape(key);
         }
 
         public void setKey(String key) {

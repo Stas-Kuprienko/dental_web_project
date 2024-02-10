@@ -95,10 +95,12 @@ public class DentalWorkServlet extends HttpServlet {
         try {
             WorkRecordBook recordBook = repository.getRecordBook(userId);
             DentalWork dentalWork = recordBook.getById(id, true);
-            if (field.equals(productParam)) {
-                recordBook.addProductToRecord(dentalWork, value, Integer.parseInt(quantity));
-            } else {
-                recordBook.updateRecord(dentalWork, field, value);
+            if (value != null && !value.isEmpty()) {
+                if (field.equals(productParam)) {
+                    recordBook.addProductToRecord(dentalWork, value, Integer.parseInt(quantity));
+                } else {
+                    recordBook.updateRecord(dentalWork, field, value);
+                }
             }
             String json = jsonObjectParser.parseToJson(new DentalWorkDto(dentalWork));
             response.setContentType("application/json");

@@ -2,6 +2,8 @@ package edu.dental.beans;
 
 import java.util.Objects;
 
+import static edu.dental.service.WebUtility.XSSEscape;
+
 public class UserBean {
 
     private int id;
@@ -30,7 +32,7 @@ public class UserBean {
     }
 
     public String getName() {
-        return name;
+        return XSSEscape(name);
     }
 
     public void setName(String name) {
@@ -38,7 +40,7 @@ public class UserBean {
     }
 
     public String getEmail() {
-        return email;
+        return XSSEscape(email);
     }
 
     public void setEmail(String email) {

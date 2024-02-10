@@ -105,9 +105,9 @@
         <a class="th" id="product-form" style="display:none">
             <form method="post" action="/dental/main/product-map">
                 <label for="title">product:</label>
-                <input id="title" type="text" name="title" value=""><br>
+                <input id="title" type="text" name="title" required><br>
                 <label for="price">price:</label>
-                <input style="width:25%;" id="price" type="number" name="price" value="">
+                <input style="width:25%;" id="price" type="number" name="price" required>
                 <input style="width:25%;" type="submit" value="save">
             </form>
         </a>
@@ -131,7 +131,7 @@
     <div class="tr" id="dialog" style="display:none;">
         <form>
             <label for="value">price</label>
-            <input type="number" id="value" name="price">
+            <input type="number" id="value" name="price" required>
             <br>
         </form>
     </div>

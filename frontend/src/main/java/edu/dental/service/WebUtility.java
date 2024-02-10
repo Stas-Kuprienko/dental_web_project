@@ -44,6 +44,12 @@ public enum WebUtility {
         return requestSender;
     }
 
+    public static String XSSEscape(String value) {
+        return value.replace(">", "&gt;")
+                .replace("<", "&lt;")
+                .replace("&", "&amp;");
+    }
+
 
     public static class HttpRequestSender {
 

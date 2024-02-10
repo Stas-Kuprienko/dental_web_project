@@ -69,7 +69,7 @@
     <label style="font-size:80%;">patient:</label><br>
     <label id="patient-label"> ${work.patient} </label>
     <form id="patient-form" method="post" action="/dental/main/dental-work/${work.id}" style="display:none">
-      <input type="text" name="value" value=""/>
+      <input type="text" name="value"/>
       <input type="hidden" name="field" value="patient">
       <input type="hidden" name="method" value="put">
       <input type="submit" value="save">
@@ -78,7 +78,7 @@
     <label style="font-size:80%;">clinic:</label><br>
     <label id="clinic-label"> ${work.clinic} </label>
     <form id="clinic-form" method="post" action="/dental/main/dental-work/${work.id}" style="display:none">
-      <input type="text" name="value" value=""/>
+      <input type="text" name="value"/>
       <input type="hidden" name="field" value="clinic">
       <input type="hidden" name="method" value="put">
       <input type="submit" value="save">
@@ -87,7 +87,7 @@
     <label style="font-size:80%;">complete:</label><br>
     <label id="complete-label"> ${work.complete} </label>
     <form id="complete-form" method="post" action="/dental/main/dental-work/${work.id}" style="display:none">
-      <input type="date" name="value" value=""/>
+      <input type="date" name="value"/>
       <input type="hidden" name="field" value="complete">
       <input type="hidden" name="method" value="put">
       <input type="submit" value="save">
@@ -99,14 +99,14 @@
     </a>
     <form id="add-product" method="post" action="/dental/main/dental-work/${work.id}" style="display:none;">
       <label for="product">product:</label>
-      <select id="product" name="value">
-        <option value=""></option>
+      <select id="product" name="value" required>
+        <option></option>
         <c:forEach items="${sessionScope.map}" var="item">
         <option value="${item.key}"> ${item.key} </option>
         </c:forEach>
       </select>
       <label for="quantity">quantity:</label>
-      <input style="width: 64px;" type="number" id="quantity" name="quantity" value="" max="32">
+      <input style="width: 64px;" type="number" id="quantity" name="quantity" max="32" required>
       <input type="hidden" name="field" value="product">
       <input type="hidden" name="method" value="put">
       <button type="submit" name="id" value="${work.id}">add</button>

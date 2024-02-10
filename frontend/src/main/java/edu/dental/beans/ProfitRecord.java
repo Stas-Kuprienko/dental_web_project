@@ -3,6 +3,8 @@ package edu.dental.beans;
 import java.time.Month;
 import java.util.Objects;
 
+import static edu.dental.service.WebUtility.XSSEscape;
+
 public class ProfitRecord {
 
     private int year;
@@ -26,7 +28,7 @@ public class ProfitRecord {
     }
 
     public String getMonth() {
-        return month;
+        return XSSEscape(month);
     }
 
     public void setMonth(String month) {

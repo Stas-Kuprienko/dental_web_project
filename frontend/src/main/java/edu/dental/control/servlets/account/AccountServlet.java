@@ -54,7 +54,12 @@ public class AccountServlet extends HttpServlet {
             String token = (String) request.getSession().getAttribute(WebUtility.INSTANCE.attribToken);
             String field = request.getParameter(fieldParam);
             String value = request.getParameter(valueParam);
-            UserBean user = administrator.updateUser(token, field, value);
+            UserBean user;
+            if (value != null && !value.isEmpty()) {
+                 user = administrator.updateUser(token, field, value);
+            } else {
+                user = administrator.getUser(token);
+            }
             request.setAttribute(WebUtility.INSTANCE.attribUser, user);
             request.getRequestDispatcher(accountPageURL).forward(request, response);
         } catch (APIResponseException e) {

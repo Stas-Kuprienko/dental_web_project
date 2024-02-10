@@ -45,7 +45,7 @@
         <label style="font-size:80%;">USER:</label><br>
         <label id="name-label"> ${user.name} </label>
         <form id="name-form" method="post" action="/dental/main/account" style="display:none">
-            <input type="text" name="value" value=""/>
+            <input type="text" name="value"/>
             <input type="hidden" name="field" value="name">
             <input type="hidden" name="method" value="put">
             <input type="submit" value="save">
@@ -55,7 +55,7 @@
         <label style="font-size:80%;">EMAIL:</label><br>
         <label id="email-label"> ${user.email} </label>
         <form id="email-form" method="post" action="/dental/main/account" style="display:none">
-            <input type="text" name="value" value=""/>
+            <input type="text" name="value"/>
             <input type="hidden" name="field" value="email">
             <input type="hidden" name="method" value="put">
             <input type="submit" value="save">
@@ -68,7 +68,7 @@
     <div class="work">
         <label id="password-label" style="font-size:80%;">change password</label><br>
         <form id="password-form" method="post" action="/dental/main/account" style="display:none">
-            <input type="password" name="value" value=""/>
+            <input type="password" name="value"/>
             <input type="hidden" name="field" value="password">
             <input type="hidden" name="method" value="put">
             <input type="submit" value="save" onclick="return confirm('CHANGE PASSWORD?')">
