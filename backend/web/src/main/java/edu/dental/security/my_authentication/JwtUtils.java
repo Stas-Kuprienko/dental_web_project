@@ -1,7 +1,9 @@
 package edu.dental.security.my_authentication;
 
 import edu.dental.entities.User;
+import edu.dental.security.AuthenticationService;
 import edu.dental.security.TokenUtils;
+import edu.dental.security.WebSecurityException;
 import io.jsonwebtoken.*;
 
 import java.io.FileInputStream;
@@ -9,6 +11,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.ZoneId;
 import java.util.Properties;
+import java.util.logging.Level;
 
 class JwtUtils implements TokenUtils {
 
@@ -42,12 +45,11 @@ class JwtUtils implements TokenUtils {
     }
 
     @Override
-    public int getId(String jwt) {
+    public int getId(String jwt) throws WebSecurityException {
         try {
             return Integer.parseInt(parseJwt(jwt).getId());
         } catch (JwtException e) {
-            //TODO loggers
-            return 0;
+            throw new WebSecurityException(Level.SEVERE, AuthenticationService.ERROR.SERVER_ERROR, e);
         }
     }
 
@@ -62,8 +64,8 @@ class JwtUtils implements TokenUtils {
             prop.load(fileInput);
             return prop;
         } catch (IOException e) {
-            //TODO loggers
-            throw new RuntimeException(e);
+            throw new RuntimeException
+                    (new WebSecurityException(Level.SEVERE, AuthenticationService.ERROR.SERVER_ERROR, e));
         }
     }
 }

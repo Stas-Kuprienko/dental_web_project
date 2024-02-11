@@ -9,7 +9,7 @@ public interface TokenUtils {
 
     Claims parseJwt(String jwt);
 
-    int getId(String jwt);
+    int getId(String jwt) throws WebSecurityException;
 
     boolean isSigned(String jwt);
 }
