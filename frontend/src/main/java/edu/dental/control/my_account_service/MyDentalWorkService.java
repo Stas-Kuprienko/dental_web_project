@@ -4,6 +4,7 @@ import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.control.DentalWorkService;
+import edu.dental.service.WebAPIManager;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class MyDentalWorkService implements DentalWorkService {
 
@@ -59,6 +61,8 @@ public class MyDentalWorkService implements DentalWorkService {
             if (!(quantity == null || quantity.isEmpty())) {
                 queryFormer.add(quantityParam, quantity);
             } else {
+                String message = "parameter is null";
+                WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), message, Level.WARNING);
                 throw new APIResponseException(400, "parameter is null");
             }
         }

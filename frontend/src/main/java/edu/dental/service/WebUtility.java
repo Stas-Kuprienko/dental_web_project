@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 public enum WebUtility {
 
@@ -82,6 +83,8 @@ public enum WebUtility {
                     }
                     return response.toString();
                 } else {
+                    WebAPIManager.INSTANCE.getLoggerKit()
+                            .doLogging(this.getClass(), "code: " + responseCode, Level.WARNING);
                     throw new APIResponseException(responseCode);
                 }
             } finally {
@@ -135,6 +138,8 @@ public enum WebUtility {
                         output.write(buffer, 0, bytesRead);
                     }
                 } else {
+                    WebAPIManager.INSTANCE.getLoggerKit()
+                            .doLogging(this.getClass(), "code: " + responseCode, Level.WARNING);
                     throw new APIResponseException(responseCode);
                 }
             } finally {
@@ -174,6 +179,8 @@ public enum WebUtility {
                     }
                     return response.toString();
                 } else {
+                    WebAPIManager.INSTANCE.getLoggerKit()
+                            .doLogging(this.getClass(), "code: " + responseCode, Level.WARNING);
                     throw new APIResponseException(responseCode);
                 }
             } finally {
@@ -219,6 +226,8 @@ public enum WebUtility {
                     }
                     return response.toString();
                 } else {
+                    WebAPIManager.INSTANCE.getLoggerKit()
+                            .doLogging(this.getClass(), "code: " + responseCode, Level.WARNING);
                     throw new APIResponseException(responseCode);
                 }
             } finally {

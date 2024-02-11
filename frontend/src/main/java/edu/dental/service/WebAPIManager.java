@@ -1,6 +1,7 @@
 package edu.dental.service;
 
-import edu.dental.control.Administrator;
+import edu.dental.control.*;
+import jakarta.servlet.http.HttpServlet;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,8 +30,9 @@ public enum WebAPIManager {
 
     private final Properties service;
 
-
+    private LoggerKit loggerKit;
     private Administrator administrator;
+
 
     static {
         logger = Logger.getLogger(WebAPIManager.class.getName());
@@ -46,6 +48,7 @@ public enum WebAPIManager {
             logger.addHandler(fileHandler);
             logger.setLevel(Level.ALL);
         } catch (IOException e) {
+            Logger.getLogger(WebAPIManager.class.getName()).log(Level.SEVERE, e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -55,6 +58,7 @@ public enum WebAPIManager {
         try (FileInputStream fileInput = new FileInputStream(SERVICE_PROP_PATH)) {
             service.load(fileInput);
         } catch (IOException e) {
+            Logger.getLogger(WebAPIManager.class.getName()).log(Level.SEVERE, e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -66,6 +70,12 @@ public enum WebAPIManager {
         return administrator;
     }
 
+    public synchronized LoggerKit getLoggerKit() {
+        if (loggerKit == null) {
+            loggerKit = createLoggerKit();
+        }
+        return loggerKit;
+    }
 
     @SuppressWarnings("unchecked")
     public <T> T init(Class<T> clas) {
@@ -74,10 +84,11 @@ public enum WebAPIManager {
             Class<?> c = Class.forName(getClassName(clas));
             constructor = c.getDeclaredConstructor();
             constructor.setAccessible(true);
+            loggerKit.doLogging(this.getClass(), c.getName(), Level.INFO);
             return (T) constructor.newInstance();
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException
                  | IllegalAccessException | ClassNotFoundException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            loggerKit.doLogging(WebAPIManager.class, e, Level.SEVERE);
             throw new RuntimeException(e);
         } finally {
             if (constructor != null) {
@@ -88,5 +99,17 @@ public enum WebAPIManager {
 
     private <T> String getClassName(Class<T> clas) {
         return service.getProperty(clas.getSimpleName());
+    }
+
+    private LoggerKit createLoggerKit() {
+        LoggerKit loggerKit = new LoggerKit();
+        loggerKit.addLogger(WebAPIManager.class);
+        loggerKit.addLogger(WebUtility.HttpRequestSender.class);
+        loggerKit.addLogger(Administrator.class);
+        loggerKit.addLogger(DentalWorkService.class);
+        loggerKit.addLogger(DentalWorksListService.class);
+        loggerKit.addLogger(ProductMapService.class);
+        loggerKit.addLogger(ProfitRecordService.class);
+        return loggerKit;
     }
 }

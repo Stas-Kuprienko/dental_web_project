@@ -5,11 +5,13 @@ import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserBean;
 import edu.dental.control.*;
+import edu.dental.service.WebAPIManager;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Level;
 
 public final class MyAdministrator implements Administrator {
 
@@ -57,6 +59,7 @@ public final class MyAdministrator implements Administrator {
             session.setAttribute(WebUtility.INSTANCE.attribWorks, new DentalWork[]{});
             session.setAttribute(WebUtility.INSTANCE.attribMap, new ProductMap.Item[]{});
         } catch (IOException e) {
+            WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
             throw new APIResponseException(500, e.getMessage());
         }
     }
@@ -73,6 +76,7 @@ public final class MyAdministrator implements Administrator {
         try {
             jsonUser = httpRequestSender.sendHttpPostRequest(logInUrl, requestParameters);
         } catch (IOException e) {
+            WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
             throw new APIResponseException(500, e.getMessage());
         }
         UserBean user =  WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);
@@ -127,6 +131,7 @@ public final class MyAdministrator implements Administrator {
         try {
             jsonWorks = httpRequestSender.sendHttpGetRequest(token, dentalWorkListUrl);
         } catch (IOException e) {
+            WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
             throw new APIResponseException(500, e.getMessage());
         }
         DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
@@ -141,6 +146,7 @@ public final class MyAdministrator implements Administrator {
         try {
             jsonMap = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(token, productMapUrl);
         } catch (IOException e) {
+            WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
             throw new APIResponseException(500, e.getMessage());
         }
         ProductMap.Item[] map = WebUtility.INSTANCE.parseFromJson(jsonMap, ProductMap.Item[].class);

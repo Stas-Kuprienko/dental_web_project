@@ -9,11 +9,11 @@ public class ContextService implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ServletContextListener.super.contextInitialized(sce);
+        WebAPIManager.INSTANCE.getLoggerKit();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        ServletContextListener.super.contextDestroyed(sce);
+
     }
 }
