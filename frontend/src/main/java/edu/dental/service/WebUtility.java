@@ -32,6 +32,12 @@ public enum WebUtility {
     }
 
 
+    public static String XSSEscape(String value) {
+        return value.replace("&", "&amp;")
+                .replace(">", "&gt;")
+                .replace("<", "&lt;");
+    }
+
     public <T> String parseToJson(T object) {
         return jsonParser.toJson(object);
     }
@@ -42,12 +48,6 @@ public enum WebUtility {
 
     public HttpRequestSender requestSender() {
         return requestSender;
-    }
-
-    public static String XSSEscape(String value) {
-        return value.replace(">", "&gt;")
-                .replace("<", "&lt;")
-                .replace("&", "&amp;");
     }
 
 
