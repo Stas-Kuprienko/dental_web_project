@@ -12,7 +12,6 @@ public enum MySqlSamples {
 
     DELETE("DELETE FROM %s WHERE %s;"),
 
-    //TODO
     UPDATE("UPDATE %s SET %s WHERE %s;"),
 
     REPORT_ID("SELECT id FROM report WHERE year = ? AND month = ?"),

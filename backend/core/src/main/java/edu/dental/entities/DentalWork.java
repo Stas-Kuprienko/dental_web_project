@@ -208,7 +208,11 @@ public class DentalWork implements Comparable<DentalWork>, Serializable, IDHavin
     }
 
     public void setComplete(String complete) {
-        this.complete = LocalDate.parse(complete);
+        if (complete == null || complete.isEmpty()) {
+            this.complete = null;
+        } else {
+            this.complete = LocalDate.parse(complete);
+        }
     }
 
     public LocalDate getAccepted() {

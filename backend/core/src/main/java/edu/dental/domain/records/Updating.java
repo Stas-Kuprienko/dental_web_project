@@ -1,4 +1,4 @@
-package edu.dental.domain.records.my_work_record_book;
+package edu.dental.domain.records;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

@@ -35,7 +35,7 @@
     <label for="quantity">quantity:</label><br>
     <input type="number" id="quantity" name="quantity" value="0" max="32"><br>
     <label for="complete">complete:</label><br>
-    <input type="date" id="complete" name="complete" style="width: 180px; height: 30px; font-size: 18px;" required><br>
+    <input type="date" id="complete" name="complete" style="width: 180px; height: 30px; font-size: 18px;"><br>
     <br>
     <button type="submit" style="font-size: 18px; width: 90;">SAVE</button>
 </form>

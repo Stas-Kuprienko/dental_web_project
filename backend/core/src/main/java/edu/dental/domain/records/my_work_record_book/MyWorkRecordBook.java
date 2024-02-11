@@ -4,6 +4,7 @@ import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.ProfitRecordDAO;
 import edu.dental.domain.records.SorterTool;
+import edu.dental.domain.records.Updating;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordException;
 import edu.dental.entities.DentalWork;
@@ -103,8 +104,10 @@ public class MyWorkRecordBook implements WorkRecordBook {
         } catch (DatabaseException e) {
             try {
                 updating.revert();
-            } catch (ReflectiveOperationException ignored) {}
-            throw e;
+                throw e;
+            } catch (ReflectiveOperationException e1) {
+                throw new WorkRecordException(e1);
+            }
         }
         return dw;
     }

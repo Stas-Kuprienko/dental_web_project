@@ -3,6 +3,7 @@ package edu.dental.service.my_repository;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.UserDAO;
+import edu.dental.domain.records.Updating;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
@@ -88,8 +89,24 @@ public final class MyRepository implements Repository {
     @Override
     public UserDto update(int userId, String field, String value) throws DatabaseException {
         User user = getUser(userId);
-        if (!updateFieldValue(field, value, user)) {
-            return null;
+        if (field.equals("password")) {
+            if (!(AuthenticationService.getInstance().updatePassword(user, value))) {
+                return null;
+            }
+        } else {
+            Updating<User> updating = new Updating<>();
+            try {
+                updating.init(user, field);
+                updating.setNewValue(value);
+                userDAO.update(user);
+            } catch (DatabaseException e) {
+                try {
+                    updating.revert();
+                } catch (ReflectiveOperationException ignored) {}
+                throw e;
+            } catch (ReflectiveOperationException e) {
+                return null;
+            }
         }
         return new UserDto(user);
     }
@@ -120,40 +137,6 @@ public final class MyRepository implements Repository {
         if (RAM.get(id) == null) {
             User user = userDAO.get(id);
             put(user);
-        }
-    }
-
-    private boolean updateFieldValue(String field, String value, User user) throws DatabaseException {
-
-        //TODO REPLACE THIS FUCKING SHIT METHOD !!!
-
-        switch (field) {
-            case "name" -> {
-                String oldName = user.getName();
-                user.setName(value);
-                try {
-                    return userDAO.update(user);
-                } catch (DatabaseException e) {
-                    user.setName(oldName);
-                    throw e;
-                }
-            }
-            case "email" -> {
-                String oldEmail = user.getEmail();
-                user.setEmail(value);
-                try {
-                    return userDAO.update(user);
-                } catch (DatabaseException e) {
-                    user.setEmail(oldEmail);
-                    throw e;
-                }
-            }
-            case "password" -> {
-                return AuthenticationService.getInstance().updatePassword(user, value);
-            }
-            default -> {
-                return false;
-            }
         }
     }
 

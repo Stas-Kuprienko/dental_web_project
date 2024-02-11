@@ -51,8 +51,10 @@ public class DentalWorkDto {
                                 .setUserId(userId)
                                 .setPatient(patient)
                                 .setClinic(clinic)
-                                .setComplete(LocalDate.parse(complete))
                                 .setComment(comment).build();
+        if (complete != null) {
+            dentalWork.setComplete(complete);
+        }
         if (accepted != null) {
             dentalWork.setAccepted(LocalDate.parse(accepted));
         }
