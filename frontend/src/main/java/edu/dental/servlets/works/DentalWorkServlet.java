@@ -2,9 +2,9 @@ package edu.dental.servlets.works;
 
 import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;
-import edu.dental.service.WebUtility;
 import edu.dental.control.Administrator;
 import edu.dental.control.DentalWorkService;
+import edu.dental.service.WebUtility;
 import edu.http_utils.RestRequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.eclipse.tags.shaded.org.apache.bcel.verifier.exc.InvalidMethodException;
 
 import java.io.IOException;
 
@@ -50,7 +51,7 @@ public class DentalWorkServlet extends HttpServlet {
                 request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
                 request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             } catch (APIResponseException e) {
-                response.sendError(e.CODE, e.MESSAGE);
+                e.errorRedirect(request, response);
             }
         }
     }
@@ -73,7 +74,7 @@ public class DentalWorkServlet extends HttpServlet {
                 request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
                 request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             } catch (APIResponseException e) {
-                response.sendError(e.CODE, e.MESSAGE);
+                e.errorRedirect(request, response);
             }
         }
     }
@@ -95,7 +96,7 @@ public class DentalWorkServlet extends HttpServlet {
             request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
             request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 
@@ -114,7 +115,7 @@ public class DentalWorkServlet extends HttpServlet {
                 request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             }
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 
@@ -126,7 +127,8 @@ public class DentalWorkServlet extends HttpServlet {
             if (parameterId != null) {
                 id = Integer.parseInt(parameterId);
             } else {
-                throw new APIResponseException(400, "parameter ID is null");
+                IllegalArgumentException e = new IllegalArgumentException(request.getRequestURI());
+                throw new APIResponseException(APIResponseException.ERROR.BAD_REQUEST, e.getStackTrace());
             }
         }
         return id;
@@ -139,7 +141,8 @@ public class DentalWorkServlet extends HttpServlet {
         } else if (method.equals("delete")) {
             doDelete(request, response);
         } else {
-            response.sendError(405);
+            InvalidMethodException e = new InvalidMethodException(method);
+            new APIResponseException(APIResponseException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
         }
     }
 }

@@ -1,2 +1,21 @@
-февр. 11, 2024 8:01:53 PM edu.dental.security.WebSecurityException <init>
-INFO: The such object is not found.
+февр. 12, 2024 3:06:02 AM edu.dental.domain.APIManager init
+INFO: edu.dental.database.mysql_api.MyDatabaseService
+февр. 12, 2024 3:06:02 AM edu.dental.domain.APIManager init
+INFO: edu.dental.domain.reports.my_report_service.MyReportService
+февр. 12, 2024 3:06:02 AM edu.dental.domain.APIManager init
+INFO: edu.dental.security.my_authentication.MyAuthentication
+февр. 12, 2024 3:06:02 AM edu.dental.domain.APIManager init
+INFO: edu.dental.service.my_repository.MyRepository
+февр. 12, 2024 3:06:02 AM edu.dental.domain.APIManager init
+INFO: edu.dental.service.my_repository.MyJsonObjectParser
+февр. 12, 2024 3:06:02 AM edu.dental.domain.APIManager init
+INFO: edu.dental.security.my_authentication.MyFilter
+февр. 12, 2024 3:06:19 AM edu.dental.security.WebSecurityException <init>
+INFO: edu.dental.database.mysql_api.UserMySql$UserInstantiation.build(UserMySql.java:143) - The such object is not found.
+
+февр. 12, 2024 3:09:02 AM edu.dental.domain.APIManager getProductMap
+INFO: edu.dental.domain.records.my_work_record_book.MyProductMap
+февр. 12, 2024 3:09:02 AM edu.dental.domain.APIManager getProductMap
+INFO: edu.dental.database.mysql_api.ProductMapMySql
+февр. 12, 2024 3:09:02 AM edu.dental.domain.APIManager getWorkRecordBook
+INFO: edu.dental.domain.records.my_work_record_book.MyWorkRecordBook

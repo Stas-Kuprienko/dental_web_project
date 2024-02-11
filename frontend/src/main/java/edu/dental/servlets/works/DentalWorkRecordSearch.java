@@ -37,7 +37,7 @@ public class DentalWorkRecordSearch extends HttpServlet {
             request.setAttribute(WebUtility.INSTANCE.attribWorks, works);
             request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 }

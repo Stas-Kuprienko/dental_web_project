@@ -42,7 +42,7 @@ public class Registration extends HttpServlet {
                 administrator.signUp(session, name, email, password);
                 request.getRequestDispatcher("/main").forward(request, response);
             } catch (APIResponseException e) {
-                response.sendError(e.CODE, e.MESSAGE);
+                e.errorRedirect(request, response);
             }
         } else {
             request.getRequestDispatcher(signUpPageURL).forward(request, response);

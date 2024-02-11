@@ -83,8 +83,9 @@ public enum WebUtility {
                     }
                     return response.toString();
                 } else {
+                    String message = fillMessage(connection.getURL(), responseCode, connection.getResponseMessage());
                     WebAPIManager.INSTANCE.getLoggerKit()
-                            .doLogging(this.getClass(), "code: " + responseCode, Level.WARNING);
+                            .doLogging(this.getClass(), message, Level.INFO);
                     throw new APIResponseException(responseCode);
                 }
             } finally {
@@ -138,8 +139,9 @@ public enum WebUtility {
                         output.write(buffer, 0, bytesRead);
                     }
                 } else {
+                    String message = fillMessage(connection.getURL(), responseCode, connection.getResponseMessage());
                     WebAPIManager.INSTANCE.getLoggerKit()
-                            .doLogging(this.getClass(), "code: " + responseCode, Level.WARNING);
+                            .doLogging(this.getClass(), message, Level.INFO);
                     throw new APIResponseException(responseCode);
                 }
             } finally {
@@ -179,8 +181,9 @@ public enum WebUtility {
                     }
                     return response.toString();
                 } else {
+                    String message = fillMessage(connection.getURL(), responseCode, connection.getResponseMessage());
                     WebAPIManager.INSTANCE.getLoggerKit()
-                            .doLogging(this.getClass(), "code: " + responseCode, Level.WARNING);
+                            .doLogging(this.getClass(), message, Level.INFO);
                     throw new APIResponseException(responseCode);
                 }
             } finally {
@@ -226,8 +229,9 @@ public enum WebUtility {
                     }
                     return response.toString();
                 } else {
+                    String message = fillMessage(connection.getURL(), responseCode, connection.getResponseMessage());
                     WebAPIManager.INSTANCE.getLoggerKit()
-                            .doLogging(this.getClass(), "code: " + responseCode, Level.WARNING);
+                            .doLogging(this.getClass(), message, Level.INFO);
                     throw new APIResponseException(responseCode);
                 }
             } finally {
@@ -238,6 +242,12 @@ public enum WebUtility {
                     reader.close();
                 }
             }
+        }
+
+        private String fillMessage(URL url, int code, String response) {
+            return "\n" + url.toString() +
+                    ";\n" + "response code = " + code +
+                    ";\n" + (response != null ? response : "");
         }
     }
 

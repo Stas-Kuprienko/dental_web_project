@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/", "/sign-in", "/sign-up", "/log-in", "/new-user"})
+@WebFilter(urlPatterns = {"/sign-in", "/sign-up", "/log-in", "/new-user"})
 public class EnterFilter implements Filter {
 
     @Override

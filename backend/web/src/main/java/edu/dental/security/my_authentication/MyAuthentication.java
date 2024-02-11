@@ -10,6 +10,7 @@ import edu.dental.security.TokenUtils;
 import edu.dental.security.WebSecurityException;
 import edu.dental.service.Repository;
 
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -50,7 +51,7 @@ public class MyAuthentication implements AuthenticationService {
         if (repository.put(user)) {
             return new UserDto(user);
         } else {
-            throw new WebSecurityException(Level.INFO, ERROR.SERVER_ERROR, "user is not put in repository");
+            throw new WebSecurityException(Level.INFO, ERROR.SERVER_ERROR, new Exception("user is not put in repository"));
         }
     }
 
@@ -68,16 +69,16 @@ public class MyAuthentication implements AuthenticationService {
     @Override
     public User authenticate(String login, String password) throws WebSecurityException, DatabaseException {
         if ((login == null || login.isEmpty())||(password == null || password.isEmpty())) {
-            throw new WebSecurityException(Level.INFO, ERROR.BAD_REQUEST, "argument is null");
+            throw new WebSecurityException(Level.INFO, ERROR.BAD_REQUEST, new NullPointerException("argument is null"));
         }
         User user;
         try {
             user = userDAO.search(login).get(0);
         } catch (NullPointerException e) {
-            throw new WebSecurityException(Level.INFO, ERROR.NOT_FOUND, e.getMessage());
+            throw new WebSecurityException(Level.INFO, ERROR.NOT_FOUND, e);
         }
         if (!verification(user, password)) {
-            throw new WebSecurityException(Level.INFO, ERROR.UNAUTHORIZED, "password is invalid");
+            throw new WebSecurityException(Level.INFO, ERROR.UNAUTHORIZED, new InvalidKeyException("password is invalid"));
         }
         return user;
     }

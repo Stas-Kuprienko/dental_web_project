@@ -79,6 +79,7 @@ public enum APIManager {
             constructor.setAccessible(true);
             WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(userId);
             constructor.setAccessible(false);
+            logger.log(Level.INFO, clas.getName());
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
@@ -99,6 +100,7 @@ public enum APIManager {
             constructor.setAccessible(true);
             WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(userId, records, productMap);
             constructor.setAccessible(false);
+            logger.log(Level.INFO, clas.getName());
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
@@ -116,6 +118,7 @@ public enum APIManager {
             constructor.setAccessible(true);
             ProductMap productMap = (ProductMap) constructor.newInstance();
             constructor.setAccessible(false);
+            logger.log(Level.INFO, clas.getName());
             return productMap;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
@@ -134,6 +137,7 @@ public enum APIManager {
             ProductMapDAO mapDAO = (ProductMapDAO) constructor.newInstance(userId);
             ProductMap productMap = mapDAO.get();
             constructor.setAccessible(false);
+            logger.log(Level.INFO, clas.getName());
             return productMap;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException | DatabaseException e) {
@@ -163,6 +167,7 @@ public enum APIManager {
             Class<?> c = Class.forName(getClassName(clas));
             constructor = c.getDeclaredConstructor();
             constructor.setAccessible(true);
+            logger.log(Level.INFO, c.getName());
             return (T) constructor.newInstance();
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException
                  | IllegalAccessException | ClassNotFoundException e) {

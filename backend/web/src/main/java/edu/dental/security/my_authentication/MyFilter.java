@@ -7,6 +7,7 @@ import edu.dental.security.WebSecurityException;
 import edu.dental.service.Repository;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.security.InvalidKeyException;
 import java.util.logging.Level;
 
 class MyFilter implements IFilterVerification {
@@ -35,6 +36,8 @@ class MyFilter implements IFilterVerification {
                 return userId;
             }
         }
-        throw new WebSecurityException(Level.WARNING, AuthenticationService.ERROR.FORBIDDEN, "invalid token");
+        throw new WebSecurityException(Level.WARNING,
+                AuthenticationService.ERROR.FORBIDDEN,
+                new InvalidKeyException("invalid token"));
     }
 }

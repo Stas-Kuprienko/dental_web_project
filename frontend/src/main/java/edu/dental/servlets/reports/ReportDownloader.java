@@ -31,7 +31,7 @@ public class ReportDownloader extends HttpServlet {
         try {
             WebUtility.INSTANCE.requestSender().download(jwt, resource, response.getOutputStream());
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 

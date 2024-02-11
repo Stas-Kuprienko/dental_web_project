@@ -60,7 +60,7 @@ public final class MyAdministrator implements Administrator {
             session.setAttribute(WebUtility.INSTANCE.attribMap, new ProductMap.Item[]{});
         } catch (IOException e) {
             WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
-            throw new APIResponseException(500, e.getMessage());
+            throw new APIResponseException(APIResponseException.ERROR.SERVER_ERROR);
         }
     }
 
@@ -77,7 +77,7 @@ public final class MyAdministrator implements Administrator {
             jsonUser = httpRequestSender.sendHttpPostRequest(logInUrl, requestParameters);
         } catch (IOException e) {
             WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
-            throw new APIResponseException(500, e.getMessage());
+            throw new APIResponseException(APIResponseException.ERROR.SERVER_ERROR);
         }
         UserBean user =  WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);
 
@@ -132,7 +132,7 @@ public final class MyAdministrator implements Administrator {
             jsonWorks = httpRequestSender.sendHttpGetRequest(token, dentalWorkListUrl);
         } catch (IOException e) {
             WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
-            throw new APIResponseException(500, e.getMessage());
+            throw new APIResponseException(APIResponseException.ERROR.SERVER_ERROR);
         }
         DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
         Arrays.sort(works);
@@ -147,7 +147,7 @@ public final class MyAdministrator implements Administrator {
             jsonMap = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(token, productMapUrl);
         } catch (IOException e) {
             WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
-            throw new APIResponseException(500, e.getMessage());
+            throw new APIResponseException(APIResponseException.ERROR.SERVER_ERROR);
         }
         ProductMap.Item[] map = WebUtility.INSTANCE.parseFromJson(jsonMap, ProductMap.Item[].class);
         session.setAttribute(WebUtility.INSTANCE.attribMap, map);

@@ -36,7 +36,7 @@ public class DentalWorksList extends HttpServlet {
             try {
                 dentalWorksListService.getRequired(year_month, request);
             } catch (APIResponseException e) {
-                response.sendError(e.CODE, e.MESSAGE);
+                e.errorRedirect(request, response);
             }
         }
         request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
@@ -58,7 +58,7 @@ public class DentalWorksList extends HttpServlet {
                 dentalWorksListService.sort(session, year, month);
                 request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
             } catch (APIResponseException e) {
-                response.sendError(e.CODE, e.MESSAGE);
+                e.errorRedirect(request, response);
             }
         }
     }
@@ -76,7 +76,7 @@ public class DentalWorksList extends HttpServlet {
             request.setAttribute(yearMonthParam, year + "-" + month);
             request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 }

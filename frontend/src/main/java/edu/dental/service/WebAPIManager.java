@@ -105,6 +105,7 @@ public enum WebAPIManager {
         LoggerKit loggerKit = new LoggerKit();
         loggerKit.addLogger(WebAPIManager.class);
         loggerKit.addLogger(WebUtility.HttpRequestSender.class);
+        loggerKit.addLogger(HttpServlet.class);
         loggerKit.addLogger(Administrator.class);
         loggerKit.addLogger(DentalWorkService.class);
         loggerKit.addLogger(DentalWorksListService.class);

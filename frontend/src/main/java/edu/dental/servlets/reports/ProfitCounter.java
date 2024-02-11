@@ -36,7 +36,7 @@ public class ProfitCounter extends HttpServlet {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
             WebUtility.INSTANCE.requestSender().download(jwt, profitCountUrl, response.getOutputStream());
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 
@@ -49,7 +49,7 @@ public class ProfitCounter extends HttpServlet {
             request.setAttribute("profit", records);
             request.getRequestDispatcher(profitPageURL).forward(request, response);
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 }

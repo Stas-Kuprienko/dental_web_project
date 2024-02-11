@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.tags.shaded.org.apache.bcel.verifier.exc.InvalidMethodException;
 
 import java.io.IOException;
 
@@ -49,7 +50,7 @@ public class ProductServlet extends HttpServlet {
                 }
                 request.getRequestDispatcher(productMapPageURL).forward(request, response);
             } catch (APIResponseException e) {
-                response.sendError(e.CODE, e.MESSAGE);
+                e.errorRedirect(request, response);
             }
         }
     }
@@ -67,10 +68,11 @@ public class ProductServlet extends HttpServlet {
                 }
                 request.getRequestDispatcher(productMapPageURL).forward(request, response);
             } catch (APIResponseException e) {
-                response.sendError(e.CODE, e.MESSAGE);
+                e.errorRedirect(request, response);
             }
         } else {
-            response.sendError(400);
+            ServletException e = new ServletException(request.getRequestURI());
+            new APIResponseException(APIResponseException.ERROR.BAD_REQUEST, e.getStackTrace()).errorRedirect(request, response);
         }
     }
 
@@ -82,7 +84,7 @@ public class ProductServlet extends HttpServlet {
             productMapService.deleteProductItem(request.getSession(), id, title);
             request.getRequestDispatcher(productMapPageURL).forward(request, response);
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 
@@ -94,7 +96,8 @@ public class ProductServlet extends HttpServlet {
         } else if (method.equals("delete")) {
             doDelete(request, response);
         } else {
-            response.sendError(405);
+            InvalidMethodException e = new InvalidMethodException(method);
+            new APIResponseException(APIResponseException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
         }
     }
 }

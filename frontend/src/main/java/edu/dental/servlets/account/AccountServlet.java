@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.tags.shaded.org.apache.bcel.verifier.exc.InvalidMethodException;
 
 import java.io.IOException;
 
@@ -35,7 +36,7 @@ public class AccountServlet extends HttpServlet {
             request.setAttribute(WebUtility.INSTANCE.attribUser, user);
             request.getRequestDispatcher(accountPageURL).forward(request, response);
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 
@@ -44,7 +45,8 @@ public class AccountServlet extends HttpServlet {
         if (request.getParameter("method") != null) {
             chooseMethod(request, response);
         } else {
-            response.sendError(405);
+            ServletException e = new ServletException(request.getRequestURI());
+            new APIResponseException(APIResponseException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
         }
     }
 
@@ -63,7 +65,7 @@ public class AccountServlet extends HttpServlet {
             request.setAttribute(WebUtility.INSTANCE.attribUser, user);
             request.getRequestDispatcher(accountPageURL).forward(request, response);
         } catch (APIResponseException e) {
-            response.sendError(e.CODE, e.MESSAGE);
+            e.errorRedirect(request, response);
         }
     }
 
@@ -75,7 +77,7 @@ public class AccountServlet extends HttpServlet {
             request.getRequestDispatcher("/main/log-out").forward(request, response);
             response.sendError(400);
         } catch (APIResponseException e) {
-            response.sendError(e.CODE);
+            e.errorRedirect(request, response);
         }
     }
 
@@ -87,7 +89,8 @@ public class AccountServlet extends HttpServlet {
         } else if (method.equals("delete")) {
             doDelete(request, response);
         } else {
-            response.sendError(405);
+            InvalidMethodException e = new InvalidMethodException(method);
+            new APIResponseException(APIResponseException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
         }
     }
 }

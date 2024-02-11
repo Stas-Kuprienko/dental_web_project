@@ -39,7 +39,7 @@ public class Authorization extends HttpServlet {
                 administrator.signIn(session, email, password);
                 request.getRequestDispatcher("/main").forward(request, response);
             } catch (APIResponseException e) {
-                response.sendError(e.CODE, e.MESSAGE);
+                e.errorRedirect(request, response);
             }
         } else {
             request.getRequestDispatcher("/").forward(request, response);
