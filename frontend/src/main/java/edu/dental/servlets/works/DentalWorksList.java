@@ -1,4 +1,4 @@
-package edu.dental.control.servlets.works;
+package edu.dental.servlets.works;
 
 import edu.dental.APIResponseException;
 import edu.dental.beans.DentalWork;

@@ -1,4 +1,4 @@
-package edu.dental.control.servlets.products;
+package edu.dental.servlets.products;
 
 import edu.dental.APIResponseException;
 import edu.dental.control.Administrator;

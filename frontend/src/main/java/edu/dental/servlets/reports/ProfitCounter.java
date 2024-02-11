@@ -1,4 +1,4 @@
-package edu.dental.control.servlets.reports;
+package edu.dental.servlets.reports;
 
 import edu.dental.APIResponseException;
 import edu.dental.beans.ProfitRecord;

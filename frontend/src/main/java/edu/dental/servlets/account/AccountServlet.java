@@ -1,4 +1,4 @@
-package edu.dental.control.servlets.account;
+package edu.dental.servlets.account;
 
 import edu.dental.APIResponseException;
 import edu.dental.beans.UserBean;

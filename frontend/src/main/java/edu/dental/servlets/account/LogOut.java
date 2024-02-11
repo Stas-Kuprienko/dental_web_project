@@ -1,4 +1,4 @@
-package edu.dental.control.servlets.account;
+package edu.dental.servlets.account;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
