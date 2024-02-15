@@ -1,11 +1,11 @@
 package edu.dental.servlets.works;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.control.Administrator;
 import edu.dental.control.DentalWorkService;
 import edu.dental.service.WebUtility;
-import edu.http_utils.RestRequestReader;
+import stas.http_tools.RestRequestIDReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,13 +31,13 @@ public class DentalWorkServlet extends HttpServlet {
     private static final String dentalWorksListURL = "/main/dental-works";
 
     private DentalWorkService dentalWorkService;
-    private RestRequestReader restRequestReader;
+    private RestRequestIDReader restRequestReader;
 
 
     @Override
     public void init() throws ServletException {
         this.dentalWorkService = Administrator.getInstance().getDentalWorksService();
-        this.restRequestReader = new RestRequestReader("/main/dental-work");
+        this.restRequestReader = new RestRequestIDReader("/main/dental-work");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DentalWorkServlet extends HttpServlet {
                 dentalWork = dentalWorkService.getDentalWorkById(session, id);
                 request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
                 request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
-            } catch (APIResponseException e) {
+            } catch (HttpWebException e) {
                 e.errorRedirect(request, response);
             }
         }
@@ -73,7 +73,7 @@ public class DentalWorkServlet extends HttpServlet {
                 dentalWorkService.updateDentalWorkList(session, dentalWork);
                 request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
                 request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
-            } catch (APIResponseException e) {
+            } catch (HttpWebException e) {
                 e.errorRedirect(request, response);
             }
         }
@@ -95,7 +95,7 @@ public class DentalWorkServlet extends HttpServlet {
             }
             request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
             request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
-        } catch (APIResponseException e) {
+        } catch (HttpWebException e) {
             e.errorRedirect(request, response);
         }
     }
@@ -114,13 +114,13 @@ public class DentalWorkServlet extends HttpServlet {
                 request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
                 request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             }
-        } catch (APIResponseException e) {
+        } catch (HttpWebException e) {
             e.errorRedirect(request, response);
         }
     }
 
 
-    private int getId(HttpServletRequest request) throws APIResponseException {
+    private int getId(HttpServletRequest request) throws HttpWebException {
         int id = restRequestReader.getId(request.getRequestURI());
         if (id < 0) {
             String parameterId = request.getParameter(idParam);
@@ -128,7 +128,7 @@ public class DentalWorkServlet extends HttpServlet {
                 id = Integer.parseInt(parameterId);
             } else {
                 IllegalArgumentException e = new IllegalArgumentException(request.getRequestURI());
-                throw new APIResponseException(APIResponseException.ERROR.BAD_REQUEST, e.getStackTrace());
+                throw new HttpWebException(HttpWebException.ERROR.BAD_REQUEST, e.getStackTrace());
             }
         }
         return id;
@@ -142,7 +142,7 @@ public class DentalWorkServlet extends HttpServlet {
             doDelete(request, response);
         } else {
             InvalidMethodException e = new InvalidMethodException(method);
-            new APIResponseException(APIResponseException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
+            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
         }
     }
 }

@@ -1,10 +1,12 @@
 package edu.dental.control.my_account_service;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserBean;
 import edu.dental.control.*;
+import edu.dental.service.HttpQueryFormer;
+import edu.dental.service.HttpRequester;
 import edu.dental.service.WebAPIManager;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
@@ -30,7 +32,7 @@ public final class MyAdministrator implements Administrator {
     private final DentalWorkService dentalWorkService;
     private final ProductMapService productMapService;
     private final ProfitRecordService profitRecordService;
-    private final WebUtility.HttpRequestSender httpRequestSender;
+    private final HttpRequester httpRequestSender;
 
 
     private MyAdministrator() {
@@ -43,9 +45,9 @@ public final class MyAdministrator implements Administrator {
 
 
     @Override
-    public void signUp(HttpSession session, String name, String email, String password) throws APIResponseException {
+    public void signUp(HttpSession session, String name, String email, String password) throws HttpWebException {
         try {
-            WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+            HttpQueryFormer queryFormer = new HttpQueryFormer();
 
             queryFormer.add(paramName, name);
             queryFormer.add(paramEmail, email);
@@ -59,14 +61,14 @@ public final class MyAdministrator implements Administrator {
             session.setAttribute(WebUtility.INSTANCE.attribWorks, new DentalWork[]{});
             session.setAttribute(WebUtility.INSTANCE.attribMap, new ProductMap.Item[]{});
         } catch (IOException e) {
-            WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
-            throw new APIResponseException(APIResponseException.ERROR.SERVER_ERROR);
+            WebAPIManager.INSTANCE.getLoggerKit().doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+            throw new HttpWebException(HttpWebException.ERROR.SERVER_ERROR);
         }
     }
 
         @Override
-    public void signIn(HttpSession session, String email, String password) throws APIResponseException {
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+    public void signIn(HttpSession session, String email, String password) throws HttpWebException {
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
 
         queryFormer.add(paramEmail, email);
         queryFormer.add(paramPassword, password);
@@ -76,8 +78,8 @@ public final class MyAdministrator implements Administrator {
         try {
             jsonUser = httpRequestSender.sendHttpPostRequest(logInUrl, requestParameters);
         } catch (IOException e) {
-            WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
-            throw new APIResponseException(APIResponseException.ERROR.SERVER_ERROR);
+            WebAPIManager.INSTANCE.getLoggerKit().doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+            throw new HttpWebException(HttpWebException.ERROR.SERVER_ERROR);
         }
         UserBean user =  WebUtility.INSTANCE.parseFromJson(jsonUser, UserBean.class);
 
@@ -88,14 +90,14 @@ public final class MyAdministrator implements Administrator {
     }
 
     @Override
-    public UserBean getUser(String token) throws IOException, APIResponseException {
+    public UserBean getUser(String token) throws IOException, HttpWebException {
         String json = httpRequestSender.sendHttpGetRequest(token, accountUrl);
         return WebUtility.INSTANCE.parseFromJson(json, UserBean.class);
     }
 
     @Override
-    public UserBean updateUser(String token, String field, String value) throws IOException, APIResponseException {
-        WebUtility.QueryFormer former = new WebUtility.QueryFormer();
+    public UserBean updateUser(String token, String field, String value) throws IOException, HttpWebException {
+        HttpQueryFormer former = new HttpQueryFormer();
         former.add(fieldParam, field);
         former.add(valueParam, value);
         String requestParam = former.form();
@@ -124,30 +126,30 @@ public final class MyAdministrator implements Administrator {
         return profitRecordService;
     }
 
-    private void setWorkList(HttpSession session) throws APIResponseException {
+    private void setWorkList(HttpSession session) throws HttpWebException {
         String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
 
         String jsonWorks;
         try {
             jsonWorks = httpRequestSender.sendHttpGetRequest(token, dentalWorkListUrl);
         } catch (IOException e) {
-            WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
-            throw new APIResponseException(APIResponseException.ERROR.SERVER_ERROR);
+            WebAPIManager.INSTANCE.getLoggerKit().doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+            throw new HttpWebException(HttpWebException.ERROR.SERVER_ERROR);
         }
         DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
         Arrays.sort(works);
         session.setAttribute(WebUtility.INSTANCE.attribWorks, works);
     }
 
-    private void setProductMap(HttpSession session) throws APIResponseException {
+    private void setProductMap(HttpSession session) throws HttpWebException {
         String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
 
         String jsonMap;
         try {
             jsonMap = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(token, productMapUrl);
         } catch (IOException e) {
-            WebAPIManager.INSTANCE.getLoggerKit().doLogging(this.getClass().getSuperclass(), e, Level.SEVERE);
-            throw new APIResponseException(APIResponseException.ERROR.SERVER_ERROR);
+            WebAPIManager.INSTANCE.getLoggerKit().doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+            throw new HttpWebException(HttpWebException.ERROR.SERVER_ERROR);
         }
         ProductMap.Item[] map = WebUtility.INSTANCE.parseFromJson(jsonMap, ProductMap.Item[].class);
         session.setAttribute(WebUtility.INSTANCE.attribMap, map);

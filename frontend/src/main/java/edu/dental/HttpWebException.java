@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class APIResponseException extends Exception {
+public class HttpWebException extends Exception {
 
     private static final String errorPageURL = "/error";
     private static final String messageAttrib = "message";
@@ -21,22 +21,22 @@ public class APIResponseException extends Exception {
     public final ERROR error;
 
 
-    public APIResponseException(int CODE) {
+    public HttpWebException(int CODE) {
         this.CODE = CODE;
         this.error = choose(CODE);
     }
 
-    public APIResponseException(ERROR error) {
+    public HttpWebException(ERROR error) {
         this.CODE = error.code;
         this.error = error;
     }
 
-    public APIResponseException(ERROR error, StackTraceElement[] stackTrace) {
+    public HttpWebException(ERROR error, StackTraceElement[] stackTrace) {
         this.CODE = error.code;
         this.error = error;
         String message = buildStackMessage(stackTrace);
         WebAPIManager.INSTANCE.getLoggerKit()
-                .doLogging(HttpServlet.class, message + '\n' + error.message, Level.INFO);
+                .doLog(HttpServlet.class, message + '\n' + error.message, Level.INFO);
     }
 
     public void errorRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

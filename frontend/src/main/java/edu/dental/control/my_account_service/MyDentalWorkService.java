@@ -1,9 +1,11 @@
 package edu.dental.control.my_account_service;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.control.DentalWorkService;
+import edu.dental.service.HttpQueryFormer;
+import edu.dental.service.HttpRequester;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
 
@@ -20,7 +22,7 @@ public class MyDentalWorkService implements DentalWorkService {
     private static final String fieldParam = "field";
     private static final String valueParam = "value";
 
-    private final WebUtility.HttpRequestSender httpRequestSender;
+    private final HttpRequester httpRequestSender;
 
     MyDentalWorkService() {
         this.httpRequestSender = WebUtility.INSTANCE.requestSender();
@@ -28,7 +30,7 @@ public class MyDentalWorkService implements DentalWorkService {
 
 
     @Override
-    public DentalWork createWork(HttpSession session, String patient, String clinic, String product, int quantity, String complete) throws IOException, APIResponseException {
+    public DentalWork createWork(HttpSession session, String patient, String clinic, String product, int quantity, String complete) throws IOException, HttpWebException {
         Product[] products;
         if (product == null || product.isEmpty()) {
             products = new Product[]{};
@@ -49,10 +51,10 @@ public class MyDentalWorkService implements DentalWorkService {
     }
 
     @Override
-    public DentalWork updateDentalWork(HttpSession session, int id, String field, String value, String quantity) throws APIResponseException, IOException {
+    public DentalWork updateDentalWork(HttpSession session, int id, String field, String value, String quantity) throws HttpWebException, IOException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
 
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add(fieldParam, field);
         queryFormer.add(valueParam, value);
         if (field.equals(productParam)) {
@@ -60,7 +62,7 @@ public class MyDentalWorkService implements DentalWorkService {
                 queryFormer.add(quantityParam, quantity);
             } else {
                 NullPointerException e = new NullPointerException("parameter is null");
-                throw new APIResponseException(APIResponseException.ERROR.BAD_REQUEST, e.getStackTrace());
+                throw new HttpWebException(HttpWebException.ERROR.BAD_REQUEST, e.getStackTrace());
             }
         }
         String requestParam = queryFormer.form();
@@ -75,7 +77,7 @@ public class MyDentalWorkService implements DentalWorkService {
     }
 
     @Override
-    public DentalWork getDentalWorkById(HttpSession session, int id) throws IOException, APIResponseException {
+    public DentalWork getDentalWorkById(HttpSession session, int id) throws IOException, HttpWebException {
         DentalWork dw;
         DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.attribWorks);
         int i = getIndexById(works, id);
@@ -105,7 +107,7 @@ public class MyDentalWorkService implements DentalWorkService {
     }
 
     @Override
-    public void deleteDentalWorkFromList(HttpSession session, int id) throws IOException, APIResponseException {
+    public void deleteDentalWorkFromList(HttpSession session, int id) throws IOException, HttpWebException {
         String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         httpRequestSender.sendHttpDeleteRequest(token, dentalWorkUrl + '/' + id, null);
 
@@ -120,7 +122,7 @@ public class MyDentalWorkService implements DentalWorkService {
     }
 
     @Override
-    public DentalWork removeProductFromDentalWork(HttpSession session, int id, String product) throws IOException, APIResponseException {
+    public DentalWork removeProductFromDentalWork(HttpSession session, int id, String product) throws IOException, HttpWebException {
         String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
 
         String parameter = productParam + '=' + product;

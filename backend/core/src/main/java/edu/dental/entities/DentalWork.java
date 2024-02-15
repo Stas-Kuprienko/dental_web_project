@@ -1,7 +1,7 @@
 package edu.dental.entities;
 
 
-import utils.collections.SimpleList;
+import stas.collections.SimpleList;
 
 import java.io.Serializable;
 import java.time.LocalDate;

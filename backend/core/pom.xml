@@ -23,11 +23,11 @@
     <dependencies>
 
         <dependency>
-            <groupId>utils.collection</groupId>
-            <artifactId>SimpleList</artifactId>
+            <groupId>stas</groupId>
+            <artifactId>my-utilities-library</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/my_libraries/simple-list.jar</systemPath>
+            <systemPath>${pom.basedir}/my_libraries/my-utilities-library.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

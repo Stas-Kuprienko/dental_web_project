@@ -7,7 +7,7 @@ import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.DentalWorkDAO;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
-import utils.collections.SimpleList;
+import stas.collections.SimpleList;
 
 import java.io.IOException;
 import java.sql.*;

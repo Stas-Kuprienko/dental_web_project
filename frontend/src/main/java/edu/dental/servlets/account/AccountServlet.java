@@ -1,6 +1,6 @@
 package edu.dental.servlets.account;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
 import edu.dental.beans.UserBean;
 import edu.dental.service.WebUtility;
 import edu.dental.control.Administrator;
@@ -35,7 +35,7 @@ public class AccountServlet extends HttpServlet {
             UserBean user = administrator.getUser(token);
             request.setAttribute(WebUtility.INSTANCE.attribUser, user);
             request.getRequestDispatcher(accountPageURL).forward(request, response);
-        } catch (APIResponseException e) {
+        } catch (HttpWebException e) {
             e.errorRedirect(request, response);
         }
     }
@@ -46,7 +46,7 @@ public class AccountServlet extends HttpServlet {
             chooseMethod(request, response);
         } else {
             ServletException e = new ServletException(request.getRequestURI());
-            new APIResponseException(APIResponseException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
+            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
         }
     }
 
@@ -64,7 +64,7 @@ public class AccountServlet extends HttpServlet {
             }
             request.setAttribute(WebUtility.INSTANCE.attribUser, user);
             request.getRequestDispatcher(accountPageURL).forward(request, response);
-        } catch (APIResponseException e) {
+        } catch (HttpWebException e) {
             e.errorRedirect(request, response);
         }
     }
@@ -76,7 +76,7 @@ public class AccountServlet extends HttpServlet {
             WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, accountUrl, null);
             request.getRequestDispatcher("/main/log-out").forward(request, response);
             response.sendError(400);
-        } catch (APIResponseException e) {
+        } catch (HttpWebException e) {
             e.errorRedirect(request, response);
         }
     }
@@ -90,7 +90,7 @@ public class AccountServlet extends HttpServlet {
             doDelete(request, response);
         } else {
             InvalidMethodException e = new InvalidMethodException(method);
-            new APIResponseException(APIResponseException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
+            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
         }
     }
 }

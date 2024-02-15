@@ -8,7 +8,7 @@ import edu.dental.domain.reports.ReportException;
 import edu.dental.dto.ProfitRecordDto;
 import edu.dental.entities.ProfitRecord;
 import edu.dental.service.Repository;
-import edu.dental.service.tools.JsonObjectParser;
+import edu.dental.service.JsonObjectParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

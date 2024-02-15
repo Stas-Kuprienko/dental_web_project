@@ -1,9 +1,4 @@
-февр. 12, 2024 3:06:19 AM edu.dental.service.LoggerKit doLogging
+февр. 14, 2024 2:32:03 AM edu.dental.service.LoggerKit doLogging
 INFO: edu.dental.control.my_account_service.MyAdministrator
-февр. 12, 2024 3:06:19 AM edu.dental.service.LoggerKit doLogging
+февр. 14, 2024 2:32:03 AM edu.dental.service.LoggerKit doLogging
 INFO: edu.dental.control.my_account_service.MyAdministrator
-февр. 12, 2024 3:06:20 AM edu.dental.service.LoggerKit doLogging
-INFO: 
-http://localhost:8080/dental-api/log-in;
-response code = 404;
-

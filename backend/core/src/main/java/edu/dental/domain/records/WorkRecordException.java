@@ -18,14 +18,25 @@ public class WorkRecordException extends Exception {
 
     public WorkRecordException(Exception e) {
         super(e);
-        logger.log(Level.SEVERE, buildStackMessage(e.getStackTrace()));
+        logger.log(Level.SEVERE, buildStackMessage(e.getStackTrace(), Level.SEVERE));
+    }
+
+    public WorkRecordException(Exception e, Level level) {
+        super(e);
+        logger.log(level, buildStackMessage(e.getStackTrace(), level));
     }
 
 
-    private static String buildStackMessage(StackTraceElement[] stackTrace) {
+    private static String buildStackMessage(StackTraceElement[] stackTrace, Level level) {
         StringBuilder str = new StringBuilder();
-        for (StackTraceElement e : stackTrace) {
-            str.append(e.toString()).append("\n");
+        if (level.intValue() > Level.INFO.intValue()) {
+            for (StackTraceElement e : stackTrace) {
+                str.append(e.toString()).append("\n");
+            }
+        } else {
+            str.append(stackTrace[0]).append("\n");
+            str.append(stackTrace[1]).append("\n");
+            str.append(stackTrace[2]).append("\n");
         }
         return str.toString();
     }

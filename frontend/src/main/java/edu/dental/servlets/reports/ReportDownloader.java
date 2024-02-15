@@ -1,6 +1,7 @@
 package edu.dental.servlets.reports;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
+import edu.dental.service.HttpQueryFormer;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,7 +31,7 @@ public class ReportDownloader extends HttpServlet {
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
         try {
             WebUtility.INSTANCE.requestSender().download(jwt, resource, response.getOutputStream());
-        } catch (APIResponseException e) {
+        } catch (HttpWebException e) {
             e.errorRedirect(request, response);
         }
     }
@@ -44,7 +45,7 @@ public class ReportDownloader extends HttpServlet {
             if (Integer.parseInt(year) == now.getYear() && Integer.parseInt(month) == now.getMonthValue()) {
                 return reportsDownloadUrl;
             } else {
-                WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+                HttpQueryFormer queryFormer = new HttpQueryFormer();
                 queryFormer.add("year", year);
                 queryFormer.add("month", month);
                 return reportsDownloadUrl + "?" + queryFormer.form();

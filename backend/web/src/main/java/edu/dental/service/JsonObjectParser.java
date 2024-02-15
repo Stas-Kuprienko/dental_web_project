@@ -1,4 +1,4 @@
-package edu.dental.service.tools;
+package edu.dental.service;
 
 import edu.dental.WebAPI;
 

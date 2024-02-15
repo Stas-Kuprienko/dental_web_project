@@ -84,11 +84,11 @@ public enum WebAPIManager {
             Class<?> c = Class.forName(getClassName(clas));
             constructor = c.getDeclaredConstructor();
             constructor.setAccessible(true);
-            loggerKit.doLogging(this.getClass(), c.getName(), Level.INFO);
+            loggerKit.doLog(this.getClass(), c.getName(), Level.INFO);
             return (T) constructor.newInstance();
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException
                  | IllegalAccessException | ClassNotFoundException e) {
-            loggerKit.doLogging(WebAPIManager.class, e, Level.SEVERE);
+            loggerKit.doLog(WebAPIManager.class, e, Level.SEVERE);
             throw new RuntimeException(e);
         } finally {
             if (constructor != null) {
@@ -104,7 +104,7 @@ public enum WebAPIManager {
     private LoggerKit createLoggerKit() {
         LoggerKit loggerKit = new LoggerKit();
         loggerKit.addLogger(WebAPIManager.class);
-        loggerKit.addLogger(WebUtility.HttpRequestSender.class);
+        loggerKit.addLogger(HttpRequester.class);
         loggerKit.addLogger(HttpServlet.class);
         loggerKit.addLogger(Administrator.class);
         loggerKit.addLogger(DentalWorkService.class);

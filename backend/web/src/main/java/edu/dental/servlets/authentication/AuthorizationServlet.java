@@ -4,7 +4,7 @@ import edu.dental.database.DatabaseException;
 import edu.dental.dto.UserDto;
 import edu.dental.security.AuthenticationService;
 import edu.dental.security.WebSecurityException;
-import edu.dental.service.tools.JsonObjectParser;
+import edu.dental.service.JsonObjectParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
