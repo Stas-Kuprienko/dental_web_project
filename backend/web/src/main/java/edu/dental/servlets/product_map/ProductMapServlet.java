@@ -2,12 +2,11 @@ package edu.dental.servlets.product_map;
 
 import edu.dental.database.DatabaseException;
 import edu.dental.domain.records.WorkRecordBook;
-import edu.dental.domain.records.WorkRecordException;
 import edu.dental.dto.ProductMapDto;
-import edu.dental.service.tools.JsonObjectParser;
+import edu.dental.service.JsonObjectParser;
 import edu.dental.service.Repository;
-import edu.dental.service.tools.RequestReader;
-import edu.dental.service.tools.RestRequestReader;
+import stas.http_tools.HttpRequestReader;
+import stas.http_tools.RestRequestIDReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -27,13 +26,13 @@ public class ProductMapServlet extends HttpServlet {
 
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
-    private RestRequestReader restRequestReader;
+    private RestRequestIDReader restRequestReader;
 
     @Override
     public void init() throws ServletException {
         this.repository = Repository.getInstance();
         this.jsonObjectParser = JsonObjectParser.getInstance();
-        this.restRequestReader = new RestRequestReader(url);
+        this.restRequestReader = new RestRequestIDReader(url);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class ProductMapServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
+        HashMap<String, String> parameters = new HttpRequestReader(request).getParameterMap();
 
         int id = restRequestReader.getId(request.getRequestURI());
         String title = parameters.get(titleParam);
@@ -88,7 +87,7 @@ public class ProductMapServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
+        HashMap<String, String> parameters = new HttpRequestReader(request).getParameterMap();
 
         String title = parameters.get(titleParam);
         WorkRecordBook recordBook = repository.getRecordBook(userId);

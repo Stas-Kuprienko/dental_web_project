@@ -4,19 +4,20 @@ import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.ProfitRecordDAO;
 import edu.dental.domain.records.SorterTool;
-import edu.dental.domain.records.Updating;
+import stas.utilities.UpdateFacility;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.records.WorkRecordException;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
 import edu.dental.entities.ProfitRecord;
-import utils.collections.SimpleList;
+import stas.collections.SimpleList;
 
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 
 /**
  * The class, implementing the {@link WorkRecordBook}.
@@ -94,16 +95,16 @@ public class MyWorkRecordBook implements WorkRecordBook {
 
     @Override
     public DentalWork updateRecord(DentalWork dw, String field, String value) throws WorkRecordException, DatabaseException {
-        Updating<DentalWork> updating = new Updating<>();
+        UpdateFacility<DentalWork> updateFacility = new UpdateFacility<>();
         try {
-            updating.init(dw, field);
-            updating.setNewValue(value);
+            updateFacility.init(dw, field);
+            updateFacility.setNewValue(value);
             databaseService.getDentalWorkDAO().update(dw);
         } catch (ReflectiveOperationException e) {
             throw new WorkRecordException(e);
         } catch (DatabaseException e) {
             try {
-                updating.revert();
+                updateFacility.revert();
                 throw e;
             } catch (ReflectiveOperationException e1) {
                 throw new WorkRecordException(e1);
@@ -195,9 +196,9 @@ public class MyWorkRecordBook implements WorkRecordBook {
             if (list.get(0).getClinic().equals(clinic)) {
                 return list.get(0);
             }
-            throw new WorkRecordException(new NoSuchElementException(patient + ", " + clinic));
+            throw new WorkRecordException(new NoSuchElementException(patient + ", " + clinic), Level.INFO);
         } catch (NoSuchElementException | NullPointerException e) {
-            throw new WorkRecordException(e);
+            throw new WorkRecordException(e, Level.INFO);
         }
     }
 

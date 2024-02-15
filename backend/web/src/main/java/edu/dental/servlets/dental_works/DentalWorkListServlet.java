@@ -7,8 +7,8 @@ import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
-import edu.dental.service.tools.JsonObjectParser;
-import edu.dental.service.tools.RequestReader;
+import edu.dental.service.JsonObjectParser;
+import stas.http_tools.HttpRequestReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -72,7 +72,7 @@ public class DentalWorkListServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
+        HashMap<String, String> parameters = new HttpRequestReader(request).getParameterMap();
 
         int year = Integer.parseInt(parameters.get("year"));
         int month = Integer.parseInt(parameters.get("month"));

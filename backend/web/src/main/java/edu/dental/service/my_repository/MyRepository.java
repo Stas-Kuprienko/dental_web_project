@@ -3,7 +3,7 @@ package edu.dental.service.my_repository;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.DatabaseService;
 import edu.dental.database.dao.UserDAO;
-import edu.dental.domain.records.Updating;
+import stas.utilities.UpdateFacility;
 import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.dto.ProductMapDto;
@@ -94,14 +94,14 @@ public final class MyRepository implements Repository {
                 return null;
             }
         } else {
-            Updating<User> updating = new Updating<>();
+            UpdateFacility<User> updateFacility = new UpdateFacility<>();
             try {
-                updating.init(user, field);
-                updating.setNewValue(value);
+                updateFacility.init(user, field);
+                updateFacility.setNewValue(value);
                 userDAO.update(user);
             } catch (DatabaseException e) {
                 try {
-                    updating.revert();
+                    updateFacility.revert();
                 } catch (ReflectiveOperationException ignored) {}
                 throw e;
             } catch (ReflectiveOperationException e) {

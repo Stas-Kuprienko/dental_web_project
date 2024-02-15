@@ -5,7 +5,7 @@ import edu.dental.database.TableInitializer;
 import edu.dental.database.dao.DAO;
 import edu.dental.database.dao.ProductDAO;
 import edu.dental.entities.Product;
-import utils.collections.SimpleList;
+import stas.collections.SimpleList;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

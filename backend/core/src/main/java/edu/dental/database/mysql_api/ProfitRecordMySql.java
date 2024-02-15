@@ -3,7 +3,7 @@ package edu.dental.database.mysql_api;
 import edu.dental.database.DatabaseException;
 import edu.dental.database.dao.ProfitRecordDAO;
 import edu.dental.entities.ProfitRecord;
-import utils.collections.SimpleList;
+import stas.collections.SimpleList;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,8 +1,9 @@
 package edu.dental.control.my_account_service;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
 import edu.dental.beans.ProductMap;
 import edu.dental.control.ProductMapService;
+import edu.dental.service.HttpQueryFormer;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
 
@@ -18,11 +19,11 @@ public class MyProductMapService implements ProductMapService {
 
 
     @Override
-    public void createProductItem(HttpSession session, String title, int price) throws IOException, APIResponseException {
+    public void createProductItem(HttpSession session, String title, int price) throws IOException, HttpWebException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         ProductMap.Item item;
 
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add(titleParam, title);
         queryFormer.add(priceParam, price);
         String requestParam = queryFormer.form();
@@ -35,9 +36,9 @@ public class MyProductMapService implements ProductMapService {
     }
 
     @Override
-    public void updateProductItem(HttpSession session, int id, String title, int price) throws IOException, APIResponseException {
+    public void updateProductItem(HttpSession session, int id, String title, int price) throws IOException, HttpWebException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add(titleParam, title);
         queryFormer.add(priceParam, price);
         String requestParam = queryFormer.form();
@@ -48,9 +49,9 @@ public class MyProductMapService implements ProductMapService {
     }
 
     @Override
-    public void deleteProductItem(HttpSession session, int id, String title) throws IOException, APIResponseException {
+    public void deleteProductItem(HttpSession session, int id, String title) throws IOException, HttpWebException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add(titleParam, title);
         WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, productMapUrl + '/' + id, queryFormer.form());
         ProductMap map = getProductMap(session);

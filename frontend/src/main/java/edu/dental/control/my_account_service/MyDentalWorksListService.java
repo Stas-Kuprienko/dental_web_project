@@ -1,8 +1,9 @@
 package edu.dental.control.my_account_service;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.control.DentalWorksListService;
+import edu.dental.service.HttpQueryFormer;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -24,7 +25,7 @@ public class MyDentalWorksListService implements DentalWorksListService {
     MyDentalWorksListService() {}
 
     @Override
-    public void getRequired(String year_month, HttpServletRequest request) throws IOException, APIResponseException {
+    public void getRequired(String year_month, HttpServletRequest request) throws IOException, HttpWebException {
         String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.attribToken);
         String[] year_month_split = year_month.split("-");
         int year = Integer.parseInt(year_month_split[0]);
@@ -39,9 +40,9 @@ public class MyDentalWorksListService implements DentalWorksListService {
     }
 
     @Override
-    public void sort(HttpSession session, int year, int month) throws IOException, APIResponseException {
+    public void sort(HttpSession session, int year, int month) throws IOException, HttpWebException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add(yearParam, year);
         queryFormer.add(monthParam, month);
         String jsonWorks = WebUtility.INSTANCE.requestSender()
@@ -51,9 +52,9 @@ public class MyDentalWorksListService implements DentalWorksListService {
     }
 
     @Override
-    public DentalWork[] setStatus(HttpSession session, int year, int month) throws IOException, APIResponseException {
+    public DentalWork[] setStatus(HttpSession session, int year, int month) throws IOException, HttpWebException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add(yearParam, year);
         queryFormer.add(monthParam, month);
         String requestParams = queryFormer.form();
@@ -66,8 +67,8 @@ public class MyDentalWorksListService implements DentalWorksListService {
     }
 
     @Override
-    public DentalWork[] search(String jwt, String patient, String clinic) throws IOException, APIResponseException {
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+    public DentalWork[] search(String jwt, String patient, String clinic) throws IOException, HttpWebException {
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add(patientParam, patient);
         queryFormer.add(clinicParam, clinic);
         String requestBody = queryFormer.form();

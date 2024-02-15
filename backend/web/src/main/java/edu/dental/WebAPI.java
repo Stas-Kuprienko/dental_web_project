@@ -4,7 +4,7 @@ import edu.dental.domain.APIManager;
 import edu.dental.security.AuthenticationService;
 import edu.dental.security.IFilterVerification;
 import edu.dental.service.Repository;
-import edu.dental.service.tools.JsonObjectParser;
+import edu.dental.service.JsonObjectParser;
 
 
 public enum WebAPI {

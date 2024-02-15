@@ -6,9 +6,9 @@ import edu.dental.domain.records.WorkRecordException;
 import edu.dental.dto.DentalWorkDto;
 import edu.dental.entities.DentalWork;
 import edu.dental.service.Repository;
-import edu.dental.service.tools.JsonObjectParser;
-import edu.dental.service.tools.RequestReader;
-import edu.dental.service.tools.RestRequestReader;
+import edu.dental.service.JsonObjectParser;
+import stas.http_tools.HttpRequestReader;
+import stas.http_tools.RestRequestIDReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -29,14 +29,14 @@ public class DentalWorkServlet extends HttpServlet {
 
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
-    private RestRequestReader restRequestReader;
+    private RestRequestIDReader restRequestReader;
 
 
     @Override
     public void init() throws ServletException {
         this.repository = Repository.getInstance();
         this.jsonObjectParser = JsonObjectParser.getInstance();
-        this.restRequestReader = new RestRequestReader(url);
+        this.restRequestReader = new RestRequestIDReader(url);
     }
 
 
@@ -66,7 +66,7 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        String jsonNew = RequestReader.readJson(request);
+        String jsonNew = HttpRequestReader.readJson(request);
         DentalWorkDto dto = jsonObjectParser.parseFromJson(jsonNew, DentalWorkDto.class);
 
         WorkRecordBook recordBook = repository.getRecordBook(userId);
@@ -86,7 +86,7 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
+        HashMap<String, String> parameters = new HttpRequestReader(request).getParameterMap();
 
         int id = restRequestReader.getId(request.getRequestURI());
         String field = parameters.get(fieldParam);
@@ -115,7 +115,7 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        HashMap<String, String> parameters = new RequestReader(request).getParameterMap();
+        HashMap<String, String> parameters = new HttpRequestReader(request).getParameterMap();
 
         int id = restRequestReader.getId(request.getRequestURI());
         String product = parameters.get(productParam);

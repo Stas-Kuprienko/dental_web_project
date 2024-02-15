@@ -1,6 +1,6 @@
 package edu.dental.servlets.account;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
 import edu.dental.control.Administrator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -38,7 +38,7 @@ public class Authorization extends HttpServlet {
             try {
                 administrator.signIn(session, email, password);
                 request.getRequestDispatcher("/main").forward(request, response);
-            } catch (APIResponseException e) {
+            } catch (HttpWebException e) {
                 e.errorRedirect(request, response);
             }
         } else {

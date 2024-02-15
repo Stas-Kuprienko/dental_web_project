@@ -1,6 +1,6 @@
 package edu.dental.servlets.reports;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
 import edu.dental.beans.ProfitRecord;
 import edu.dental.control.Administrator;
 import edu.dental.control.ProfitRecordService;
@@ -35,7 +35,7 @@ public class ProfitCounter extends HttpServlet {
             response.setContentType("application/msword");
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
             WebUtility.INSTANCE.requestSender().download(jwt, profitCountUrl, response.getOutputStream());
-        } catch (APIResponseException e) {
+        } catch (HttpWebException e) {
             e.errorRedirect(request, response);
         }
     }
@@ -48,7 +48,7 @@ public class ProfitCounter extends HttpServlet {
             ProfitRecord[] records = profitRecordService.get(request.getSession(), year, month);
             request.setAttribute("profit", records);
             request.getRequestDispatcher(profitPageURL).forward(request, response);
-        } catch (APIResponseException e) {
+        } catch (HttpWebException e) {
             e.errorRedirect(request, response);
         }
     }

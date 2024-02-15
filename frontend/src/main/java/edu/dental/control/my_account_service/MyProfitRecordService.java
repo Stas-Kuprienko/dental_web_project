@@ -1,10 +1,11 @@
 package edu.dental.control.my_account_service;
 
-import edu.dental.APIResponseException;
+import edu.dental.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.beans.ProfitRecord;
 import edu.dental.control.ProfitRecordService;
+import edu.dental.service.HttpQueryFormer;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
 
@@ -18,7 +19,7 @@ public class MyProfitRecordService implements ProfitRecordService {
     MyProfitRecordService() {}
 
     @Override
-    public ProfitRecord[] get(HttpSession session, String year, String month) throws IOException, APIResponseException {
+    public ProfitRecord[] get(HttpSession session, String year, String month) throws IOException, HttpWebException {
         if (year == null || year.isEmpty() && month == null || month.isEmpty()) {
             return countAll(session);
         } else {
@@ -46,16 +47,16 @@ public class MyProfitRecordService implements ProfitRecordService {
     }
 
     @Override
-    public ProfitRecord[] countAll(HttpSession session) throws IOException, APIResponseException {
+    public ProfitRecord[] countAll(HttpSession session) throws IOException, HttpWebException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, profitCountUrl, null);
         return WebUtility.INSTANCE.parseFromJson(json, ProfitRecord[].class);
     }
 
     @Override
-    public ProfitRecord[] countAnother(HttpSession session, String year, String month) throws IOException, APIResponseException {
+    public ProfitRecord[] countAnother(HttpSession session, String year, String month) throws IOException, HttpWebException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
-        WebUtility.QueryFormer queryFormer = new WebUtility.QueryFormer();
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add("year", year);
         queryFormer.add("month", month);
         String requestParam = queryFormer.form();
