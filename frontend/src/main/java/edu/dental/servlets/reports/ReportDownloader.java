@@ -1,7 +1,7 @@
 package edu.dental.servlets.reports;
 
-import edu.dental.HttpWebException;
-import edu.dental.service.HttpQueryFormer;
+import stas.exceptions.HttpWebException;
+import stas.http_tools.HttpQueryFormer;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -32,7 +32,7 @@ public class ReportDownloader extends HttpServlet {
         try {
             WebUtility.INSTANCE.requestSender().download(jwt, resource, response.getOutputStream());
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 

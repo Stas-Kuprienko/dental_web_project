@@ -1,15 +1,15 @@
 package edu.dental.control.my_account_service;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.ProductMap;
 import edu.dental.beans.UserBean;
 import edu.dental.control.*;
-import edu.dental.service.HttpQueryFormer;
-import edu.dental.service.HttpRequester;
+import stas.http_tools.HttpQueryFormer;
 import edu.dental.service.WebAPIManager;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
+import stas.http_tools.HttpRequester;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -91,7 +91,7 @@ public final class MyAdministrator implements Administrator {
 
     @Override
     public UserBean getUser(String token) throws IOException, HttpWebException {
-        String json = httpRequestSender.sendHttpGetRequest(token, accountUrl);
+        String json = httpRequestSender.sendHttpGetRequest(token, accountUrl, null);
         return WebUtility.INSTANCE.parseFromJson(json, UserBean.class);
     }
 
@@ -131,7 +131,7 @@ public final class MyAdministrator implements Administrator {
 
         String jsonWorks;
         try {
-            jsonWorks = httpRequestSender.sendHttpGetRequest(token, dentalWorkListUrl);
+            jsonWorks = httpRequestSender.sendHttpGetRequest(token, dentalWorkListUrl, null);
         } catch (IOException e) {
             WebAPIManager.INSTANCE.getLoggerKit().doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
             throw new HttpWebException(HttpWebException.ERROR.SERVER_ERROR);
@@ -146,7 +146,7 @@ public final class MyAdministrator implements Administrator {
 
         String jsonMap;
         try {
-            jsonMap = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(token, productMapUrl);
+            jsonMap = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(token, productMapUrl, null);
         } catch (IOException e) {
             WebAPIManager.INSTANCE.getLoggerKit().doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
             throw new HttpWebException(HttpWebException.ERROR.SERVER_ERROR);

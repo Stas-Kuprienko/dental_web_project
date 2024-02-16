@@ -1,9 +1,9 @@
 package edu.dental.control.my_account_service;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
+import stas.http_tools.HttpQueryFormer;
 import edu.dental.beans.ProductMap;
 import edu.dental.control.ProductMapService;
-import edu.dental.service.HttpQueryFormer;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
 

@@ -1,6 +1,6 @@
 package edu.dental.servlets.account;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
 import edu.dental.beans.UserBean;
 import edu.dental.service.WebUtility;
 import edu.dental.control.Administrator;
@@ -10,8 +10,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.tags.shaded.org.apache.bcel.verifier.exc.InvalidMethodException;
+import stas.utilities.LoggerKit;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 @WebServlet("/main/account")
 public class AccountServlet extends HttpServlet {
@@ -21,10 +23,12 @@ public class AccountServlet extends HttpServlet {
     private static final String valueParam = "value";
     private static final String accountPageURL = "/main/account/page";
 
+    private LoggerKit loggerKit;
     private Administrator administrator;
 
     @Override
     public void init() throws ServletException {
+        this.loggerKit = WebUtility.INSTANCE.loggerKit();
         this.administrator = Administrator.getInstance();
     }
 
@@ -36,7 +40,7 @@ public class AccountServlet extends HttpServlet {
             request.setAttribute(WebUtility.INSTANCE.attribUser, user);
             request.getRequestDispatcher(accountPageURL).forward(request, response);
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 
@@ -46,7 +50,8 @@ public class AccountServlet extends HttpServlet {
             chooseMethod(request, response);
         } else {
             ServletException e = new ServletException(request.getRequestURI());
-            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
+            loggerKit.doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED).errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 
@@ -65,7 +70,7 @@ public class AccountServlet extends HttpServlet {
             request.setAttribute(WebUtility.INSTANCE.attribUser, user);
             request.getRequestDispatcher(accountPageURL).forward(request, response);
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 
@@ -77,7 +82,7 @@ public class AccountServlet extends HttpServlet {
             request.getRequestDispatcher("/main/log-out").forward(request, response);
             response.sendError(400);
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 
@@ -90,7 +95,8 @@ public class AccountServlet extends HttpServlet {
             doDelete(request, response);
         } else {
             InvalidMethodException e = new InvalidMethodException(method);
-            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
+            loggerKit.doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED).errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 }

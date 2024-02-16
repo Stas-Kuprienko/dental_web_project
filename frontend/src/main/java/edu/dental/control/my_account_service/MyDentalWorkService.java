@@ -1,18 +1,20 @@
 package edu.dental.control.my_account_service;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.control.DentalWorkService;
-import edu.dental.service.HttpQueryFormer;
-import edu.dental.service.HttpRequester;
+import stas.http_tools.HttpQueryFormer;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpSession;
+import stas.http_tools.HttpRequester;
+import stas.utilities.LoggerKit;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class MyDentalWorkService implements DentalWorkService {
 
@@ -23,9 +25,11 @@ public class MyDentalWorkService implements DentalWorkService {
     private static final String valueParam = "value";
 
     private final HttpRequester httpRequestSender;
+    private final LoggerKit loggerKit;
 
     MyDentalWorkService() {
         this.httpRequestSender = WebUtility.INSTANCE.requestSender();
+        this.loggerKit = WebUtility.INSTANCE.loggerKit();
     }
 
 
@@ -62,7 +66,8 @@ public class MyDentalWorkService implements DentalWorkService {
                 queryFormer.add(quantityParam, quantity);
             } else {
                 NullPointerException e = new NullPointerException("parameter is null");
-                throw new HttpWebException(HttpWebException.ERROR.BAD_REQUEST, e.getStackTrace());
+                loggerKit.doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+                throw new HttpWebException(HttpWebException.ERROR.BAD_REQUEST);
             }
         }
         String requestParam = queryFormer.form();
@@ -83,7 +88,7 @@ public class MyDentalWorkService implements DentalWorkService {
         int i = getIndexById(works, id);
         if (i < 0) {
             String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
-            String json = httpRequestSender.sendHttpGetRequest(jwt, dentalWorkUrl + "/" + id);
+            String json = httpRequestSender.sendHttpGetRequest(jwt, dentalWorkUrl, String.valueOf(id));
             dw = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         } else {
             dw = works[i];

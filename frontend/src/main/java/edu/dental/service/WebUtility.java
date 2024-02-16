@@ -2,6 +2,8 @@ package edu.dental.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import stas.http_tools.HttpRequester;
+import stas.utilities.LoggerKit;
 
 public enum WebUtility {
 
@@ -13,14 +15,18 @@ public enum WebUtility {
     public final String attribWork = "work";
     public final String attribMap = "map";
 
+    public final String errorPageURL = "/error";
+
     private static final String apiUrl = "http://localhost:8080/dental-api/";
 
+    private final LoggerKit loggerKit;
     private final HttpRequester requestSender;
     private final Gson jsonParser;
 
 
     WebUtility() {
-        this.requestSender = new HttpRequester(apiUrl);
+        this.loggerKit = WebAPIManager.INSTANCE.getLoggerKit();
+        this.requestSender = HttpRequester.getXWWWFormRequester(apiUrl);
         this.jsonParser = new GsonBuilder().create();
     }
 
@@ -41,5 +47,9 @@ public enum WebUtility {
 
     public HttpRequester requestSender() {
         return requestSender;
+    }
+
+    public LoggerKit loggerKit() {
+        return loggerKit;
     }
 }

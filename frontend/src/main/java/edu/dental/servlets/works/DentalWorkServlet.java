@@ -1,6 +1,6 @@
 package edu.dental.servlets.works;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.control.Administrator;
 import edu.dental.control.DentalWorkService;
@@ -51,7 +51,7 @@ public class DentalWorkServlet extends HttpServlet {
                 request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
                 request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             } catch (HttpWebException e) {
-                e.errorRedirect(request, response);
+                e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
             }
         }
     }
@@ -74,7 +74,7 @@ public class DentalWorkServlet extends HttpServlet {
                 request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
                 request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             } catch (HttpWebException e) {
-                e.errorRedirect(request, response);
+                e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
             }
         }
     }
@@ -96,7 +96,7 @@ public class DentalWorkServlet extends HttpServlet {
             request.setAttribute(WebUtility.INSTANCE.attribWork, dentalWork);
             request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 
@@ -115,7 +115,7 @@ public class DentalWorkServlet extends HttpServlet {
                 request.getRequestDispatcher(dentalWorkPageURL).forward(request, response);
             }
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 
@@ -128,7 +128,7 @@ public class DentalWorkServlet extends HttpServlet {
                 id = Integer.parseInt(parameterId);
             } else {
                 IllegalArgumentException e = new IllegalArgumentException(request.getRequestURI());
-                throw new HttpWebException(HttpWebException.ERROR.BAD_REQUEST, e.getStackTrace());
+                throw new HttpWebException(HttpWebException.ERROR.BAD_REQUEST);
             }
         }
         return id;
@@ -142,7 +142,7 @@ public class DentalWorkServlet extends HttpServlet {
             doDelete(request, response);
         } else {
             InvalidMethodException e = new InvalidMethodException(method);
-            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
+            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED).errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 }

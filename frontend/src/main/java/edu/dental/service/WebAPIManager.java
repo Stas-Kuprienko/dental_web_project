@@ -2,6 +2,7 @@ package edu.dental.service;
 
 import edu.dental.control.*;
 import jakarta.servlet.http.HttpServlet;
+import stas.utilities.LoggerKit;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -102,9 +103,8 @@ public enum WebAPIManager {
     }
 
     private LoggerKit createLoggerKit() {
-        LoggerKit loggerKit = new LoggerKit();
+        LoggerKit loggerKit = new LoggerKit(fileHandler);
         loggerKit.addLogger(WebAPIManager.class);
-        loggerKit.addLogger(HttpRequester.class);
         loggerKit.addLogger(HttpServlet.class);
         loggerKit.addLogger(Administrator.class);
         loggerKit.addLogger(DentalWorkService.class);

@@ -1,6 +1,7 @@
 package edu.dental.servlets.products;
 
-import edu.dental.HttpWebException;
+import edu.dental.service.WebUtility;
+import stas.exceptions.HttpWebException;
 import edu.dental.control.Administrator;
 import edu.dental.control.ProductMapService;
 import stas.http_tools.RestRequestIDReader;
@@ -10,8 +11,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.tags.shaded.org.apache.bcel.verifier.exc.InvalidMethodException;
+import stas.utilities.LoggerKit;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 @WebServlet({"/main/product-map", "/main/product-map/*"})
 public class ProductServlet extends HttpServlet {
@@ -21,12 +24,14 @@ public class ProductServlet extends HttpServlet {
     private static final String priceParam = "price";
     private static final String productMapPageURL = "/main/product-map/page";
 
+    private LoggerKit loggerKit;
     private ProductMapService productMapService;
     private RestRequestIDReader restRequestReader;
 
 
     @Override
     public void init() throws ServletException {
+        this.loggerKit = WebUtility.INSTANCE.loggerKit();
         this.productMapService = Administrator.getInstance().getProductMapService();
         this.restRequestReader = new RestRequestIDReader(url);
     }
@@ -50,7 +55,7 @@ public class ProductServlet extends HttpServlet {
                 }
                 request.getRequestDispatcher(productMapPageURL).forward(request, response);
             } catch (HttpWebException e) {
-                e.errorRedirect(request, response);
+                e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
             }
         }
     }
@@ -68,11 +73,12 @@ public class ProductServlet extends HttpServlet {
                 }
                 request.getRequestDispatcher(productMapPageURL).forward(request, response);
             } catch (HttpWebException e) {
-                e.errorRedirect(request, response);
+                e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
             }
         } else {
             ServletException e = new ServletException(request.getRequestURI());
-            new HttpWebException(HttpWebException.ERROR.BAD_REQUEST, e.getStackTrace()).errorRedirect(request, response);
+            loggerKit.doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+            new HttpWebException(HttpWebException.ERROR.BAD_REQUEST).errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 
@@ -84,7 +90,7 @@ public class ProductServlet extends HttpServlet {
             productMapService.deleteProductItem(request.getSession(), id, title);
             request.getRequestDispatcher(productMapPageURL).forward(request, response);
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 
@@ -97,7 +103,8 @@ public class ProductServlet extends HttpServlet {
             doDelete(request, response);
         } else {
             InvalidMethodException e = new InvalidMethodException(method);
-            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED, e.getStackTrace()).errorRedirect(request, response);
+            loggerKit.doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED).errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 }

@@ -1,9 +1,9 @@
 package edu.dental.control.my_account_service;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
+import stas.http_tools.HttpQueryFormer;
 import edu.dental.beans.DentalWork;
 import edu.dental.control.DentalWorksListService;
-import edu.dental.service.HttpQueryFormer;
 import edu.dental.service.WebUtility;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -16,7 +16,7 @@ public class MyDentalWorksListService implements DentalWorksListService {
     private static final String dentalWorksUrl = "/main/dental-works";
     private static final String sortUrl = "/main/work-list";
     private static final String recordSearchUrl = "main/dental-works/search";
-    private static final String parameters = "?year=%s&month=%s";
+    private static final String parameters = "year=%s&month=%s";
     private static final String yearParam = "year";
     private static final String monthParam = "month";
     private static final String patientParam = "patient";
@@ -32,7 +32,7 @@ public class MyDentalWorksListService implements DentalWorksListService {
         int month = Integer.parseInt(year_month_split[1]);
         if (!isCurrent(year, month)) {
             String jsonWorks = WebUtility.INSTANCE.requestSender()
-                    .sendHttpGetRequest(jwt, dentalWorksUrl + String.format(parameters, year, month));
+                    .sendHttpGetRequest(jwt, dentalWorksUrl, String.format(parameters, year, month));
             DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
             request.setAttribute(WebUtility.INSTANCE.attribWorks, works);
             request.setAttribute("year-month", year_month);

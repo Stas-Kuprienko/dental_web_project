@@ -1,6 +1,6 @@
 package edu.dental.control;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
 import edu.dental.service.WebAPIManager;
 import edu.dental.beans.UserBean;
 import jakarta.servlet.http.HttpSession;

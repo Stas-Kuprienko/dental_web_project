@@ -1,6 +1,6 @@
 package edu.dental.servlets.reports;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
 import edu.dental.beans.ProfitRecord;
 import edu.dental.control.Administrator;
 import edu.dental.control.ProfitRecordService;
@@ -36,7 +36,7 @@ public class ProfitCounter extends HttpServlet {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
             WebUtility.INSTANCE.requestSender().download(jwt, profitCountUrl, response.getOutputStream());
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 
@@ -49,7 +49,7 @@ public class ProfitCounter extends HttpServlet {
             request.setAttribute("profit", records);
             request.getRequestDispatcher(profitPageURL).forward(request, response);
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 }

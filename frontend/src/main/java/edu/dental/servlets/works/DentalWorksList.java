@@ -1,6 +1,6 @@
 package edu.dental.servlets.works;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.control.Administrator;
 import edu.dental.control.DentalWorksListService;
@@ -36,7 +36,7 @@ public class DentalWorksList extends HttpServlet {
             try {
                 dentalWorksListService.getRequired(year_month, request);
             } catch (HttpWebException e) {
-                e.errorRedirect(request, response);
+                e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
             }
         }
         request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
@@ -58,7 +58,7 @@ public class DentalWorksList extends HttpServlet {
                 dentalWorksListService.sort(session, year, month);
                 request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
             } catch (HttpWebException e) {
-                e.errorRedirect(request, response);
+                e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
             }
         }
     }
@@ -76,7 +76,7 @@ public class DentalWorksList extends HttpServlet {
             request.setAttribute(yearMonthParam, year + "-" + month);
             request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 }

@@ -1,6 +1,6 @@
 package edu.dental.servlets.works;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.control.Administrator;
 import edu.dental.control.DentalWorksListService;
@@ -37,7 +37,7 @@ public class DentalWorkRecordSearch extends HttpServlet {
             request.setAttribute(WebUtility.INSTANCE.attribWorks, works);
             request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
         } catch (HttpWebException e) {
-            e.errorRedirect(request, response);
+            e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 }

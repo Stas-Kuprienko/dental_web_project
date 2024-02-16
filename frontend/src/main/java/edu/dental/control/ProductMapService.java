@@ -1,6 +1,6 @@
 package edu.dental.control;
 
-import edu.dental.HttpWebException;
+import stas.exceptions.HttpWebException;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
