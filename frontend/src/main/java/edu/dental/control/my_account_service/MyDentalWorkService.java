@@ -1,15 +1,14 @@
 package edu.dental.control.my_account_service;
 
-import stas.exceptions.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.beans.Product;
 import edu.dental.control.DentalWorkService;
-import stas.http_tools.HttpQueryFormer;
 import edu.dental.service.WebUtility;
-import jakarta.servlet.http.HttpSession;
+import stas.exceptions.HttpWebException;
+import stas.http_tools.HttpQueryFormer;
 import stas.http_tools.HttpRequester;
 import stas.utilities.LoggerKit;
-
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +87,7 @@ public class MyDentalWorkService implements DentalWorkService {
         int i = getIndexById(works, id);
         if (i < 0) {
             String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
-            String json = httpRequestSender.sendHttpGetRequest(jwt, dentalWorkUrl, String.valueOf(id));
+            String json = httpRequestSender.sendHttpGetRequest(jwt, dentalWorkUrl + '/' + id, null);
             dw = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         } else {
             dw = works[i];

@@ -13,8 +13,7 @@ import java.time.LocalDate;
 
 public class MyDentalWorksListService implements DentalWorksListService {
 
-    private static final String dentalWorksUrl = "/main/dental-works";
-    private static final String sortUrl = "/main/work-list";
+    private static final String dentalWorksUrl = "main/dental-works";
     private static final String recordSearchUrl = "main/dental-works/search";
     private static final String parameters = "year=%s&month=%s";
     private static final String yearParam = "year";

@@ -1,20 +1,21 @@
 package edu.dental.servlets.works;
 
-import stas.exceptions.HttpWebException;
 import edu.dental.beans.DentalWork;
 import edu.dental.control.Administrator;
 import edu.dental.control.DentalWorkService;
 import edu.dental.service.WebUtility;
-import stas.http_tools.RestRequestIDReader;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.eclipse.tags.shaded.org.apache.bcel.verifier.exc.InvalidMethodException;
+import stas.exceptions.HttpWebException;
+import stas.http_tools.RestRequestIDReader;
+import stas.utilities.LoggerKit;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 @WebServlet({"/main/dental-work", "/main/dental-work/*"})
 public class DentalWorkServlet extends HttpServlet {
@@ -30,12 +31,14 @@ public class DentalWorkServlet extends HttpServlet {
     private static final String dentalWorkPageURL = "/main/dental-work/page";
     private static final String dentalWorksListURL = "/main/dental-works";
 
+    private LoggerKit loggerKit;
     private DentalWorkService dentalWorkService;
     private RestRequestIDReader restRequestReader;
 
 
     @Override
     public void init() throws ServletException {
+        this.loggerKit = WebUtility.INSTANCE.loggerKit();
         this.dentalWorkService = Administrator.getInstance().getDentalWorksService();
         this.restRequestReader = new RestRequestIDReader("/main/dental-work");
     }
@@ -128,6 +131,7 @@ public class DentalWorkServlet extends HttpServlet {
                 id = Integer.parseInt(parameterId);
             } else {
                 IllegalArgumentException e = new IllegalArgumentException(request.getRequestURI());
+                loggerKit.doLog(this.getClass().getSuperclass(), e, Level.WARNING);
                 throw new HttpWebException(HttpWebException.ERROR.BAD_REQUEST);
             }
         }
@@ -141,8 +145,10 @@ public class DentalWorkServlet extends HttpServlet {
         } else if (method.equals("delete")) {
             doDelete(request, response);
         } else {
-            InvalidMethodException e = new InvalidMethodException(method);
-            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED).errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
+            NoSuchMethodException e = new NoSuchMethodException(method);
+            loggerKit.doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+            new HttpWebException(HttpWebException.ERROR.NOT_ALLOWED)
+                    .errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }
     }
 }
