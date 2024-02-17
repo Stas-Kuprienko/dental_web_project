@@ -8,6 +8,7 @@ import edu.dental.entities.Product;
 import edu.dental.entities.ProductMap;
 import edu.dental.entities.ProfitRecord;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -36,13 +37,9 @@ public interface WorkRecordBook {
         return APIManager.INSTANCE.getWorkRecordBook(userId, works, map);
     }
 
-    /**
-     * Create a {@link DentalWork} object and add it to {@link List} field of this instance.
-     * @param dentalWork {@link DentalWork} object to add.
-     * @return The created DentalWork object.
-     * @throws DatabaseException if troubles with database connection.
-     */
-    DentalWork addNewRecord(DentalWork dentalWork) throws DatabaseException;
+    DentalWork addNewRecord(String patient, String clinic, String product, int quantity, LocalDate complete) throws DatabaseException;
+
+    DentalWork addNewRecord(String patient, String clinic) throws DatabaseException;
 
     ProductMap.Item addProductItem(String title, int price) throws DatabaseException;
 

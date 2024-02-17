@@ -13,6 +13,7 @@ import edu.dental.entities.ProductMap;
 import edu.dental.entities.ProfitRecord;
 import stas.collections.SimpleList;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
@@ -49,21 +50,29 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public DentalWork addNewRecord(DentalWork dw) throws DatabaseException {
+    public DentalWork addNewRecord(String patient, String clinic, String productItem, int quantity, LocalDate complete) throws DatabaseException {
         DentalWork newRecord = DentalWork.create()
                 .setUserId(userId)
-                .setPatient(dw.getPatient())
-                .setClinic(dw.getClinic())
-                .setComplete(dw.getComplete())
-                .setComment(dw.getComment()).build();
+                .setPatient(patient)
+                .setClinic(clinic)
+                .setComplete(complete)
+                .build();
 
-        if (!(dw.getProducts().isEmpty())) {
-            SimpleList<Product> productList = newRecord.getProducts();
-            for (Product p : dw.getProducts()) {
-                Product product = productMap.createProduct(p.title(), p.quantity());
-                productList.add(product);
-            }
-        }
+        Product product = productMap.createProduct(productItem, quantity);
+        newRecord.getProducts().add(product);
+        databaseService.getDentalWorkDAO().put(newRecord);
+        records.add(newRecord);
+        return newRecord;
+    }
+
+    @Override
+    public DentalWork addNewRecord(String patient, String clinic) throws DatabaseException {
+        DentalWork newRecord = DentalWork.create()
+                .setUserId(userId)
+                .setPatient(patient)
+                .setClinic(clinic)
+                .build();
+
         databaseService.getDentalWorkDAO().put(newRecord);
         records.add(newRecord);
         return newRecord;

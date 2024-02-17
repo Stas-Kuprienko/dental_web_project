@@ -1,14 +1,14 @@
 package edu.dental.control.my_account_service;
 
 import edu.dental.beans.DentalWork;
-import edu.dental.beans.Product;
 import edu.dental.control.DentalWorkService;
 import edu.dental.service.WebUtility;
+import jakarta.servlet.http.HttpSession;
 import stas.exceptions.HttpWebException;
 import stas.http_tools.HttpQueryFormer;
 import stas.http_tools.HttpRequester;
 import stas.utilities.LoggerKit;
-import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +18,9 @@ import java.util.logging.Level;
 public class MyDentalWorkService implements DentalWorkService {
 
     private static final String dentalWorkUrl = "main/dental-work";
+    private static final String patientParam = "patient";
+    private static final String clinicParam = "clinic";
+    private static final String completeParam = "complete";
     private static final String productParam = "product";
     private static final String quantityParam = "quantity";
     private static final String fieldParam = "field";
@@ -34,19 +37,17 @@ public class MyDentalWorkService implements DentalWorkService {
 
     @Override
     public DentalWork createWork(HttpSession session, String patient, String clinic, String product, int quantity, String complete) throws IOException, HttpWebException {
-        Product[] products;
-        if (product == null || product.isEmpty()) {
-            products = new Product[]{};
-        } else {
-            Product p = new Product(0, product, (byte) quantity, 0);
-            products = new Product[]{p};
+        HttpQueryFormer queryFormer = new HttpQueryFormer();
+        queryFormer.add(patientParam, patient);
+        queryFormer.add(clinicParam, clinic);
+        if (product != null && !product.isEmpty()) {
+            queryFormer.add(productParam, product);
+            queryFormer.add(quantityParam, quantity);
+            queryFormer.add(completeParam, complete);
         }
-        DentalWork dw = new DentalWork(0, patient, clinic, products, null, complete, null, "MAKE", 0);
-
-        String newToJson = WebUtility.INSTANCE.parseToJson(dw);
         String token = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
-        String returnedJson = httpRequestSender.sendHttpPostRequest(token, dentalWorkUrl, newToJson);
-        DentalWork dentalWork = WebUtility.INSTANCE.parseFromJson(returnedJson, DentalWork.class);
+        String json = httpRequestSender.sendHttpPostRequest(token, dentalWorkUrl, queryFormer.form());
+        DentalWork dentalWork = WebUtility.INSTANCE.parseFromJson(json, DentalWork.class);
         DentalWork[] works = (DentalWork[]) session.getAttribute(WebUtility.INSTANCE.attribWorks);
         works = addToList(works, dentalWork);
         session.setAttribute(WebUtility.INSTANCE.attribWorks, works);

@@ -45,8 +45,7 @@ public class WorkRecordBookTest {
         LocalDate complete = LocalDate.now();
         workRecordBook.addProductItem(product, 0);
 
-        DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).setComplete(complete).build();
-        dentalWork = workRecordBook.addNewRecord(dentalWork);
+        DentalWork dentalWork = workRecordBook.addNewRecord(patient, clinic, product, quantity, complete);
         workRecordBook.addProductToRecord(dentalWork, product, quantity);
 
         assertNotNull(dentalWork);
@@ -55,14 +54,13 @@ public class WorkRecordBookTest {
         assertEquals(complete, dentalWork.getComplete());
         assertEquals(1, dentalWork.getProducts().size());
         assertEquals(product, dentalWork.getProducts().get(0).title());
-        assertEquals(quantity, dentalWork.getProducts().get(0).quantity());
+        assertEquals(quantity * 2, dentalWork.getProducts().get(0).quantity());
     }
 
     @Test
     public void testCreateRecord() throws WorkRecordException, DatabaseException {
         workRecordBook.addProductItem("testing", 0);
-        DentalWork dentalWork = DentalWork.create().setPatient("John Doe").setClinic("ABC Clinic").setComplete(LocalDate.now()).build();
-        dentalWork = workRecordBook.addNewRecord(dentalWork);
+        DentalWork dentalWork = workRecordBook.addNewRecord("John Doe", "ABC Clinic");
         workRecordBook.addProductToRecord(dentalWork, "testing", 1);
 
         assertNotNull(dentalWork);
@@ -70,7 +68,7 @@ public class WorkRecordBookTest {
         assertEquals("ABC Clinic", dentalWork.getClinic());
         assertEquals("testing", dentalWork.getProducts().get(0).title());
         assertEquals(1, dentalWork.getProducts().get(0).quantity());
-        assertEquals(LocalDate.now(), dentalWork.getComplete());
+        assertNull(dentalWork.getComplete());
     }
 
     @Test
@@ -116,8 +114,7 @@ public class WorkRecordBookTest {
     public void testAddProductToRecord() throws WorkRecordException, DatabaseException {
         workRecordBook.addProductItem("testing", 0);
 
-        DentalWork dentalWork = DentalWork.create().setPatient("John Doe").setClinic("ABC Clinic").setComplete(LocalDate.now()).build();
-        dentalWork = workRecordBook.addNewRecord(dentalWork);
+        DentalWork dentalWork = workRecordBook.addNewRecord("John Doe", "ABC Clinic");
 
         workRecordBook.addProductToRecord(dentalWork, "testing", 2);
 
@@ -133,8 +130,7 @@ public class WorkRecordBookTest {
         int quantity = 1;
         workRecordBook.addProductItem(product, 0);
 
-        DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).build();
-        dentalWork = workRecordBook.addNewRecord(dentalWork);
+        DentalWork dentalWork = workRecordBook.addNewRecord(patient, clinic);
         workRecordBook.addProductToRecord(dentalWork, product, quantity);
 
         workRecordBook.removeProduct(dentalWork, product);
@@ -144,8 +140,7 @@ public class WorkRecordBookTest {
 
     @Test
     public void testDeleteRecord() throws DatabaseException {
-        DentalWork dentalWork = DentalWork.create().setPatient("John Doe").setClinic("ABC Clinic").build();
-        dentalWork = workRecordBook.addNewRecord(dentalWork);
+        DentalWork dentalWork = workRecordBook.addNewRecord("John Doe", "ABC Clinic");
 
         workRecordBook.deleteRecord(dentalWork);
 
@@ -160,8 +155,7 @@ public class WorkRecordBookTest {
         String field = "patient";
         String value = "Jane Smith";
 
-        DentalWork dentalWork = DentalWork.create().setPatient(patient).setClinic(clinic).build();
-        dentalWork = workRecordBook.addNewRecord(dentalWork);
+        DentalWork dentalWork = workRecordBook.addNewRecord(patient, clinic);
 
         workRecordBook.updateRecord(dentalWork, field, value);
 
@@ -172,11 +166,9 @@ public class WorkRecordBookTest {
     public void testSearchRecord() throws WorkRecordException, DatabaseException {
         workRecordBook.addProductItem("cleaning", 0);
         workRecordBook.addProductItem("testing", 0);
-        DentalWork dentalWork1 = DentalWork.create().setPatient("John Doe").setClinic("Dental Clinic 1").setComplete(LocalDate.now()).build();
-        workRecordBook.addNewRecord(dentalWork1);
+        DentalWork dentalWork1 = workRecordBook.addNewRecord("John Doe", "Dental Clinic 1");
         workRecordBook.addProductToRecord(dentalWork1, "cleaning", 1);
-        DentalWork dentalWork2 = DentalWork.create().setPatient("Jane Smith").setClinic("Dental Clinic 2").setComplete(LocalDate.now()).build();
-        workRecordBook.addNewRecord(dentalWork2);
+        DentalWork dentalWork2 = workRecordBook.addNewRecord("Jane Smith", "Dental Clinic 2");
         workRecordBook.addProductToRecord(dentalWork2, "testing", 2);
 
         DentalWork found = workRecordBook.searchRecord("John Doe", "Dental Clinic 1");

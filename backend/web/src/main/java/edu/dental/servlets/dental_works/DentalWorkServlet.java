@@ -16,16 +16,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 
 @WebServlet({"/main/dental-work", "/main/dental-work/*"})
 public class DentalWorkServlet extends HttpServlet {
 
     private static final String url = "/main/dental-work";
-    public final String productParam = "product";
-    public final String quantityParam = "quantity";
-    public final String fieldParam = "field";
-    public final String valueParam = "value";
+    private static final String patientParam = "patient";
+    private static final String clinicParam = "clinic";
+    private static final String completeParam = "complete";
+    private static final String productParam = "product";
+    private static final String quantityParam = "quantity";
+    private static final String fieldParam = "field";
+    private static final String valueParam = "value";
 
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
@@ -66,13 +70,21 @@ public class DentalWorkServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int userId = (int) request.getAttribute(Repository.paramUser);
-        String jsonNew = HttpRequestReader.readJson(request);
-        DentalWorkDto dto = jsonObjectParser.parseFromJson(jsonNew, DentalWorkDto.class);
+        String patient = request.getParameter(patientParam);
+        String clinic = request.getParameter(clinicParam);
+        String complete = request.getParameter(completeParam);
+        String productItem = request.getParameter(productParam);
+        String quantity = request.getParameter(quantityParam);
 
         WorkRecordBook recordBook = repository.getRecordBook(userId);
         try {
-            DentalWork dentalWork = dto.revert(userId);
-            dentalWork = recordBook.addNewRecord(dentalWork);
+            DentalWork dentalWork;
+            if (productItem == null || productItem.isEmpty()) {
+                dentalWork = recordBook.addNewRecord(patient, clinic);
+            } else {
+                LocalDate completeDate = complete == null ? null : LocalDate.parse(complete);
+                dentalWork = recordBook.addNewRecord(patient, clinic, productItem, Integer.parseInt(quantity), completeDate);
+            }
             String jsonCreated = jsonObjectParser.parseToJson(new DentalWorkDto(dentalWork));
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
