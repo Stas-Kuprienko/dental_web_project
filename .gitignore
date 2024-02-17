@@ -50,3 +50,5 @@ build/
 /backend/web/apache-tomcat-10.1.18/
 /backend/core/src/main/resources/frontend_dental.log.lck
 /log_files/
+/backend/core/src/main/resources/dental.log
+/backend/core/src/main/resources/frontend_dental.log
