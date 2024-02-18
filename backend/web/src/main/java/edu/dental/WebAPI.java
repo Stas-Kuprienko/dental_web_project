@@ -19,7 +19,6 @@ public enum WebAPI {
     private JsonObjectParser jsonObjectParser;
     private IFilterVerification filterVerification;
 
-    WebAPI() {}
 
     public synchronized AuthenticationService getAuthenticationService() {
         if (authenticationService == null) {

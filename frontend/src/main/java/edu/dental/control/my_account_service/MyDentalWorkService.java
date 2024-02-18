@@ -66,7 +66,7 @@ public class MyDentalWorkService implements DentalWorkService {
                 queryFormer.add(quantityParam, quantity);
             } else {
                 NullPointerException e = new NullPointerException("parameter is null");
-                loggerKit.doLog(this.getClass().getSuperclass(), e, Level.SEVERE);
+                loggerKit.doLog(DentalWorkService.class, e, Level.SEVERE);
                 throw new HttpWebException(HttpWebException.ERROR.BAD_REQUEST);
             }
         }

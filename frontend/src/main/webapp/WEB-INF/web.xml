@@ -16,7 +16,7 @@
   </filter>
 
   <listener>
-    <listener-class>edu.dental.service.ContextService</listener-class>
+    <listener-class>edu.dental.service.AppConfiguration</listener-class>
   </listener>
 
   <servlet>

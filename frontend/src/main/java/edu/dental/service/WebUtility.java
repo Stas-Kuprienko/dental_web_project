@@ -25,7 +25,7 @@ public enum WebUtility {
 
 
     WebUtility() {
-        this.loggerKit = WebAPIManager.INSTANCE.getLoggerKit();
+        this.loggerKit = WebAPIManager.getLoggerKit();
         this.requestSender = HttpRequester.getXWWWFormRequester(apiUrl);
         this.jsonParser = new GsonBuilder().create();
     }
