@@ -37,7 +37,7 @@ public interface WorkRecordBook {
         return APIManager.INSTANCE.getWorkRecordBook(userId, works, map);
     }
 
-    DentalWork addNewRecord(String patient, String clinic, String product, int quantity, LocalDate complete) throws DatabaseException;
+    DentalWork addNewRecord(String patient, String clinic, String product, int quantity, LocalDate complete) throws DatabaseException, WorkRecordException;
 
     DentalWork addNewRecord(String patient, String clinic) throws DatabaseException;
 

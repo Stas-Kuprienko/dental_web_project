@@ -50,7 +50,7 @@ public class MyWorkRecordBook implements WorkRecordBook {
     }
 
     @Override
-    public DentalWork addNewRecord(String patient, String clinic, String productItem, int quantity, LocalDate complete) throws DatabaseException {
+    public DentalWork addNewRecord(String patient, String clinic, String productItem, int quantity, LocalDate complete) throws DatabaseException, WorkRecordException {
         DentalWork newRecord = DentalWork.create()
                 .setUserId(userId)
                 .setPatient(patient)
@@ -58,11 +58,15 @@ public class MyWorkRecordBook implements WorkRecordBook {
                 .setComplete(complete)
                 .build();
 
-        Product product = productMap.createProduct(productItem, quantity);
-        newRecord.getProducts().add(product);
-        databaseService.getDentalWorkDAO().put(newRecord);
-        records.add(newRecord);
-        return newRecord;
+        try {
+            Product product = productMap.createProduct(productItem, quantity);
+            newRecord.getProducts().add(product);
+            databaseService.getDentalWorkDAO().put(newRecord);
+            records.add(newRecord);
+            return newRecord;
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new WorkRecordException(e);
+        }
     }
 
     @Override

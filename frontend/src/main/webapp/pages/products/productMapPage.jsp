@@ -107,7 +107,7 @@
                 <label for="title">product:</label>
                 <input id="title" type="text" name="title" required><br>
                 <label for="price">price:</label>
-                <input style="width:25%;" id="price" type="number" name="price" required>
+                <input style="width:25%;" id="price" type="number" name="price" min="0" required>
                 <input style="width:25%;" type="submit" value="save">
             </form>
         </a>
@@ -131,7 +131,7 @@
     <div class="tr" id="dialog" style="display:none;">
         <form>
             <label for="value">price</label>
-            <input type="number" id="value" name="price" required>
+            <input type="number" id="value" name="price" min="0" required>
             <br>
         </form>
     </div>

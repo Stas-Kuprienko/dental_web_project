@@ -106,7 +106,7 @@
         </c:forEach>
       </select>
       <label for="quantity">quantity:</label>
-      <input style="width: 64px;" type="number" id="quantity" name="quantity" max="32" required>
+      <input style="width: 64px;" type="number" id="quantity" name="quantity"  min="0" max="32" required>
       <input type="hidden" name="field" value="product">
       <input type="hidden" name="method" value="put">
       <button type="submit" name="id" value="${work.id}">add</button>

@@ -11,7 +11,7 @@ public interface MySQL_DAO extends DAO {
 
     class Request implements DAO.DatabaseRequest {
 
-        private Connection connection;
+        private final Connection connection;
 
         private final PreparedStatement preparedStatement;
 
@@ -76,7 +76,6 @@ public interface MySQL_DAO extends DAO {
                 DatabaseException.logging(e);
             } finally {
                 ConnectionPool.put(connection);
-                connection = null;
             }
         }
     }

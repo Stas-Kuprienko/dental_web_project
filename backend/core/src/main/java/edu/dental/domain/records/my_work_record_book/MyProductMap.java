@@ -22,10 +22,10 @@ public class MyProductMap implements ProductMap {
     }
 
     @Override
-    public Product createProduct(String title, int quantity) {
-        if (quantity > 32) {
+    public Product createProduct(String title, int quantity) throws IllegalArgumentException, NullPointerException {
+        if (quantity > 32 || quantity < 0) {
             throw new IllegalArgumentException("The quantity value ('"
-                    + quantity + "') is incorrect - cannot be more than 32 teeth.");
+                    + quantity + "') is incorrect - cannot be more than 32 teeth and less than 0.");
         }
         if (title == null || title.isEmpty()) {
             throw new NullPointerException("the given key is null or empty");
@@ -36,7 +36,7 @@ public class MyProductMap implements ProductMap {
     }
 
     @Override
-    public Integer put(String key, Integer value) {
+    public Integer put(String key, Integer value) throws NullPointerException {
         if (key == null || key.isEmpty()) {
             throw new NullPointerException("the given key is null or empty");
         }
@@ -69,7 +69,7 @@ public class MyProductMap implements ProductMap {
     }
 
     @Override
-    public boolean put(String key, int value, int id) {
+    public boolean put(String key, int value, int id) throws NullPointerException {
         if (key == null || key.isEmpty()) {
             throw new NullPointerException("the given key is null or empty");
         }

@@ -50,15 +50,17 @@ public class DentalWorksList extends HttpServlet {
         } else {
 
             HttpSession session = request.getSession();
-            int year = request.getParameter(yearParam) != null ? Integer.parseInt(request.getParameter(yearParam)) :
-                    (int) request.getAttribute(yearParam);
-            int month = request.getParameter(monthParam) != null ? Integer.parseInt(request.getParameter(monthParam)) :
-                    (int) request.getAttribute(monthParam);
             try {
+                int year = request.getParameter(yearParam) != null ? Integer.parseInt(request.getParameter(yearParam)) :
+                        (int) request.getAttribute(yearParam);
+                int month = request.getParameter(monthParam) != null ? Integer.parseInt(request.getParameter(monthParam)) :
+                        (int) request.getAttribute(monthParam);
                 dentalWorksListService.sort(session, year, month);
                 request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
             } catch (HttpWebException e) {
                 e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
+            } catch (NullPointerException e) {
+                request.getRequestDispatcher(dentalWorksPageURL).forward(request, response);
             }
         }
     }

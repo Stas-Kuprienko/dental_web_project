@@ -82,7 +82,8 @@ public class DentalWorkServlet extends HttpServlet {
             if (productItem == null || productItem.isEmpty()) {
                 dentalWork = recordBook.addNewRecord(patient, clinic);
             } else {
-                LocalDate completeDate = complete == null ? null : LocalDate.parse(complete);
+                LocalDate completeDate = complete == null || complete.isEmpty() ?
+                        null : LocalDate.parse(complete);
                 dentalWork = recordBook.addNewRecord(patient, clinic, productItem, Integer.parseInt(quantity), completeDate);
             }
             String jsonCreated = jsonObjectParser.parseToJson(new DentalWorkDto(dentalWork));
@@ -90,7 +91,7 @@ public class DentalWorkServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(jsonCreated);
             response.getWriter().flush();
-        } catch (DatabaseException e) {
+        } catch (DatabaseException | WorkRecordException e) {
             response.sendError(500);
         }
     }

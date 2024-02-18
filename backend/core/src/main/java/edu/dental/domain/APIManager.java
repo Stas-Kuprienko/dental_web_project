@@ -7,6 +7,7 @@ import edu.dental.domain.records.WorkRecordBook;
 import edu.dental.domain.reports.ReportService;
 import edu.dental.entities.DentalWork;
 import edu.dental.entities.ProductMap;
+import stas.utilities.LoggerKit;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -83,7 +84,7 @@ public enum APIManager {
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
             throw new RuntimeException(e);
         }
     }
@@ -104,7 +105,7 @@ public enum APIManager {
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
             throw new RuntimeException(e);
         }
     }
@@ -122,7 +123,7 @@ public enum APIManager {
             return productMap;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
             throw new RuntimeException(e);
         }
     }
@@ -141,7 +142,7 @@ public enum APIManager {
             return productMap;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException | DatabaseException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
             throw new RuntimeException(e);
         }
     }
@@ -171,7 +172,7 @@ public enum APIManager {
             return (T) constructor.newInstance();
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException
                  | IllegalAccessException | ClassNotFoundException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
             throw new RuntimeException(e);
         } finally {
             if (constructor != null) {

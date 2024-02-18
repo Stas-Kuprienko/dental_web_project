@@ -2,10 +2,14 @@ package edu.dental.database;
 
 import edu.dental.database.connection.ConnectionPool;
 import edu.dental.database.connection.DBConfiguration;
+import edu.dental.domain.APIManager;
+import stas.utilities.LoggerKit;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public interface TableInitializer {
 
@@ -21,9 +25,17 @@ public interface TableInitializer {
 
     class Request extends Thread implements AutoCloseable {
 
-        private Connection connection;
+        private static final Logger logger;
+        private final Connection connection;
         private final Statement statement;
         private final String[] queries;
+
+
+        static {
+            logger = Logger.getLogger(TableInitializer.class.getName());
+            logger.setLevel(Level.ALL);
+            logger.addHandler(APIManager.fileHandler);
+        }
 
         public Request(String... queries) throws SQLException {
             this.connection = ConnectionPool.get();
@@ -31,7 +43,7 @@ public interface TableInitializer {
             try {
                 this.statement = connection.createStatement();
             } catch (SQLException e) {
-                //TODO loggers
+                logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
                 ConnectionPool.put(connection);
                 throw e;
             }
@@ -44,7 +56,10 @@ public interface TableInitializer {
                     statement.addBatch(s);
                 }
                 statement.executeBatch();
+                String message = LoggerKit.buildStackTraceMessage(new Exception("SQL tables is created"));
+                logger.log(Level.INFO, message);
             } catch (SQLException e) {
+                logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
                 throw new RuntimeException(e);
             }
         }
@@ -54,11 +69,9 @@ public interface TableInitializer {
             try {
                 statement.close();
             } catch (SQLException e) {
-                //TODO logger
-                e.printStackTrace();
+                logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
             } finally {
                 ConnectionPool.put(connection);
-                connection = null;
             }
         }
     }

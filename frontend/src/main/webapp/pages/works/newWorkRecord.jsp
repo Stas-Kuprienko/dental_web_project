@@ -33,7 +33,7 @@
         </c:forEach>
     </select><br>
     <label for="quantity">quantity:</label><br>
-    <input type="number" id="quantity" name="quantity" value="0" max="32"><br>
+    <input type="number" id="quantity" name="quantity" min="0" max="32"><br>
     <label for="complete">complete:</label><br>
     <input type="date" id="complete" name="complete" style="width: 180px; height: 30px; font-size: 18px;"><br>
     <br>
