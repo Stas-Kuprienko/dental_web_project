@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The class for creating a database {@link Connection connection}.
@@ -18,16 +17,15 @@ import java.util.logging.Logger;
 public final class ConnectionPool {
 
     private final static ConnectionPool instance = new ConnectionPool();
-    private static final Logger logger;
+    private static final LoggerKit loggerKit;
 
     private final ConcurrentLinkedQueue<Connection> free;
     private final ConcurrentLinkedQueue<Connection> using;
 
 
     static {
-        logger = Logger.getLogger(ConnectionPool.class.getName());
-        logger.setLevel(Level.ALL);
-        logger.addHandler(APIManager.fileHandler);
+        loggerKit = new LoggerKit(APIManager.getFileHandler());
+        loggerKit.addLogger(ConnectionPool.class);
     }
 
     private ConnectionPool() {
@@ -45,12 +43,12 @@ public final class ConnectionPool {
         try {
             Class.forName(DBConfiguration.get().getProp(DBConfiguration.DRIVER));
             Exception e = new Exception("Connection is created - " + DBConfiguration.get().getProp(DBConfiguration.URL));
-            logger.log(Level.INFO, LoggerKit.buildStackTraceMessage(e.getStackTrace()));
+            loggerKit.doLog(ConnectionPool.class, e, Level.INFO);
             return DriverManager.getConnection(DBConfiguration.get().getProp(DBConfiguration.URL),
                     DBConfiguration.get().getProp(DBConfiguration.LOGIN),
                     DBConfiguration.get().getProp(DBConfiguration.PASSWORD));
         } catch (SQLException | ClassNotFoundException e) {
-            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e.getStackTrace()));
+            loggerKit.doLog(ConnectionPool.class, e, Level.SEVERE);
             throw new RuntimeException(e);
         }
     }
@@ -67,7 +65,7 @@ public final class ConnectionPool {
     public static void put(Connection connection) {
         if (connection == null) {
             NullPointerException e = new NullPointerException("connection is null");
-            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
+            loggerKit.doLog(ConnectionPool.class, e, Level.SEVERE);
             throw e;
         }
         instance.free.add(connection);
@@ -83,10 +81,10 @@ public final class ConnectionPool {
                 DriverManager.deregisterDriver(driver);
                 message.append(driver.toString()).append('\n');
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e.getStackTrace()));
+                loggerKit.doLog(ConnectionPool.class, e, Level.SEVERE);
                 throw new RuntimeException(e);
             }
         }
-        logger.log(Level.INFO, LoggerKit.buildStackTraceMessage(new Exception(message.toString()).getStackTrace()));
+        loggerKit.doLog(ConnectionPool.class, new Exception(message.toString()), Level.INFO);
     }
 }

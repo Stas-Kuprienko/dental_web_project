@@ -34,7 +34,7 @@ public interface TableInitializer {
         static {
             logger = Logger.getLogger(TableInitializer.class.getName());
             logger.setLevel(Level.ALL);
-            logger.addHandler(APIManager.fileHandler);
+            logger.addHandler(APIManager.getFileHandler());
         }
 
         public Request(String... queries) throws SQLException {

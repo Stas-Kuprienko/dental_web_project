@@ -125,7 +125,7 @@ public class UserMySql implements UserDAO, MySQL_DAO {
         }
 
         @Override
-        public List<User> build() throws SQLException, IOException {
+        public List<User> build() throws SQLException, IOException, NullPointerException {
             try (resultSet) {
                 while (resultSet.next()) {
                     User user = new User();

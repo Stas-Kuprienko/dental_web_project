@@ -9,62 +9,40 @@ import edu.dental.entities.DentalWork;
 import edu.dental.entities.ProductMap;
 import stas.utilities.LoggerKit;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public enum APIManager {
 
     INSTANCE;
 
-    private static final String SERVICE_PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\service.properties";
-    private static final String LOGGING_PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\log_path.properties";
+    private static LoggerKit loggerKit;
+    private static FileHandler fileHandler;
 
-    private static final Logger logger;
-    public static final FileHandler fileHandler;
-    public static final SimpleFormatter formatter;
-
-    public static final String logPropKey = "dental_log";
-
-    public static final Properties logProperties;
-
-    private final Properties service;
+    private Properties service;
 
     private DatabaseService databaseService;
     private ReportService reportService;
 
-    static {
-        logger = Logger.getLogger(APIManager.class.getName());
 
-        logProperties = new Properties();
-        formatter = new SimpleFormatter();
-
-        try (FileInputStream fileInput = new FileInputStream(LOGGING_PROP_PATH)) {
-            logProperties.load(fileInput);
-            String filePath = logProperties.getProperty(logPropKey);
-            fileHandler = new FileHandler(filePath);
-            fileHandler.setFormatter(formatter);
-            logger.addHandler(fileHandler);
-            logger.setLevel(Level.ALL);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static LoggerKit getLoggerKit() {
+        return loggerKit;
     }
 
-    APIManager() {
-        service = new Properties();
-        try (FileInputStream fileInput = new FileInputStream(SERVICE_PROP_PATH)) {
-            service.load(fileInput);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static void setLoggerKit(LoggerKit loggerKit) {
+        APIManager.loggerKit = loggerKit;
+    }
+
+    public static FileHandler getFileHandler() {
+        return fileHandler;
+    }
+
+    public static void setFileHandler(FileHandler fileHandler) {
+        APIManager.fileHandler = fileHandler;
     }
 
 
@@ -80,11 +58,12 @@ public enum APIManager {
             constructor.setAccessible(true);
             WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(userId);
             constructor.setAccessible(false);
-            logger.log(Level.INFO, clas.getName());
+            Exception e = new Exception(clas.getName());
+            loggerKit.doLog(this.getClass(), LoggerKit.buildStackTraceMessage(e), Level.INFO);
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
-            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
+            loggerKit.doLog(this.getClass(), e, Level.SEVERE);
             throw new RuntimeException(e);
         }
     }
@@ -101,11 +80,12 @@ public enum APIManager {
             constructor.setAccessible(true);
             WorkRecordBook recordBook = (WorkRecordBook) constructor.newInstance(userId, records, productMap);
             constructor.setAccessible(false);
-            logger.log(Level.INFO, clas.getName());
+            Exception e = new Exception(clas.getName());
+            loggerKit.doLog(this.getClass(), LoggerKit.buildStackTraceMessage(e), Level.INFO);
             return recordBook;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
-            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
+            loggerKit.doLog(this.getClass(), e, Level.SEVERE);
             throw new RuntimeException(e);
         }
     }
@@ -119,11 +99,12 @@ public enum APIManager {
             constructor.setAccessible(true);
             ProductMap productMap = (ProductMap) constructor.newInstance();
             constructor.setAccessible(false);
-            logger.log(Level.INFO, clas.getName());
+            Exception e = new Exception(clas.getName());
+            loggerKit.doLog(this.getClass(), LoggerKit.buildStackTraceMessage(e), Level.INFO);
             return productMap;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException e) {
-            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
+            loggerKit.doLog(this.getClass(), e, Level.SEVERE);
             throw new RuntimeException(e);
         }
     }
@@ -138,11 +119,12 @@ public enum APIManager {
             ProductMapDAO mapDAO = (ProductMapDAO) constructor.newInstance(userId);
             ProductMap productMap = mapDAO.get();
             constructor.setAccessible(false);
-            logger.log(Level.INFO, clas.getName());
+            Exception e = new Exception(clas.getName());
+            loggerKit.doLog(this.getClass(), LoggerKit.buildStackTraceMessage(e), Level.INFO);
             return productMap;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException
                  | ClassCastException | InstantiationException | IllegalAccessException | DatabaseException e) {
-            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
+            loggerKit.doLog(this.getClass(), e, Level.SEVERE);
             throw new RuntimeException(e);
         }
     }
@@ -168,17 +150,26 @@ public enum APIManager {
             Class<?> c = Class.forName(getClassName(clas));
             constructor = c.getDeclaredConstructor();
             constructor.setAccessible(true);
-            logger.log(Level.INFO, c.getName());
+            Exception e = new Exception(c.getName());
+            loggerKit.doLog(this.getClass(), LoggerKit.buildStackTraceMessage(e), Level.INFO);
             return (T) constructor.newInstance();
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException
                  | IllegalAccessException | ClassNotFoundException e) {
-            logger.log(Level.SEVERE, LoggerKit.buildStackTraceMessage(e));
+            loggerKit.doLog(this.getClass(), e, Level.SEVERE);
             throw new RuntimeException(e);
         } finally {
             if (constructor != null) {
                 constructor.setAccessible(false);
             }
         }
+    }
+
+    public Properties getService() {
+        return service;
+    }
+
+    public void setService(Properties service) {
+        this.service = service;
     }
 
     private <T> String getClassName(Class<T> clas) {

@@ -61,9 +61,7 @@
         <dependency>
             <groupId>stas</groupId>
             <artifactId>my-utilities-library</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/my_libraries/my-utilities-library.jar</systemPath>
+            <version>1.0.1</version>
         </dependency>
 
     </dependencies>

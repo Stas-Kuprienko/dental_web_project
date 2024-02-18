@@ -1,7 +1,6 @@
 package edu.dental.database.mysql_api;
 
 import edu.dental.database.TableInitializer;
-import edu.dental.database.connection.DBConfiguration;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -94,7 +93,6 @@ public class MySqlInitializer implements TableInitializer {
                     USER_Q, REPORT_Q, PRODUCT_MAP_Q, DENTAL_WORK_Q, PRODUCT_Q, PHOTO_Q);
             request.start();
         } catch (SQLException e) {
-            DBConfiguration.logging(e);
             throw new RuntimeException(e);
         }
     }
@@ -117,7 +115,6 @@ public class MySqlInitializer implements TableInitializer {
             request.start();
             executeAddReports = LocalDate.now();
         } catch (SQLException e) {
-            DBConfiguration.logging(e);
             throw new RuntimeException(e);
         }
     }

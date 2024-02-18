@@ -2,39 +2,30 @@ package edu.dental.database;
 
 import edu.dental.database.dao.DAO;
 import edu.dental.domain.APIManager;
+import stas.utilities.LoggerKit;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DatabaseException extends Exception {
 
-    private static final Logger logger;
+    private static final LoggerKit loggerKit;
 
     static {
-        logger = Logger.getLogger(DAO.class.getName());
-        logger.addHandler(APIManager.fileHandler);
-        logger.setLevel(Level.ALL);
+        loggerKit = new LoggerKit(APIManager.getFileHandler());
+        loggerKit.addLogger(DAO.class);
     }
 
     public DatabaseException(Exception e) {
         super(e);
-        logger.log(Level.WARNING, buildStackMessage(e.getStackTrace()));
+        loggerKit.doLog(DAO.class, e, Level.SEVERE);
+    }
+
+    public DatabaseException(Exception e, Level level) {
+        super(e);
+        loggerKit.doLog(DAO.class, e, level);
     }
 
     public static void logging(Exception e) {
-        logger.log(Level.SEVERE, buildStackMessage(e.getStackTrace()));
-    }
-
-
-    private static String buildStackMessage(StackTraceElement[] stackTrace) {
-        StringBuilder str = new StringBuilder();
-        for (StackTraceElement e : stackTrace) {
-            if (e.toString().startsWith("edu.")) {
-                str.append(e).append("\n");
-            } else {
-                break;
-            }
-        }
-        return str.toString();
+        loggerKit.doLog(DAO.class, e, Level.SEVERE);
     }
 }

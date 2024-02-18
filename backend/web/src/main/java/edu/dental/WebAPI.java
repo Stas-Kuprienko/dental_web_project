@@ -6,11 +6,14 @@ import edu.dental.security.IFilterVerification;
 import edu.dental.service.Repository;
 import edu.dental.service.JsonObjectParser;
 
+import java.util.Properties;
+
 
 public enum WebAPI {
 
     INSTANCE;
 
+    private static Properties SECRET_KEY;
     private AuthenticationService authenticationService;
     private Repository repository;
     private JsonObjectParser jsonObjectParser;
@@ -44,5 +47,13 @@ public enum WebAPI {
             filterVerification = APIManager.INSTANCE.init(IFilterVerification.class);
         }
         return filterVerification;
+    }
+
+    public static void setSecretKeyProperties(Properties secretKey) {
+        SECRET_KEY = secretKey;
+    }
+
+    public static Properties getSecretKeyProperties() {
+        return SECRET_KEY;
     }
 }

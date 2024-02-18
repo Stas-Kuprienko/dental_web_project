@@ -1,29 +1,23 @@
 package edu.dental.security.my_authentication;
 
+import edu.dental.WebAPI;
 import edu.dental.entities.User;
 import edu.dental.security.AuthenticationService;
 import edu.dental.security.TokenUtils;
 import edu.dental.security.WebSecurityException;
 import io.jsonwebtoken.*;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Date;
 import java.time.ZoneId;
-import java.util.Properties;
 import java.util.logging.Level;
 
 class JwtUtils implements TokenUtils {
 
+    private final String SECRET_KEY;
+
     JwtUtils() {
+        this.SECRET_KEY = WebAPI.getSecretKeyProperties().getProperty("key");
     }
-
-    static {
-        SECRET_KEY = loadProperties().getProperty("key");
-    }
-
-    private static final String PROP_PATH = "D:\\Development Java\\pet_projects\\dental_web_project\\backend\\core\\target\\classes\\secret_key.properties";
-    private static final String SECRET_KEY;
 
 
     @Override
@@ -56,16 +50,5 @@ class JwtUtils implements TokenUtils {
     @Override
     public boolean isSigned(String jwt) {
         return Jwts.parser().isSigned(jwt);
-    }
-
-    private static Properties loadProperties() {
-        try (FileInputStream fileInput = new FileInputStream(PROP_PATH)) {
-            Properties prop = new Properties();
-            prop.load(fileInput);
-            return prop;
-        } catch (IOException e) {
-            throw new RuntimeException
-                    (new WebSecurityException(Level.SEVERE, AuthenticationService.ERROR.SERVER_ERROR, e));
-        }
     }
 }

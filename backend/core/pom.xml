@@ -30,13 +30,6 @@
         </dependency>
 
         <dependency>
-            <groupId>stas</groupId>
-            <artifactId>my-utilities-library</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/my_libraries/my-utilities-library.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.9.2</version>

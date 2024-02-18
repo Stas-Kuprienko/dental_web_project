@@ -23,6 +23,8 @@
     </option>
     <option name="vmOptions" value="" />
     <module name="frontend" />
-    <method v="2" />
+    <method v="2">
+      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/frontend/pom.xml" goal="package" />
+    </method>
   </configuration>
 </component>
