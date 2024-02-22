@@ -34,7 +34,7 @@ public class ProfitCounter extends HttpServlet {
             String jwt = (String) request.getSession().getAttribute(WebUtility.INSTANCE.attribToken);
             response.setContentType("application/msword");
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
-            WebUtility.INSTANCE.requestSender().download(jwt, profitCountUrl, response.getOutputStream());
+            WebUtility.INSTANCE.getRequestSender().download(jwt, profitCountUrl, response.getOutputStream());
         } catch (HttpWebException e) {
             e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }

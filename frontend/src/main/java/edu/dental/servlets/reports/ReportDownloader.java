@@ -30,7 +30,7 @@ public class ReportDownloader extends HttpServlet {
         response.setContentType("application/msword");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + fileFormat + '\"');
         try {
-            WebUtility.INSTANCE.requestSender().download(jwt, resource, response.getOutputStream());
+            WebUtility.INSTANCE.getRequestSender().download(jwt, resource, response.getOutputStream());
         } catch (HttpWebException e) {
             e.errorRedirect(WebUtility.INSTANCE.errorPageURL, request, response);
         }

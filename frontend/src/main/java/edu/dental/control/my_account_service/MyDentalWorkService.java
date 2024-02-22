@@ -30,7 +30,7 @@ public class MyDentalWorkService implements DentalWorkService {
     private final LoggerKit loggerKit;
 
     MyDentalWorkService() {
-        this.httpRequestSender = WebUtility.INSTANCE.requestSender();
+        this.httpRequestSender = WebUtility.INSTANCE.getRequestSender();
         this.loggerKit = WebUtility.INSTANCE.loggerKit();
     }
 

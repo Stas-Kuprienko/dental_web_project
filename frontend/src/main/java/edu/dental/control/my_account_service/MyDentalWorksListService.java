@@ -30,7 +30,7 @@ public class MyDentalWorksListService implements DentalWorksListService {
         int year = Integer.parseInt(year_month_split[0]);
         int month = Integer.parseInt(year_month_split[1]);
         if (!isCurrent(year, month)) {
-            String jsonWorks = WebUtility.INSTANCE.requestSender()
+            String jsonWorks = WebUtility.INSTANCE.getRequestSender()
                     .sendHttpGetRequest(jwt, dentalWorksUrl, String.format(parameters, year, month));
             DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
             request.setAttribute(WebUtility.INSTANCE.attribWorks, works);
@@ -44,7 +44,7 @@ public class MyDentalWorksListService implements DentalWorksListService {
         HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add(yearParam, year);
         queryFormer.add(monthParam, month);
-        String jsonWorks = WebUtility.INSTANCE.requestSender()
+        String jsonWorks = WebUtility.INSTANCE.getRequestSender()
                 .sendHttpPostRequest(jwt, dentalWorksUrl, queryFormer.form());
         DentalWork[] works = WebUtility.INSTANCE.parseFromJson(jsonWorks, DentalWork[].class);
         session.setAttribute(WebUtility.INSTANCE.attribWorks, works);
@@ -57,7 +57,7 @@ public class MyDentalWorksListService implements DentalWorksListService {
         queryFormer.add(yearParam, year);
         queryFormer.add(monthParam, month);
         String requestParams = queryFormer.form();
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPutRequest(jwt, dentalWorksUrl, requestParams);
+        String json = WebUtility.INSTANCE.getRequestSender().sendHttpPutRequest(jwt, dentalWorksUrl, requestParams);
         DentalWork[] works = WebUtility.INSTANCE.parseFromJson(json, DentalWork[].class);
         if (isCurrent(year, month)) {
             session.setAttribute(WebUtility.INSTANCE.attribWorks, works);
@@ -71,7 +71,7 @@ public class MyDentalWorksListService implements DentalWorksListService {
         queryFormer.add(patientParam, patient);
         queryFormer.add(clinicParam, clinic);
         String requestBody = queryFormer.form();
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, recordSearchUrl, requestBody);
+        String json = WebUtility.INSTANCE.getRequestSender().sendHttpPostRequest(jwt, recordSearchUrl, requestBody);
         return WebUtility.INSTANCE.parseFromJson(json, DentalWork[].class);
     }
 

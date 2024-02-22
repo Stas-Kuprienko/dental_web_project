@@ -40,7 +40,7 @@ public final class MyAdministrator implements Administrator {
         this.dentalWorkService = new MyDentalWorkService();
         this.productMapService = new MyProductMapService();
         this.profitRecordService = new MyProfitRecordService();
-        this.httpRequestSender = WebUtility.INSTANCE.requestSender();
+        this.httpRequestSender = WebUtility.INSTANCE.getRequestSender();
     }
 
 
@@ -102,7 +102,7 @@ public final class MyAdministrator implements Administrator {
         former.add(valueParam, value);
         String requestParam = former.form();
 
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(token, accountUrl, requestParam);
+        String json = WebUtility.INSTANCE.getRequestSender().sendHttpPostRequest(token, accountUrl, requestParam);
         return WebUtility.INSTANCE.parseFromJson(json, UserBean.class);
     }
 
@@ -146,7 +146,7 @@ public final class MyAdministrator implements Administrator {
 
         String jsonMap;
         try {
-            jsonMap = WebUtility.INSTANCE.requestSender().sendHttpGetRequest(token, productMapUrl, null);
+            jsonMap = WebUtility.INSTANCE.getRequestSender().sendHttpGetRequest(token, productMapUrl, null);
         } catch (IOException e) {
             WebAPIManager.getLoggerKit().doLog(Administrator.class, e, Level.SEVERE);
             throw new HttpWebException(HttpWebException.ERROR.SERVER_ERROR);

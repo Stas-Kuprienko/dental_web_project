@@ -28,7 +28,7 @@ public class MyProductMapService implements ProductMapService {
         queryFormer.add(priceParam, price);
         String requestParam = queryFormer.form();
 
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, productMapUrl, requestParam);
+        String json = WebUtility.INSTANCE.getRequestSender().sendHttpPostRequest(jwt, productMapUrl, requestParam);
         item = WebUtility.INSTANCE.parseFromJson(json, ProductMap.Item.class);
         ProductMap map = getProductMap(session);
         map.add(item);
@@ -42,7 +42,7 @@ public class MyProductMapService implements ProductMapService {
         queryFormer.add(titleParam, title);
         queryFormer.add(priceParam, price);
         String requestParam = queryFormer.form();
-        WebUtility.INSTANCE.requestSender().sendHttpPutRequest(jwt, productMapUrl + '/' + id, requestParam);
+        WebUtility.INSTANCE.getRequestSender().sendHttpPutRequest(jwt, productMapUrl + '/' + id, requestParam);
         ProductMap map = getProductMap(session);
         map.update(id, price);
         session.setAttribute(WebUtility.INSTANCE.attribMap, map.getItems());
@@ -53,7 +53,7 @@ public class MyProductMapService implements ProductMapService {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
         HttpQueryFormer queryFormer = new HttpQueryFormer();
         queryFormer.add(titleParam, title);
-        WebUtility.INSTANCE.requestSender().sendHttpDeleteRequest(jwt, productMapUrl + '/' + id, queryFormer.form());
+        WebUtility.INSTANCE.getRequestSender().sendHttpDeleteRequest(jwt, productMapUrl + '/' + id, queryFormer.form());
         ProductMap map = getProductMap(session);
         map.remove(id);
         session.setAttribute(WebUtility.INSTANCE.attribMap, map.getItems());

@@ -17,16 +17,13 @@ public enum WebUtility {
 
     public final String errorPageURL = "/error";
 
-    private static final String apiUrl = "http://localhost:8080/dental-api/";
-
     private final LoggerKit loggerKit;
-    private final HttpRequester requestSender;
     private final Gson jsonParser;
+    private HttpRequester requestSender;
 
 
     WebUtility() {
         this.loggerKit = WebAPIManager.getLoggerKit();
-        this.requestSender = HttpRequester.getXWWWFormRequester(apiUrl);
         this.jsonParser = new GsonBuilder().create();
     }
 
@@ -45,8 +42,12 @@ public enum WebUtility {
         return jsonParser.fromJson(json, clas);
     }
 
-    public HttpRequester requestSender() {
+    public HttpRequester getRequestSender() {
         return requestSender;
+    }
+
+    public void setRequestSender(HttpRequester requestSender) {
+        this.requestSender = requestSender;
     }
 
     public LoggerKit loggerKit() {

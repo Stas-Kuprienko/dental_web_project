@@ -49,7 +49,7 @@ public class MyProfitRecordService implements ProfitRecordService {
     @Override
     public ProfitRecord[] countAll(HttpSession session) throws IOException, HttpWebException {
         String jwt = (String) session.getAttribute(WebUtility.INSTANCE.attribToken);
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, profitCountUrl, null);
+        String json = WebUtility.INSTANCE.getRequestSender().sendHttpPostRequest(jwt, profitCountUrl, null);
         return WebUtility.INSTANCE.parseFromJson(json, ProfitRecord[].class);
     }
 
@@ -60,7 +60,7 @@ public class MyProfitRecordService implements ProfitRecordService {
         queryFormer.add("year", year);
         queryFormer.add("month", month);
         String requestParam = queryFormer.form();
-        String json = WebUtility.INSTANCE.requestSender().sendHttpPostRequest(jwt, profitCountUrl, requestParam);
+        String json = WebUtility.INSTANCE.getRequestSender().sendHttpPostRequest(jwt, profitCountUrl, requestParam);
         return WebUtility.INSTANCE.parseFromJson(json, ProfitRecord[].class);
     }
 }

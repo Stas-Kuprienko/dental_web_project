@@ -5,6 +5,7 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.http.HttpServlet;
+import stas.http_tools.HttpRequester;
 import stas.utilities.LoggerKit;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.logging.SimpleFormatter;
 @WebListener("/")
 public class AppConfiguration implements ServletContextListener {
 
+    private static final String API_URL_KEY = "API_URL";
     private static final String SERVICE_PROP_PATH = "service.properties";
     private static final String LOGGING_PROP_PATH = "log_path.properties";
     public static final String logPropKey = "frontend_dental_log";
@@ -51,6 +53,8 @@ public class AppConfiguration implements ServletContextListener {
             LoggerKit loggerKit = new LoggerKit(WebAPIManager.getFileHandler());
             fillLoggerKit(loggerKit);
             WebAPIManager.setLoggerKit(loggerKit);
+            String apiUrl = WebAPIManager.INSTANCE.getService().getProperty(API_URL_KEY);
+            WebUtility.INSTANCE.setRequestSender(HttpRequester.getXWWWFormRequester(apiUrl));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
