@@ -13,7 +13,7 @@
 
 The application is developed using the following technologies:
 
-- Java 18
+- Java 16
 - Maven
 - MySQL database
 - Tomcat server
@@ -34,11 +34,16 @@ The backend module consists of two sub-modules: core and webapp.
 ## Installation
 
 To run the application, follow these steps:
-- Ensure you have Java 18 installed on your system.
-- Set up a MySQL database and configure the connection details in the "mysql.properties" file located in the [backend/core/src/main/resources] directory.
-- Deploy the backend module on a Tomcat server.
-- Configure the Tomcat server to use the appropriate version of Jakarta Servlet (version 6).
-- Deploy the frontend module on the same Tomcat server.
+- Ensure you have Java 16 installed on your system.
+- Set up a MySQL database, create database 'dental'.
+- Configure the connection details in the ["backend/core/src/main/resources/mysql.properties"] file.
+- Creating the SQL tables is unnecessary, cause application initializes at start.
+- Configure the log file in the ["backend/web/src/main/resources/log_path.properties"] file.
+- Configure the log file in the ["frontend/src/main/resources/log_path.properties"] file.
+- Ensure you have the Tomcat server, supporting version of Jakarta Servlet 6 (I use the version of 10.1.19).
+- Ensure the API_URL in ["frontend/src/main/resources/service.properties"] file is actual.
+- Package the project by Maven.
+- Deploy the backend ("dental-api.war") and frontend ("dental.war") modules on a Tomcat server.
 - Access the application through the specified URL.
 
 ## Usage
