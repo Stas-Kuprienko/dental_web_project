@@ -55,6 +55,8 @@
             <groupId>stas</groupId>
             <artifactId>my-utilities-library</artifactId>
             <version>1.0.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../my_libraries/my-utilities-library-1.0.1.jar</systemPath>
         </dependency>
 
     </dependencies>
